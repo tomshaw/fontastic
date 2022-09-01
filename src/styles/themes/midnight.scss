@@ -1,0 +1,228 @@
+$midnightBackground: #000000;
+$midnightTextColor: #dddddd; // 999999/dddddd
+$midnightBorderColor: #1a1a1a;
+
+body[data-theme="midnight"] {
+  background-color: $midnightBackground;
+  color: $midnightTextColor;
+}
+
+[data-theme="midnight"] {
+
+  a {
+    color: $midnightTextColor;
+    &:hover,
+    &:active {
+      color: $midnightTextColor;
+    }
+  }
+
+  .radio,
+  .checkbox {
+    label {
+      border: 1px solid #FFF !important;
+    }
+    input:checked ~ label::before {
+      background-color: #777 !important;
+    }  
+    input:checked ~ span {
+      color: #777 !important;
+    }
+  }
+
+  .active {
+    color: #777 !important;
+  }
+
+  .favorite {
+    color: #c10156 !important;
+  }
+
+  .disabled,
+  .disabled i {
+    color: #777;
+  }
+
+  .enabled {
+    color: $midnightTextColor;
+  }
+
+  .selected {
+    background-color: #111111;
+  }
+
+  .material-icons {
+    color: $midnightTextColor;
+  }
+
+  input.input--title {
+    color: $midnightTextColor !important;
+    &:focus {
+      color: $midnightTextColor !important;
+    }
+  }
+
+  // Toolbar text.
+  .input-preview.preview-text button {
+    background-color: #1a1a1a !important;
+  }
+
+  // Toolbar switch text. latest-news
+  .input-preview.quick-text button span.material-icons,
+  .input-preview.latest-news button span.material-icons,
+  .input-preview.preview-casing button span.material-icons,
+  .input-preview.preview-reset button span.material-icons {
+    color: $midnightTextColor !important;
+  }
+
+  .input-preview.preview-size {
+    input {
+      color: red !important;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: $midnightTextColor;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      background: $midnightTextColor !important;
+      border: 3px solid #1a1a1a !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .paginator {
+    input {
+      //color: #333;
+      //background-color: #fff;
+      border: 1px solid $midnightBorderColor;
+    }
+  }
+
+  .border-top {
+    border-top: 1px solid $midnightBorderColor !important;
+  }
+
+  .border-right {
+    border-right: 1px solid $midnightBorderColor !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $midnightBorderColor !important;
+  }
+
+  .border-left {
+    border-left: 1px solid $midnightBorderColor !important;
+  }
+
+  .border-top-dashed {
+    border-top: 1px dashed $midnightBorderColor !important;
+  }
+
+  .border-right-dashed {
+    border-right: 1px dashed $midnightBorderColor !important;
+  }
+
+  .border-bottom-dashed {
+    border-bottom: 1px dashed $midnightBorderColor !important;
+  }
+
+  .border-left-dashed {
+    border-left: 1px dashed $midnightBorderColor !important;
+  }
+
+  .table {
+    color: $midnightTextColor !important;
+  }
+
+  .table td,
+  .table th {
+    border-top: none !important;
+  }
+
+  .table tbody tr:nth-child(odd) {
+    background-color: #080808;
+  }
+
+  .table > thead > tr > th {
+    background-color: $midnightBackground;
+    border-right: 1px solid $midnightBorderColor;
+  }
+
+  .table > thead > tr > th,
+  .table > thead > tr > th > div,
+  .table > thead > tr > th > div > span {
+    color: $midnightTextColor;
+  }
+
+  .block {
+    background-color: rgb(10, 10, 10);
+    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
+    .block__head {
+      border-bottom: 1px solid $midnightBorderColor;
+    }
+    .block__foot {
+      border-top: 1px solid $midnightBorderColor;
+    }
+    .form-group {
+      .text-muted {
+        color: $color-text-disabled !important;
+      }
+      .text-error {
+        color: #e04646 !important;
+      }
+    }
+    .form-control {
+      color: #fff;
+      background-color: $midnightBackground;
+      border: 1px solid $midnightBorderColor;
+    }
+    .input-group-checkbox {
+      background-color: #151515;
+    }
+  }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $midnightBackground !important;
+      border: solid 1px $midnightBorderColor !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #111111 !important;
+      }
+    }
+  }
+
+  .tabs {
+    li {
+      border-right: 1px solid $midnightBorderColor !important;
+      border-bottom: 1px solid $midnightBorderColor !important;
+    }
+  }
+
+  fieldset {
+    border: 1px solid $midnightBorderColor;
+    legend {
+      color: $midnightTextColor;
+    }
+    .form-group {
+      span {
+        color: $midnightTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid #fff;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: #777;
+    }
+    dl:hover dt label {
+      color: $midnightTextColor;
+    }
+    dl dd label:hover {
+      color: $midnightTextColor;
+    }
+  }
+}

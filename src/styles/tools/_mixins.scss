@@ -1,0 +1,79 @@
+// Mixins
+
+@mixin font-family-bold($weight: bold) {
+  font-family: $base-font-family;
+  font-weight: $weight;
+}
+
+@mixin font-family-medium($weight: 300) {
+  font-family: $base-font-family;
+  font-weight: $weight;
+}
+
+@mixin font-family-regular($weight: normal) {
+  font-family: $base-font-family;
+  font-weight: $weight;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}
+
+@mixin aspect-ratio($width, $height) {
+  &:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: ($height / $width) * 100%;
+  }
+}
+
+@mixin font-size($sizeValue: 12) {
+  font-size: $sizeValue + px; // fallback for old browsers
+  font-size: (0.0625 * $sizeValue) + rem;
+}
+
+@mixin line-height($heightValue: 20) {
+  line-height: $heightValue + px; // fallback for old browsers
+  line-height: (0.0625 * $heightValue) + rem;
+}
+
+@mixin rhythm($sizeValue: 12, $heightValue: 20) {
+  @include font-size($sizeValue);
+  @include line-height($heightValue);
+}
+
+// @see https://anotheruiguy.gitbooks.io/sassintherealworld_book-i/handy-tools/setting-default-mixin-values.html
+// @include add-border;
+@mixin add-border($border-position: all, $border-size: 1px, $border-pattern: solid, $border-color: $black) {
+  @if $border-position == $border-position-all {
+    border: $border-size $border-pattern $border-color;
+  } @else {
+    border-#{$border-position}: $border-size $border-pattern $border-color;
+  }
+}
+
+@mixin elevation($level) {
+  @if $level == 1 {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+  @else if $level == 2 {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+  @else if $level == 3 {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+  @else if $level == 4 {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  }
+  @else if $level == 5 {
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
+}

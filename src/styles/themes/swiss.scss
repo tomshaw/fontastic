@@ -1,0 +1,217 @@
+$swissBackground: #ed1b24;
+$swissTextColor: #ffffff;
+$swissBorderColor: #ffcccc;
+
+body[data-theme="swiss"] {
+  background-color: $swissBackground;
+  color: $swissTextColor;
+}
+
+[data-theme="swiss"] {
+
+  a {
+    color: $swissTextColor;
+    &:hover,
+    &:active {
+      color: $swissTextColor;
+    }
+  }
+
+  .active {
+    color: #cc0000 !important;
+  }
+
+  .favorite {
+    color: #cc0000 !important;
+  }
+
+  .disabled,
+  .disabled i {
+    color: $swissBorderColor;
+  }
+
+  .enabled {
+    color: $swissTextColor;
+  }
+
+  .selected {
+    background-color: $swissBorderColor;
+  }
+
+  .material-icons {
+    color: $swissTextColor;
+  }
+
+  input.input--title {
+    color: $swissTextColor !important;
+    &:focus {
+      color: $swissTextColor !important;
+    }
+  }
+
+  // Toolbar text.
+  .input-preview.preview-text button {
+    background-color: $swissBorderColor !important;
+  }
+
+  // Toolbar switch text.
+  .input-preview.quick-text button span.material-icons,
+  .input-preview.latest-news button span.material-icons,
+  .input-preview.preview-casing button span.material-icons,
+  .input-preview.preview-reset button span.material-icons {
+    color: $swissTextColor !important;
+  }
+
+  .input-preview.preview-size {
+
+    input {
+      color: red !important;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: $swissTextColor;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      background: $swissTextColor !important;
+      border: 3px solid $swissBorderColor !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .paginator {
+    input {
+      //color: #333;
+      //background-color: #fff;
+      border: 1px solid $swissBorderColor;
+    }
+  }
+
+  .border-top {
+    border-top: 1px solid $swissBorderColor !important;
+  }
+
+  .border-right {
+    border-right: 1px solid $swissBorderColor !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $swissBorderColor !important;
+  }
+
+  .border-left {
+    border-left: 1px solid $swissBorderColor !important;
+  }
+
+  .border-top-dashed {
+    border-top: 1px dashed $swissBorderColor !important;
+  }
+  
+  .border-right-dashed {
+    border-right: 1px dashed $swissBorderColor !important;
+  }
+  
+  .border-bottom-dashed {
+    border-bottom: 1px dashed $swissBorderColor !important;
+  }
+  
+  .border-left-dashed {
+    border-left: 1px dashed $swissBorderColor !important;
+  }
+
+  .table {
+    color: $swissTextColor !important;
+  }
+
+  .table td,
+  .table th {
+    border-top: none !important;
+  }
+  
+  .table tbody tr:nth-child(odd) {
+    background-color: #ca1119;
+  }
+  
+  .table > thead > tr > th {
+    background-color: $swissBackground;
+    // border-right: 1px solid $swissBorderColor;
+    // border-bottom: 1px solid $swissBorderColor;
+  }
+  
+  .table > thead > tr > th,
+  .table > thead > tr > th > div,
+  .table > thead > tr > th > div > span {
+    color: $swissTextColor;
+  }
+
+  .block {
+    background-color: #ca1119;
+    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
+    .block__head {
+      border-bottom: 1px solid $swissBorderColor;
+    }
+    .block__foot {
+      border-top: 1px solid $swissBorderColor;
+    }
+    .form-group {
+      .text-muted {
+        color: #fff !important;
+      }
+      .text-error {
+        color: #fff !important;
+      }
+    }
+    .form-control {
+      color: #fff;
+      background-color: $swissBackground;
+      border: 1px solid #fff;
+    }
+    .input-group-checkbox {
+      background-color: $swissBorderColor;
+    }
+  }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $swissBackground !important;
+      border: solid 1px #ca1119 !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #ca1119 !important;
+      }
+    }
+  }
+
+  .tabs {
+    li {
+      border-right: 1px solid $swissBorderColor !important;
+      border-bottom: 1px solid $swissBorderColor !important;
+    }
+  }
+
+  fieldset {
+    border: 1px solid $swissBorderColor;
+    legend {
+      color: $swissTextColor;
+    }
+    .form-group {
+      span {
+        color: $swissTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid $swissBorderColor;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: $swissBorderColor;
+    }
+    dl:hover dt label {
+      color: $swissTextColor;
+    }
+    dl dd label:hover {
+      color: $swissTextColor;
+    }
+  }
+}

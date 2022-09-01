@@ -1,0 +1,217 @@
+$euphoriaBackground: #23121c;
+$euphoriaTextColor: #deb431;
+$euphoriaBorderColor: #3a1f32;
+
+body[data-theme="euphoria"] {
+  background-color: $euphoriaBackground;
+  color: $euphoriaTextColor;
+}
+
+[data-theme="euphoria"] {
+
+  a {
+    color: $euphoriaTextColor;
+    &:hover,
+    &:active {
+      color: $euphoriaTextColor;
+    }
+  }
+
+  .active {
+    color: #c10156 !important;
+  }
+
+  .favorite {
+    color: #c10156 !important;
+  }
+
+  .disabled,
+  .disabled i {
+    color: #c10156;
+  }
+
+  .enabled {
+    color: $euphoriaTextColor;
+  }
+
+  .selected {
+    background-color: $euphoriaBorderColor;
+  }
+
+  .material-icons {
+    color: $euphoriaTextColor;
+  }
+
+  input.input--title {
+    color: $euphoriaTextColor !important;
+    &:focus {
+      color: $euphoriaTextColor !important;
+    }
+  }
+
+  // Toolbar text.
+  .input-preview.preview-text button {
+    background-color: $euphoriaBorderColor !important;
+  }
+
+  // Toolbar switch text.
+  .input-preview.quick-text button span.material-icons,
+  .input-preview.latest-news button span.material-icons,
+  .input-preview.preview-casing button span.material-icons,
+  .input-preview.preview-reset button span.material-icons {
+    color: $euphoriaTextColor !important;
+  }
+
+  .input-preview.preview-size {
+
+    input {
+      color: red !important;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: $euphoriaTextColor;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      background: $euphoriaTextColor !important;
+      border: 3px solid $euphoriaBorderColor !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .paginator {
+    input {
+      //color: #333;
+      //background-color: #fff;
+      border: 1px solid $euphoriaBorderColor;
+    }
+  }
+
+  .border-top {
+    border-top: 1px solid $euphoriaBorderColor !important;
+  }
+
+  .border-right {
+    border-right: 1px solid $euphoriaBorderColor !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $euphoriaBorderColor !important;
+  }
+
+  .border-left {
+    border-left: 1px solid $euphoriaBorderColor !important;
+  }
+
+  .border-top-dashed {
+    border-top: 1px dashed $euphoriaBorderColor !important;
+  }
+  
+  .border-right-dashed {
+    border-right: 1px dashed $euphoriaBorderColor !important;
+  }
+  
+  .border-bottom-dashed {
+    border-bottom: 1px dashed $euphoriaBorderColor !important;
+  }
+  
+  .border-left-dashed {
+    border-left: 1px dashed $euphoriaBorderColor !important;
+  }
+
+  .table {
+    color: $euphoriaTextColor !important;
+  }
+
+  .table td,
+  .table th {
+    border-top: none !important;
+  }
+  
+  .table tbody tr:nth-child(odd) {
+    //background-color: lighten($euphoriaBackground, 10%);
+    background-color: #25141e;
+  }
+  
+  .table > thead > tr > th {
+    background-color: $euphoriaBackground;
+    border-right: 1px solid $euphoriaBorderColor;
+  }
+  
+  .table > thead > tr > th,
+  .table > thead > tr > th > div,
+  .table > thead > tr > th > div > span {
+    color: $euphoriaTextColor;
+  }
+
+  .block {
+    background-color: #25141e;
+    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
+    .block__head {
+      border-bottom: 1px solid $euphoriaBorderColor;
+    }
+    .block__foot {
+      border-top: 1px solid $euphoriaBorderColor;
+    }
+    .form-group {
+      .text-muted {
+        color: $euphoriaTextColor !important;
+      }
+      .text-error {
+        color: #e04646 !important;
+      }
+    }
+    .form-control {
+      color: #fff;
+      background-color: $euphoriaBackground;
+      border: 1px solid $euphoriaBorderColor;
+    }
+    .input-group-checkbox {
+      background-color: $euphoriaBorderColor;
+    }
+  }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $euphoriaBackground !important;
+      border: solid 1px #25141e !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #221723 !important;
+      }
+    }
+  }
+
+  .tabs {
+    li {
+      border-right: 1px solid $euphoriaBorderColor !important;
+      border-bottom: 1px solid $euphoriaBorderColor !important;
+    }
+  }
+
+  fieldset {
+    border: 1px solid $euphoriaBorderColor;
+    legend {
+      color: $euphoriaTextColor;
+    }
+    .form-group {
+      span {
+        color: $euphoriaTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid $euphoriaTextColor;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: #c10156;
+    }
+    dl:hover dt label {
+      color: $euphoriaTextColor;
+    }
+    dl dd label:hover {
+      color: $euphoriaTextColor;
+    }
+  }
+}

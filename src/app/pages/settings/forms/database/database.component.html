@@ -1,0 +1,161 @@
+<div class="tabs-panel tabs-panel-open" id="panel-1">
+  <div class="panel-content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="block">
+
+          <div class="block__head">
+            <div class="block__head-title">
+              <h1>Database Management</h1>
+            </div>
+            <div class="block__head-md">
+              <div>
+                <app-button [type]="'button'" [title]="'Add New'" [ngClass]="'app-button__md'" (click)="toggleForm()">Add
+                  New</app-button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="screenToggle">
+            <div class="col-md-6">
+
+              <form class="form" #databaseForm="ngForm" (ngSubmit)="onSubmit(databaseForm)">
+                <div class="block__body">
+
+                  <input type="hidden" name="name" id="name" [(ngModel)]="db.name" #name="ngModel" readonly>
+
+                  <div class="form-group" *ngIf="connectionTypes.length">
+                    <label for="type">Database Type</label>
+                    <select class="form-control" name="type" id="type" [(ngModel)]="db.type" #type="ngModel" required>
+                      <option *ngFor="let item of connectionTypes;" [value]="item">{{item}}</option>
+                    </select>
+                    <span class="form-text text-muted" [attr.hidden]="databaseForm.pristine">Please specifiy a database
+                      type.</span>
+                    <span class="form-text text-error" [attr.hidden]="!databaseForm.valid">A database type is required.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" name="title" id="title" [(ngModel)]="db.title"
+                      #title="ngModel" placeholder="My Connection" required>
+                    <span class="form-text text-muted">A unique name to identiy your connection.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="host">Host</label>
+                    <input type="text" class="form-control" name="host" id="host" [(ngModel)]="db.host" #host="ngModel"
+                      placeholder="localhost">
+                    <span class="form-text text-muted">The hostname used to make a connection.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="port">Port</label>
+                    <input type="text" class="form-control" name="port" id="port" [(ngModel)]="db.port" #port="ngModel"
+                      placeholder="3306">
+                    <span class="form-text text-muted">The port used to make a connection.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" name="username" id="username" [(ngModel)]="db.username"
+                      #username="ngModel">
+                    <span class="form-text text-muted">Please enter your database username.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" [(ngModel)]="db.password"
+                      #password="ngModel">
+                    <span class="form-text text-muted">Please enter your database password.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="database">Database</label>
+                    <input type="text" class="form-control" name="database" id="database" [(ngModel)]="db.database"
+                      #database="ngModel" required>
+                    <span class="form-text text-muted">Please enter a database name.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="logging">Logging</label>
+                    <select class="form-control" name="logging" id="logging" [(ngModel)]="db.logging"
+                      #logging="ngModel">
+                      <option *ngFor="let item of loggingTypes;" [value]="item.value">{{item.key}}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="synchronize">Synchronize</label>
+                    <select class="form-control" name="synchronize" id="synchronize" [(ngModel)]="db.synchronize"
+                      #synchronize="ngModel">
+                      <option *ngFor="let item of synchronizeTypes;" [value]="item.value">{{item.key}}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group form-group-last">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" name="description" id="description" [(ngModel)]="db.description"
+                      #description="ngModel" rows="3" required></textarea>
+                  </div>
+
+                </div>
+
+                <div class="block__foot">
+                  <div class="form__md">
+                    <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+                      [attr.disabled]="buttonDisabled(databaseForm.form.valid)">Submit</app-button>
+                    <app-button [type]="'reset'" [title]="'Reset'" [ngClass]="'app-button__md app-button__success'"
+                      (click)="handleReset($event); databaseForm.reset()">Reset</app-button>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+          <div class="block__body" *ngIf="!screenToggle">
+            <table class="table table-settings">
+              <thead class="thead-dark">
+                <tr>
+                  <th class="xxs">ID</th>
+                  <th style="width: 20%;">Title</th>
+                  <th style="width: 40%;">Description</th>
+                  <th class="align-center" style="width: 20%;">Type</th>
+                  <th class="align-center" style="width: 20%;">Enabled</th>
+                  <th class="align-center" style="width: 10%;">Synchronize</th>
+                  <th class="align-center" style="width: 10%;">Logging</th>
+                  <th class="md align-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of connections; let i = index;">
+                  <tr>
+                    <td class="xxs"><span class="icon-pencil cursor" (click)="updateConnection($event, item)"
+                        title="Update Connection"></span></td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.description}}</td>
+                    <td class="align-center">{{item.type}}</td>
+                    <td class="align-center">{{filterBoolean(item.enabled)}}</td>
+                    <td class="align-center">{{filterBoolean(item.synchronize)}}</td>
+                    <td class="align-center">{{filterBoolean(item.logging)}}</td>
+                    <td class="md align-center">
+                      <span class="icon-pencil cursor" (click)="updateConnection($event, item)"
+                        title="Update Connection"></span>
+                      <span class="icon-light-bulb cursor" (click)="testConnection($event, item)"
+                        title="Test Connection"></span>
+                      <span class="icon-pin cursor" (click)="enableConnection($event, item)" title="Set As Default"></span>
+                      <span class="icon-trashcan cursor" (click)="deleteConnection($event, item)"
+                        title="Delete Connection"></span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

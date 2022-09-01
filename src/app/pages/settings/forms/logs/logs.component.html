@@ -1,0 +1,49 @@
+<div class="tabs-panel tabs-panel-open">
+  <div class="panel-content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="block">
+  
+          <div class="block__head">
+            <div class="block__head-title">
+              <h1>System Logs</h1>
+            </div>
+            <div class="block__head-actions">
+              <div>
+                <app-button [type]="'button'" [title]="'Truncate Table'" [ngClass]="'app-button__xl'" (click)="handleTruncate($event)">Empty Table</app-button>
+              </div>
+            </div>
+          </div>
+  
+          <div class="block__body">
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th class="xxs uppercase">ID</th>
+                  <th class="align-left" style="width: 50%;">Message</th>
+                  <th class="align-center" style="width: 15%;">Type</th>
+                  <th class="align-center" style="width: 15%;">Status</th>
+                  <th class="align-center" style="width: 20%;">Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of resultSet; let i = index;">
+                  <tr>
+                    <td class="xxs">
+                      <i class="icon-trashcan cursor" (click)="handleDelete(item.id)" title="Delete Item"></i>
+                    </td>
+                    <td>{{item.message}}</td>
+                    <td class="align-center">{{filterMessageType(item.type)}}</td>
+                    <td class="align-center">{{filterMessageStatus(item.status)}}</td>
+                    <td class="align-center">{{item.created | date :'medium'}}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

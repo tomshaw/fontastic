@@ -1,0 +1,27 @@
+<aside class="component border-left">
+  <div class="component__panel">
+    <div class="controls d-flex justify-content-start align-items-start border-bottom">
+      <div class="controls__item d-flex justify-content-start align-items-center">
+        <span class="material-icons">arrow_drop_down</span>
+        <span class="text-uppercase">Font Information</span>
+      </div>
+      <div class="controls__item d-flex justify-content-end align-items-center">
+        <i class="material-icons hidden">view_module</i>
+      </div>
+    </div>
+    <div class="scrollbox">
+      <div class="scrollbox-content">
+        <div class="font-meta-list">
+          <ng-container *ngFor="let item of _metaList">
+            <figure class="border-bottom-dashed" *ngIf="item.value && item.name.length > 4">
+              <figcaption>
+                <h2 [attr.title]="item.name">{{ item.name }}</h2>
+              </figcaption>
+              <p>{{ item.value }}</p>
+            </figure>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

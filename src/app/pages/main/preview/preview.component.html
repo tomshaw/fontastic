@@ -1,0 +1,64 @@
+<div class="component">
+  <div class="component__panel align-items-stretch">
+
+    <app-breadcrumbs></app-breadcrumbs>
+
+    <app-alert></app-alert>
+
+    <div class="scrollbox" #scrollElement [class.loading]="isLoading">
+
+      <div class="scrollbox-content">
+
+        <ng-container *ngFor="let item of resultSet; let i = index;">
+          <figure [style.background-color]="backgroundColor" [attr.id]="item.id">
+            <figcaption [className]="i === 0 ? 'border-bottom' : 'border-bottom border-top'">
+
+              <h2 class="cursor" title="{{item.file_path}}" (click)="openFileLocation($event, item)">{{ item.font_family }}</h2>
+              <h2 class="cursor" title="{{item.file_size}}" (click)="openQuickInstall($event, item)">{{ item.file_size_pretty }}</h2>
+              <h2 class="text-uppercase" title="{{item.file_type}}">{{ item.file_type }}</h2>
+
+              <ng-container *ngIf="displayNews && item.news">
+                <h2 class="text-uppercase cursor" [attr.title]="item.news.description" [innerHtml]="item.news.source.name" (click)="openNewsArticle($event, item)"></h2>
+              </ng-container>
+
+              <ng-container *ngIf="displayNews && item.news && item.news.publishedAt">
+                <h2 class="text-uppercase" [attr.title]="item.news.publishedAt | date: 'short':'UTC'">&mdash; &nbsp;{{item.news.publishedAt | date: 'short':'UTC'}}</h2>
+              </ng-container>
+
+              <ng-container *ngIf="displayNews && item.news && item.news.author">
+                <h2 class="text-uppercase" [attr.title]="item.news.author">&mdash; &nbsp;<i [innerHtml]="item.news.author"></i></h2>
+              </ng-container>
+
+              <div>
+                <i class="material-icons cursor" title="File location" (click)="openFileLocation($event, item)">folder_open</i>
+                <i class="material-icons cursor" title="Manual install" (click)="openQuickInstall($event, item)">view_list</i>
+                <ng-container *ngIf="item.favorite; else elseBordered">
+                  <i class="material-icons cursor" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite</i>
+                </ng-container>
+                <ng-template #elseBordered>
+                  <i class="material-icons cursor" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite_border</i>
+                </ng-template>
+                <ng-container *ngIf="item.sample_text">
+                  <i class="material-icons cursor" [attr.title]="item.sample_text" (click)="onSampleClick($event, item)">g_translate</i>
+                </ng-container>
+              </div>
+
+            </figcaption>
+
+            <div (click)="onRowClick($event, item)">
+              <ng-container *ngIf="displayNews && item.news; else previewDefault">
+                <p attr.id="preview_{{item.id}}" [style.font-family]="item.font_family" [style.color]="fontColor" [style.font-size]="getFontSize()" [style.word-spacing]="getWordSpacing()" [style.letter-spacing]="getLetterSpacing()" [innerHtml]="getDisplayText(item)" title="{{item.news.title}}"></p>
+              </ng-container>
+              <ng-template #previewDefault>
+                <p attr.id="preview_{{item.id}}" [style.font-family]="item.font_family" [style.color]="fontColor" [style.font-size]="getFontSize()" [style.word-spacing]="getWordSpacing()" [style.letter-spacing]="getLetterSpacing()" [innerHtml]="getDisplayText(item)"></p>
+              </ng-template>
+            </div>
+
+          </figure>
+        </ng-container>
+
+      </div>
+    </div>
+
+  </div>
+</div>

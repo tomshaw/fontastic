@@ -1,0 +1,77 @@
+<div class="component border-top">
+  <div class="component__panel">
+
+    <div class="scrollbox scrollX" #gridElement [class.loading]="isLoading">
+      <div class="scrollbox-content">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="xxxs sorting sort_center" (click)="onHandleSort($event, 'activated')"></th>
+              <th class="xxxs sorting sort_center" (click)="onHandleSort($event, 'temporary')" *ngIf="isWindows"></th>
+              <th class="lg sorting" (click)="onHandleSort($event, 'full_name')">Name</th>
+              <th class="lg sorting" (click)="onHandleSort($event, 'font_family')">Family</th>
+              <th class="sm sorting" (click)="onHandleSort($event, 'file_type')">Type</th>
+              <th class="sm sorting" (click)="onHandleSort($event, 'file_size')">Size</th>
+              <th class="lg sorting" (click)="onHandleSort($event, 'designer')">Designer</th>
+              <th class="md sorting" (click)="onHandleSort($event, 'manufacturer')">Manufacturer</th>
+              <th class="sm sorting" (click)="onHandleSort($event, 'version')">Version</th>
+              <th class="lg sorting" (click)="onHandleSort($event, 'unique_id')">Unique Id</th>
+              <th class="md align-center sorting" (click)="onHandleSort($event, 'created')">Created</th>
+              <th class="md align-center sorting" (click)="onHandleSort($event, 'updated')">Modified</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of resultSet">
+
+              <tr (click)="onRowClick($event, item)" [attr.id]="item.id" [attr.data-row]="item.id">
+
+                <ng-container *ngIf="item.installable; else p1">
+                  <td class="xxxs" [attr.title]="item.activated ? 'Remove' : 'Add'">
+                    <div class="checkbox" (click)="onHandleActivate($event, item, false)">
+                      <input type="checkbox" name="activate--{{item.id}}" id="{{item.id}}" value="{{item.id}}"
+                        [checked]="item.activated" />
+                      <label for="{{item.id}}"></label>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-template #p1>
+                  <td class="xxxs"></td>
+                </ng-template>
+
+                <ng-container *ngIf="isWindows">
+                  <ng-container *ngIf="item.installable; else t1">
+                    <td class="xxxs" [attr.title]="item.temporary ? 'Remove' : 'Add'">
+                      <div class="radio" (click)="onHandleActivate($event, item, true)">
+                        <input type="radio" name="temporary--{{item.id}}" id="{{item.id}}" value="{{item.id}}"
+                          [checked]="item.temporary" />
+                        <label for="{{item.id}}"></label>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-template #t1>
+                    <td class="xxxs"></td>
+                  </ng-template>
+                </ng-container>
+
+                <td class="lg">{{ item.full_name }}</td>
+                <td class="lg">{{ item.font_family }}</td>
+                <td class="sm">{{ item.file_type }}</td>
+                <td class="sm">{{ item.file_size_pretty }}</td>
+                <td class="lg">{{ item.designer }}</td>
+                <td class="md">{{ item.manufacturer }}</td>
+                <td class="sm">{{ item.version }}</td>
+                <td class="lg">{{ item.unique_id }}</td>
+                <td class="md align-center">{{item.created | date :'medium'}}</td>
+                <td class="md align-center">{{item.updated | date :'medium'}}</td>
+              </tr>
+
+            </ng-container>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+</div>

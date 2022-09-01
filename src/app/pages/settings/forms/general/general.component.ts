@@ -1,0 +1,88 @@
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+/* eslint-disable-next-line max-len */
+import { AuthService, BreadcrumbService, AlertService, NewsService, MessageService, DatabaseService, PresentationService } from '@app/core/services';
+import { SystemConfig, AuthUser } from '@app/core/interface';
+import { AuthUserModel } from '@app/core/model';
+
+@Component({
+  selector: 'app-settings-form-general',
+  templateUrl: './general.component.html',
+  styleUrls: ['./general.component.scss']
+})
+export class GeneralComponent {
+
+  config: SystemConfig;
+
+  user: AuthUser = new AuthUserModel('','','');
+
+  constructor(
+    private authService: AuthService,
+    private alertService: AlertService,
+    private newsService: NewsService,
+    private messageService: MessageService,
+    private databaseService: DatabaseService,
+    private breadcrumbService: BreadcrumbService,
+    private presentationService: PresentationService
+  ) {
+
+    this.user = this.authService.getAuthUser();
+
+    this.breadcrumbService.set([{
+      title: 'Dashboard',
+      link: '/main'
+    }, {
+      title: 'System Settings',
+      link: '/settings'
+    }]);
+  }
+
+  onResetFavoritedFonts(event: Event): void {
+    this.messageService.resetFavorites().then(() => {
+      this.alertService.info('Successfully reset system favorites.');
+      this.databaseService.fetchSystemStats();
+    });
+  }
+
+  onSystemScan(event: Event) {
+    this.alertService.info('Searching system fonts please wait..', 1e3, true);
+    this.presentationService.setLoadingSpinner(true);
+    this.messageService.syncSystemFonts().then((result: any) => {
+      this.messageService.log(`Fetched system fonts found #${result.systemCount.total} total.`, 1);
+      this.presentationService.setLoadingSpinner(false);
+      this.alertService.clear();
+      this.alertService.success(`Found a total of ${result.systemCount.total} system fonts.`, 15e3);
+      this.databaseService.setSystemStats(result);
+    }).catch((err) => { });
+  }
+
+  onSyncActivated(event: Event) {
+    this.alertService.info('Searching system fonts please wait..');
+    this.presentationService.setLoadingSpinner(true);
+    this.messageService.syncActivatedFonts().then((result: any) => {
+      const message = `Fetched system fonts found #${result.affected} total.`;
+      this.alertService.info(message);
+      this.messageService.log(message, 1);
+      this.presentationService.setLoadingSpinner(false);
+    }).catch((err) => { });
+  }
+
+  onRefreshLatestNews(event: Event): void {
+    this.newsService.refreshLatestNews(true);
+  }
+
+  onSubmitButtonClick(event: Event): void {
+    this.alertService.info('Applying changes please wait..');
+  }
+
+  onSubmit(form: NgForm): void {
+    if (form.valid) {
+      this.messageService.systemAuthenticate(form.value).then((response: AuthUser) => {
+        if (response.status === 'ok') {
+          this.authService.setAuthUser(response);
+        }
+        this.alertService.info('Account setting updated successfully.');
+      });
+    }
+  }
+}

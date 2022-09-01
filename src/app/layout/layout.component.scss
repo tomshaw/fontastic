@@ -1,0 +1,93 @@
+@import "../../styles/tools/_variables";
+
+app-header {
+  grid-area: header;
+}
+app-footer {
+  grid-area: footer;
+}
+main {
+  grid-area: main;
+}
+app-navigation {
+  grid-area: navigation;
+}
+app-aside {
+  grid-area: aside;
+}
+
+.application {
+  display: grid;
+  grid-template-areas: "header" "main" "footer";
+  grid-template-columns: 1fr;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+.application.navigation {
+  display: grid;
+  grid-template-areas: "header header" "navigation main" "footer footer";
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+.application.aside {
+  display: grid;
+  grid-template-areas: "header header header" "main aside" "footer footer footer";
+  grid-template-columns: 300px 1fr 300px;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+.application.main {
+  display: grid;
+  grid-template-areas: "header" "main" "footer";
+  grid-template-columns: 1fr;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+.application.main.aside {
+  display: grid;
+  grid-template-areas: "header header" "main aside" "footer footer";
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+.application.main.navigation {
+  display: grid;
+  grid-template-areas: "header header" "navigation main" "footer footer";
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+.application.main.aside.navigation {
+  display: grid;
+  grid-template-areas: "header header header" "navigation main aside" "footer footer footer";
+  grid-template-columns: 300px 1fr 300px;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+app-header,
+app-footer,
+app-navigation,
+app-aside {
+  position: relative;
+}
+
+app-navigation {
+  visibility: hidden;
+}
+
+app-aside {
+  visibility: hidden;
+}
+
+.application.navigation {
+  app-navigation {
+    visibility: visible;
+  }
+}
+
+.application.aside {
+  app-aside {
+    visibility: visible;
+  }
+}

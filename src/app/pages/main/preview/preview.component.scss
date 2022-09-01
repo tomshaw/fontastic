@@ -1,0 +1,89 @@
+@import "../../../../styles/tools/_variables";
+@import "../../../../styles/tools/_functions";
+@import "../../../../styles/tools/_mixins";
+@import "../../../../styles/tools/_placeholders";
+
+figure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  figcaption {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: 39px;
+    min-height: 39px;
+    max-height: 39px;
+    padding: 0px 10px 0px 5px;
+    margin-top: -1px;
+    span {
+      display: inline-block;
+      font-size: 16px;
+      margin-left: 0.5rem;
+    }
+    h2 {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1;
+      margin-left: 0.5rem;
+      text-transform: uppercase;
+    }
+    .icon- {
+      font-size: 16px;
+      margin-top: 2px;
+    }
+    i:not(.material-icons) {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1;
+      margin-left: 0;
+      text-transform: uppercase;
+    }
+    div:last-child {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      margin-left: auto;
+      //margin-right: 10px;
+      //padding: 0 10px;
+      i {
+        cursor: pointer;
+      }
+      i + i {
+        margin-left: 5px;
+      }
+      .spacing {
+        margin-left: 15px;
+      }
+    }
+    i,
+    h2,
+    span {
+      opacity: 0;
+      visibility: hidden;
+      transition: visibility 0s, opacity 0.5s ease-in-out;
+    }
+  }
+  a, p {
+    font-size: 32px;
+    line-height: 1;
+    padding: 4rem 2rem 4rem 2rem;
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s, opacity 1s ease-in-out;
+  }
+}

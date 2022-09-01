@@ -1,0 +1,224 @@
+$passionBackground: #620f72;
+$passionTextColor: #fff; // #cab189;
+$passionBorderColor: #fe1963;
+
+body[data-theme="passion"] {
+  background-color: $passionBackground;
+  color: $passionTextColor;
+}
+
+[data-theme="passion"] {
+
+  a {
+    color: $passionTextColor;
+    &:hover,
+    &:active {
+      color: $passionTextColor;
+    }
+  }
+
+  .active {
+    color: #fe206f !important;
+  }
+
+  .favorite {
+    color: #fe206f !important;
+  }
+
+  .disabled,
+  .disabled i {
+    color: $passionBorderColor;
+  }
+
+  .enabled {
+    color: $passionTextColor;
+  }
+
+  .selected {
+    background-color: #69147a;
+  }
+
+  .material-icons {
+    color: $passionTextColor;
+  }
+
+  .text-muted {
+    color: #fff !important;
+  }
+  
+  .text-error {
+    color: #cc0000 !important;
+  }
+
+  input.input--title {
+    color: $passionTextColor !important;
+    &:focus {
+      color: $passionTextColor !important;
+    }
+  }
+
+  // Toolbar text.
+  .input-preview.preview-text button {
+    background-color: $passionBorderColor !important;
+  }
+
+  // Toolbar switch text.
+  .input-preview.quick-text button span.material-icons,
+  .input-preview.latest-news button span.material-icons,
+  .input-preview.preview-casing button span.material-icons,
+  .input-preview.preview-reset button span.material-icons {
+    color: $passionTextColor !important;
+  }
+
+  .input-preview.preview-size {
+
+    input {
+      color: red !important;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: $passionTextColor;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      background: $passionTextColor !important;
+      border: 3px solid $passionBorderColor !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .paginator {
+    input {
+      //color: #333;
+      //background-color: #fff;
+      border: 1px solid $passionBorderColor;
+    }
+  }
+
+  .border-top {
+    border-top: 1px solid $passionBorderColor !important;
+  }
+
+  .border-right {
+    border-right: 1px solid $passionBorderColor !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $passionBorderColor !important;
+  }
+
+  .border-left {
+    border-left: 1px solid $passionBorderColor !important;
+  }
+
+  .border-top-dashed {
+    border-top: 1px dashed $passionBorderColor !important;
+  }
+  
+  .border-right-dashed {
+    border-right: 1px dashed $passionBorderColor !important;
+  }
+  
+  .border-bottom-dashed {
+    border-bottom: 1px dashed $passionBorderColor !important;
+  }
+  
+  .border-left-dashed {
+    border-left: 1px dashed $passionBorderColor !important;
+  }
+
+  .table {
+    color: $passionTextColor !important;
+  }
+
+  .table td,
+  .table th {
+    border-top: none !important;
+  }
+  
+  .table tbody tr:nth-child(odd) {
+    background-color: #69147a;
+  }
+  
+  .table > thead > tr > th {
+    background-color: $passionBackground;
+    border-right: 1px solid $passionBorderColor;
+  }
+  
+  .table > thead > tr > th,
+  .table > thead > tr > th > div,
+  .table > thead > tr > th > div > span {
+    color: $passionTextColor;
+  }
+
+  .block {
+    background-color: #6c0b7f;
+    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
+    .block__head {
+      border-bottom: 1px solid $passionBorderColor;
+    }
+    .block__foot {
+      border-top: 1px solid $passionBorderColor;
+    }
+    .form-group {
+      .text-muted {
+        color: #fff !important;
+      }
+      .text-error {
+        color: #db1818 !important;
+      }
+    }
+    .form-control {
+      color: #fff;
+      background-color: $passionBackground;
+      border: 1px solid $passionBorderColor;
+    }
+    .input-group-checkbox {
+      background-color: $passionBorderColor;
+    }
+  }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $passionBackground !important;
+      border: solid 1px #69147a !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #6c0b7f !important;
+      }
+    }
+  }
+
+  .tabs {
+    li {
+      border-right: 1px solid $passionBorderColor !important;
+      border-bottom: 1px solid $passionBorderColor !important;
+    }
+  }
+
+  fieldset {
+    border: 1px solid $passionBorderColor;
+    legend {
+      color: $passionTextColor;
+    }
+    .form-group {
+      span {
+        color: $passionTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid #fff;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: $passionBorderColor;
+    }
+    dl:hover dt label {
+      color: $passionTextColor;
+    }
+    dl dd label:hover {
+      color: $passionTextColor;
+    }
+  }
+}
