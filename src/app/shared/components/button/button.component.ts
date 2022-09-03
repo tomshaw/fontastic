@@ -9,12 +9,14 @@ export class ButtonComponent {
 
   @Input() type: string;
   @Input() text: string;
-  @Input() ngClass: string;
+  @Input() style: string;
   @Input() disabled: null;
 
-  @Output() handlebuttonClick = new EventEmitter<any>();
+  @Output() onClick = new EventEmitter<any>();
+
+  constructor() { }
 
   onButtonClick(event: MouseEvent): void {
-    this.handlebuttonClick.emit(event);
+    this.onClick.emit(event);
   }
 }
