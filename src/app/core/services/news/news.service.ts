@@ -13,7 +13,7 @@ import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
 export class NewsService {
 
   oneHour = 60 * 60 * 1000;
-  currentTime = new Date().getTime();
+  currentTimeStat = new Date().getTime();
 
   endpoints: any = {
     sources: 'https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=',
@@ -37,6 +37,10 @@ export class NewsService {
     this.refreshLatestNews();
   }
 
+  get currentTime(): number {
+    return Date.now();
+  }
+
   getLatestNews() {
     return this._latestNews.getValue();
   }
@@ -50,7 +54,7 @@ export class NewsService {
   }
 
   checkTime(timeStamp: number): boolean {
-    return (timeStamp + this.oneHour) > this.currentTime;
+    return this.currentTime > (timeStamp + this.oneHour);
   }
 
   getApiKey() {
@@ -85,12 +89,10 @@ export class NewsService {
         this.messageService.log('Updating latest news articles.', 1);
       },
       error: (error) => {
-        const saved = { ts: this.currentTime, ...this.getLatestNews() };
-        this.messageService.set('news', saved);
         this.alertService.warning(error.message);
       },
       next: (response) => {
-        const saved = { ts: this.currentTime, articles: response.articles, ...this.getLatestNews() };
+        const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
         this.setLatestNews(saved);
         this.messageService.set('news', saved);
         this.alertService.success('Fetching news articles.');
