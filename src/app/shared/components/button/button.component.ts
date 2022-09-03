@@ -12,11 +12,11 @@ export class ButtonComponent {
   @Input() style: string;
   @Input() disabled: null;
 
-  @Output() onClick = new EventEmitter<any>();
+  @Output() handleButtonClick = new EventEmitter<any>();
 
   constructor() { }
 
   onButtonClick(event: MouseEvent): void {
-    this.onClick.emit(event);
+    this.handleButtonClick.emit(event);
   }
 }

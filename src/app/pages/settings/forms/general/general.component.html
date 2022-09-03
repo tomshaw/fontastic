@@ -14,7 +14,7 @@
                   <span>Resets fonts that have been favorited.</span>
                 </dt>
                 <dd>
-                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (onClick)="onResetFavoritedFonts($event)">Submit</app-button>
+                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (handleButtonClick)="onResetFavoritedFonts($event)">Submit</app-button>
                 </dd>
               </dl>
             </form>
@@ -26,7 +26,7 @@
                   <span>Imports fonts from system fonts folder.</span>
                 </dt>
                 <dd>
-                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (onClick)="onSystemScan($event)">Submit</app-button>
+                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (handleButtonClick)="onSystemScan($event)">Submit</app-button>
                 </dd>
               </dl>
             </form>
@@ -38,7 +38,7 @@
                   <span>Marks catalog fonts activated if installed.</span>
                 </dt>
                 <dd>
-                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (onClick)="onSyncActivated($event)">Submit</app-button>
+                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (handleButtonClick)="onSyncActivated($event)">Submit</app-button>
                 </dd>
               </dl>
             </form>
@@ -50,7 +50,7 @@
                   <span>Updates latest news from selected sources.</span>
                 </dt>
                 <dd>
-                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (onClick)="onRefreshLatestNews($event)">Submit</app-button>
+                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" (handleButtonClick)="onRefreshLatestNews($event)">Submit</app-button>
                 </dd>
               </dl>
             </form>
@@ -75,7 +75,7 @@
               </div>
 
               <div class="form__actions">
-                <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__xl'" (onClick)="onSubmitButtonClick($event)" [attr.disabled]="!generalForm.form.valid">Submit</app-button>
+                <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__xl'" (handleButtonClick)="onSubmitButtonClick($event)" [attr.disabled]="!generalForm.form.valid">Submit</app-button>
                 <app-button [type]="'reset'" [title]="'Reset'" [ngClass]="'app-button__xl app-button__success'">Reset</app-button>
               </div>
 
