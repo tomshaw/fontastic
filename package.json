@@ -1,6 +1,6 @@
 {
   "name": "fontastic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Font Management with Angular 14 and Electron 19 (Typescript + SASS + Hot Reload)",
   "homepage": "https://github.com/tomshaw/fontastic",
   "author": {
