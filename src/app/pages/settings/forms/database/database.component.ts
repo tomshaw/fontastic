@@ -45,6 +45,7 @@ export class DatabaseComponent implements OnInit {
     private utils: UtilsService
   ) { 
     this.config = this.configService.getConfig();
+    this.db = new DbConnectionModel('', '', '', '', '');
   }
 
   ngOnInit(): void {
