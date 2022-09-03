@@ -21,7 +21,7 @@ As part of the documentation you can check out [screenshots here.](docs/screensh
 
 ## Libraries Used
 
-Fontastic was created with [Angular Electron](https://github.com/maximegris/angular-electron) boilerplate for quickly creating Angular Electron applications
+Fontastic was created with [Angular Electron](https://github.com/maximegris/angular-electron) an excellent boilerplate for Angular Electron applications
 
 + [Electron.js](https://electronjs.org) - Build cross platform desktop apps with JavaScript, HTML, and CSS.
 + [Angular.js](https://github.com/angular/angular) - Development platform for building web and desktop applications
@@ -60,7 +60,13 @@ npm start
 ```
 
 ## Resources
-Need free fonts for testing? Checkout [www.typewolf.com](https://www.typewolf.com/google-fonts) an outstanding typography resource for designers.
+Need free fonts for testing? 
+
++ [IBM Plex](https://github.com/IBM/plex) Meet the IBM Plex typeface, our new corporate typeface family.
++ [Inter](https://github.com/rsms/inter/releases/tag/v3.19) A typeface carefully crafted & designed for computer screens.
++ [Type Wolf](https://www.typewolf.com/google-fonts) An outstanding typography resource for designers.
++ [Font Squirrell](https://www.fontsquirrel.com/) Great resource for hand-picked, high-quality, commercial-use fonts.
++ [Google Fonts](https://github.com/google/fonts) Download all 3K Google Fonts. Great for testing processing speeds. 
 
 ## Contributing
 
