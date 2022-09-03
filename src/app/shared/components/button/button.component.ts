@@ -9,7 +9,7 @@ export class ButtonComponent {
 
   @Input() type: string;
   @Input() text: string;
-  @Input() style: string;
+  @Input() ngClass: string;
   @Input() disabled: null;
 
   @Output() handleButtonClick = new EventEmitter<any>();
