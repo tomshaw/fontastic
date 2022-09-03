@@ -18,7 +18,8 @@
     "icon": "dist/assets/icons",
     "target": [
       "portable"
-    ]
+    ],
+    "artifactName": "${productName}_${version}.${ext}"
   },
   "portable": {
     "splashImage": "dist/assets/icons/electron.bmp"
