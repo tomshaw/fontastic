@@ -45,24 +45,30 @@
     margin: 0 10px;
   }
   select {
-    color: #333;
-    background-color: #fff;
-    border: 1px solid $color-border;
-    border-radius: 0;
-    box-shadow: none;
-    outline: none;
-    height: 24px;
-    width: auto;
     margin-right: 5px;
-    vertical-align: middle;
+    height: 28px;
+    line-height: 1.2;
     font-size: 14px;
-    font-weight: normal;
-    line-height: 1.5;
-    text-align: center;
-    transition: all ease-in-out 0.15s;
-    &:active,
-    &:focus {
-      box-shadow: none;
-    }
   }
+  // select {
+  //   color: #333;
+  //   background-color: #fff;
+  //   border: 1px solid $color-border;
+  //   border-radius: 0;
+  //   box-shadow: none;
+  //   outline: none;
+  //   height: 24px;
+  //   width: auto;
+  //   margin-right: 5px;
+  //   vertical-align: middle;
+  //   font-size: 14px;
+  //   font-weight: normal;
+  //   line-height: 1.5;
+  //   text-align: center;
+  //   transition: all ease-in-out 0.15s;
+  //   &:active,
+  //   &:focus {
+  //     box-shadow: none;
+  //   }
+  // }
 }

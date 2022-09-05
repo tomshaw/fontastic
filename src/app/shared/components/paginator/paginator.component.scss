@@ -113,12 +113,12 @@
     border: 1px solid $color-border;
     border-radius: 0;
     box-shadow: none;
-    height: 24px;
-    width: 50px;
+    height: 26px;
+    width: auto;
     vertical-align: middle;
     font-size: 14px;
     font-weight: normal;
-    line-height: 1.5;
+    line-height: 1;
     text-align: center;
     transition: all ease-in-out 0.15s;
   }

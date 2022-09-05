@@ -1,8 +1,9 @@
 <div class="component" id="component">
   <div class="component__panel">
 
-    <div class="controls d-flex justify-content-start align-items-start border-top border-bottom">
-      <div class="controls__item d-flex justify-content-start align-items-center">
+    <div class="controls flex justify-between items-center border-top border-bottom">
+
+      <div class="controls__item flex justify-start items-center">
         <span class="material-icons">arrow_right</span>
         <i class="text-uppercase" title="Glyph Information">Glyph Information</i>
         <ng-container *ngIf="glyphName">
@@ -10,8 +11,8 @@
           <i class="text-uppercase" title="{{glyphName}}">{{glyphName}}</i>
         </ng-container>
       </div>
-      <div class="controls__item d-flex justify-content-end align-items-center">
 
+      <div class="controls__item flex justify-end items-center">
         <div class="toolbar-item pagination">
           <select (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
             <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
@@ -26,8 +27,8 @@
           </select>
           <span class="pagination-stats">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
         </div>
-
       </div>
+
     </div>
 
     <div class="scrollbox">
