@@ -1,11 +1,11 @@
 <header class="component">
   <div class="left border-top border-bottom">
-    <div class="header-block d-flex justify-content-start align-items-center">
+    <div class="header-block flex justify-items-start items-center">
       <a class="enabled"><i class="material-icons" (click)="handleCreateCollection($event)">widgets</i> New Collection</a>
     </div>
   </div>
   <div class="middle border-top border-bottom">
-    <div class="header-block d-flex justify-content-start align-items-center">
+    <div class="header-block flex justify-start items-center">
       <a href="javascript:;" (click)="handleToggleNavigation($event)" [className]="navigationEnabled ? 'enabled' : 'disabled'" title="Toggle Navigation"><i class="material-icons">border_all</i> Navigation</a>
       <a href="javascript:;" (click)="handleToggleAside($event)" [className]="asideEnabled ? 'enabled' : 'disabled'" title="Toggle Aside"><i class="material-icons">border_all</i> Aside</a>
       <a href="javascript:;" (click)="handleTogglePreview($event)" [className]="previewEnabled ? 'enabled' : 'disabled'" title="Toggle Preview"><i class="material-icons">border_all</i> Preview</a>
@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="right border-top border-bottom">
-    <div class="header-block d-flex justify-content-end align-items-center">
+    <div class="header-block flex justify-end items-center">
       <a class="enabled" title=""><i class="material-icons" (click)="handleSwitchTheme($event)">burst_mode</i> Theme</a>
       <ng-container *ngIf="currentUser; else elseif1">
         <a routerLink="/settings" class="gravatar" title="My Settings"><img src="{{gravatarUrl}}" class="m--img-rounded m--marginless m--img-centered" alt="{{currentUser.name}}" /></a>

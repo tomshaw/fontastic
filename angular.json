@@ -35,7 +35,6 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles/fonts/octicons.scss",
               "src/styles/fonts/roboto.scss",
               "src/styles/fonts/md.scss",

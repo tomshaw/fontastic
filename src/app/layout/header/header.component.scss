@@ -14,43 +14,28 @@ header {
 .left,
 .middle,
 .right {
-  position: relative;
+  @apply relative;
 }
 
 .middle { 
-  margin: 0; 
+  @apply m-0; 
 }
 
 .header-block {
-  padding: 0;
-  height: 100%;
+  @apply p-0 h-full;
   a {
-    cursor: pointer;
-    font-size: 11px;
-    text-align: center;
-    text-decoration: none;
-    padding: 5px 10px;
-    display: inline-block;
-    outline: none;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: visibility 0s, opacity 0.5s linear;
+    @apply cursor-pointer text-[11px] text-center no-underline py-[5px] px-[10px] inline-block outline-hidden whitespace-nowrap opacity-0 invisible transition-all;
     i {
-      display: block;
-      font-size: 24px;
-      line-height: 0.9;
-      padding: 0;
+      @apply block text-[24px] leading-none p-0;
     }
   }
   a + a {
-    padding-left: 5px;
+    @apply pl-[5px];
   }
   a.gravatar {
-    margin-top: 1px;
+    @apply mt-[1px];
     img {
-      width: 38px;
-      border-radius: 9999px;
+      @apply w-[38px] rounded-full;
     }
   }
 }

@@ -5,6 +5,7 @@ $dashboardBorderColor: #0e161f;
 body[data-theme="dashboard"] {
   background-color: $dashboardBackground;
   color: $dashboardTextColor;
+  @apply bg-[#14202b] text-[#ffffff];
 }
 
 [data-theme="dashboard"] {
@@ -152,19 +153,21 @@ body[data-theme="dashboard"] {
     .block__foot {
       border-top: 1px solid $dashboardBorderColor;
     }
-    .form-group {
-      .text-muted {
-        color: #fff !important;
-      }
-      .text-error {
-        color: #e04646 !important;
-      }
+  }
+
+  .form-group {
+    .text-muted {
+      color: #fff !important;
     }
-    .form-control {
-      color: #fff;
-      background-color: $dashboardBackground;
-      border: 1px solid $dashboardBorderColor;
+    .text-error {
+      color: #e04646 !important;
     }
+  }
+
+  .form-control {
+    color: #fff;
+    background-color: $dashboardBackground;
+    border: 1px solid $dashboardBorderColor;
     .input-group-checkbox {
       background-color: $dashboardBorderColor;
     }

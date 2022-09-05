@@ -1,49 +1,49 @@
 <div class="tabs-panel tabs-panel-open">
   <div class="panel-content">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="block">
-  
-          <div class="block__head">
-            <div class="block__head-title">
-              <h1>System Logs</h1>
-            </div>
-            <div class="block__head-actions">
-              <div>
-                <app-button [type]="'button'" [title]="'Truncate Table'" [ngClass]="'app-button__xl'" (click)="handleTruncate($event)">Empty Table</app-button>
-              </div>
+    <div class="container mx-auto p-7">
+
+      <div class="flex flex-col grow bg-white shadow rounded-md">
+
+        <!-- Head -->
+        <div class="flex items-center justify-between relative py-0 px-7 min-h-[60px] border-b border-[#eaeaea]">
+          <div class="text-left">
+            <h1 class="text-lg font-semibold tracking-wide">System Logs</h1>
+          </div>
+          <div class="flex items-center justify-end p-0 text-right">
+            <div>
+              <app-button [type]="'button'" [title]="'Truncate Table'" [ngClass]="'app-button__xl'"
+                (click)="handleTruncate($event)">Empty Table</app-button>
             </div>
           </div>
-  
-          <div class="block__body">
-            <table class="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th class="xxs uppercase">ID</th>
-                  <th class="align-left" style="width: 50%;">Message</th>
-                  <th class="align-center" style="width: 15%;">Type</th>
-                  <th class="align-center" style="width: 15%;">Status</th>
-                  <th class="align-center" style="width: 20%;">Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let item of resultSet; let i = index;">
-                  <tr>
-                    <td class="xxs">
-                      <i class="icon-trashcan cursor" (click)="handleDelete(item.id)" title="Delete Item"></i>
-                    </td>
-                    <td>{{item.message}}</td>
-                    <td class="align-center">{{filterMessageType(item.type)}}</td>
-                    <td class="align-center">{{filterMessageStatus(item.status)}}</td>
-                    <td class="align-center">{{item.created | date :'medium'}}</td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-  
         </div>
+
+        <!-- Body -->
+        <div class="flex flex-col py-10 px-5">
+          <table class="table table-auto striped">
+            <thead class="thead-dark">
+              <tr>
+                <th class="uppercase sort_input">ID</th>
+                <th class="text-left">Message</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of resultSet; let i = index;" title="{{item.message}}">
+                <td class="text-center"><i class="icon-trashcan cursor" (click)="handleDelete(item.id)" title="Delete Item"></i></td>
+                <td class="text-left">
+                  <strong>{{filterMessageType(item.type)}}</strong> <br/> 
+                  {{item.message.substring(0, 100)}}
+                </td>
+                <td class="text-center">{{filterMessageStatus(item.status)}}</td>
+                <td class="text-center">{{item.created | date :'medium'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
+
     </div>
   </div>
 </div>

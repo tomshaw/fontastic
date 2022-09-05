@@ -1,28 +1,21 @@
 <div class="tabs-panel tabs-panel-open" *ngIf="themes">
   <div class="panel-content">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="block">
-  
-          <fieldset>
-            <legend>Theme Settings</legend>
+    <div class="container mx-auto p-7">
 
-            <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+      <fieldset>
+        <legend>Theme Settings</legend>
+        <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+          <div class="form-group">
+            <label for="key">Selected theme</label>
+            <select class="form-control" name="key" id="key" [(ngModel)]="theme.key" #key="ngModel"
+              (change)="onChange($event)">
+              <option *ngFor="let item of themes;" [value]="item.key">{{item.title}}</option>
+            </select>
+            <span class="form-text">{{ theme.description }}</span>
+          </div>
+        </form>
+      </fieldset>
 
-              <div class="form-group">
-                <label for="key">Selected theme</label>
-                <select class="form-control" name="key" id="key" [(ngModel)]="theme.key" #key="ngModel" (change)="onChange($event)">
-                  <option *ngFor="let item of themes;" [value]="item.key">{{item.title}}</option>
-                </select>
-                <span class="form-text">{{ theme.description }}</span>
-              </div>
-
-            </form>
-
-          </fieldset>
-  
-        </div>
-      </div>
     </div>
   </div>
 </div>

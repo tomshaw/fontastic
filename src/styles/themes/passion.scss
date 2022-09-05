@@ -160,19 +160,21 @@ body[data-theme="passion"] {
     .block__foot {
       border-top: 1px solid $passionBorderColor;
     }
-    .form-group {
-      .text-muted {
-        color: #fff !important;
-      }
-      .text-error {
-        color: #db1818 !important;
-      }
+  }
+
+  .form-group {
+    .text-muted {
+      color: #fff !important;
     }
-    .form-control {
-      color: #fff;
-      background-color: $passionBackground;
-      border: 1px solid $passionBorderColor;
+    .text-error {
+      color: #db1818 !important;
     }
+  }
+
+  .form-control {
+    color: #fff;
+    background-color: $passionBackground;
+    border: 1px solid $passionBorderColor;
     .input-group-checkbox {
       background-color: $passionBorderColor;
     }

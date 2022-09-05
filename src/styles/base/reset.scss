@@ -11,12 +11,10 @@
 
 * {
   user-select: none;
-  -webkit-font-smoothing: antialiased;
 }
 
 html {
   scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased !important;
 }
 
 body,
@@ -33,22 +31,12 @@ body {
   overflow: hidden;
 }
 
-/* Headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  padding: 0;
-}
-
 a {
   color: $color-text-enabled;
   text-shadow: none;
   text-decoration: none;
   &:hover,
+  &:focus,
   &:active {
     outline: 0;
     text-decoration: none;
@@ -112,56 +100,16 @@ input.input--title {
   color: $color-text-enabled;
 }
 
-.centered {
-  text-align: center;
-}
-
 .hidden {
   display: none !important;
 }
 
-.uppercase {
-  text-transform: uppercase;
-}
-
-.cursor {
-  cursor: pointer;
-}
-
-.align-right {
-  text-align: right;
-}
-
-.align-left {
-  text-align: left;
-}
-
-.align-center {
-  text-align: center;
+[hidden] { 
+  display: none !important;
 }
 
 .zero-pad {
   padding: 0 !important;
-}
-
-/* ==========================================================================
-Dot/Indicator
-========================================================================== */
-
-.dot {
-  // position: relative;
-  // top: 0;
-  vertical-align: middle;
-  display: inline-block;
-  background: #cdcdcd;
-  border-radius: 100%;
-  margin: 0;
-  padding: 0;
-  width: 12px;
-  height: 12px;
-  &.active {
-    background: #6cbe63;
-  }
 }
 
 /* ==========================================================================
@@ -251,7 +199,6 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: -5px;
   border-radius: 50%;
   border: 3px solid #fff;
-  //box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -260,113 +207,52 @@ Tables
 ========================================================================== */
 
 .table {
-  color: $color-text;
-  //border: 1px solid #CCCFD3;
-  opacity: 0;
-  visibility: hidden;
-  transition: visibility 0s, opacity 0.5s ease-in-out;
+  @apply text-[#616467] opacity-0 invisible transition-opacity;
+
   thead.thead-dark th {
     color: $color-white;
     background-color: $color-text-enabled;
   }
+
   tr {
     th,
     td {
-      background-color: inherit;
-      position: relative;
-      vertical-align: middle;
-      white-space: nowrap;
-      overflow: hidden !important;
-      border-top: none;
-      border-bottom: none;
+      @apply p-3 bg-inherit relative align-middle whitespace-nowrap overflow-hidden;  
+    }
+
+    th:not(.sort_input) {
+      min-width: 150px;
+    }
+
+    th {
+      cursor: pointer;
     }
     
     th.sorting {
-      cursor: pointer;
       background: url(../../assets/images/sort/sort_both.png) center right no-repeat;
     }
     th.sorting.sort_center {
-      cursor: pointer;
       background: url(../../assets/images/sort/sort_both.png) center center no-repeat;
     }
-
     th.sorting_asc {
-      cursor: pointer;
       background: url(../../assets/images/sort/sort_asc.png) center right no-repeat;
     }
     th.sorting_asc.sort_center {
-      cursor: pointer;
       background: url(../../assets/images/sort/sort_asc.png) center center no-repeat;
     }
-
     th.sorting_desc {
-      cursor: pointer;
       background: url(../../assets/images/sort/sort_desc.png) center right no-repeat;
     }
     th.sorting_desc.sort_center {
-      cursor: pointer;
       background: url(../../assets/images/sort/sort_desc.png) center center no-repeat;
     }
 
-    // xs/sm/md/lg/xl
-    th.xxxs,
-    td.xxxs {
-      width: 40px;
-      max-width: 40px;
-      min-width: 40px;
-    }
-    th.xxs,
-    td.xxs {
-      width: 50px;
-      max-width: 50px;
-      min-width: 50px;
-    }
-    th.xs,
-    td.xs {
-      width: 100px;
-      max-width: 100px;
-      min-width: 100px;
-    }
-    th.sm,
-    td.sm {
-      width: 150px;
-      max-width: 150px;
-      min-width: 150px;
-    }
-    th.md,
-    td.md {
-      width: 200px;
-      max-width: 200px;
-      min-width: 200px;
-    }
-    th.lg,
-    td.lg {
-      width: 250px;
-      max-width: 250px;
-      min-width: 250px;
-    }
-    th.xl,
-    td.xl {
-      width: 300px;
-      max-width: 300px;
-      min-width: 300px;
-    }
-    th.xxl,
-    td.xxl {
-      width: 350px;
-      max-width: 350px;
-      min-width: 350px;
-    }
-    th.xxxl,
-    td.xxxl {
-      width: 400px;
-      max-width: 400px;
-      min-width: 400px;
-    }
   }
-  tbody tr:nth-child(odd) {
-    background-color: #f5f5f5;
+
+  &.striped tbody tr:nth-child(odd) {
+    background-color: #f8f8f8;
   }
+
   .material-icons {
     color: $color-text;
     vertical-align: middle;
@@ -376,6 +262,7 @@ Tables
     cursor: pointer;
     font-size: 24px !important;
   }
+
   i[class^="icon-"],
   span[class^="icon-"] {
     cursor: pointer;
@@ -385,94 +272,13 @@ Tables
 }
 
 /* ==========================================================================
-Application Wrapper
-========================================================================== */
-
-fieldset {
-  position: relative;
-  margin: 30px 30px 30px 30px;
-  padding: 10px;
-  border: 1px solid $color-border;
-  border-radius: 3px;
-  legend {
-    color: $color-text-enabled;
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: none;
-    line-height: 1.2em;
-    display: inline-block;
-    padding: 2px 5px 1px 5px;
-    position: relative;
-    top: -0.2em;
-    vertical-align: middle;
-    width: auto;
-  }
-  .form-group {
-    margin: 15px 15px;
-    label {
-      font-size: 1rem;
-      font-weight: bold;
-    }
-    span {
-      color: $color-text-enabled;
-    }
-  }
-  .form__actions {
-    padding: 10px 10px !important;
-  }
-  dl {
-    overflow: hidden;
-    font-size: 0.85em;
-    margin-bottom: 10px;
-  }
-  dt {
-    width: 45%;
-    text-align: left;
-    border: none;
-    padding-top: 3px;
-    float: left;
-    width: auto;
-    label {
-      font-size: 1rem;
-      margin-bottom: 0;
-    }
-    span {
-      display: block;
-      font-weight: 400;
-    }
-  }
-  dd {
-    margin: 0 0 0 45%;
-    padding: 0 0 0 5px;
-    border: none;
-    border-left: 1px solid #cccccc;
-    vertical-align: top;
-  }
-  dl:hover dt,
-  dl:hover dd {
-    border-color: #666666;
-  }
-  dl:hover dt label {
-    color: darken($color-text-enabled, 10%);
-  }
-  dl dd label:hover {
-    color: #bc2a4d;
-  }
-}
-
-/* ==========================================================================
-Application Wrapper
+Wrapper
 ========================================================================== */
 
 .application {
-  height: 100vh;
-  width: 100vw;
-  opacity: 1;
-  overflow: hidden;
-  transition: visibility 0s, opacity 2s linear;
+  @apply w-screen h-screen opacity-100 overflow-hidden transition-opacity;
   &.app-loading {
-    opacity: 0;
-    visibility: hidden;
+    @apply opacity-0 invisible;
   }
 }
 
@@ -483,16 +289,7 @@ Component
 .component {
   @extend %full;
   &__panel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: stretch;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
+    @apply relative flex flex-col flex-nowrap justify-start items-center overflow-hidden w-full h-full;
   }
 }
 
@@ -554,35 +351,35 @@ Borders
 ========================================================================== */
 
 .border-top {
-  border-top: 1px solid $color-border !important;
+  @apply border-t border-[#00a0be];
 }
 
 .border-right {
-  border-right: 1px solid $color-border !important;
+  @apply border-r border-[#00a0be];
 }
 
 .border-bottom {
-  border-bottom: 1px solid $color-border !important;
+  @apply border-b border-[#00a0be];
 }
 
 .border-left {
-  border-left: 1px solid $color-border !important;
+  @apply border-l border-[#00a0be];
 }
 
 .border-top-dashed {
-  border-top: 1px dashed $color-border !important;
+  @apply border-t border-[#00a0be] border-dashed;
 }
 
 .border-right-dashed {
-  border-right: 1px dashed $color-border !important;
+  @apply border-r border-[#00a0be] border-dashed;
 }
 
 .border-bottom-dashed {
-  border-bottom: 1px dashed $color-border !important;
+  @apply border-b border-[#00a0be] border-dashed;
 }
 
 .border-left-dashed {
-  border-left: 1px dashed $color-border !important;
+  @apply border-l border-[#00a0be] border-dashed;
 }
 
 /* ==========================================================================
@@ -590,28 +387,18 @@ Controls
 ========================================================================== */
 
 .controls {
-  width: 100%;
-  padding: 0;
-  margin: 0;
+  @apply w-full p-0 m-0;
   &__item {
-    padding: 0 5px;
-    height: 38px;
-    min-height: 38px;
-    max-height: 38px;
-    padding: 0px 5px;
-    margin-top: -1px;
-    width: 50%;
+    @apply py-0 px-5 h-[38px] min-h-[38px] max-h-[38px] mt-[-1px];
   }
   &__item p,
   &__item div,
   &__item span {
-    opacity: 0;
-    visibility: hidden;
-    transition: visibility 0s, opacity 0.7s ease-in-out;
+    @apply opacity-0 invisible transition-opacity;
   }
   &__item p,
   &__item span:not(.material-icons) {
-    text-transform: uppercase;
+    @apply uppercase;
   }
 }
 
@@ -620,18 +407,9 @@ Alert
 ========================================================================== */
 
 .app-alert {
-  background-color: #fff;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: visibility 0s, opacity 0.5s linear;
-  z-index: -1;
+  @apply bg-white absolute top-0 left-0 opacity-0 invisible transition-opacity -z-10;
   &.app-alert-enabled {
-    opacity: 1;
-    visibility: visible;
-    z-index: 1;
+    @apply opacity-100 visible z-10;
   }
   &.app-alert-info {
     color: map.get($alert-colors, "info");
@@ -671,119 +449,57 @@ Alert
 }
 
 /* ==========================================================================
-Form Blocks
+Fieldset
 ========================================================================== */
 
-.block {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  margin: 30px;
-  background-color: #fff;
-  box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-  border-radius: 4px;
-  .block__head {
-    //background: blue;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    padding: 0 25px;
-    border-bottom: 1px solid $color-3;
-    min-height: 60px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    .block__head-title {
-      text-align: left;
-      h1 {
-        font-size: 18px;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-      }
-    }
-    .block__head-actions {
-      display: flex;
-      align-items: center;
-      align-content: flex-end;
-      padding: 0;
-      text-align: right;
-    }
+fieldset {
+  @apply relative normal-case m-7 py-3.5 px-2.5 rounded border border-[#eaeaea];
+  legend {
+    @apply relative text-lg text-[#00a0be] font-semibold leading-none tracking-wider inline-block align-middle py-[2px] px-[5px] w-auto top-0;
   }
-
-  .block__body:not(.zero--pad) {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 25px 15px 25px;
+  dl {
+    @apply overflow-hidden font-semibold mx-5 mb-3;
   }
-
-  .block__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    //background: blue;
-    border-top: 1px solid $color-3;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    padding: 25px;
-  }
-
-  //.form__actions { }
-
-  .form-group {
-    margin-bottom: 2rem;
+  dt {
+    @apply text-left float-left border-none w-[45%] pt-1;
     label {
-      font-size: 1rem;
-      font-weight: 400;
-      display: inline-block;
-      margin-bottom: 0.5rem;
+      @apply text-base text-[#00a0be];
+    }
+    span {
+      @apply block font-normal;
+    }
+  }
+  dd {
+    @apply border-l border-[#cccccc] align-top mt-0 mr-0 mb-0 ml-[45%] pt-0 pr-0 pb-0 pl-2;
+  }
+  dl:hover dt,
+  dl:hover dd {
+    @apply border-[#666666];
+  }
+  dl:hover dt label {
+    @apply text-[#00a0be];
+  }
+  dl dd label:hover {
+    @apply text-[#bc2a4d];
+  }
+}
+
+/* ==========================================================================
+Spinner
+========================================================================== */
+
+.form {
+  .form-group {
+    @apply flex flex-col justify-start w-full mt-2 mb-7 ml-5 pr-10;
+    label {
+      @apply text-base font-semibold inline-block mb-2;
     }
     .form-text {
-      font-size: 0.9rem;
-      display: block;
-      margin-top: 0.25rem;
-    }
-    .text-muted {
-      color: #74788d !important;
-    }
-    .text-error {
-      color: #e04646 !important;
+      @apply block text-base mt-2;
     }
   }
-
-  .form-control {
-    display: block;
-    width: 100%;
-    height: calc(1.5em + 1.3rem + 2px);
-    padding: 0.65rem 1rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: $color-text;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #e2e5ec;
-    border-radius: 0px; // 4px
-    box-shadow: none;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  }
-
-  textarea.form-control {
-    height: auto;
-  }
-
-  .input-group-checkbox {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    align-content: stretch;
-    text-align: center;
-    background-color: #d0cfda;
-    width: 50px;
-    input {
-      margin: 0 5px;
-    }
+  .form__actions {
+    @apply p-5;
   }
 }
 
@@ -792,24 +508,9 @@ Spinner
 ========================================================================== */
 
 .app-spinner {
-  border: 4px solid $color-text-enabled;
-  border-left: 4px solid $color-white;
-  border-radius: 50%;
-  position: relative;
-  width: 19px;
-  height: 19px;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  text-indent: -9999em;
+  @apply relative rounded-full w-[19px] h-[19px] m-0 p-0 opacity-0 indent-[150%] border-4 border-[#00a0be];
+  border-left: 4px solid #fff;
   &.is-animating {
-    opacity: 1;
-    animation: status-animation 1.2s infinite linear;
-  }
-}
-
-@keyframes status-animation {
-  100% {
-    transform: rotate(360deg);
+    @apply opacity-100 animate-spin;
   }
 }

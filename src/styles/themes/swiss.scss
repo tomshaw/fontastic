@@ -153,22 +153,24 @@ body[data-theme="swiss"] {
     .block__foot {
       border-top: 1px solid $swissBorderColor;
     }
-    .form-group {
-      .text-muted {
-        color: #fff !important;
-      }
-      .text-error {
-        color: #fff !important;
-      }
+  }
+
+  .form-group {
+    .text-muted {
+      color: #fff !important;
     }
-    .form-control {
-      color: #fff;
-      background-color: $swissBackground;
-      border: 1px solid #fff;
+    .text-error {
+      color: #fff !important;
     }
-    .input-group-checkbox {
-      background-color: $swissBorderColor;
-    }
+  }
+  
+  .form-control {
+    color: #fff;
+    background-color: $swissBackground;
+    border: 1px solid #fff;
+  }
+  .input-group-checkbox {
+    background-color: $swissBorderColor;
   }
 
   .glyph-list {

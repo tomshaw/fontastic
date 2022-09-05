@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '../config/config.service';
@@ -50,11 +50,18 @@ export class NewsService {
   }
 
   getRequest(url: string) {
-    return this.http.get<any>(url);
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      })
+    };
+    return this.http.get<any>(url, httpOptions);
   }
 
   checkTime(timeStamp: number): boolean {
-    return this.currentTime > (timeStamp + this.oneHour);
+    return (timeStamp + this.oneHour) < this.currentTime;
   }
 
   getApiKey() {
@@ -90,6 +97,7 @@ export class NewsService {
       },
       error: (error) => {
         this.alertService.warning(error.message);
+        this.messageService.log(error.message, 1);
       },
       next: (response) => {
         const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };

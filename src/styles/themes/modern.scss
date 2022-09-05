@@ -153,19 +153,21 @@ body[data-theme="modern"] {
     .block__foot {
       border-top: 1px solid $modernBorderColor;
     }
-    .form-group {
-      .text-muted {
-        color: #fff !important;
-      }
-      .text-error {
-        color: #fff !important;
-      }
+  }
+
+  .form-group {
+    .text-muted {
+      color: #fff !important;
     }
-    .form-control {
-      color: #fff;
-      background-color: $modernBackground;
-      border: 1px solid #fff;
+    .text-error {
+      color: #fff !important;
     }
+  }
+
+  .form-control {
+    color: #fff;
+    background-color: $modernBackground;
+    border: 1px solid #fff;
     .input-group-checkbox {
       background-color: $modernBorderColor;
     }

@@ -164,19 +164,21 @@ body[data-theme="midnight"] {
     .block__foot {
       border-top: 1px solid $midnightBorderColor;
     }
-    .form-group {
-      .text-muted {
-        color: $color-text-disabled !important;
-      }
-      .text-error {
-        color: #e04646 !important;
-      }
+  }
+
+  .form-group {
+    .text-muted {
+      color: $color-text-disabled !important;
     }
-    .form-control {
-      color: #fff;
-      background-color: $midnightBackground;
-      border: 1px solid $midnightBorderColor;
+    .text-error {
+      color: #e04646 !important;
     }
+  }
+
+  .form-control {
+    color: #fff;
+    background-color: $midnightBackground;
+    border: 1px solid $midnightBorderColor;
     .input-group-checkbox {
       background-color: #151515;
     }

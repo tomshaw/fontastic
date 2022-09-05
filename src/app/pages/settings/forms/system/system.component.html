@@ -1,36 +1,38 @@
 <div class="tabs-panel tabs-panel-open">
   <div class="panel-content">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="block">
-  
-          <div class="block__head">
-            <div class="block__head-title">
-              <h1>System Settings</h1>
-            </div>
+    <div class="container mx-auto p-7">
+
+      <div class="flex flex-col grow bg-white shadow rounded-md">
+
+        <!-- Head -->
+        <div class="flex items-center justify-between relative py-0 px-10 min-h-[60px] border-b border-[#eaeaea]">
+          <div class="text-left">
+            <h1 class="text-lg font-semibold tracking-wide">System settings</h1>
           </div>
-  
-          <div class="block__body">
-            <table class="table table-settings">
-              <thead class="thead-dark">
-                <tr>
-                  <th class="values">Key</th>
-                  <th class="values">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let item of systemSettings; let i = index;">
-                  <tr>
-                    <td class="values">{{item.key}}</td>
-                    <td class="values">{{item.value}}</td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-  
         </div>
+
+        <!-- Body -->
+        <div class="flex flex-col py-[20px] px-[25px]">
+          <table class="table table-settings">
+            <thead class="thead-dark">
+              <tr>
+                <th class="text-left uppercase">Key</th>
+                <th class="text-left uppercase">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of systemSettings; let i = index;">
+                <tr>
+                  <td class="text-left">{{item.key}}</td>
+                  <td class="text-left">{{item.value}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
       </div>
+
     </div>
   </div>
 </div>

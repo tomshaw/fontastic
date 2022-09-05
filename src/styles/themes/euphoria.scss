@@ -153,19 +153,21 @@ body[data-theme="euphoria"] {
     .block__foot {
       border-top: 1px solid $euphoriaBorderColor;
     }
-    .form-group {
-      .text-muted {
-        color: $euphoriaTextColor !important;
-      }
-      .text-error {
-        color: #e04646 !important;
-      }
+  }
+
+  .form-group {
+    .text-muted {
+      color: $euphoriaTextColor !important;
     }
-    .form-control {
-      color: #fff;
-      background-color: $euphoriaBackground;
-      border: 1px solid $euphoriaBorderColor;
+    .text-error {
+      color: #e04646 !important;
     }
+  }
+
+  .form-control {
+    color: #fff;
+    background-color: $euphoriaBackground;
+    border: 1px solid $euphoriaBorderColor;
     .input-group-checkbox {
       background-color: $euphoriaBorderColor;
     }

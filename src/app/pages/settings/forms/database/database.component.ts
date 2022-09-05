@@ -35,7 +35,7 @@ export class DatabaseComponent implements OnInit {
 
   screenToggle = false;
 
-  db: DbConnectionModel;
+  database = new DbConnectionModel('', '', '', '', '');
 
   constructor(
     private alertService: AlertService,
@@ -45,10 +45,10 @@ export class DatabaseComponent implements OnInit {
     private utils: UtilsService
   ) { 
     this.config = this.configService.getConfig();
-    this.db = new DbConnectionModel('', '', '', '', '');
   }
 
   ngOnInit(): void {
+
     if (this.config.database) {
       this.connections = this.config.database.connections;
       this.connectionTypes = this.config.database.connectionTypes;
@@ -107,7 +107,7 @@ export class DatabaseComponent implements OnInit {
     if (result) {
       this.toggleForm();
       /* eslint-disable-next-line max-len */
-      this.db = new DbConnectionModel(result.name, result.title, result.description, result.type, result.database, result.username, result.password, result.host, result.port, result.logging, result.synchronize);
+      this.database = new DbConnectionModel(result.name, result.title, result.description, result.type, result.database, result.username, result.password, result.host, result.port, result.logging, result.synchronize);
     }
   }
 
