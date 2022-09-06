@@ -94,28 +94,20 @@ export default class MessageHandler {
      */
 
     this.on(channel.IPCMAIN_REQUEST_SAVE_DBCONNECTION, async (event: IpcMainEvent, options: any) => {
-      const connections = this.getConfigManager().get("database.connections");
       if (options.name === "default") {
-        event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, connections);
+        event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
       } else {
-        connections.push(options);
-        this.getConfigManager().set("database.connections", connections);
+        this.getConfigManager().saveDbConnection(options);
         event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
       }
     });
 
     this.on(channel.IPCMAIN_REQUEST_DELETE_DBCONNECTION, async (event: IpcMainEvent, name: string) => {
-      const connections = this.getConfigManager().get("database.connections");
       if (name === "default") {
-        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, connections);
+        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get("database.connections"));
       } else {
-        for (var i in connections) {
-          if (connections[i]["name"] == name) {
-            connections.splice(i, 1);
-          }
-        }
-        this.getConfigManager().set("database.connections", connections);
-        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, connections);
+        this.getConfigManager().deleteDbConnection(name);
+        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get("database.connections"));
       }
     });
 

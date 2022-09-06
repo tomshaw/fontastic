@@ -22,11 +22,11 @@
           <!-- Body -->
           <div class="flex flex-col py-10 px-5">
 
-            <input type="hidden" name="name" id="name" [(ngModel)]="database.name" readonly>
+            <input type="hidden" name="name" id="name" [(ngModel)]="dbConnection.name" readonly>
 
             <div class="form-group" *ngIf="connectionTypes.length">
               <label for="type">Database Type</label>
-              <select class="form-control" name="type" id="type" [(ngModel)]="database.type" #type="ngModel" required>
+              <select class="form-control" name="type" id="type" [(ngModel)]="dbConnection.type" #type="ngModel" required>
                 <option *ngFor="let item of connectionTypes;" [value]="item">{{item}}</option>
               </select>
               <span class="form-text text-muted" [hidden]="type.valid || type.pristine">A database type is
@@ -35,49 +35,49 @@
 
             <div class="form-group">
               <label for="title">Title</label>
-              <input type="text" class="form-control" name="title" id="title" [(ngModel)]="database.title"
+              <input type="text" class="form-control" name="title" id="title" [(ngModel)]="dbConnection.title"
                 #title="ngModel" placeholder="My Connection" required>
               <span class="form-text text-muted">A unique name to identiy your connection.</span>
             </div>
 
             <div class="form-group">
               <label for="host">Host</label>
-              <input type="text" class="form-control" name="host" id="host" [(ngModel)]="database.host" #host="ngModel"
+              <input type="text" class="form-control" name="host" id="host" [(ngModel)]="dbConnection.host" #host="ngModel"
                 placeholder="localhost">
               <span class="form-text text-muted">The hostname used to make a connection.</span>
             </div>
 
             <div class="form-group">
               <label for="port">Port</label>
-              <input type="text" class="form-control" name="port" id="port" [(ngModel)]="database.port" #port="ngModel"
+              <input type="text" class="form-control" name="port" id="port" [(ngModel)]="dbConnection.port" #port="ngModel"
                 placeholder="3306">
               <span class="form-text text-muted">The port used to make a connection.</span>
             </div>
 
             <div class="form-group">
               <label for="username">Username</label>
-              <input type="text" class="form-control" name="username" id="username" [(ngModel)]="database.username"
+              <input type="text" class="form-control" name="username" id="username" [(ngModel)]="dbConnection.username"
                 #username="ngModel">
               <span class="form-text text-muted">Please enter your database username.</span>
             </div>
 
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-control" name="password" id="password" [(ngModel)]="database.password"
+              <input type="password" class="form-control" name="password" id="password" [(ngModel)]="dbConnection.password"
                 #password="ngModel">
               <span class="form-text text-muted">Please enter your database password.</span>
             </div>
 
             <div class="form-group">
               <label for="database">Database</label>
-              <input type="text" class="form-control" name="database" id="database" [(ngModel)]="database.database"
+              <input type="text" class="form-control" name="database" id="database" [(ngModel)]="dbConnection.database"
                 #database="ngModel" required>
               <span class="form-text text-muted">Please enter a database name.</span>
             </div>
 
             <div class="form-group">
               <label for="logging">Logging</label>
-              <select class="form-control" name="logging" id="logging" [(ngModel)]="database.logging"
+              <select class="form-control" name="logging" id="logging" [(ngModel)]="dbConnection.logging"
                 #logging="ngModel">
                 <option *ngFor="let item of loggingTypes;" [value]="item.value">{{item.key}}</option>
               </select>
@@ -85,7 +85,7 @@
 
             <div class="form-group">
               <label for="synchronize">Synchronize</label>
-              <select class="form-control" name="synchronize" id="synchronize" [(ngModel)]="database.synchronize"
+              <select class="form-control" name="synchronize" id="synchronize" [(ngModel)]="dbConnection.synchronize"
                 #synchronize="ngModel">
                 <option *ngFor="let item of synchronizeTypes;" [value]="item.value">{{item.key}}</option>
               </select>
@@ -93,7 +93,7 @@
 
             <div class="form-group form-group-last">
               <label for="description">Description</label>
-              <textarea class="form-control" name="description" id="description" [(ngModel)]="database.description"
+              <textarea class="form-control" name="description" id="description" [(ngModel)]="dbConnection.description"
                 #description="ngModel" rows="3" required></textarea>
             </div>
 

@@ -58,7 +58,8 @@ class ConfigManager {
             this.set('database', config);
         }
         else {
-            //this.set('database', config);
+            // reset store.
+            // this.set('database', config);
         }
     }
     enableDbConnection(connection) {
@@ -68,6 +69,33 @@ class ConfigManager {
             return item;
         });
         this.set('database', config);
+    }
+    saveDbConnection(options) {
+        let connections = this.get('database.connections');
+        const found = connections.find((x) => x.name === options.name);
+        if (found) {
+            for (const i in connections) {
+                if (connections[i].name == options.name) {
+                    connections[i] = options;
+                }
+            }
+            this.set("database.connections", connections);
+        }
+        else {
+            this.set("database.connections", connections.push(options));
+        }
+    }
+    deleteDbConnection(name) {
+        let connections = this.get('database.connections');
+        const found = connections.find((x) => x.name === name);
+        if (found) {
+            for (const i in connections) {
+                if (connections[i].name == name) {
+                    connections.splice(i, 1);
+                }
+            }
+            this.set("database.connections", connections);
+        }
     }
 }
 exports.default = ConfigManager;

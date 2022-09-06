@@ -3,6 +3,20 @@ import { NgForm } from '@angular/forms';
 import { AlertService, ConfigService, BreadcrumbService, MessageService, UtilsService } from '@app/core/services';
 import { DbConnectionModel } from '@app/core/model';
 
+export class IDbConnection {
+  name?: string = '';
+  title?: string = '';
+  description?: string = '';
+  type?: string = '';
+  database?: string;
+  username?: string = '';
+  password?: string = '';
+  host?: string = '';
+  port?: string = '';
+  logging: boolean;
+  synchronize: boolean;
+}
+
 @Component({
   selector: 'app-settings-form-database',
   templateUrl: './database.component.html',
@@ -35,7 +49,7 @@ export class DatabaseComponent implements OnInit {
 
   screenToggle = false;
 
-  database = new DbConnectionModel('', '', '', '', '');
+  dbConnection: IDbConnection = new DbConnectionModel('', '', '', '', '');
 
   constructor(
     private alertService: AlertService,
@@ -43,7 +57,7 @@ export class DatabaseComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private messageService: MessageService,
     private utils: UtilsService
-  ) { 
+  ) {
     this.config = this.configService.getConfig();
   }
 
@@ -75,10 +89,16 @@ export class DatabaseComponent implements OnInit {
   }
 
   deleteConnection(event: any, item: any): void {
-    if (item && item.name === 'default') {
+    if (item.name === 'default') {
+      this.alertService.error('Cannot delete default database connection.');
       return;
     }
-    
+
+    if (item.enabled) {
+      this.alertService.error('Cannot delete enabled database connection.');
+      return;
+    }
+
     const options = {
       type: 'question',
       buttons: ['Yes', 'No'],
@@ -107,7 +127,7 @@ export class DatabaseComponent implements OnInit {
     if (result) {
       this.toggleForm();
       /* eslint-disable-next-line max-len */
-      this.database = new DbConnectionModel(result.name, result.title, result.description, result.type, result.database, result.username, result.password, result.host, result.port, result.logging, result.synchronize);
+      this.dbConnection = new DbConnectionModel(result.name, result.title, result.description, result.type, result.database, result.username, result.password, result.host, result.port, result.logging, result.synchronize);
     }
   }
 
@@ -137,41 +157,25 @@ export class DatabaseComponent implements OnInit {
   }
 
   onSubmit(form: NgForm): void {
-    if (form.valid) {
-      
-      const formValue = form.value;
-      
-      if (formValue && formValue.name === 'default') {
-        return;
-      }
-
-      const isUpdate = (formValue.name && formValue.name !== '') ? true : false;
-
-      if (isUpdate) {
-        const result = this.connections.find(x => x.name === formValue.name);
-
-        // Prevent 
-        if (result && result.name === 'default') {
-          return;
-        }
-        
-        this.messageService.saveDbConnection(formValue).then((res: any) => {
-          this.connections = res;
-          this.toggleForm();
-        });
-
-        this.alertService.success('Successfully updated connection.');
-
-      } else {
-        formValue.name = this.utils.randomString(5).toUpperCase();
-
-        this.messageService.saveDbConnection(formValue).then((result: any) => {
-          this.connections = result;
-          this.toggleForm();
-        });
-
-        this.alertService.success('Successfully created connection.');
-      }
+    if (!form.valid) {
+      return;
     }
+
+    const options = form.value;
+
+    if (options && options.name === 'default') {
+      return;
+    }
+
+    const isUpdate = (options.name && options.name !== '') ? true : false;
+
+    options.name = (isUpdate) ? options.name : this.utils.randomString(5).toUpperCase();
+
+    this.messageService.saveDbConnection(options).then((res: any) => {
+      this.connections = res;
+      this.toggleForm();
+    });
+
+    this.alertService.success((isUpdate) ? 'Successfully updated connection.' : 'Successfully created connection.');
   }
 }
