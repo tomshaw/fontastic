@@ -130,7 +130,7 @@
             <tbody>
               <ng-container *ngFor="let item of connections; let i = index;">
                 <tr>
-                  <td class="text-center"><span class="icon-pencil cursor" (click)="updateConnection($event, item)"
+                  <td class="text-center"><span class="icon-pencil cursor-pointer" (click)="updateConnection($event, item)"
                       title="Update Connection"></span></td>
                   <td class="text-left">{{item.title}}</td>
                   <td class="text-left">{{item.description}}</td>
@@ -139,13 +139,13 @@
                   <td class="text-center">{{filterBoolean(item.synchronize)}}</td>
                   <td class="text-center">{{filterBoolean(item.logging)}}</td>
                   <td class="text-center">
-                    <span class="icon-pencil cursor" (click)="updateConnection($event, item)"
+                    <span class="icon-pencil cursor-pointer" (click)="updateConnection($event, item)"
                       title="Update Connection"></span>
-                    <span class="icon-light-bulb cursor" (click)="testConnection($event, item)"
+                    <span class="icon-light-bulb cursor-pointer" (click)="testConnection($event, item)"
                       title="Test Connection"></span>
-                    <span class="icon-pin cursor" (click)="enableConnection($event, item)"
+                    <span class="icon-pin cursor-pointer" (click)="enableConnection($event, item)"
                       title="Set As Default"></span>
-                    <span class="icon-trashcan cursor" (click)="deleteConnection($event, item)"
+                    <span class="icon-trashcan cursor-pointer" (click)="deleteConnection($event, item)"
                       title="Delete Connection"></span>
                   </td>
                 </tr>

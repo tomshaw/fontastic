@@ -13,12 +13,12 @@
           <figure [style.background-color]="backgroundColor" [attr.id]="item.id">
             <figcaption [className]="i === 0 ? 'border-bottom' : 'border-bottom border-top'">
 
-              <h2 class="cursor" title="{{item.file_path}}" (click)="openFileLocation($event, item)">{{ item.font_family }}</h2>
-              <h2 class="cursor" title="{{item.file_size}}" (click)="openQuickInstall($event, item)">{{ item.file_size_pretty }}</h2>
+              <h2 class="cursor-pointer" title="{{item.file_path}}" (click)="openFileLocation($event, item)">{{ item.font_family }}</h2>
+              <h2 class="cursor-pointer" title="{{item.file_size}}" (click)="openQuickInstall($event, item)">{{ item.file_size_pretty }}</h2>
               <h2 class="text-uppercase" title="{{item.file_type}}">{{ item.file_type }}</h2>
 
               <ng-container *ngIf="displayNews && item.news">
-                <h2 class="text-uppercase cursor" [attr.title]="item.news.description" [innerHtml]="item.news.source.name" (click)="openNewsArticle($event, item)"></h2>
+                <h2 class="text-uppercase cursor-pointer" [attr.title]="item.news.description" [innerHtml]="item.news.source.name" (click)="openNewsArticle($event, item)"></h2>
               </ng-container>
 
               <ng-container *ngIf="displayNews && item.news && item.news.publishedAt">
@@ -30,16 +30,16 @@
               </ng-container>
 
               <div>
-                <i class="material-icons cursor" title="File location" (click)="openFileLocation($event, item)">folder_open</i>
-                <i class="material-icons cursor" title="Manual install" (click)="openQuickInstall($event, item)">view_list</i>
+                <i class="material-icons cursor-pointer" title="File location" (click)="openFileLocation($event, item)">folder_open</i>
+                <i class="material-icons cursor-pointer" title="Manual install" (click)="openQuickInstall($event, item)">view_list</i>
                 <ng-container *ngIf="item.favorite; else elseBordered">
-                  <i class="material-icons cursor" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite</i>
+                  <i class="material-icons cursor-pointer" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite</i>
                 </ng-container>
                 <ng-template #elseBordered>
-                  <i class="material-icons cursor" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite_border</i>
+                  <i class="material-icons cursor-pointer" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite_border</i>
                 </ng-template>
                 <ng-container *ngIf="item.sample_text">
-                  <i class="material-icons cursor" [attr.title]="item.sample_text" (click)="onSampleClick($event, item)">g_translate</i>
+                  <i class="material-icons cursor-pointer" [attr.title]="item.sample_text" (click)="onSampleClick($event, item)">g_translate</i>
                 </ng-container>
               </div>
 

@@ -30,7 +30,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of resultSet; let i = index;" title="{{item.message}}">
-                <td class="text-center"><i class="icon-trashcan cursor" (click)="handleDelete(item.id)" title="Delete Item"></i></td>
+                <td class="text-center"><i class="icon-trashcan cursor-pointer" (click)="handleDelete(item.id)" title="Delete Item"></i></td>
                 <td class="text-left">
                   <strong>{{filterMessageType(item.type)}}</strong> <br/> 
                   {{item.message.substring(0, 100)}}

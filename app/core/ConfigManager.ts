@@ -62,7 +62,8 @@ export default class ConfigManager {
     let store = this.get('database');
 
     // Remove MySQL connection if not in production.
-    config.connections = this.getSystemManager().isProduction() ? config.connections.filter((item: any) => item.name === "default") : config.connections;
+    // Problematic when switching between production and development. Problem arises when connection is not enabled.
+    // config.connections = this.getSystemManager().isProduction() ? config.connections.filter((item: any) => item.name === "default") : config.connections;
 
     // Assign user data path to default database.
     config.connections = config.connections.filter((item: any) => {

@@ -7,7 +7,7 @@
         <figure data-collection="0" class="border-top border-bottom" [class.isCollapsed]="statsCollapsed === true">
 
           <figcaption class="border-top border-bottom">
-            <span class="material-icons cursor" (click)="toggleCollapse($event)" data-widget="status">
+            <span class="material-icons cursor-pointer" (click)="toggleCollapse($event)" data-widget="status">
               <ng-container *ngIf="statsCollapsed; else elseif1">
                 arrow_right
               </ng-container>
@@ -17,7 +17,7 @@
             </span>
             <span class="text-uppercase grow">System Statistics</span>
             <span class="system-stats-buttons">
-              <span class="material-icons cursor" (click)="toggleCollapseAll()" title="Collapse Menus">more_horiz</span>
+              <span class="material-icons cursor-pointer" (click)="toggleCollapseAll()" title="Collapse Menus">more_horiz</span>
             </span>
           </figcaption>
 
@@ -52,7 +52,7 @@
           <figure class="border-top border-bottom" [attr.data-collection]="item.id" [class.isCollapsed]="item.collapsed">
 
             <figcaption class="border-top border-bottom" title="{{item.title}}">
-              <span class="material-icons cursor" (click)="toggleCollapse($event)">
+              <span class="material-icons cursor-pointer" (click)="toggleCollapse($event)">
                 <ng-container *ngIf="item.collapsed; else elseif1">
                   arrow_right
                 </ng-container>
@@ -63,8 +63,8 @@
               <span class="collection">
                 <input type="text" class="input--title" name="collection-title" [attr.value]="item.title" (keyup.enter)="handleTitleInput($event)" (change)="handleTitleInput($event)" [attr.data-id]="item.id" />
               </span>
-              <span class="material-icons icon-hidden cursor" (click)="handleCreateCollection($event, item.id)" [attr.data-id]="item.id" title="Create Collection">add</span>
-              <span class="material-icons icon-hidden cursor" (click)="handleDeleteCollection($event)" [attr.data-id]="item.id" title="Delete Collection">remove</span>
+              <span class="material-icons icon-hidden cursor-pointer" (click)="handleCreateCollection($event, item.id)" [attr.data-id]="item.id" title="Create Collection">add</span>
+              <span class="material-icons icon-hidden cursor-pointer" (click)="handleDeleteCollection($event)" [attr.data-id]="item.id" title="Delete Collection">remove</span>
             </figcaption>
 
             <ng-container *ngIf="item.children.length;">
@@ -80,8 +80,8 @@
                     </span>
                     <span class="nav-actions">
                       <span>{{child.count}}</span>
-                      <span class="material-icons cursor" (click)="handleAddFonts($event)" [attr.data-id]="child.id" title="Add Fonts">add</span>
-                      <span class="material-icons cursor" (click)="handleDeleteCollection($event)" [attr.data-id]="child.id" title="Delete Collection">remove</span>
+                      <span class="material-icons cursor-pointer" (click)="handleAddFonts($event)" [attr.data-id]="child.id" title="Add Fonts">add</span>
+                      <span class="material-icons cursor-pointer" (click)="handleDeleteCollection($event)" [attr.data-id]="child.id" title="Delete Collection">remove</span>
                     </span>
                   </a>
                 </li>
