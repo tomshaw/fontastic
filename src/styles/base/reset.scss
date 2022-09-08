@@ -389,7 +389,7 @@ Controls
 .controls {
   @apply w-full p-0 m-0;
   &__item {
-    @apply py-0 px-5 h-[38px] min-h-[38px] max-h-[38px] mt-[-1px];
+    @apply py-0 px-2 w-full h-[38px] min-h-[38px] max-h-[38px] mt-[-1px];
   }
   &__item p,
   &__item div,
