@@ -153,6 +153,8 @@ export class NavigationComponent implements OnInit {
 
         this.breadcrumbService.setNavigation(collectionId, result);
 
+        this.clearSelected();
+
         if (this.router.url !== '/main') {
           this.router.navigate(['/main']);
         }
