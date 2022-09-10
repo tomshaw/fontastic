@@ -453,7 +453,7 @@ Fieldset
 ========================================================================== */
 
 fieldset {
-  @apply relative normal-case m-7 py-3.5 px-2.5 rounded border border-[#eaeaea];
+  @apply relative normal-case m-7 py-5 px-3.5 rounded border border-[#eaeaea];
   legend {
     @apply relative text-lg text-[#00a0be] font-semibold leading-none tracking-wider inline-block align-middle py-[2px] px-[5px] w-auto top-0;
   }
@@ -482,25 +482,50 @@ fieldset {
   dl dd label:hover {
     @apply text-[#bc2a4d];
   }
+
+  + fieldset {
+    @apply mt-14;
+  }
 }
 
 /* ==========================================================================
-Spinner
+Page
 ========================================================================== */
 
-.form {
+.page {
+  @apply flex flex-col grow shadow rounded-md;
+  &__header {
+    @apply flex items-center justify-between relative py-0 px-7 min-h-[60px] border-b border-[#eaeaea];
+    h1 {
+      @apply text-xl font-semibold tracking-wide;
+    }
+  }
+  &__body {
+    @apply flex flex-col py-10 px-7;
+  }
+  &__footer {
+    @apply flex items-center justify-between relative py-0 px-7 min-h-[60px] border-t border-[#eaeaea];
+  }
   .form-group {
-    @apply flex flex-col justify-start w-full mt-2 mb-7 ml-5 pr-10;
-    label {
-      @apply text-base font-semibold inline-block mb-2;
-    }
-    .form-text {
-      @apply block text-base mt-2;
-    }
+    @apply ml-0 pr-2;
   }
-  .form__actions {
-    @apply p-5;
+}
+
+/* ==========================================================================
+Form Group
+========================================================================== */
+
+.form-group {
+  @apply flex flex-col justify-start w-full mt-1 mb-7 ml-5 pr-10;
+  label {
+    @apply text-base font-semibold inline-block mb-2;
   }
+  .form-text {
+    @apply block text-base mt-2;
+  }
+}
+.form__actions {
+  @apply p-5;
 }
 
 /* ==========================================================================

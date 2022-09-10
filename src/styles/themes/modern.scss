@@ -129,7 +129,6 @@ body[data-theme="modern"] {
   }
   
   .table tbody tr:nth-child(odd) {
-    //background-color: lighten($modernBackground, 10%);
     background-color: #e6658a;
   }
   
@@ -144,23 +143,12 @@ body[data-theme="modern"] {
     color: $modernTextColor;
   }
 
-  .block {
-    background-color: #f87397d8;
-    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-    .block__head {
-      border-bottom: 1px solid $modernBorderColor;
+  .page {
+    &__header {
+      border-bottom: 1px solid $modernBorderColor !important;
     }
-    .block__foot {
-      border-top: 1px solid $modernBorderColor;
-    }
-  }
-
-  .form-group {
-    .text-muted {
-      color: #fff !important;
-    }
-    .text-error {
-      color: #fff !important;
+    &__footer {
+      border-top: 1px solid $modernBorderColor !important;
     }
   }
 
@@ -170,6 +158,31 @@ body[data-theme="modern"] {
     border: 1px solid #fff;
     .input-group-checkbox {
       background-color: $modernBorderColor;
+    }
+  }
+
+  fieldset {
+    border: 1px solid $modernBorderColor;
+    legend {
+      color: $modernTextColor;
+    }
+    dt {
+      label {
+        color: $modernTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid $modernTextColor;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: #c10156;
+    }
+    dl:hover dt label {
+      color: $modernTextColor;
+    }
+    dl dd label:hover {
+      color: $modernTextColor;
     }
   }
 
@@ -185,35 +198,4 @@ body[data-theme="modern"] {
     }
   }
 
-  .tabs {
-    li {
-      border-right: 1px solid $modernBorderColor !important;
-      border-bottom: 1px solid $modernBorderColor !important;
-    }
-  }
-
-  fieldset {
-    border: 1px solid $modernBorderColor;
-    legend {
-      color: $modernTextColor;
-    }
-    .form-group {
-      span {
-        color: $modernTextColor;
-      }
-    }
-    dd {
-      border-left: 1px solid #fff;
-    }
-    dl:hover dt,
-    dl:hover dd {
-      border-color: $modernBorderColor;
-    }
-    dl:hover dt label {
-      color: $modernTextColor;
-    }
-    dl dd label:hover {
-      color: $modernTextColor;
-    }
-  }
 }

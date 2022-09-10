@@ -3,8 +3,6 @@ $dashboardTextColor: #fff;
 $dashboardBorderColor: #0e161f;
 
 body[data-theme="dashboard"] {
-  background-color: $dashboardBackground;
-  color: $dashboardTextColor;
   @apply bg-[#14202b] text-[#ffffff];
 }
 
@@ -144,23 +142,12 @@ body[data-theme="dashboard"] {
     color: $dashboardTextColor;
   }
 
-  .block {
-    background-color: #182b39;
-    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-    .block__head {
-      border-bottom: 1px solid $dashboardBorderColor;
+  .page {
+    &__header {
+      border-bottom: 1px solid $dashboardBorderColor !important;
     }
-    .block__foot {
-      border-top: 1px solid $dashboardBorderColor;
-    }
-  }
-
-  .form-group {
-    .text-muted {
-      color: #fff !important;
-    }
-    .text-error {
-      color: #e04646 !important;
+    &__footer {
+      border-top: 1px solid $dashboardBorderColor !important;
     }
   }
 
@@ -173,33 +160,14 @@ body[data-theme="dashboard"] {
     }
   }
 
-  .glyph-list {
-    .glyph-item {
-      background-color: $dashboardBackground !important;
-      border: solid 1px $dashboardBorderColor !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
-      &:hover {
-        background-color: #c10156 !important;
-      }
-    }
-  }
-
-  .tabs {
-    li {
-      border-right: 1px solid $dashboardBorderColor !important;
-      border-bottom: 1px solid $dashboardBorderColor !important;
-    }
-  }
-
   fieldset {
     border: 1px solid $dashboardBorderColor;
     legend {
       color: $dashboardTextColor;
     }
-    .form-group {
-      span {
-        color: $dashboardTextColor;
+    dt {
+      label {
+        @apply text-[#fff];
       }
     }
     dd {
@@ -216,4 +184,17 @@ body[data-theme="dashboard"] {
       color: $dashboardTextColor;
     }
   }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $dashboardBackground !important;
+      border: solid 1px $dashboardBorderColor !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #c10156 !important;
+      }
+    }
+  }
+
 }

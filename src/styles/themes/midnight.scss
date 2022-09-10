@@ -155,23 +155,12 @@ body[data-theme="midnight"] {
     color: $midnightTextColor;
   }
 
-  .block {
-    background-color: rgb(10, 10, 10);
-    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-    .block__head {
-      border-bottom: 1px solid $midnightBorderColor;
+  .page {
+    &__header {
+      border-bottom: 1px solid $midnightBorderColor !important;
     }
-    .block__foot {
-      border-top: 1px solid $midnightBorderColor;
-    }
-  }
-
-  .form-group {
-    .text-muted {
-      color: $color-text-disabled !important;
-    }
-    .text-error {
-      color: #e04646 !important;
+    &__footer {
+      border-top: 1px solid $midnightBorderColor !important;
     }
   }
 
@@ -181,6 +170,31 @@ body[data-theme="midnight"] {
     border: 1px solid $midnightBorderColor;
     .input-group-checkbox {
       background-color: #151515;
+    }
+  }
+
+  fieldset {
+    border: 1px solid $midnightBorderColor;
+    legend {
+      color: $midnightTextColor;
+    }
+    dt {
+      label {
+        color: $midnightTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid $midnightTextColor;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: #c10156;
+    }
+    dl:hover dt label {
+      color: $midnightTextColor;
+    }
+    dl dd label:hover {
+      color: $midnightTextColor;
     }
   }
 
@@ -196,35 +210,4 @@ body[data-theme="midnight"] {
     }
   }
 
-  .tabs {
-    li {
-      border-right: 1px solid $midnightBorderColor !important;
-      border-bottom: 1px solid $midnightBorderColor !important;
-    }
-  }
-
-  fieldset {
-    border: 1px solid $midnightBorderColor;
-    legend {
-      color: $midnightTextColor;
-    }
-    .form-group {
-      span {
-        color: $midnightTextColor;
-      }
-    }
-    dd {
-      border-left: 1px solid #fff;
-    }
-    dl:hover dt,
-    dl:hover dd {
-      border-color: #777;
-    }
-    dl:hover dt label {
-      color: $midnightTextColor;
-    }
-    dl dd label:hover {
-      color: $midnightTextColor;
-    }
-  }
 }

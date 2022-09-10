@@ -2,19 +2,32 @@
   <div class="panel-content">
     <div class="container mx-auto p-7">
 
-      <fieldset>
-        <legend>Theme Settings</legend>
-        <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
-          <div class="form-group">
-            <label for="key">Selected theme</label>
-            <select class="form-control" name="key" id="key" [(ngModel)]="theme.key" #key="ngModel"
-              (change)="onChange($event)">
-              <option *ngFor="let item of themes;" [value]="item.key">{{item.title}}</option>
-            </select>
-            <span class="form-text">{{ theme.description }}</span>
+      <div class="page">
+
+        <!-- Head -->
+        <div class="page__header">
+          <div class="text-left">
+            <h1>Theme Settings</h1>
           </div>
+        </div>
+
+        <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+
+          <!-- Body -->
+          <div class="page__body">
+            <div class="form-group">
+              <label for="key">Selected theme</label>
+              <select class="form-control" name="key" id="key" [(ngModel)]="theme.key" #key="ngModel"
+                (change)="onChange($event)">
+                <option *ngFor="let item of themes;" [value]="item.key">{{item.title}}</option>
+              </select>
+              <span class="form-text">{{ theme.description }}</span>
+            </div>
+          </div>
+
         </form>
-      </fieldset>
+
+      </div>
 
     </div>
   </div>

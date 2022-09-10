@@ -5,26 +5,26 @@ export const AppThemes: any[] = [{
 }, {
   key: 'dashboard',
   title: 'Dashboard',
-  description: 'The default system theme.',
+  description: 'A modern Dashboard inspired system theme.',
 }, {
   key: 'euphoria',
   title: 'Eurphoria',
-  description: 'The default system theme.',
+  description: 'Eurphoria system theme.',
 }, {
   key: 'midnight',
   title: 'Midnight',
   description: 'A pure black dark mode theme.',
 }, {
   key: 'modern',
-  title: 'Modern Material',
-  description: 'The default system theme.',
+  title: 'Modern',
+  description: 'A Modern design inspired system theme.',
 }, {
   key: 'swiss',
   title: 'Swiss Design',
-  description: 'The default system theme.',
+  description: 'A Swiss Design inspired system theme.',
 }, {
   key: 'passion',
   title: 'Purple Passion',
-  description: 'The default system theme.',
+  description: 'Purple Passion system theme.',
 }];
 

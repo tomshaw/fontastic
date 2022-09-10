@@ -142,7 +142,6 @@ body[data-theme="passion"] {
   
   .table > thead > tr > th {
     background-color: $passionBackground;
-    border-right: 1px solid $passionBorderColor;
   }
   
   .table > thead > tr > th,
@@ -151,51 +150,21 @@ body[data-theme="passion"] {
     color: $passionTextColor;
   }
 
-  .block {
-    background-color: #6c0b7f;
-    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-    .block__head {
-      border-bottom: 1px solid $passionBorderColor;
+  .page {
+    &__header {
+      border-bottom: 1px solid $passionBorderColor !important;
     }
-    .block__foot {
-      border-top: 1px solid $passionBorderColor;
-    }
-  }
-
-  .form-group {
-    .text-muted {
-      color: #fff !important;
-    }
-    .text-error {
-      color: #db1818 !important;
+    &__footer {
+      border-top: 1px solid $passionBorderColor !important;
     }
   }
 
   .form-control {
     color: #fff;
     background-color: $passionBackground;
-    border: 1px solid $passionBorderColor;
+    border: 1px solid #fff;
     .input-group-checkbox {
       background-color: $passionBorderColor;
-    }
-  }
-
-  .glyph-list {
-    .glyph-item {
-      background-color: $passionBackground !important;
-      border: solid 1px #69147a !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
-      &:hover {
-        background-color: #6c0b7f !important;
-      }
-    }
-  }
-
-  .tabs {
-    li {
-      border-right: 1px solid $passionBorderColor !important;
-      border-bottom: 1px solid $passionBorderColor !important;
     }
   }
 
@@ -204,17 +173,17 @@ body[data-theme="passion"] {
     legend {
       color: $passionTextColor;
     }
-    .form-group {
-      span {
+    dt {
+      label {
         color: $passionTextColor;
       }
     }
     dd {
-      border-left: 1px solid #fff;
+      border-left: 1px solid $passionTextColor;
     }
     dl:hover dt,
     dl:hover dd {
-      border-color: $passionBorderColor;
+      border-color: #c10156;
     }
     dl:hover dt label {
       color: $passionTextColor;
@@ -223,4 +192,17 @@ body[data-theme="passion"] {
       color: $passionTextColor;
     }
   }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $passionBackground !important;
+      border: solid 1px #e6658a !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #e7688d !important;
+      }
+    }
+  }
+
 }

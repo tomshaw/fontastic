@@ -134,8 +134,6 @@ body[data-theme="swiss"] {
   
   .table > thead > tr > th {
     background-color: $swissBackground;
-    // border-right: 1px solid $swissBorderColor;
-    // border-bottom: 1px solid $swissBorderColor;
   }
   
   .table > thead > tr > th,
@@ -144,51 +142,21 @@ body[data-theme="swiss"] {
     color: $swissTextColor;
   }
 
-  .block {
-    background-color: #ca1119;
-    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-    .block__head {
-      border-bottom: 1px solid $swissBorderColor;
+  .page {
+    &__header {
+      border-bottom: 1px solid $swissBorderColor !important;
     }
-    .block__foot {
-      border-top: 1px solid $swissBorderColor;
+    &__footer {
+      border-top: 1px solid $swissBorderColor !important;
     }
   }
 
-  .form-group {
-    .text-muted {
-      color: #fff !important;
-    }
-    .text-error {
-      color: #fff !important;
-    }
-  }
-  
   .form-control {
     color: #fff;
     background-color: $swissBackground;
     border: 1px solid #fff;
-  }
-  .input-group-checkbox {
-    background-color: $swissBorderColor;
-  }
-
-  .glyph-list {
-    .glyph-item {
-      background-color: $swissBackground !important;
-      border: solid 1px #ca1119 !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
-      &:hover {
-        background-color: #ca1119 !important;
-      }
-    }
-  }
-
-  .tabs {
-    li {
-      border-right: 1px solid $swissBorderColor !important;
-      border-bottom: 1px solid $swissBorderColor !important;
+    .input-group-checkbox {
+      background-color: $swissBorderColor;
     }
   }
 
@@ -197,17 +165,17 @@ body[data-theme="swiss"] {
     legend {
       color: $swissTextColor;
     }
-    .form-group {
-      span {
+    dt {
+      label {
         color: $swissTextColor;
       }
     }
     dd {
-      border-left: 1px solid $swissBorderColor;
+      border-left: 1px solid $swissTextColor;
     }
     dl:hover dt,
     dl:hover dd {
-      border-color: $swissBorderColor;
+      border-color: #c10156;
     }
     dl:hover dt label {
       color: $swissTextColor;
@@ -216,4 +184,17 @@ body[data-theme="swiss"] {
       color: $swissTextColor;
     }
   }
+
+  .glyph-list {
+    .glyph-item {
+      background-color: $swissBackground !important;
+      border: solid 1px #e6658a !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #e7688d !important;
+      }
+    }
+  }
+
 }
