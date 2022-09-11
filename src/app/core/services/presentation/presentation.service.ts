@@ -280,9 +280,9 @@ export class PresentationService {
     } else if (theme === 'dashboard') {
       this.setFontColor('#ffffff');
       this.setBackgroundColor('#14202a');
-    } else if (theme === 'modern') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#ea7196');
+    } else if (theme === 'mellow') {
+      this.setFontColor('#252525');
+      this.setBackgroundColor('#ffdf00');
     } else if (theme === 'swiss') {
       this.setFontColor('#ffffff');
       this.setBackgroundColor('#ed1b24');

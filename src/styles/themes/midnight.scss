@@ -17,19 +17,6 @@ body[data-theme="midnight"] {
     }
   }
 
-  .radio,
-  .checkbox {
-    label {
-      border: 1px solid #FFF !important;
-    }
-    input:checked ~ label::before {
-      background-color: #777 !important;
-    }  
-    input:checked ~ span {
-      color: #777 !important;
-    }
-  }
-
   .active {
     color: #777 !important;
   }
@@ -52,6 +39,21 @@ body[data-theme="midnight"] {
   }
 
   .material-icons {
+    color: $midnightTextColor;
+  }
+
+  .radio label,
+  .checkbox label {
+    border: 2px solid $midnightTextColor;
+  }
+  
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    background-color: $midnightTextColor;
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
     color: $midnightTextColor;
   }
 
@@ -132,27 +134,19 @@ body[data-theme="midnight"] {
   }
 
   .table {
-    color: $midnightTextColor !important;
-  }
-
-  .table td,
-  .table th {
-    border-top: none !important;
-  }
-
-  .table tbody tr:nth-child(odd) {
-    background-color: #080808;
-  }
-
-  .table > thead > tr > th {
-    background-color: $midnightBackground;
-    border-right: 1px solid $midnightBorderColor;
-  }
-
-  .table > thead > tr > th,
-  .table > thead > tr > th > div,
-  .table > thead > tr > th > div > span {
     color: $midnightTextColor;
+    thead > tr {
+      background-color: lighten($midnightBackground, 5%);
+    }
+    &.striped > tbody > tr:nth-child(odd) {
+      background-color: lighten($midnightBackground, 2%);
+    }
+    .material-icons {
+      color: $midnightTextColor;
+    }
+    [class^="icon-"] {
+      color: $midnightTextColor;
+    }
   }
 
   .page {

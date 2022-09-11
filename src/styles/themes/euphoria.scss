@@ -42,6 +42,21 @@ body[data-theme="euphoria"] {
     color: $euphoriaTextColor;
   }
 
+  .radio label,
+  .checkbox label {
+    border: 2px solid $euphoriaTextColor;
+  }
+  
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    background-color: $euphoriaTextColor;
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
+    color: $euphoriaTextColor;
+  }
+
   input.input--title {
     color: $euphoriaTextColor !important;
     &:focus {
@@ -123,25 +138,20 @@ body[data-theme="euphoria"] {
     color: $euphoriaTextColor !important;
   }
 
-  .table td,
-  .table th {
-    border-top: none !important;
-  }
-  
-  .table tbody tr:nth-child(odd) {
-    //background-color: lighten($euphoriaBackground, 10%);
-    background-color: #25141e;
-  }
-  
-  .table > thead > tr > th {
-    background-color: $euphoriaBackground;
-    border-right: 1px solid $euphoriaBorderColor;
-  }
-  
-  .table > thead > tr > th,
-  .table > thead > tr > th > div,
-  .table > thead > tr > th > div > span {
+  .table {
     color: $euphoriaTextColor;
+    thead > tr {
+      background-color: lighten($euphoriaBackground, 5%);
+    }
+    &.striped > tbody > tr:nth-child(odd) {
+      background-color: lighten($euphoriaBackground, 2%);
+    }
+    .material-icons {
+      color: $euphoriaTextColor;
+    }
+    [class^="icon-"] {
+      color: $euphoriaTextColor;
+    }
   }
 
   .page {

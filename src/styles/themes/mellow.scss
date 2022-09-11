@@ -1,19 +1,19 @@
-$swissBackground: #ed1b24;
-$swissTextColor: #ffffff;
-$swissBorderColor: #ffcccc;
+$mellowBackground: #ffdf00;
+$mellowTextColor: #252525;
+$mellowBorderColor: #252525;
 
-body[data-theme="swiss"] {
-  background-color: $swissBackground;
-  color: $swissTextColor;
+body[data-theme="mellow"] {
+  background-color: $mellowBackground;
+  color: $mellowTextColor;
 }
 
-[data-theme="swiss"] {
+[data-theme="mellow"] {
 
   a {
-    color: $swissTextColor;
+    color: $mellowTextColor;
     &:hover,
     &:active {
-      color: $swissTextColor;
+      color: $mellowTextColor;
     }
   }
 
@@ -27,46 +27,46 @@ body[data-theme="swiss"] {
 
   .disabled,
   .disabled i {
-    color: $swissBorderColor;
+    color: $mellowBorderColor;
   }
 
   .enabled {
-    color: $swissTextColor;
+    color: $mellowTextColor;
   }
 
   .selected {
-    background-color: $swissBorderColor;
+    background-color: $mellowBorderColor;
   }
 
   .material-icons {
-    color: $swissTextColor;
+    color: $mellowTextColor;
   }
 
   .radio label,
   .checkbox label {
-    border: 2px solid $swissTextColor;
+    border: 2px solid $mellowTextColor;
   }
   
   .radio :checked ~ label::before,
   .checkbox :checked ~ label::before {
-    background-color: $swissTextColor;
+    background-color: $mellowTextColor;
   }
   
   .radio :checked ~ span,
   .checkbox :checked ~ span {
-    color: $swissTextColor;
+    color: $mellowTextColor;
   }
 
   input.input--title {
-    color: $swissTextColor !important;
+    color: $mellowTextColor !important;
     &:focus {
-      color: $swissTextColor !important;
+      color: $mellowTextColor !important;
     }
   }
 
   // Toolbar text.
   .input-preview.preview-text button {
-    background-color: $swissBorderColor !important;
+    background-color: $mellowBorderColor !important;
   }
 
   // Toolbar switch text.
@@ -74,7 +74,7 @@ body[data-theme="swiss"] {
   .input-preview.latest-news button span.material-icons,
   .input-preview.preview-casing button span.material-icons,
   .input-preview.preview-reset button span.material-icons {
-    color: $swissTextColor !important;
+    color: $mellowTextColor !important;
   }
 
   .input-preview.preview-size {
@@ -84,12 +84,12 @@ body[data-theme="swiss"] {
     }
 
     input[type="range"]::-webkit-slider-runnable-track {
-      background: $swissTextColor;
+      background: $mellowTextColor;
     }
     
     input[type="range"]::-webkit-slider-thumb {
-      background: $swissTextColor !important;
-      border: 3px solid $swissBorderColor !important;
+      background: $mellowTextColor !important;
+      border: 3px solid $mellowBorderColor !important;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
   }
@@ -98,104 +98,105 @@ body[data-theme="swiss"] {
     input {
       //color: #333;
       //background-color: #fff;
-      border: 1px solid $swissBorderColor;
+      border: 1px solid $mellowBorderColor;
     }
   }
 
   .border-top {
-    border-top: 1px solid $swissBorderColor !important;
+    border-top: 1px solid $mellowBorderColor !important;
   }
 
   .border-right {
-    border-right: 1px solid $swissBorderColor !important;
+    border-right: 1px solid $mellowBorderColor !important;
   }
 
   .border-bottom {
-    border-bottom: 1px solid $swissBorderColor !important;
+    border-bottom: 1px solid $mellowBorderColor !important;
   }
 
   .border-left {
-    border-left: 1px solid $swissBorderColor !important;
+    border-left: 1px solid $mellowBorderColor !important;
   }
 
   .border-top-dashed {
-    border-top: 1px dashed $swissBorderColor !important;
+    border-top: 1px dashed $mellowBorderColor !important;
   }
   
   .border-right-dashed {
-    border-right: 1px dashed $swissBorderColor !important;
+    border-right: 1px dashed $mellowBorderColor !important;
   }
   
   .border-bottom-dashed {
-    border-bottom: 1px dashed $swissBorderColor !important;
+    border-bottom: 1px dashed $mellowBorderColor !important;
   }
   
   .border-left-dashed {
-    border-left: 1px dashed $swissBorderColor !important;
+    border-left: 1px dashed $mellowBorderColor !important;
   }
 
   .table {
-    color: $swissTextColor;
+    color: $mellowTextColor;
     thead > tr {
-      background-color: lighten($swissBackground, 5%);
+      color: $mellowBackground;
+      background-color: $mellowTextColor;
     }
     &.striped > tbody > tr:nth-child(odd) {
-      background-color: lighten($swissBackground, 2%);
+      background-color: lighten($mellowBackground, 2%);
     }
     .material-icons {
-      color: $swissTextColor;
+      color: $mellowTextColor;
     }
     [class^="icon-"] {
-      color: $swissTextColor;
+      color: $mellowTextColor;
     }
   }
 
   .page {
     &__header {
-      border-bottom: 1px solid $swissBorderColor !important;
+      border-bottom: 1px solid $mellowBorderColor !important;
     }
     &__footer {
-      border-top: 1px solid $swissBorderColor !important;
+      border-top: 1px solid $mellowBorderColor !important;
     }
   }
 
   .form-control {
-    color: #fff;
-    background-color: $swissBackground;
-    border: 1px solid #fff;
+    color: $mellowTextColor;
+    background-color: $mellowBackground;
+    border: 1px solid $mellowBorderColor;
     .input-group-checkbox {
-      background-color: $swissBorderColor;
+      background-color: $mellowBorderColor;
     }
   }
 
   fieldset {
-    border: 1px solid $swissBorderColor;
+    border: 1px solid $mellowBorderColor;
     legend {
-      color: $swissTextColor;
+      color: $mellowTextColor;
     }
     dt {
       label {
-        color: $swissTextColor;
+        color: $mellowTextColor;
       }
     }
     dd {
-      border-left: 1px solid $swissTextColor;
+      border-left: 1px solid $mellowTextColor;
     }
     dl:hover dt,
     dl:hover dd {
       border-color: #c10156;
     }
     dl:hover dt label {
-      color: $swissTextColor;
+      color: $mellowTextColor;
     }
     dl dd label:hover {
-      color: $swissTextColor;
+      color: $mellowTextColor;
     }
   }
 
   .glyph-list {
     .glyph-item {
-      background-color: $swissBackground !important;
+      background-color: $mellowBackground !important;
       border: solid 1px #e6658a !important;
       margin: 0 !important;
       //margin-bottom: 0 !important;

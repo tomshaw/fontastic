@@ -15,9 +15,9 @@ export const AppThemes: any[] = [{
   title: 'Midnight',
   description: 'A pure black dark mode theme.',
 }, {
-  key: 'modern',
-  title: 'Modern',
-  description: 'A Modern design inspired system theme.',
+  key: 'mellow',
+  title: 'Yellow Mellow',
+  description: 'A Modern Yellow inspired system theme.',
 }, {
   key: 'swiss',
   title: 'Swiss Design',

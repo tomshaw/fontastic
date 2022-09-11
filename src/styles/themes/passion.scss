@@ -42,12 +42,19 @@ body[data-theme="passion"] {
     color: $passionTextColor;
   }
 
-  .text-muted {
-    color: #fff !important;
+  .radio label,
+  .checkbox label {
+    border: 2px solid $passionTextColor;
   }
   
-  .text-error {
-    color: #cc0000 !important;
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    background-color: $passionTextColor;
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
+    color: $passionTextColor;
   }
 
   input.input--title {
@@ -128,26 +135,19 @@ body[data-theme="passion"] {
   }
 
   .table {
-    color: $passionTextColor !important;
-  }
-
-  .table td,
-  .table th {
-    border-top: none !important;
-  }
-  
-  .table tbody tr:nth-child(odd) {
-    background-color: #69147a;
-  }
-  
-  .table > thead > tr > th {
-    background-color: $passionBackground;
-  }
-  
-  .table > thead > tr > th,
-  .table > thead > tr > th > div,
-  .table > thead > tr > th > div > span {
     color: $passionTextColor;
+    thead > tr {
+      background-color: lighten($passionBackground, 5%);
+    }
+    &.striped > tbody > tr:nth-child(odd) {
+      background-color: lighten($passionBackground, 2%);
+    }
+    .material-icons {
+      color: $passionTextColor;
+    }
+    [class^="icon-"] {
+      color: $passionTextColor;
+    }
   }
 
   .page {

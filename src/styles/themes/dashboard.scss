@@ -41,6 +41,21 @@ body[data-theme="dashboard"] {
     color: $dashboardTextColor;
   }
 
+  .radio label,
+  .checkbox label {
+    border: 2px solid #fff;
+  }
+  
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    background-color: #fff;
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
+    color: #fff;
+  }
+
   input.input--title {
     color: $dashboardTextColor !important;
     &:focus {
@@ -119,27 +134,19 @@ body[data-theme="dashboard"] {
   }
 
   .table {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-
-  .table td,
-  .table th {
-    border-top: none !important;
-  }
-  
-  .table tbody tr:nth-child(odd) {
-    background-color: lighten($dashboardBorderColor, 10%);
-  }
-  
-  .table > thead > tr > th {
-    background-color: $dashboardBackground;
-    border-right: 1px solid $dashboardBorderColor;
-  }
-  
-  .table > thead > tr > th,
-  .table > thead > tr > th > div,
-  .table > thead > tr > th > div > span {
-    color: $dashboardTextColor;
+    color: #fff;
+    thead > tr {
+      background-color: lighten(#14202b, 10%);
+    }
+    &.striped > tbody > tr:nth-child(odd) {
+      background-color: lighten(#14202b, 2%);
+    }
+    .material-icons {
+      color: #fff;
+    }
+    [class^="icon-"] {
+      color: #fff;
+    }
   }
 
   .page {

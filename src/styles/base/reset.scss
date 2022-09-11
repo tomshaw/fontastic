@@ -162,12 +162,12 @@ Inputs
 
 .radio :checked ~ label::before,
 .checkbox :checked ~ label::before {
-  background-color: #88ce6c;
+  background-color: #8b8b8b
 }
 
 .radio :checked ~ span,
 .checkbox :checked ~ span {
-  color: #88ce6c;
+  color: #8b8b8b
 }
 
 /* ==========================================================================
@@ -209,15 +209,19 @@ Tables
 .table {
   @apply text-[#616467] opacity-0 invisible transition-opacity;
 
-  thead.thead-dark th {
-    color: $color-white;
-    background-color: $color-text-enabled;
+  &.striped > tbody > tr:nth-child(odd) {
+    background-color: darken(#fff, 2%);
   }
 
   tr {
+    
     th,
     td {
       @apply p-3 bg-inherit relative align-middle whitespace-nowrap overflow-hidden;  
+    }
+
+    th.sort_input {
+      width: 50px;
     }
 
     th:not(.sort_input) {
@@ -249,25 +253,13 @@ Tables
 
   }
 
-  &.striped tbody tr:nth-child(odd) {
-    background-color: #f8f8f8;
-  }
-
   .material-icons {
-    color: $color-text;
-    vertical-align: middle;
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    font-size: 24px !important;
+    color: #fff;
+    font-size: 24px;
   }
 
-  i[class^="icon-"],
-  span[class^="icon-"] {
-    cursor: pointer;
-    display: inline-block;
-    font-size: 18px !important;
+  [class^="icon-"] {
+    font-size: 18px;
   }
 }
 
@@ -509,6 +501,14 @@ Page
   .form-group {
     @apply ml-0 pr-2;
   }
+}
+
+/* ==========================================================================
+Form Control
+========================================================================== */
+
+.form-control {
+  @apply select-none outline-0 focus:outline-none focus:ring-0;
 }
 
 /* ==========================================================================
