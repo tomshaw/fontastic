@@ -31,7 +31,9 @@
 
               <div>
                 <i class="material-icons cursor-pointer" title="File location" (click)="openFileLocation($event, item)">folder_open</i>
-                <i class="material-icons cursor-pointer" title="Manual install" (click)="openQuickInstall($event, item)">view_list</i>
+                <ng-container *ngIf="item.installable;">
+                  <i class="material-icons cursor-pointer" title="Manual install" (click)="openQuickInstall($event, item)">view_list</i>
+                </ng-container>
                 <ng-container *ngIf="item.favorite; else elseBordered">
                   <i class="material-icons cursor-pointer" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite</i>
                 </ng-container>
