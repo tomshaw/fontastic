@@ -141,7 +141,7 @@ body[data-theme="mellow"] {
       background-color: $mellowTextColor;
     }
     &.striped > tbody > tr:nth-child(odd) {
-      background-color: lighten($mellowBackground, 2%);
+      background-color: #ebd01a;
     }
     .material-icons {
       color: $mellowTextColor;
