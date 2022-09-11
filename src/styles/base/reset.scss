@@ -142,7 +142,7 @@ Inputs
   padding: 0;
   width: 14px;
   height: 14px;
-  border: 2px solid #8b8b8b;
+  border: 2px solid #00a0be;
   border-radius: var(--border-radius);
 }
 
@@ -162,12 +162,12 @@ Inputs
 
 .radio :checked ~ label::before,
 .checkbox :checked ~ label::before {
-  background-color: #8b8b8b
+  background-color: #00a0be;
 }
 
 .radio :checked ~ span,
 .checkbox :checked ~ span {
-  color: #8b8b8b
+  color: #00a0be;
 }
 
 /* ==========================================================================
