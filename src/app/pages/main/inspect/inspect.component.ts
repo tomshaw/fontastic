@@ -16,10 +16,10 @@ export class InspectComponent implements OnInit {
   fontBaseline: number;
 
   cellCount = 100;
-  cellWidth = 30;
-  cellHeight = 30;
+  cellWidth = 60;
+  cellHeight = 60;
   cellMarginTop = 1;
-  cellMarginBottom = 8;
+  cellMarginBottom = 1;
   cellMarginLeftRight = 1;
 
   glyphName = '';

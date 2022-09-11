@@ -149,21 +149,21 @@ body[data-theme="midnight"] {
     }
   }
 
-  .page {
-    &__header {
-      border-bottom: 1px solid $midnightBorderColor !important;
-    }
-    &__footer {
-      border-top: 1px solid $midnightBorderColor !important;
-    }
-  }
-
   .form-control {
     color: #fff;
     background-color: $midnightBackground;
     border: 1px solid $midnightBorderColor;
     .input-group-checkbox {
       background-color: #151515;
+    }
+  }
+
+  .page {
+    &__header {
+      border-bottom: 1px solid $midnightBorderColor !important;
+    }
+    &__footer {
+      border-top: 1px solid $midnightBorderColor !important;
     }
   }
 
@@ -193,13 +193,10 @@ body[data-theme="midnight"] {
   }
 
   .glyph-list {
-    .glyph-item {
-      background-color: $midnightBackground !important;
-      border: solid 1px $midnightBorderColor !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
+    &__wrapper-item {
+      @apply bg-black border-2 border-[#1a1a1a];
       &:hover {
-        background-color: #111111 !important;
+        @apply bg-[#111111];
       }
     }
   }

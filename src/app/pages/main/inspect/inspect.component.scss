@@ -8,24 +8,18 @@
 }
 
 .glyph-list {
-  // display: flex;
-  // flex-direction: column;
-  // flex-wrap: nowrap;
-  // justify-content: center;
-  // align-items: center;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  .glyph-item {
-    background-color: #f9f9f9;
-    border: solid 2px #fff;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  padding: 1px;
+  &__wrapper {
+    flex-grow: 1;
+  }
+  &__wrapper-item {
     cursor: alias;
-    float: left;
-    margin-right: -1px;
-    margin-bottom: -1px;
-    &:hover {
-      background-color: #f3f3f3;
-    }
+    margin: 1px;
   }
 }
 
@@ -50,25 +44,4 @@
     line-height: 1.2;
     font-size: 14px;
   }
-  // select {
-  //   color: #333;
-  //   background-color: #fff;
-  //   border: 1px solid $color-border;
-  //   border-radius: 0;
-  //   box-shadow: none;
-  //   outline: none;
-  //   height: 24px;
-  //   width: auto;
-  //   margin-right: 5px;
-  //   vertical-align: middle;
-  //   font-size: 14px;
-  //   font-weight: normal;
-  //   line-height: 1.5;
-  //   text-align: center;
-  //   transition: all ease-in-out 0.15s;
-  //   &:active,
-  //   &:focus {
-  //     box-shadow: none;
-  //   }
-  // }
 }

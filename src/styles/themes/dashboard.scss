@@ -149,21 +149,21 @@ body[data-theme="dashboard"] {
     }
   }
 
-  .page {
-    &__header {
-      border-bottom: 1px solid $dashboardBorderColor !important;
-    }
-    &__footer {
-      border-top: 1px solid $dashboardBorderColor !important;
-    }
-  }
-
   .form-control {
     color: #fff;
     background-color: $dashboardBackground;
     border: 1px solid $dashboardBorderColor;
     .input-group-checkbox {
       background-color: $dashboardBorderColor;
+    }
+  }
+
+  .page {
+    &__header {
+      border-bottom: 1px solid $dashboardBorderColor !important;
+    }
+    &__footer {
+      border-top: 1px solid $dashboardBorderColor !important;
     }
   }
 
@@ -193,13 +193,10 @@ body[data-theme="dashboard"] {
   }
 
   .glyph-list {
-    .glyph-item {
-      background-color: $dashboardBackground !important;
-      border: solid 1px $dashboardBorderColor !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
+    &__wrapper-item {
+      @apply bg-[#14202b] border-2 border-[#0e161f];
       &:hover {
-        background-color: #c10156 !important;
+        @apply bg-[#91a8bebd];
       }
     }
   }

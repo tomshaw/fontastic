@@ -113,6 +113,195 @@ input.input--title {
 }
 
 /* ==========================================================================
+Wrapper
+========================================================================== */
+
+.application {
+  @apply w-screen h-screen opacity-100 overflow-hidden transition-opacity;
+  &.app-loading {
+    @apply opacity-0 invisible;
+  }
+}
+
+/* ==========================================================================
+Component
+========================================================================== */
+
+.component {
+  @extend %full;
+  &__panel {
+    @apply relative flex flex-col flex-nowrap justify-start items-center overflow-hidden w-full h-full;
+  }
+}
+
+/* ==========================================================================
+Controls
+========================================================================== */
+
+.controls {
+  @apply w-full p-0 m-0;
+  &__item {
+    @apply py-0 px-2 w-full h-[38px] min-h-[38px] max-h-[38px] mt-[-1px];
+  }
+  &__item p,
+  &__item div,
+  &__item span {
+    @apply opacity-0 invisible transition-opacity;
+  }
+  &__item p,
+  &__item span:not(.material-icons) {
+    @apply uppercase;
+  }
+}
+
+/* ==========================================================================
+Borders
+========================================================================== */
+
+.border-top {
+  @apply border-t border-[#00a0be];
+}
+
+.border-right {
+  @apply border-r border-[#00a0be];
+}
+
+.border-bottom {
+  @apply border-b border-[#00a0be];
+}
+
+.border-left {
+  @apply border-l border-[#00a0be];
+}
+
+.border-top-dashed {
+  @apply border-t border-[#00a0be] border-dashed;
+}
+
+.border-right-dashed {
+  @apply border-r border-[#00a0be] border-dashed;
+}
+
+.border-bottom-dashed {
+  @apply border-b border-[#00a0be] border-dashed;
+}
+
+.border-left-dashed {
+  @apply border-l border-[#00a0be] border-dashed;
+}
+
+/* ==========================================================================
+Scrollbox
+========================================================================== */
+
+.scrollbox {
+  background-color: transparent;
+  overflow: hidden;
+  overflow-y: scroll;
+  min-height: 100%;
+  width: 100%;
+  transition: all 1s ease-in-out;
+  will-change: transform, opacity, visibility;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 50px;
+  .scrollbox-content {
+    position: relative;
+    visibility: visible;
+    min-height: 100%;
+  }
+  &.scrollX {
+    overflow-x: overlay !important;
+  }
+  &.scrollY {
+    overflow-y: overlay !important;
+  }
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+    //background: rgba(0, 0, 0, 0.3);
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    transition: all 1s ease-in-out;
+    //background: rgba(0, 0, 0, 0.3);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  &::-webkit-scrollbar-corner {
+    background-color: inherit;
+  }
+  &::-webkit-scrollbar-track-piece:start {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-track-piece:end {
+    background: transparent;
+  }
+}
+
+/* ==========================================================================
+Alert
+========================================================================== */
+
+.app-alert {
+  @apply bg-white absolute top-0 left-0 opacity-0 invisible transition-opacity -z-10;
+  &.app-alert-enabled {
+    @apply opacity-100 visible z-10;
+  }
+  &.app-alert-info {
+    color: map.get($alert-colors, "info");
+    background-color: map.get($alert-backgrounds, "info");
+    .material-icons {
+      color: map.get($alert-colors, "info");
+    }
+  }
+  &.app-alert-success {
+    color: map.get($alert-colors, "success");
+    background-color: map.get($alert-backgrounds, "success");
+    .material-icons {
+      color: map.get($alert-colors, "success");
+    }
+  }
+  &.app-alert-error {
+    color: map.get($alert-colors, "error");
+    background-color: map.get($alert-backgrounds, "error");
+    .material-icons {
+      color: map.get($alert-colors, "error");
+    }
+  }
+  &.app-alert-warning {
+    color: map.get($alert-colors, "warning");
+    background-color: map.get($alert-backgrounds, "warning");
+    .material-icons {
+      color: map.get($alert-colors, "warning");
+    }
+  }
+  &.app-alert-danger {
+    color: map.get($alert-colors, "danger");
+    background-color: map.get($alert-backgrounds, "danger");
+    .material-icons {
+      color: map.get($alert-colors, "danger");
+    }
+  }
+}
+
+/* ==========================================================================
+Spinner
+========================================================================== */
+
+.app-spinner {
+  @apply relative rounded-full w-[19px] h-[19px] m-0 p-0 opacity-0 indent-[150%] border-4 border-[#00a0be];
+  border-left: 4px solid #fff;
+  &.is-animating {
+    @apply opacity-100 animate-spin;
+  }
+}
+
+/* ==========================================================================
 Inputs
 ========================================================================== */
 
@@ -250,7 +439,6 @@ Tables
     th.sorting_desc.sort_center {
       background: url(../../assets/images/sort/sort_desc.png) center center no-repeat;
     }
-
   }
 
   .material-icons {
@@ -264,179 +452,33 @@ Tables
 }
 
 /* ==========================================================================
-Wrapper
+Form Control
 ========================================================================== */
 
-.application {
-  @apply w-screen h-screen opacity-100 overflow-hidden transition-opacity;
-  &.app-loading {
-    @apply opacity-0 invisible;
-  }
+.form-control {
+  @apply select-none outline-0 focus:outline-none focus:ring-0;
 }
 
 /* ==========================================================================
-Component
+Page
 ========================================================================== */
 
-.component {
-  @extend %full;
-  &__panel {
-    @apply relative flex flex-col flex-nowrap justify-start items-center overflow-hidden w-full h-full;
-  }
-}
-
-/* ==========================================================================
-Scrollbox
-========================================================================== */
-
-.scrollbox {
-  background-color: transparent;
-  overflow: hidden;
-  overflow-y: scroll;
-  min-height: 100%;
-  width: 100%;
-  transition: all 1s ease-in-out;
-  will-change: transform, opacity, visibility;
-  padding: 0;
-  margin: 0;
-  padding-bottom: 50px;
-  .scrollbox-content {
-    position: relative;
-    visibility: visible;
-    min-height: 100%;
-  }
-  &.scrollX {
-    overflow-x: overlay !important;
-  }
-  &.scrollY {
-    overflow-y: overlay !important;
-  }
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 8px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-    //background: rgba(0, 0, 0, 0.3);
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    transition: all 1s ease-in-out;
-    //background: rgba(0, 0, 0, 0.3);
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.2);
-  }
-  &::-webkit-scrollbar-corner {
-    background-color: inherit;
-  }
-  &::-webkit-scrollbar-track-piece:start {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-track-piece:end {
-    background: transparent;
-  }
-}
-
-/* ==========================================================================
-Borders
-========================================================================== */
-
-.border-top {
-  @apply border-t border-[#00a0be];
-}
-
-.border-right {
-  @apply border-r border-[#00a0be];
-}
-
-.border-bottom {
-  @apply border-b border-[#00a0be];
-}
-
-.border-left {
-  @apply border-l border-[#00a0be];
-}
-
-.border-top-dashed {
-  @apply border-t border-[#00a0be] border-dashed;
-}
-
-.border-right-dashed {
-  @apply border-r border-[#00a0be] border-dashed;
-}
-
-.border-bottom-dashed {
-  @apply border-b border-[#00a0be] border-dashed;
-}
-
-.border-left-dashed {
-  @apply border-l border-[#00a0be] border-dashed;
-}
-
-/* ==========================================================================
-Controls
-========================================================================== */
-
-.controls {
-  @apply w-full p-0 m-0;
-  &__item {
-    @apply py-0 px-2 w-full h-[38px] min-h-[38px] max-h-[38px] mt-[-1px];
-  }
-  &__item p,
-  &__item div,
-  &__item span {
-    @apply opacity-0 invisible transition-opacity;
-  }
-  &__item p,
-  &__item span:not(.material-icons) {
-    @apply uppercase;
-  }
-}
-
-/* ==========================================================================
-Alert
-========================================================================== */
-
-.app-alert {
-  @apply bg-white absolute top-0 left-0 opacity-0 invisible transition-opacity -z-10;
-  &.app-alert-enabled {
-    @apply opacity-100 visible z-10;
-  }
-  &.app-alert-info {
-    color: map.get($alert-colors, "info");
-    background-color: map.get($alert-backgrounds, "info");
-    .material-icons {
-      color: map.get($alert-colors, "info");
+.page {
+  @apply flex flex-col grow shadow rounded-md;
+  &__header {
+    @apply flex items-center justify-between relative py-0 px-7 min-h-[60px] border-b border-[#eaeaea];
+    h1 {
+      @apply text-xl font-semibold tracking-wide;
     }
   }
-  &.app-alert-success {
-    color: map.get($alert-colors, "success");
-    background-color: map.get($alert-backgrounds, "success");
-    .material-icons {
-      color: map.get($alert-colors, "success");
-    }
+  &__body {
+    @apply flex flex-col py-10 px-7;
   }
-  &.app-alert-error {
-    color: map.get($alert-colors, "error");
-    background-color: map.get($alert-backgrounds, "error");
-    .material-icons {
-      color: map.get($alert-colors, "error");
-    }
+  &__footer {
+    @apply flex items-center justify-between relative py-0 px-7 min-h-[60px] border-t border-[#eaeaea];
   }
-  &.app-alert-warning {
-    color: map.get($alert-colors, "warning");
-    background-color: map.get($alert-backgrounds, "warning");
-    .material-icons {
-      color: map.get($alert-colors, "warning");
-    }
-  }
-  &.app-alert-danger {
-    color: map.get($alert-colors, "danger");
-    background-color: map.get($alert-backgrounds, "danger");
-    .material-icons {
-      color: map.get($alert-colors, "danger");
-    }
+  .form-group {
+    @apply ml-0 pr-2;
   }
 }
 
@@ -481,37 +523,6 @@ fieldset {
 }
 
 /* ==========================================================================
-Page
-========================================================================== */
-
-.page {
-  @apply flex flex-col grow shadow rounded-md;
-  &__header {
-    @apply flex items-center justify-between relative py-0 px-7 min-h-[60px] border-b border-[#eaeaea];
-    h1 {
-      @apply text-xl font-semibold tracking-wide;
-    }
-  }
-  &__body {
-    @apply flex flex-col py-10 px-7;
-  }
-  &__footer {
-    @apply flex items-center justify-between relative py-0 px-7 min-h-[60px] border-t border-[#eaeaea];
-  }
-  .form-group {
-    @apply ml-0 pr-2;
-  }
-}
-
-/* ==========================================================================
-Form Control
-========================================================================== */
-
-.form-control {
-  @apply select-none outline-0 focus:outline-none focus:ring-0;
-}
-
-/* ==========================================================================
 Form Group
 ========================================================================== */
 
@@ -529,13 +540,11 @@ Form Group
 }
 
 /* ==========================================================================
-Spinner
+Glyph Listing
 ========================================================================== */
 
-.app-spinner {
-  @apply relative rounded-full w-[19px] h-[19px] m-0 p-0 opacity-0 indent-[150%] border-4 border-[#00a0be];
-  border-left: 4px solid #fff;
-  &.is-animating {
-    @apply opacity-100 animate-spin;
+.glyph-list {
+  &__wrapper-item {
+    @apply bg-[#f9f9f9] border-2 border-[#fff];
   }
 }

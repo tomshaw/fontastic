@@ -14,15 +14,15 @@
 
       <div class="controls__item flex justify-end items-center">
         <div class="toolbar-item pagination">
-          <select (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
+          <select class="form-control" (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
             <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
           </select>
-          <select (change)="onChangeCount($event)" [(ngModel)]="cellCount">
+          <select class="form-control" (change)="onChangeCount($event)" [(ngModel)]="cellCount">
             <ng-container *ngFor="let item of cellCountOptions">
               <option [value]="item" *ngIf="item < numGlyphs">{{item}}</option>
             </ng-container>
           </select>
-          <select (change)="onChangePage($event)">
+          <select class="form-control" (change)="onChangePage($event)">
             <option *ngFor="let item of paginatorOptions" [value]="item.key">{{item.value}}</option>
           </select>
           <span class="pagination-stats">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
@@ -35,7 +35,9 @@
       <div class="scrollbox-content">
         <div class="glyph-list">
           <ng-container *ngFor="let item of createRange(cellCount); let i = index">
-            <canvas class="glyph-item" width="{{cellWidth}}" height="{{cellHeight}}" id="g{{i}}" (mouseenter)="onCellHover($event)"></canvas>
+            <div class="glyph-list__wrapper">
+              <canvas class="glyph-list__wrapper-item" width="{{cellWidth}}" height="{{cellHeight}}" id="g{{i}}" (mouseenter)="onCellHover($event)"></canvas>
+            </div>
           </ng-container>
         </div>
       </div>

@@ -150,21 +150,21 @@ body[data-theme="swiss"] {
     }
   }
 
-  .page {
-    &__header {
-      border-bottom: 1px solid $swissBorderColor !important;
-    }
-    &__footer {
-      border-top: 1px solid $swissBorderColor !important;
-    }
-  }
-
   .form-control {
     color: #fff;
     background-color: $swissBackground;
     border: 1px solid #fff;
     .input-group-checkbox {
       background-color: $swissBorderColor;
+    }
+  }
+
+  .page {
+    &__header {
+      border-bottom: 1px solid $swissBorderColor !important;
+    }
+    &__footer {
+      border-top: 1px solid $swissBorderColor !important;
     }
   }
 
@@ -194,14 +194,8 @@ body[data-theme="swiss"] {
   }
 
   .glyph-list {
-    .glyph-item {
-      background-color: $swissBackground !important;
-      border: solid 1px #e6658a !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
-      &:hover {
-        background-color: #e7688d !important;
-      }
+    &__wrapper-item {
+      @apply bg-[#ed1b24] border-2 border-[#fff];
     }
   }
 

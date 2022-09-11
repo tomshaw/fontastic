@@ -135,10 +135,6 @@ body[data-theme="euphoria"] {
   }
 
   .table {
-    color: $euphoriaTextColor !important;
-  }
-
-  .table {
     color: $euphoriaTextColor;
     thead > tr {
       background-color: lighten($euphoriaBackground, 5%);
@@ -154,21 +150,21 @@ body[data-theme="euphoria"] {
     }
   }
 
-  .page {
-    &__header {
-      border-bottom: 1px solid $euphoriaBorderColor !important;
-    }
-    &__footer {
-      border-top: 1px solid $euphoriaBorderColor !important;
-    }
-  }
-
   .form-control {
     color: $euphoriaTextColor;
     background-color: $euphoriaBackground;
     border: 1px solid $euphoriaBorderColor;
     .input-group-checkbox {
       background-color: $euphoriaBorderColor;
+    }
+  }
+
+  .page {
+    &__header {
+      border-bottom: 1px solid $euphoriaBorderColor !important;
+    }
+    &__footer {
+      border-top: 1px solid $euphoriaBorderColor !important;
     }
   }
 
@@ -198,13 +194,10 @@ body[data-theme="euphoria"] {
   }
 
   .glyph-list {
-    .glyph-item {
-      background-color: $euphoriaBackground !important;
-      border: solid 1px #25141e !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
+    &__wrapper-item {
+      @apply bg-[#23121c] border-2 border-[#25141e];
       &:hover {
-        background-color: #221723 !important;
+        @apply bg-[#221723];
       }
     }
   }

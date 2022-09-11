@@ -150,21 +150,21 @@ body[data-theme="passion"] {
     }
   }
 
-  .page {
-    &__header {
-      border-bottom: 1px solid $passionBorderColor !important;
-    }
-    &__footer {
-      border-top: 1px solid $passionBorderColor !important;
-    }
-  }
-
   .form-control {
     color: #fff;
     background-color: $passionBackground;
     border: 1px solid #fff;
     .input-group-checkbox {
       background-color: $passionBorderColor;
+    }
+  }
+
+  .page {
+    &__header {
+      border-bottom: 1px solid $passionBorderColor !important;
+    }
+    &__footer {
+      border-top: 1px solid $passionBorderColor !important;
     }
   }
 
@@ -194,14 +194,8 @@ body[data-theme="passion"] {
   }
 
   .glyph-list {
-    .glyph-item {
-      background-color: $passionBackground !important;
-      border: solid 1px #e6658a !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
-      &:hover {
-        background-color: #e7688d !important;
-      }
+    &__wrapper-item {
+      @apply bg-[#620f72] border-2 border-[#fe1963];
     }
   }
 
