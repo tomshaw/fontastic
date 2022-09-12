@@ -89,6 +89,11 @@ export default class MessageHandler {
       event.sender.send(channel.IPCMAIN_RESPONSE_SET_CONFIG, saved);
     });
 
+    this.on(channel.IPCMAIN_REQUEST_CLEAR_STORE, async (event: IpcMainEvent) => {
+      const response = this.getConfigManager().clear();
+      event.sender.send(channel.IPCMAIN_RESPONSE_CLEAR_STORE, response);
+    });
+
     /**
      * Connection Manager
      */
@@ -131,6 +136,18 @@ export default class MessageHandler {
           event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
         });
       }
+    });
+
+    this.on(channel.IPCMAIN_REQUEST_DROP_DATABASE, async (event: IpcMainEvent) => {
+      await this.getConnectionManager().dropDatabase().then(() => {
+        event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: "IPCMAIN_RESPONSE_DROP_DATABASE" });
+      });
+    });
+
+    this.on(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, async (event: IpcMainEvent) => {
+      await this.getConnectionManager().truncateDatabase().then(() => {
+        event.sender.send(channel.IPCMAIN_RESPONSE_TRUNCATE_DATABASE, { type: "IPCMAIN_RESPONSE_TRUNCATE_DATABASE" });
+      })
     });
 
     /**
@@ -185,6 +202,12 @@ export default class MessageHandler {
     this.on(channel.IPCMAIN_REQUEST_OPEN_EXTERNAL, async (event: IpcMainEvent, url: string) => this.getFontManager().openExternal(url));
 
     this.on(channel.IPCMAIN_REQUEST_RELOAD_WINDOW, async (event: IpcMainEvent) => this.getFontManager().reLaunch());
+
+    this.on(channel.IPCMAIN_REQUEST_EXIT, async (event: IpcMainEvent) => this.getFontManager().exit());
+
+    this.on(channel.IPCMAIN_REQUEST_QUIT, async (event: IpcMainEvent) => this.getFontManager().quit());
+
+    this.on(channel.IPCMAIN_REQUEST_BEEP, async (event: IpcMainEvent) => this.getFontManager().beep());
 
     /**
      * Collection

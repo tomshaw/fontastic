@@ -96,6 +96,17 @@ export default class ConnectionManager {
     return new DataSource(this.discardOmitables(options)).initialize()
   }
 
+  async dropDatabase() {
+    const dataSource = this.getDataSource();
+    return await dataSource.dropDatabase()
+  }
+
+  async truncateDatabase() {
+    this.getCollection().clear();
+    this.getLogger().clear();
+    this.getStore().clear();
+  }
+
   /**
    * Repository methods. 
    */

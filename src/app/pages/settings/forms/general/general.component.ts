@@ -14,7 +14,7 @@ export class GeneralComponent {
 
   config: SystemConfig;
 
-  user: AuthUser = new AuthUserModel('','','');
+  user: AuthUser = new AuthUserModel('', '', '');
 
   constructor(
     private authService: AuthService,
@@ -25,7 +25,6 @@ export class GeneralComponent {
     private breadcrumbService: BreadcrumbService,
     private presentationService: PresentationService
   ) {
-
     this.user = this.authService.getAuthUser();
 
     this.breadcrumbService.set([{
@@ -69,6 +68,40 @@ export class GeneralComponent {
 
   onRefreshLatestNews(event: Event): void {
     this.newsService.refreshLatestNews(true);
+  }
+
+  onDropDatabase(event: Event): void {
+    const options = {
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Confirm',
+      message: 'Are you sure you want to drop the database?'
+    };
+
+    this.messageService.showMessageBox(options).then((opt: any) => {
+      if (opt.response === 0) {
+        this.messageService.dropDatabase().then((response: any) => {
+          console.log('response', response);
+        });
+      }
+    });
+  }
+
+  onClearStore(event: Event): void {
+    const options = {
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Confirm',
+      message: 'Are you sure you want to delete the application store?'
+    };
+
+    this.messageService.showMessageBox(options).then((opt: any) => {
+      if (opt.response === 0) {
+        this.messageService.clearStore().then((response: any) => {
+          console.log('response', response);
+        });
+      }
+    });
   }
 
   onSubmitButtonClick(event: Event): void {

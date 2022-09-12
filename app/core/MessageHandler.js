@@ -63,6 +63,10 @@ class MessageHandler {
             const saved = this.getConfigManager().get(args.key);
             event.sender.send(channel.IPCMAIN_RESPONSE_SET_CONFIG, saved);
         }));
+        this.on(channel.IPCMAIN_REQUEST_CLEAR_STORE, (event) => __awaiter(this, void 0, void 0, function* () {
+            const response = this.getConfigManager().clear();
+            event.sender.send(channel.IPCMAIN_RESPONSE_CLEAR_STORE, response);
+        }));
         /**
          * Connection Manager
          */
@@ -104,6 +108,10 @@ class MessageHandler {
                     event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
                 });
             }
+        }));
+        this.on(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, (event) => __awaiter(this, void 0, void 0, function* () {
+            let response = yield this.getConnectionManager().truncateDatabase();
+            event.sender.send(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, []);
         }));
         /**
          * Font Manager

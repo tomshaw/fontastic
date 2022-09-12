@@ -60,7 +60,38 @@
       </fieldset>
 
       <fieldset>
-        <legend>Gravatar icon</legend>
+        <legend>Danger zone</legend>
+
+        <form>
+          <dl>
+            <dt>
+              <label>Drop system database</label>
+              <span>Drops the database and all its data.</span>
+            </dt>
+            <dd>
+              <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+                (handleButtonClick)="onDropDatabase($event)">Submit</app-button>
+            </dd>
+          </dl>
+        </form>
+
+        <form>
+          <dl>
+            <dt>
+              <label>Clear system storage</label>
+              <span>Removes all settings from the system store.</span>
+            </dt>
+            <dd>
+              <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+                (handleButtonClick)="onClearStore($event)">Submit</app-button>
+            </dd>
+          </dl>
+        </form>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>Personalize</legend>
 
         <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
 

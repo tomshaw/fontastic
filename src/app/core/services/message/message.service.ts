@@ -50,6 +50,15 @@ export class MessageService {
     });
   }
 
+  clearStore() {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_CLEAR_STORE);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_CLEAR_STORE, (event, response) => {
+        resolve(response);
+      });
+    });
+  }
+
   /**
    * Connection Manager
    */
@@ -81,6 +90,24 @@ export class MessageService {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_TEST_CONNECTION, item);
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, (event, response) => {
+        resolve(response);
+      });
+    });
+  }
+
+  dropDatabase() {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_DROP_DATABASE);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_DROP_DATABASE, (event, response) => {
+        resolve(response);
+      });
+    });
+  }
+
+  truncateDatabase() {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_TRUNCATE_DATABASE, (event, response) => {
         resolve(response);
       });
     });
@@ -166,7 +193,19 @@ export class MessageService {
   }
 
   reloadWindow(): void {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_RELOAD_WINDOW, null);
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_RELOAD_WINDOW);
+  }
+
+  quitApplication(): void {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_QUIT);
+  }
+
+  exitApplication(): void {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_EXIT);
+  }
+
+  beep(): void {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_BEEP);
   }
 
   /**

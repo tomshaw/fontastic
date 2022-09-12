@@ -120,7 +120,14 @@ export default class FontManager {
 
   reLaunch() {
     app.relaunch();
-    //app.exit();
+    app.quit();
+  }
+
+  exit() {
+    app.exit();
+  }
+
+  quit() {
     app.quit();
   }
 
