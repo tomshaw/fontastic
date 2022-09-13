@@ -134,7 +134,7 @@ export class MessageService {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FILES_SCAN, { paths, collectionId });
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_FILES_SCAN, (event, response) => {
-        this.delay(1e3, resolve(response));
+        resolve(response);
       });
     });
   }
