@@ -15,9 +15,9 @@ export class InspectComponent implements OnInit {
   fontSize: number;
   fontBaseline: number;
 
-  cellCount = 100;
-  cellWidth = 60;
-  cellHeight = 60;
+  cellCount = 200;
+  cellWidth = 40;
+  cellHeight = 40;
   cellMarginTop = 1;
   cellMarginBottom = 1;
   cellMarginLeftRight = 1;

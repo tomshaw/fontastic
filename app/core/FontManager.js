@@ -99,7 +99,12 @@ class FontManager {
     }
     reLaunch() {
         electron_1.app.relaunch();
-        //app.exit();
+        electron_1.app.quit();
+    }
+    exit() {
+        electron_1.app.exit();
+    }
+    quit() {
         electron_1.app.quit();
     }
     reloadWindow() {

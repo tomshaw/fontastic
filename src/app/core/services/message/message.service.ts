@@ -18,6 +18,10 @@ export class MessageService {
     }
   }
 
+  delay<T>(millis: number, value?: T): Promise<T> {
+    return new Promise((resolve) => setTimeout(() => resolve(value), millis))
+  }
+
   systemBoot() {
     return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_SYSTEM_BOOT))
       .pipe(catchError((error: any) => throwError(() => new Error(error))));
@@ -130,7 +134,7 @@ export class MessageService {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FILES_SCAN, { paths, collectionId });
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_FILES_SCAN, (event, response) => {
-        resolve(response);
+        this.delay(1e3, resolve(response));
       });
     });
   }

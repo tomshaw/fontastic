@@ -76,15 +76,17 @@ class ConnectionManager {
     createDataSourceWithOptions(options) {
         return new typeorm_1.DataSource(this.discardOmitables(options)).initialize();
     }
+    dropDatabase() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dataSource = this.getDataSource();
+            return yield dataSource.dropDatabase();
+        });
+    }
     truncateDatabase() {
         return __awaiter(this, void 0, void 0, function* () {
-            //const entities = this.getConnections().entityMetadatas;
-            const dataSource = this.getDataSource();
-            console.log('dataSource', dataSource);
-            // for (const entity of entities) {
-            //   const repository = this.getConnections().getRepository(entity.name);
-            //   await repository.clear();
-            // }
+            this.getCollection().clear();
+            this.getLogger().clear();
+            this.getStore().clear();
         });
     }
     /**

@@ -4,6 +4,8 @@ import { gsap, Power3 } from 'gsap';
 @Injectable({ providedIn: 'root' })
 export class UtilsService {
 
+  delay = (time: number) => (result: any) => new Promise(resolve => setTimeout(() => resolve(result), time));
+
   expandEntities(arr: any[] = [], parentId: number = 0) {
     const tree = [];
     for (const i in arr) {

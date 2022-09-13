@@ -109,9 +109,15 @@ class MessageHandler {
                 });
             }
         }));
+        this.on(channel.IPCMAIN_REQUEST_DROP_DATABASE, (event) => __awaiter(this, void 0, void 0, function* () {
+            yield this.getConnectionManager().dropDatabase().then(() => {
+                event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: "IPCMAIN_RESPONSE_DROP_DATABASE" });
+            });
+        }));
         this.on(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, (event) => __awaiter(this, void 0, void 0, function* () {
-            let response = yield this.getConnectionManager().truncateDatabase();
-            event.sender.send(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, []);
+            yield this.getConnectionManager().truncateDatabase().then(() => {
+                event.sender.send(channel.IPCMAIN_RESPONSE_TRUNCATE_DATABASE, { type: "IPCMAIN_RESPONSE_TRUNCATE_DATABASE" });
+            });
         }));
         /**
          * Font Manager
@@ -154,6 +160,9 @@ class MessageHandler {
         this.on(channel.IPCMAIN_REQUEST_SHOW_ITEM_FOLDER, (event, fullPath) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().showItemInFolder(fullPath); }));
         this.on(channel.IPCMAIN_REQUEST_OPEN_EXTERNAL, (event, url) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().openExternal(url); }));
         this.on(channel.IPCMAIN_REQUEST_RELOAD_WINDOW, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().reLaunch(); }));
+        this.on(channel.IPCMAIN_REQUEST_EXIT, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().exit(); }));
+        this.on(channel.IPCMAIN_REQUEST_QUIT, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().quit(); }));
+        this.on(channel.IPCMAIN_REQUEST_BEEP, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().beep(); }));
         /**
          * Collection
          */

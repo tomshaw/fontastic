@@ -100,10 +100,8 @@ export class NavigationComponent implements OnInit {
   openFiles(collectionId: number, response: any): void {
     this.presentationService.setLoadingSpinner(true);
     this.alertService.info('Adding fonts please wait..', 1e3, true);
-    this.messageService.scanFiles(response.filePaths, collectionId).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
-        this.resultSet = this.utils.expandEntities(result);
-      });
+    this.messageService.scanFiles(response.filePaths, collectionId).then(this.utils.delay(1e3)).then(() => {
+      this.messageService.updateCollectionCount(collectionId).subscribe((result) => this.resultSet = this.utils.expandEntities(result));
       this.presentationService.setLoadingSpinner(false);
       this.alertService.dismiss();
       this.messageService.log(`Added files to collection id #${collectionId}.`, 1);
@@ -113,10 +111,8 @@ export class NavigationComponent implements OnInit {
   openFolders(collectionId: number, response: any): void {
     this.presentationService.setLoadingSpinner(true);
     this.alertService.info('Adding fonts please wait..', 1e3, true);
-    this.messageService.scanFolders(response.filePaths, collectionId).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
-        this.resultSet = this.utils.expandEntities(result);
-      });
+    this.messageService.scanFolders(response.filePaths, collectionId).then(this.utils.delay(1e3)).then(() => {
+      this.messageService.updateCollectionCount(collectionId).subscribe((result) => this.resultSet = this.utils.expandEntities(result));
       this.presentationService.setLoadingSpinner(false);
       this.alertService.dismiss();
       this.messageService.log(`Added folders to collection id #${collectionId}.`, 1);
