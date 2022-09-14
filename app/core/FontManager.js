@@ -40,9 +40,7 @@ class FontManager {
     }
     fetchLatestNews(args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(args.endpoint).catch((err) => {
-                console.log('ERROR', err);
-            });
+            const response = yield fetch(args.endpoint);
             return yield response.json();
         });
     }

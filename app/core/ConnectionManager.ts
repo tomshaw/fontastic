@@ -101,12 +101,6 @@ export default class ConnectionManager {
     return await dataSource.dropDatabase()
   }
 
-  async truncateDatabase() {
-    this.getCollection().clear();
-    this.getLogger().clear();
-    this.getStore().clear();
-  }
-
   /**
    * Repository methods. 
    */

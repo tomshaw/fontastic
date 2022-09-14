@@ -144,12 +144,6 @@ export default class MessageHandler {
       });
     });
 
-    this.on(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, async (event: IpcMainEvent) => {
-      await this.getConnectionManager().truncateDatabase().then(() => {
-        event.sender.send(channel.IPCMAIN_RESPONSE_TRUNCATE_DATABASE, { type: "IPCMAIN_RESPONSE_TRUNCATE_DATABASE" });
-      })
-    });
-
     /**
      * Font Manager
      */

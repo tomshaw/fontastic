@@ -82,13 +82,6 @@ class ConnectionManager {
             return yield dataSource.dropDatabase();
         });
     }
-    truncateDatabase() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.getCollection().clear();
-            this.getLogger().clear();
-            this.getStore().clear();
-        });
-    }
     /**
      * Repository methods.
      */

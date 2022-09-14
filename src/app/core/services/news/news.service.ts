@@ -81,12 +81,12 @@ export class NewsService {
     this.messageService.fetchLatestNews({
       endpoint: this.endpoints.business + this.getApiKey()
     }).then((response: any) => {
-      if (response.status && response.status === "ok") {
+      if (response.status && response.status === 'ok') {
         const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
         this.setLatestNews(saved);
         this.messageService.set('news', saved);
         this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
-      } else if (response.status && response.status === "error" && response.message) {
+      } else if (response.status && response.status === 'error' && response.message) {
         this.alertService.error(response.message);
         this.messageService.log(response.message, 1);
       }

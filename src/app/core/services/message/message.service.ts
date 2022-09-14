@@ -108,15 +108,6 @@ export class MessageService {
     });
   }
 
-  truncateDatabase() {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE);
-    return new Promise((resolve, reject) => {
-      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_TRUNCATE_DATABASE, (event, response) => {
-        resolve(response);
-      });
-    });
-  }
-
   /**
    * Font Manager
    */

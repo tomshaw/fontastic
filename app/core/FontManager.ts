@@ -52,9 +52,7 @@ export default class FontManager {
   }
 
   async fetchLatestNews(args: any) {
-    const response = await fetch(args.endpoint).catch((err: any) => {
-      console.log('ERROR', err);
-    });
+    const response = await fetch(args.endpoint);
     return await response.json();
   }
 

@@ -114,11 +114,6 @@ class MessageHandler {
                 event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: "IPCMAIN_RESPONSE_DROP_DATABASE" });
             });
         }));
-        this.on(channel.IPCMAIN_REQUEST_TRUNCATE_DATABASE, (event) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().truncateDatabase().then(() => {
-                event.sender.send(channel.IPCMAIN_RESPONSE_TRUNCATE_DATABASE, { type: "IPCMAIN_RESPONSE_TRUNCATE_DATABASE" });
-            });
-        }));
         /**
          * Font Manager
          */

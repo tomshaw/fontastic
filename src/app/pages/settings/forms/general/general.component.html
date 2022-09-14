@@ -57,6 +57,19 @@
           </dl>
         </form>
 
+        <form>
+          <dl>
+            <dt>
+              <label>Exit application</label>
+              <span>Exits the application.</span>
+            </dt>
+            <dd>
+              <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+                (handleButtonClick)="onExitApplication($event)">Submit</app-button>
+            </dd>
+          </dl>
+        </form>
+
       </fieldset>
 
       <fieldset>

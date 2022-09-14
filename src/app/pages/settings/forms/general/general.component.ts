@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 /* eslint-disable-next-line max-len */
 import { AuthService, BreadcrumbService, AlertService, NewsService, MessageService, DatabaseService, PresentationService } from '@app/core/services';
@@ -10,7 +10,7 @@ import { AuthUserModel } from '@app/core/model';
   templateUrl: './general.component.html',
   styleUrls: ['./general.component.scss']
 })
-export class GeneralComponent {
+export class GeneralComponent implements OnInit {
 
   config: SystemConfig;
 
@@ -24,8 +24,13 @@ export class GeneralComponent {
     private databaseService: DatabaseService,
     private breadcrumbService: BreadcrumbService,
     private presentationService: PresentationService
-  ) {
-    this.user = this.authService.getAuthUser();
+  ) { }
+
+  ngOnInit(): void {
+    
+    if (this.authService.getAuthUser()) {
+      this.user = this.authService.getAuthUser();
+    }
 
     this.breadcrumbService.set([{
       title: 'Dashboard',
@@ -70,6 +75,11 @@ export class GeneralComponent {
     this.newsService.refreshLatestNews(true);
   }
 
+  onExitApplication(event: Event): void {
+    this.messageService.beep();
+    this.messageService.quitApplication();
+  }
+
   onDropDatabase(event: Event): void {
     const options = {
       type: 'question',
@@ -81,7 +91,7 @@ export class GeneralComponent {
     this.messageService.showMessageBox(options).then((opt: any) => {
       if (opt.response === 0) {
         this.messageService.dropDatabase().then((response: any) => {
-          console.log('response', response);
+          this.messageService.reloadWindow();
         });
       }
     });
@@ -98,7 +108,7 @@ export class GeneralComponent {
     this.messageService.showMessageBox(options).then((opt: any) => {
       if (opt.response === 0) {
         this.messageService.clearStore().then((response: any) => {
-          console.log('response', response);
+          this.messageService.reloadWindow();
         });
       }
     });
