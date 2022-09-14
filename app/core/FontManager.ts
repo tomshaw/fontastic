@@ -51,20 +51,6 @@ export default class FontManager {
     return this.connectionManager;
   }
 
-  async sendRequest(args: any) {
-    let machineId = this.getSystemManager().machineId;
-
-    const body = { machineId, ...args};
-
-    const response = await fetch("https://localhost:3000/api/v1/", {
-      method: "post",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" }
-    }).catch((err: any) => {});
-
-    return await response.json();
-  }
-
   async fetchLatestNews(args: any) {
     const response = await fetch(args.endpoint).catch((err: any) => {});
     return await response.json();
