@@ -38,21 +38,11 @@ class FontManager {
     getConnectionManager() {
         return this.connectionManager;
     }
-    sendRequest(args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let machineId = this.getSystemManager().machineId;
-            const body = Object.assign({ machineId }, args);
-            const response = yield fetch("https://localhost:3000/api/v1/", {
-                method: "post",
-                body: JSON.stringify(body),
-                headers: { "Content-Type": "application/json" }
-            }).catch((err) => { });
-            return yield response.json();
-        });
-    }
     fetchLatestNews(args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(args.endpoint).catch((err) => { });
+            const response = yield fetch(args.endpoint).catch((err) => {
+                console.log('ERROR', err);
+            });
             return yield response.json();
         });
     }

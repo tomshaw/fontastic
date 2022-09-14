@@ -145,9 +145,9 @@ class MessageHandler {
                 event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, find);
             })).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
         }));
-        this.on(channel.IPCMAIN_REQUEST_SYSTEM_AUTH, (event, args) => __awaiter(this, void 0, void 0, function* () {
+        this.on(channel.IPCMAIN_REQUEST_AUTH_USER, (event, args) => __awaiter(this, void 0, void 0, function* () {
             yield this.getFontManager().systemAuthenticate(args).then((response) => {
-                event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_AUTH, response);
+                event.sender.send(channel.IPCMAIN_RESPONSE_AUTH_USER, response);
             });
         }));
         this.on(channel.IPCMAIN_REQUEST_FETCH_NEWS, (event, args) => __awaiter(this, void 0, void 0, function* () {
@@ -155,14 +155,14 @@ class MessageHandler {
                 event.sender.send(channel.IPCMAIN_RESPONSE_FETCH_NEWS, response);
             });
         }));
-        this.on(channel.IPCMAIN_REQUEST_SHOW_MESSAGE_BOX, (event, options) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().showDialogBox(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_MESSAGE_BOX, response));
+        this.on(channel.IPCMAIN_REQUEST_MESSAGE_BOX, (event, options) => __awaiter(this, void 0, void 0, function* () {
+            this.getFontManager().showDialogBox(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_MESSAGE_BOX, response));
         }));
-        this.on(channel.IPCMAIN_REQUEST_SHOW_OPEN_DIALOG, (event, options) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().showOpenDialog(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_OPEN_DIALOG, response));
+        this.on(channel.IPCMAIN_REQUEST_OPEN_DIALOG, (event, options) => __awaiter(this, void 0, void 0, function* () {
+            this.getFontManager().showOpenDialog(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_OPEN_DIALOG, response));
         }));
         this.on(channel.IPCMAIN_REQUEST_OPEN_PATH, (event, path) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().openPath(path); }));
-        this.on(channel.IPCMAIN_REQUEST_SHOW_ITEM_FOLDER, (event, fullPath) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().showItemInFolder(fullPath); }));
+        this.on(channel.IPCMAIN_REQUEST_OPEN_FOLDER, (event, fullPath) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().showItemInFolder(fullPath); }));
         this.on(channel.IPCMAIN_REQUEST_OPEN_EXTERNAL, (event, url) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().openExternal(url); }));
         this.on(channel.IPCMAIN_REQUEST_RELOAD_WINDOW, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().reLaunch(); }));
         this.on(channel.IPCMAIN_REQUEST_EXIT, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().exit(); }));

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
@@ -13,7 +12,6 @@ import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
 export class NewsService {
 
   oneHour = 60 * 60 * 1000;
-  currentTimeStat = new Date().getTime();
 
   endpoints: any = {
     sources: 'https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=',
@@ -39,6 +37,10 @@ export class NewsService {
 
   get currentTime(): number {
     return Date.now();
+  }
+
+  get timeUTCString(): string {
+    return new Date(this.currentTime).toUTCString();
   }
 
   getLatestNews() {
@@ -79,11 +81,15 @@ export class NewsService {
     this.messageService.fetchLatestNews({
       endpoint: this.endpoints.business + this.getApiKey()
     }).then((response: any) => {
-      const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
-      this.setLatestNews(saved);
-      this.messageService.set('news', saved);
-      this.messageService.log('Updating latest news articles.', 1);
-      this.alertService.success('Fetching news articles.');
+      if (response.status && response.status === "ok") {
+        const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
+        this.setLatestNews(saved);
+        this.messageService.set('news', saved);
+        this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
+      } else if (response.status && response.status === "error" && response.message) {
+        this.alertService.error(response.message);
+        this.messageService.log(response.message, 1);
+      }
     });
   }
 }
