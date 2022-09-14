@@ -76,7 +76,7 @@
                       <label [attr.for]="child.id"></label>
                     </span>
                     <span class="nav-text">
-                      <input type="text" class="input--title" name="font-title" [attr.value]="child.title" (keyup.enter)="handleTitleInput($event)" title="{{child.title}}" (change)="handleTitleInput($event)" [attr.data-id]="child.id" />
+                      <input type="text" class="input--title form-control" name="font-title" [attr.value]="child.title" (focus)="handleFocus($event, child.id)" (keyup.enter)="handleTitleInput($event)" title="{{child.title}}" (change)="handleTitleInput($event)" [attr.data-id]="child.id" spellcheck="false" />
                     </span>
                     <span class="nav-actions">
                       <span>{{child.count}}</span>

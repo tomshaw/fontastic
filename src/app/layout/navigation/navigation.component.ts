@@ -40,11 +40,12 @@ export class NavigationComponent implements OnInit {
     this.presentationService._statsCollapsed.subscribe((result) => this.statsCollapsed = result);
 
     // Bootup fetch store.
-    this.databaseService.watchCollectionId$.subscribe((id: number) => {
-      if (id) {
-        this.collectionId = id;
-        this.databaseService.setWhere('collection_id', id).run();
-        this.breadcrumbService.setNavigation(id, this.collectionResultSet);
+    this.databaseService.watchCollectionId$.subscribe((collectionId: number) => {
+      console.log('collectionId', collectionId);
+      if (collectionId) {
+        this.collectionId = collectionId;
+        this.databaseService.setWhere('collection_id', collectionId).run();
+        this.breadcrumbService.setNavigation(collectionId, this.collectionResultSet);
       } else {
         this.databaseService.run();
       }
@@ -123,10 +124,14 @@ export class NavigationComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const collectionId = Number(target.dataset.id);
 
+    console.log('collection-id', collectionId);
+
     this.messageService.updateCollection(collectionId, { title: target.value }).then((result) => {
+
       if (collectionId === this.collectionId) {
         this.breadcrumbService.setNavigation(collectionId, result);
       }
+
     });
 
     this.messageService.log(`Updated collection name ${target.value}.`, 1);
@@ -142,6 +147,30 @@ export class NavigationComponent implements OnInit {
     this.messageService.resetEnabledCollection().then(() => {
 
       this.messageService.updateCollection(collectionId, { enabled: target.checked }).then((result) => {
+
+        this.databaseService.resetPage(1);
+
+        this.databaseService.setCollectionId(collectionId);
+
+        this.breadcrumbService.setNavigation(collectionId, result);
+
+        this.clearSelected();
+
+        if (this.router.url !== '/main') {
+          this.router.navigate(['/main']);
+        }
+      });
+    });
+  }
+
+  handleFocus(event: Event, collectionId: number): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode.previousSibling.firstChild as HTMLInputElement;
+    parent.checked = true;
+
+    this.messageService.resetEnabledCollection().then(() => {
+
+      this.messageService.updateCollection(collectionId, { enabled: true }).then((result) => {
 
         this.databaseService.resetPage(1);
 
