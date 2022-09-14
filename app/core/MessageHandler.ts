@@ -181,9 +181,9 @@ export default class MessageHandler {
       }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
     });
 
-    this.on(channel.IPCMAIN_REQUEST_SYSTEM_AUTH, async (event: IpcMainEvent, args: any) => {
+    this.on(channel.IPCMAIN_REQUEST_AUTH_USER, async (event: IpcMainEvent, args: any) => {
       await this.getFontManager().systemAuthenticate(args).then((response: any) => {
-        event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_AUTH, response);
+        event.sender.send(channel.IPCMAIN_RESPONSE_AUTH_USER, response);
       });
     });
 
@@ -193,17 +193,17 @@ export default class MessageHandler {
       });
     });
 
-    this.on(channel.IPCMAIN_REQUEST_SHOW_MESSAGE_BOX, async (event: IpcMainEvent, options: any) => {
-      this.getFontManager().showDialogBox(options).then((response: any) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_MESSAGE_BOX, response));
+    this.on(channel.IPCMAIN_REQUEST_MESSAGE_BOX, async (event: IpcMainEvent, options: any) => {
+      this.getFontManager().showDialogBox(options).then((response: any) => event.sender.send(channel.IPCMAIN_RESPONSE_MESSAGE_BOX, response));
     });
 
-    this.on(channel.IPCMAIN_REQUEST_SHOW_OPEN_DIALOG, async (event: IpcMainEvent, options: any) => {
-      this.getFontManager().showOpenDialog(options).then((response: any) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_OPEN_DIALOG, response));
+    this.on(channel.IPCMAIN_REQUEST_OPEN_DIALOG, async (event: IpcMainEvent, options: any) => {
+      this.getFontManager().showOpenDialog(options).then((response: any) => event.sender.send(channel.IPCMAIN_RESPONSE_OPEN_DIALOG, response));
     });
 
     this.on(channel.IPCMAIN_REQUEST_OPEN_PATH, async (event: IpcMainEvent, path: string) => this.getFontManager().openPath(path));
 
-    this.on(channel.IPCMAIN_REQUEST_SHOW_ITEM_FOLDER, async (event: IpcMainEvent, fullPath: string) => this.getFontManager().showItemInFolder(fullPath));
+    this.on(channel.IPCMAIN_REQUEST_OPEN_FOLDER, async (event: IpcMainEvent, fullPath: string) => this.getFontManager().showItemInFolder(fullPath));
 
     this.on(channel.IPCMAIN_REQUEST_OPEN_EXTERNAL, async (event: IpcMainEvent, url: string) => this.getFontManager().openExternal(url));
 

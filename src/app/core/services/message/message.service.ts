@@ -158,9 +158,9 @@ export class MessageService {
   }
 
   systemAuthenticate(options: any) {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SYSTEM_AUTH, options);
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_AUTH_USER, options);
     return new Promise((resolve, reject) => {
-      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SYSTEM_AUTH, (event, response) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_AUTH_USER, (event, response) => {
         resolve(response);
       });
     });
@@ -176,18 +176,18 @@ export class MessageService {
   }
 
   showMessageBox(options: any): Promise<any[]> {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SHOW_MESSAGE_BOX, options);
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_MESSAGE_BOX, options);
     return new Promise((resolve, reject) => {
-      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SHOW_MESSAGE_BOX, (event, response) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_MESSAGE_BOX, (event, response) => {
         resolve(response);
       });
     });
   }
 
   showOpenDialog(options: any): Promise<any[]> {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SHOW_OPEN_DIALOG, options);
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_OPEN_DIALOG, options);
     return new Promise((resolve, reject) => {
-      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SHOW_OPEN_DIALOG, (event, response) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_OPEN_DIALOG, (event, response) => {
         resolve(response);
       });
     });
@@ -198,7 +198,7 @@ export class MessageService {
   }
 
   showItemInFolder(path: string): void {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SHOW_ITEM_FOLDER, path);
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_OPEN_FOLDER, path);
   }
 
   openExternal(url: string): void {
