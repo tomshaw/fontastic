@@ -50,6 +50,12 @@ class FontManager {
             return yield response.json();
         });
     }
+    fetchLatestNews(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(args.endpoint).catch((err) => { });
+            return yield response.json();
+        });
+    }
     systemAuthenticate(args) {
         return __awaiter(this, void 0, void 0, function* () {
             args.status = "ok";

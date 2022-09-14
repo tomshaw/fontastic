@@ -19,7 +19,7 @@ export class MessageService {
   }
 
   delay<T>(millis: number, value?: T): Promise<T> {
-    return new Promise((resolve) => setTimeout(() => resolve(value), millis))
+    return new Promise((resolve) => setTimeout(() => resolve(value), millis));
   }
 
   systemBoot() {
@@ -161,6 +161,15 @@ export class MessageService {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SYSTEM_AUTH, options);
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SYSTEM_AUTH, (event, response) => {
+        resolve(response);
+      });
+    });
+  }
+
+  fetchLatestNews(options: any) {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FETCH_NEWS, options);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_FETCH_NEWS, (event, response) => {
         resolve(response);
       });
     });

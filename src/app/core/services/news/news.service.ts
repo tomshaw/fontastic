@@ -49,17 +49,6 @@ export class NewsService {
     this._latestNews.next(items);
   }
 
-  getRequest(url: string) {
-    /* eslint-disable @typescript-eslint/naming-convention */
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      })
-    };
-    return this.http.get<any>(url, httpOptions);
-  }
-
   checkTime(timeStamp: number): boolean {
     return (timeStamp + this.oneHour) < this.currentTime;
   }
@@ -73,11 +62,11 @@ export class NewsService {
   }
 
   refreshLatestNews(skipTimeCheck: boolean = false) {
-    const news = this.getLatestNews();
-
     if (!this.hasApiKey()) {
       return;
     }
+
+    const news = this.getLatestNews();
 
     if (skipTimeCheck) {
       this.fetchNews();
@@ -87,24 +76,14 @@ export class NewsService {
   }
 
   fetchNews() {
-    this.getRequest(this.endpoints.business + this.getApiKey()).pipe(map((data: any) => {
-      if (data.status === 'ok') {
-        return data;
-      }
-    })).subscribe({
-      complete: () => {
-        this.messageService.log('Updating latest news articles.', 1);
-      },
-      error: (error) => {
-        this.alertService.warning(error.message);
-        this.messageService.log(error.message, 1);
-      },
-      next: (response) => {
-        const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
-        this.setLatestNews(saved);
-        this.messageService.set('news', saved);
-        this.alertService.success('Fetching news articles.');
-      }
+    this.messageService.fetchLatestNews({
+      endpoint: this.endpoints.business + this.getApiKey()
+    }).then((response: any) => {
+      const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
+      this.setLatestNews(saved);
+      this.messageService.set('news', saved);
+      this.messageService.log('Updating latest news articles.', 1);
+      this.alertService.success('Fetching news articles.');
     });
   }
 }

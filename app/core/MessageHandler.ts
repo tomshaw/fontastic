@@ -187,6 +187,12 @@ export default class MessageHandler {
       });
     });
 
+    this.on(channel.IPCMAIN_REQUEST_FETCH_NEWS, async (event: IpcMainEvent, args: any) => {
+      await this.getFontManager().fetchLatestNews(args).then((response: any) => {
+        event.sender.send(channel.IPCMAIN_RESPONSE_FETCH_NEWS, response);
+      });
+    });
+
     this.on(channel.IPCMAIN_REQUEST_SHOW_MESSAGE_BOX, async (event: IpcMainEvent, options: any) => {
       this.getFontManager().showDialogBox(options).then((response: any) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_MESSAGE_BOX, response));
     });

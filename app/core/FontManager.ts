@@ -65,6 +65,11 @@ export default class FontManager {
     return await response.json();
   }
 
+  async fetchLatestNews(args: any) {
+    const response = await fetch(args.endpoint).catch((err: any) => {});
+    return await response.json();
+  }
+
   async systemAuthenticate(args: any) {
     args.status = "ok";
     this.getConfigManager().set("ACCOUNT", args);
