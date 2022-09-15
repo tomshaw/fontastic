@@ -159,6 +159,10 @@ export class NavigationComponent implements OnInit {
   }
 
   handleFocus(event: Event, collectionId: number): void {
+    if (collectionId === this.collectionId) {
+      return;
+    }
+
     const target = event.target as HTMLInputElement;
     const parent = target.parentNode.previousSibling.firstChild as HTMLInputElement;
     parent.checked = true;
