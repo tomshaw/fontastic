@@ -125,6 +125,8 @@ export class NavigationComponent implements OnInit {
 
     this.messageService.updateCollection(collectionId, { title: target.value }).then((result) => {
       if (collectionId === this.collectionId) {
+        this.databaseService.setCollectionId(collectionId);
+        this.databaseService.setCollection(result);
         this.breadcrumbService.setNavigation(collectionId, result);
       }
     });
@@ -147,6 +149,8 @@ export class NavigationComponent implements OnInit {
 
         this.databaseService.setCollectionId(collectionId);
 
+        this.databaseService.setCollection(result);
+
         this.breadcrumbService.setNavigation(collectionId, result);
 
         this.clearSelected();
@@ -163,9 +167,9 @@ export class NavigationComponent implements OnInit {
       return;
     }
 
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode.previousSibling.firstChild as HTMLInputElement;
-    parent.checked = true;
+    // const target = event.target as HTMLInputElement;
+    // const parent = target.parentNode.previousSibling.firstChild as HTMLInputElement;
+    // parent.checked = true;
 
     this.messageService.resetEnabledCollection().then(() => {
 

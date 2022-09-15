@@ -86,6 +86,7 @@ export class NewsService {
         this.setLatestNews(saved);
         this.messageService.set('news', saved);
         this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
+        this.alertService.info('Successfully fetched latest news.');
       } else if (response.status && response.status === 'error' && response.message) {
         this.alertService.error(response.message);
         this.messageService.log(response.message, 1);

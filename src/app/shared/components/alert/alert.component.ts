@@ -22,9 +22,10 @@ export class AlertComponent implements OnInit {
       if (ev && ev.message) {
         this.alert = ev;
         this.alertEnabled = true;
-      } else {
+      } else if (this.alertEnabled) {
         this.alertEnabled = false;
         this.alert = AlertProps;
+        this.alertService.clear();
       }
     });
   }

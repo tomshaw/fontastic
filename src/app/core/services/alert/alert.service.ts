@@ -22,11 +22,11 @@ export class AlertService {
       }
     });
 
-    this.getObservable().subscribe((ev: AppAlert) => {
-      if (ev && !ev.keep) {
-        setTimeout(() => this.clear(), ev.timeout);
-      }
-    });
+    // this.getObservable().subscribe((ev: AppAlert) => {
+    //   if (ev && !ev.keep) {
+    //     setTimeout(() => this.clear(), ev.timeout);
+    //   }
+    // });
   }
 
   getObservable(): Observable<AppAlert> {
