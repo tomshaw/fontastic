@@ -41,7 +41,6 @@ export class NavigationComponent implements OnInit {
 
     // Bootup fetch store.
     this.databaseService.watchCollectionId$.subscribe((collectionId: number) => {
-      console.log('collectionId', collectionId);
       if (collectionId) {
         this.collectionId = collectionId;
         this.databaseService.setWhere('collection_id', collectionId).run();
@@ -124,14 +123,10 @@ export class NavigationComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const collectionId = Number(target.dataset.id);
 
-    console.log('collection-id', collectionId);
-
     this.messageService.updateCollection(collectionId, { title: target.value }).then((result) => {
-
       if (collectionId === this.collectionId) {
         this.breadcrumbService.setNavigation(collectionId, result);
       }
-
     });
 
     this.messageService.log(`Updated collection name ${target.value}.`, 1);
@@ -175,6 +170,8 @@ export class NavigationComponent implements OnInit {
         this.databaseService.resetPage(1);
 
         this.databaseService.setCollectionId(collectionId);
+
+        this.databaseService.setCollection(result);
 
         this.breadcrumbService.setNavigation(collectionId, result);
 
