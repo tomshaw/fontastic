@@ -1,7 +1,7 @@
 {
   "name": "fontastic",
-  "version": "0.0.3",
-  "description": "Font Management with Angular 14 and Electron 19 (Typescript + SASS + Hot Reload)",
+  "version": "0.0.4",
+  "description": "Fontastic is a visually stunning font management application built with Angular and Electron.",
   "homepage": "https://github.com/tomshaw/fontastic",
   "author": {
     "name": "Tom Shaw",
