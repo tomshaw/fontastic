@@ -23,22 +23,22 @@
 
           <ul>
             <li>
-              <a class="system">
+              <a class="stats">
                 <span class="material-icons">playlist_add</span>
                 <span class="nav-text nav-status" (click)="handleClickAll($event)" title="All Collections">Font Count</span>
                 <span class="font-count">{{ rowCount }}</span>
               </a>
-              <a class="system">
+              <a class="stats">
                 <span class="material-icons">playlist_add</span>
                 <span class="nav-text nav-status" (click)="handleClickFavorites($event)" title="My Favorites">My Favorites</span>
                 <span class="font-count">{{ favoriteCount }}</span>
               </a>
-              <a class="system">
+              <a class="stats">
                 <span class="material-icons" (click)="handleClickSystemScan($event)" title="System Scan">playlist_add</span>
                 <span class="nav-text nav-status" (click)="handleClickSystem($event)" title="System Fonts">System Fonts</span>
                 <span class="font-count">{{ systemCount }}</span>
               </a>
-              <a class="system">
+              <a class="stats">
                 <span class="material-icons" (click)="handleClickSyncActivated($event)">playlist_add</span>
                 <span class="nav-text nav-status" (click)="handleClickActivated($event)" title="Activated Fonts">Activated Fonts</span>
                 <span class="font-count">{{ activatedCount }}</span>

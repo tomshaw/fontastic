@@ -223,7 +223,7 @@ export class NavigationComponent implements OnInit {
 
   toggleCollapse(event: Event): void {
     const target = event.target as HTMLInputElement;
-    const item = target.parentElement.parentElement;
+    const item = target.parentElement.parentElement as HTMLElement;
 
     const collectionId = Number(item.getAttribute('data-collection'));
 
@@ -281,7 +281,7 @@ export class NavigationComponent implements OnInit {
 
   handleClickAll(event: Event) {
     const target = event.target as HTMLInputElement;
-    const parent = target.parentNode;
+    const parent = target.parentNode as HTMLElement;
 
     this.databaseService.resetWhere().run();
 
@@ -300,7 +300,7 @@ export class NavigationComponent implements OnInit {
 
   handleClickFavorites(event: Event) {
     const target = event.target as HTMLInputElement;
-    const parent = target.parentNode;
+    const parent = target.parentNode as HTMLElement;
 
     this.databaseService.setWhere('store.favorite', 1).run();
 
@@ -341,7 +341,7 @@ export class NavigationComponent implements OnInit {
 
   handleClickSystem(event: Event) {
     const target = event.target as HTMLInputElement;
-    const parent = target.parentNode;
+    const parent = target.parentNode as HTMLElement;
 
     this.databaseService.setWhere('store.system', 1).run();
 
@@ -360,7 +360,7 @@ export class NavigationComponent implements OnInit {
 
   handleClickActivated(event: Event) {
     const target = event.target as HTMLInputElement;
-    const parent = target.parentNode;
+    const parent = target.parentNode as HTMLElement;
 
     this.databaseService.setWhere('store.activated', 1).run();
 
@@ -379,17 +379,17 @@ export class NavigationComponent implements OnInit {
 
   clearChecked() {
     const inputs = document.querySelectorAll('input[data-collection]');
-    inputs.forEach((item: any) => item.checked = false);
+    inputs.forEach((el: HTMLInputElement) => el.checked = false);
   }
 
   clearSelected() {
-    const links = document.querySelectorAll('a.system');
-    links.forEach((item: any) => item.classList.remove('selected'));
+    const elms = document.querySelectorAll('a.stats');
+    elms.forEach((el: HTMLElement) => el.classList.remove('selected'));
   }
 
-  toggleSelected(item: any) {
-    if (!item.classList.contains('selected')) {
-      item.classList.add('selected');
+  toggleSelected(el: HTMLElement) {
+    if (!el.classList.contains('selected')) {
+      el.classList.add('selected');
     }
   }
 }
