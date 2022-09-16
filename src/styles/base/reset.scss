@@ -398,6 +398,10 @@ Tables
 .table {
   @apply text-[#616467] opacity-0 invisible transition-opacity;
 
+  thead > tr {
+    @apply text-white bg-[#00a0be];
+  }
+
   &.striped > tbody > tr:nth-child(odd) {
     background-color: darken(#fff, 2%);
   }

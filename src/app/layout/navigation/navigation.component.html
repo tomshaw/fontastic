@@ -61,7 +61,7 @@
                 </ng-template>
               </span>
               <span class="collection">
-                <input type="text" class="input--title" name="collection-title" [attr.value]="item.title" (keyup.enter)="handleTitleInput($event)" (change)="handleTitleInput($event)" [attr.data-id]="item.id" />
+                <input type="text" class="input--title form-control" name="collection-title" [attr.value]="item.title" (keyup.enter)="handleTitleInput($event)" (change)="handleTitleInput($event)" [attr.data-id]="item.id" />
               </span>
               <span class="material-icons icon-hidden cursor-pointer" (click)="handleCreateCollection($event, item.id)" [attr.data-id]="item.id" title="Create Collection">add</span>
               <span class="material-icons icon-hidden cursor-pointer" (click)="handleDeleteCollection($event)" [attr.data-id]="item.id" title="Delete Collection">remove</span>
