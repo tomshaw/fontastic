@@ -279,7 +279,7 @@ export class NavigationComponent implements OnInit {
    * System Stats
    */
 
-  handleClickAll(event: Event) {
+  handleClickAll(event: Event): void {
     const target = event.target as HTMLInputElement;
     const parent = target.parentNode as HTMLElement;
 
@@ -298,7 +298,7 @@ export class NavigationComponent implements OnInit {
     }]);
   }
 
-  handleClickFavorites(event: Event) {
+  handleClickFavorites(event: Event): void {
     const target = event.target as HTMLInputElement;
     const parent = target.parentNode as HTMLElement;
 
@@ -317,7 +317,7 @@ export class NavigationComponent implements OnInit {
     }]);
   }
 
-  handleClickSystemScan(event: Event) {
+  handleClickSystemScan(event: Event): void {
     this.alertService.info('Searching system fonts please wait..');
     this.presentationService.setLoadingSpinner(true);
     this.messageService.syncSystemFonts().then((result: any) => {
@@ -328,7 +328,7 @@ export class NavigationComponent implements OnInit {
     }).catch((err) => { });
   }
 
-  handleClickSyncActivated(event: Event) {
+  handleClickSyncActivated(event: Event): void {
     this.alertService.info('Searching system fonts please wait..');
     this.presentationService.setLoadingSpinner(true);
     this.messageService.syncActivatedFonts().then((result: any) => {
@@ -339,7 +339,7 @@ export class NavigationComponent implements OnInit {
     }).catch((err) => { });
   }
 
-  handleClickSystem(event: Event) {
+  handleClickSystem(event: Event): void {
     const target = event.target as HTMLInputElement;
     const parent = target.parentNode as HTMLElement;
 
@@ -358,7 +358,7 @@ export class NavigationComponent implements OnInit {
     }]);
   }
 
-  handleClickActivated(event: Event) {
+  handleClickActivated(event: Event): void {
     const target = event.target as HTMLInputElement;
     const parent = target.parentNode as HTMLElement;
 
@@ -377,17 +377,17 @@ export class NavigationComponent implements OnInit {
     }]);
   }
 
-  clearChecked() {
+  clearChecked(): void {
     const inputs = document.querySelectorAll('input[data-collection]');
     inputs.forEach((el: HTMLInputElement) => el.checked = false);
   }
 
-  clearSelected() {
+  clearSelected(): void {
     const elms = document.querySelectorAll('a.stats');
     elms.forEach((el: HTMLElement) => el.classList.remove('selected'));
   }
 
-  toggleSelected(el: HTMLElement) {
+  toggleSelected(el: HTMLElement): void {
     if (!el.classList.contains('selected')) {
       el.classList.add('selected');
     }
