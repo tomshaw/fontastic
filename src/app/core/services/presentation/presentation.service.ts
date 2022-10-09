@@ -151,7 +151,9 @@ export class PresentationService {
     const settings = this.configService.get('PANEL_SETTINGS');
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
-        this[key].next(value);
+        if (this[key]) {
+          this[key].next(value);
+        }
       }
     }
   }
@@ -173,7 +175,7 @@ export class PresentationService {
     const settings: any = this.configService.get('PREVIEW_SETTINGS');
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
-        if (key) {
+        if (this[key]) {
           this[key].next(value);
         }
       }
@@ -191,7 +193,7 @@ export class PresentationService {
     const settings: any = this.configService.get('THEME_SETTINGS');
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
-        if (key) {
+        if (this[key]) {
           this[key].next(value);
         }
       }
@@ -263,7 +265,7 @@ export class PresentationService {
       _letterSpacing: this.defaultLetterSpacing
     };
     for (const [key, value] of Object.entries(settings)) {
-      if (key) {
+      if (this[key]) {
         this[key].next(value);
       }
     }
