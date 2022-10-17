@@ -130,8 +130,52 @@ Component
 .component {
   @extend %full;
   &__panel {
-    @apply relative flex flex-col flex-nowrap justify-start items-center overflow-hidden w-full h-full;
+    @apply relative flex flex-col flex-nowrap overflow-hidden w-full h-full;
   }
+}
+
+/* ==========================================================================
+Component
+========================================================================== */
+
+.hover-scroll-overlay-y {
+  --scrollbar-color: #00a0be;
+  --scrollbar-space: 0.2rem;
+  --scrollbar-width: calc(.2rem + var(--scrollbar-space));
+}
+
+.hover-scroll-overlay-y {
+  overflow-y: hidden;
+  position: relative;
+}
+
+.hover-scroll-overlay-y::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+.hover-scroll-overlay-y::-webkit-scrollbar-thumb {
+  background-clip: content-box;
+  border-right: var(--scrollbar-space) solid transparent;
+}
+
+.hover-scroll-overlay-y:hover {
+  overflow-y: overlay;
+}
+
+.hover-scroll-overlay-y {
+  scrollbar-color: var(--scrollbar-color) transparent;
+}
+
+.hover-scroll-overlay-y::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+}
+
+.hover-scroll-overlay-y:hover {
+  scrollbar-color: var(--scrollbar-color) transparent;
+}
+
+.hover-scroll-overlay-y:hover::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
 }
 
 /* ==========================================================================
@@ -188,59 +232,6 @@ Borders
 
 .border-left-dashed {
   @apply border-l border-[#00a0be] border-dashed;
-}
-
-/* ==========================================================================
-Scrollbox
-========================================================================== */
-
-.scrollbox {
-  background-color: transparent;
-  overflow: hidden;
-  overflow-y: scroll;
-  min-height: 100%;
-  width: 100%;
-  transition: all 1s ease-in-out;
-  will-change: transform, opacity, visibility;
-  padding: 0;
-  margin: 0;
-  padding-bottom: 50px;
-  .scrollbox-content {
-    position: relative;
-    visibility: visible;
-    min-height: 100%;
-  }
-  &.scrollX {
-    overflow-x: overlay !important;
-  }
-  &.scrollY {
-    overflow-y: overlay !important;
-  }
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 8px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-    //background: rgba(0, 0, 0, 0.3);
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    transition: all 1s ease-in-out;
-    //background: rgba(0, 0, 0, 0.3);
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.2);
-  }
-  &::-webkit-scrollbar-corner {
-    background-color: inherit;
-  }
-  &::-webkit-scrollbar-track-piece:start {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-track-piece:end {
-    background: transparent;
-  }
 }
 
 /* ==========================================================================

@@ -10,6 +10,8 @@ import FontInstaller from "./FontInstaller";
 import { execute } from "../helpers/command"
 
 const fetch = require("node-fetch");
+const { JSDOM } = require('jsdom');
+const { Readability } = require('@mozilla/readability');
 
 export default class FontManager {
 
@@ -18,8 +20,8 @@ export default class FontManager {
   connectionManager: ConnectionManager;
 
   constructor(
-    systemManager: SystemManager, 
-    configManager: ConfigManager, 
+    systemManager: SystemManager,
+    configManager: ConfigManager,
     connectionManager: ConnectionManager
   ) {
     this.setSystemManager(systemManager);
@@ -54,6 +56,22 @@ export default class FontManager {
   async fetchLatestNews(args: any) {
     const response = await fetch(args.endpoint);
     return await response.json();
+  }
+
+  async fetchNewsContent(url: string) {
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0'
+      }
+    });
+    if (!res.ok) {
+      console.error(await res.text());
+    }
+    const body = await res.text();
+    const dom = new JSDOM(body);
+    const reader = new Readability(dom.window.document).parse();
+    //console.log('reader', reader.textContent);
+    return reader;
   }
 
   async systemAuthenticate(args: any) {

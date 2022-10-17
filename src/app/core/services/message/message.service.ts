@@ -166,6 +166,15 @@ export class MessageService {
     });
   }
 
+  fetchNewsContent(url: string) {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_NEWS_CONTENT, url);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_NEWS_CONTENT, (event, response) => {
+        resolve(response);
+      });
+    });
+  }
+
   showMessageBox(options: any): Promise<any[]> {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_MESSAGE_BOX, options);
     return new Promise((resolve, reject) => {

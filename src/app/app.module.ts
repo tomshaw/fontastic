@@ -17,7 +17,6 @@ import { SharedModule } from './shared/shared.module';
 import { LayoutModule } from './layout/layout.module';
 import { MainModule } from './pages/main/main.module';
 import { SettingsModule } from './pages/settings/settings.module';
-import { WaterfallModule } from './pages/waterfall/waterfall.module';
 import { AppRoutingModule } from './app-routing.module';
 
 import { ConfigService, ElectronService, MessageService } from '@app/core/services';
@@ -41,7 +40,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     LayoutModule,
     MainModule,
     SettingsModule,
-    WaterfallModule,
     AppRoutingModule,
     TranslateModule.forRoot({
       loader: {

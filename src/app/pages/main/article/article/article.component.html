@@ -1,0 +1,45 @@
+<div class="component">
+  <div class="component__panel">
+
+    <div class="controls flex justify-between items-center border-top border-bottom">
+      <div class="controls__item flex justify-start items-center">
+        <h1>Articles</h1>
+      </div>
+      <div class="controls__item flex justify-end items-center">
+        <div class="flex items-center p-0">
+          <button type="button" class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2" (click)="onUpdateNewsArticle($event)">
+            <span class="flex grow">Randomize</span>
+          </button>
+          <button type="button" class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2" (click)="onUpdateNewsArticle($event)">
+            <span class="flex grow">Dashboard</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hover-scroll-overlay-y">
+      <div class="container mx-auto px-10 py-10 w-full">
+        <article class="prose lg:prose-xl" [style.color]="fontColor" [style.font-family]="fontFamily">
+          <h1 class="my-0" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.title}}</h1>
+          <div class="flex justify-start items-center">
+            <ng-template [ngIf]="selectedNews.author">
+              <strong [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.author}}</strong>
+            </ng-template>
+            <ng-template [ngIf]="selectedNews.publishedAt">
+              <i class="ml-2" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.publishedAt}}</i>
+            </ng-template>
+          </div>
+          <div class="flex justify-start items-center py-2">
+            <img src="{{selectedNews.urlToImage}}" />
+          </div>
+          <ng-template [ngIf]="textContent">
+            <div class="flex justify-start items-center py-2">
+              <p [style.color]="fontColor" [style.font-family]="fontFamily" [innerHtml]="textContent | safeHtml"></p>
+            </div>
+          </ng-template>
+        </article>
+      </div>
+    </div>
+
+  </div>
+</div>

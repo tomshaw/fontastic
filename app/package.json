@@ -9,8 +9,10 @@
   "main": "main.js",
   "private": true,
   "dependencies": {
+    "@mozilla/readability": "^0.4.2",
     "electron-is-dev": "^2.0.0",
     "electron-store": "^8.0.2",
+    "jsdom": "^20.0.1",
     "mime": "^3.0.0",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.7",

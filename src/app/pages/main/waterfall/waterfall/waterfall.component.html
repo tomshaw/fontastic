@@ -1,0 +1,32 @@
+<div class="component">
+  <div class="component__panel">
+
+    <div class="controls flex justify-between items-center border-top border-bottom">
+      <div class="controls__item flex justify-start items-center">
+        <h1>Waterfall</h1>
+      </div>
+      <div class="controls__item flex justify-end items-center">
+        <div class="pagination">
+          <input type="text" class="w-[40px]" [(ngModel)]="baseSize" (change)="onUpdateBaseSize($event)">
+          <select [(ngModel)]="selectFontScale" (change)="onSelectFontScale($event)">
+            <option *ngFor="let item of fontScale;" [value]="item.size">{{item.title}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="hover-scroll-overlay-y overflow-x-hidden">
+      <ng-container *ngFor="let item of waterFall; let i = index">
+        <div class="flex items-stretch w-full border-b-4 border-slate-200">
+          <div class="flex items-end min-w-[140px] px-5 py-5 whitespace-nowrap bg-slate-100">
+            <span>{{item.fontLabel}}</span>
+          </div>
+          <div class="relative flex items-center w-full px-5 whitespace-nowrap">
+            <h1 class="leading-tight" [style.font-family]="item.fontFamily" [style.font-size]="item.fontSize" [innerHtml]="displayText"></h1>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+  </div>
+</div>

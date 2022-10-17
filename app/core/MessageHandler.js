@@ -150,6 +150,11 @@ class MessageHandler {
                 event.sender.send(channel.IPCMAIN_RESPONSE_FETCH_NEWS, response);
             });
         }));
+        this.on(channel.IPCMAIN_REQUEST_NEWS_CONTENT, (event, url) => __awaiter(this, void 0, void 0, function* () {
+            yield this.getFontManager().fetchNewsContent(url).then((response) => {
+                event.sender.send(channel.IPCMAIN_RESPONSE_NEWS_CONTENT, response);
+            });
+        }));
         this.on(channel.IPCMAIN_REQUEST_MESSAGE_BOX, (event, options) => __awaiter(this, void 0, void 0, function* () {
             this.getFontManager().showDialogBox(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_MESSAGE_BOX, response));
         }));

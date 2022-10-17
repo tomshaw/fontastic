@@ -1,47 +1,9 @@
-<div class="component" id="component">
-  <div class="component__panel">
-
-    <div class="controls flex justify-between items-center border-top border-bottom">
-
-      <div class="controls__item flex justify-start items-center">
-        <span class="material-icons">arrow_right</span>
-        <i class="text-uppercase" title="Glyph Information">Glyph Information</i>
-        <ng-container *ngIf="glyphName">
-          <span class="material-icons">arrow_right</span>
-          <i class="text-uppercase" title="{{glyphName}}">{{glyphName}}</i>
-        </ng-container>
-      </div>
-
-      <div class="controls__item flex justify-end items-center">
-        <div class="toolbar-item pagination">
-          <select class="form-control" (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
-            <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
-          </select>
-          <select class="form-control" (change)="onChangeCount($event)" [(ngModel)]="cellCount">
-            <ng-container *ngFor="let item of cellCountOptions">
-              <option [value]="item" *ngIf="item < numGlyphs">{{item}}</option>
-            </ng-container>
-          </select>
-          <select class="form-control" (change)="onChangePage($event)">
-            <option *ngFor="let item of paginatorOptions" [value]="item.key">{{item.value}}</option>
-          </select>
-          <span class="pagination-stats">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="scrollbox">
-      <div class="scrollbox-content">
-        <div class="glyph-list">
-          <ng-container *ngFor="let item of createRange(cellCount); let i = index">
-            <div class="glyph-list__wrapper">
-              <canvas class="glyph-list__wrapper-item" width="{{cellWidth}}" height="{{cellHeight}}" id="g{{i}}" (mouseenter)="onCellHover($event)"></canvas>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-
+<ng-container [ngSwitch]="componentName">
+  <div (contextmenu)="onComponentSwitch()">
+    <app-glyphs [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'glyphs'"></app-glyphs>
+    <app-waterfall [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'waterfall'"></app-waterfall>
+    <ng-container *ngIf="latestNews.length">
+      <app-article [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'article'"></app-article>
+    </ng-container>
   </div>
-</div>
+</ng-container>

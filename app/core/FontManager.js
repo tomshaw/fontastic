@@ -14,6 +14,8 @@ const FontFinder_1 = require("./FontFinder");
 const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
 const fetch = require("node-fetch");
+const { JSDOM } = require('jsdom');
+const { Readability } = require('@mozilla/readability');
 class FontManager {
     constructor(systemManager, configManager, connectionManager) {
         this.setSystemManager(systemManager);
@@ -42,6 +44,23 @@ class FontManager {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(args.endpoint);
             return yield response.json();
+        });
+    }
+    fetchNewsContent(url) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch(url, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0'
+                }
+            });
+            if (!res.ok) {
+                console.error(yield res.text());
+            }
+            const body = yield res.text();
+            const dom = new JSDOM(body);
+            const reader = new Readability(dom.window.document).parse();
+            //console.log('reader', reader.textContent);
+            return reader;
         });
     }
     systemAuthenticate(args) {
