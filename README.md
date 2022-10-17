@@ -17,7 +17,14 @@
 Fontastic is a gorgeous font management and cataloging application. Features include temporary & permanent font installation, a breathtakingly beautiful interface, custom themes, glyph support, displayable table names, multi database support and much more.
 
 ## Screen Shots
+
 As part of the documentation you can check out [screenshots here.](docs/screenshots/readme.md)
+
+## How To Instructions
+
+**Q: How do I view the Waterfall or News Articles?**
+
+**A:** On the inspector window right click to cycle thru the available components.
 
 ## Libraries Used
 
