@@ -1,43 +1,54 @@
-<div class="tabs-panel tabs-panel-open">
-  <div class="panel-content">
-    <div class="container mx-auto p-7">
+<div class="component">
+  <div class="component__panel">
 
-      <div class="page">
+    <div class="hover-scroll-overlay-y">
 
-        <!-- Head -->
-        <div class="page__header">
-          <div class="text-left">
-            <h1>Database Management</h1>
+      <div class="tabs-panel tabs-panel-open">
+        <div class="panel-content">
+          <div class="container mx-auto p-7">
+
+            <div class="page">
+
+              <!-- Head -->
+              <div class="page__header">
+                <div class="text-left">
+                  <h1>Database Management</h1>
+                </div>
+              </div>
+
+              <form class="form" #newsApiForm="ngForm" (ngSubmit)="onSubmit(newsApiForm)">
+
+                <!-- Body -->
+                <div class="page__body">
+                  <div class="form-group">
+                    <label for="apiKey">Api Key</label>
+                    <input type="text" class="form-control" name="apiKey" id="apiKey" [(ngModel)]="apiKey"
+                      #selectedApiKey="ngModel">
+                    <span class="form-text text-muted">Please visit <a href="https://newsapi.org">newsapi.org</a> to
+                      obtain
+                      your free key.</span>
+                  </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="page__footer">
+                  <div>
+                    <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md app-button__rounded'"
+                      [attr.disabled]="!newsApiForm.form.valid">Submit</app-button>
+                    <app-button [type]="'reset'" [title]="'Reset'"
+                      [ngClass]="'app-button__md app-button__rounded app-button__success'"
+                      (click)="newsApiForm.reset();">
+                      Reset
+                    </app-button>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
           </div>
         </div>
-
-        <form class="form" #newsApiForm="ngForm" (ngSubmit)="onSubmit(newsApiForm)">
-
-          <!-- Body -->
-          <div class="page__body">
-            <div class="form-group">
-              <label for="apiKey">Api Key</label>
-              <input type="text" class="form-control" name="apiKey" id="apiKey" [(ngModel)]="apiKey"
-                #selectedApiKey="ngModel">
-              <span class="form-text text-muted">Please visit <a href="https://newsapi.org">newsapi.org</a> to obtain
-                your free key.</span>
-            </div>
-          </div>
-
-          <!-- Footer -->
-          <div class="page__footer">
-            <div>
-              <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md app-button__rounded'"
-                [attr.disabled]="!newsApiForm.form.valid">Submit</app-button>
-              <app-button [type]="'reset'" [title]="'Reset'"
-                [ngClass]="'app-button__md app-button__rounded app-button__success'" (click)="newsApiForm.reset();">
-                Reset
-              </app-button>
-            </div>
-          </div>
-
-        </form>
-
       </div>
 
     </div>

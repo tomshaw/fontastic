@@ -1,38 +1,46 @@
-<div class="tabs-panel tabs-panel-open">
-  <div class="panel-content">
-    <div class="container mx-auto p-7">
+<div class="component">
+  <div class="component__panel">
 
-      <div class="page">
+    <div class="hover-scroll-overlay-y">
 
-        <!-- Head -->
-        <div class="page__header">
-          <div class="text-left">
-            <h1>System Settings</h1>
+      <div class="tabs-panel tabs-panel-open">
+        <div class="panel-content">
+          <div class="container mx-auto p-7">
+
+            <div class="page">
+
+              <!-- Head -->
+              <div class="page__header">
+                <div class="text-left">
+                  <h1>System Settings</h1>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="page__body">
+                <table class="table table-settings">
+                  <thead>
+                    <tr>
+                      <th class="text-left uppercase">Key</th>
+                      <th class="text-left uppercase">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let item of systemSettings; let i = index;">
+                      <tr>
+                        <td class="text-left">{{item.key}}</td>
+                        <td class="text-left">{{item.value}}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
           </div>
         </div>
-
-        <!-- Body -->
-        <div class="page__body">
-          <table class="table table-settings">
-            <thead>
-              <tr>
-                <th class="text-left uppercase">Key</th>
-                <th class="text-left uppercase">Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngFor="let item of systemSettings; let i = index;">
-                <tr>
-                  <td class="text-left">{{item.key}}</td>
-                  <td class="text-left">{{item.value}}</td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
-        </div>
-
       </div>
-
     </div>
   </div>
 </div>

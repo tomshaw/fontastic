@@ -1,47 +1,57 @@
-<div class="tabs-panel tabs-panel-open">
-  <div class="panel-content">
-    <div class="container mx-auto p-7">
+<div class="component">
+  <div class="component__panel">
 
-      <div class="page">
+    <div class="hover-scroll-overlay-y">
 
-        <!-- Head -->
-        <div class="page__header">
-          <div class="text-left">
-            <h1>System Logs</h1>
-          </div>
-          <div class="flex items-center justify-end p-0 text-right">
-            <div>
-              <app-button [type]="'button'" [title]="'Truncate Table'" [ngClass]="'app-button__xl'"
-                (click)="handleTruncate($event)">Empty Table</app-button>
+      <div class="tabs-panel tabs-panel-open">
+        <div class="panel-content">
+          <div class="container mx-auto p-7">
+
+            <div class="page">
+
+              <!-- Head -->
+              <div class="page__header">
+                <div class="text-left">
+                  <h1>System Logs</h1>
+                </div>
+                <div class="flex items-center justify-end p-0 text-right">
+                  <div>
+                    <app-button [type]="'button'" [title]="'Truncate Table'" [ngClass]="'app-button__xl'"
+                      (click)="handleTruncate($event)">Empty Table</app-button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="page__body">
+                <table class="table table-auto striped">
+                  <thead>
+                    <tr>
+                      <th class="uppercase sort_input">ID</th>
+                      <th class="text-left">Message</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Created</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of resultSet; let i = index;" title="{{item.message}}">
+                      <td class="text-center"><i class="icon-trashcan cursor-pointer" (click)="handleDelete(item.id)"
+                          title="Delete Item"></i></td>
+                      <td class="text-left">
+                        <strong>{{filterMessageType(item.type)}}</strong> <br />
+                        {{item.message.substring(0, 100)}}
+                      </td>
+                      <td class="text-center">{{filterMessageStatus(item.status)}}</td>
+                      <td class="text-center">{{item.created | date :'medium'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
             </div>
+
           </div>
         </div>
-
-        <!-- Body -->
-        <div class="page__body">
-          <table class="table table-auto striped">
-            <thead>
-              <tr>
-                <th class="uppercase sort_input">ID</th>
-                <th class="text-left">Message</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of resultSet; let i = index;" title="{{item.message}}">
-                <td class="text-center"><i class="icon-trashcan cursor-pointer" (click)="handleDelete(item.id)" title="Delete Item"></i></td>
-                <td class="text-left">
-                  <strong>{{filterMessageType(item.type)}}</strong> <br/> 
-                  {{item.message.substring(0, 100)}}
-                </td>
-                <td class="text-center">{{filterMessageStatus(item.status)}}</td>
-                <td class="text-center">{{item.created | date :'medium'}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
       </div>
 
     </div>
