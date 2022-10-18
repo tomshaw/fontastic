@@ -56,7 +56,6 @@ export class ThemeComponent implements OnInit {
     const theme = target.value;
     this.presentationService.setTheme(theme);
     this.presentationService.setThemeDefaults(theme);
-    this.messageService.log(`Switched theme to ${theme}.`, 1);
   }
 
   onSubmit(form: NgForm): void {

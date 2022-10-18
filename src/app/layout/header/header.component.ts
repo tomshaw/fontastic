@@ -125,7 +125,6 @@ export class HeaderComponent implements OnInit {
       body.setAttribute('data-theme', theme);
       this.presentationService.setTheme(theme);
       this.presentationService.setThemeDefaults(theme);
-      this.messageService.log(`Switched theme to ${theme}.`, 1);
     }
   }
 
