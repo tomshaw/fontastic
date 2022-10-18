@@ -9,18 +9,16 @@
         <i class="material-icons hidden">view_module</i>
       </div>
     </div>
-    <div class="scrollbox">
-      <div class="scrollbox-content">
-        <div class="font-meta-list">
-          <ng-container *ngFor="let item of _metaList">
-            <figure class="border-bottom-dashed" *ngIf="item.value && item.name.length > 4">
-              <figcaption>
-                <h2 [attr.title]="item.name">{{ item.name }}</h2>
-              </figcaption>
-              <p>{{ item.value }}</p>
-            </figure>
-          </ng-container>
-        </div>
+    <div class="hover-scroll-overlay-y">
+      <div class="font-meta-list">
+        <ng-container *ngFor="let item of _metaList">
+          <figure class="border-bottom-dashed" *ngIf="item.value && item.name.length > 4">
+            <figcaption>
+              <h2 [attr.title]="item.name">{{ item.name }}</h2>
+            </figcaption>
+            <p>{{ item.value }}</p>
+          </figure>
+        </ng-container>
       </div>
     </div>
   </div>
