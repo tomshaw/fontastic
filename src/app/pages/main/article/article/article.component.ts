@@ -34,6 +34,10 @@ export class ArticleComponent implements OnInit {
     this.updateTextContent(this.selectedNews.url);
   }
 
+  onRefreshLatestNews(event: Event): void {
+    this.newsService.refreshLatestNews(true);
+  }
+
   selectedNewsArticle(): void {
     this.selectedNews = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
   }
