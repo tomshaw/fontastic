@@ -7,20 +7,32 @@
       </div>
       <div class="controls__item flex justify-end items-center">
         <div class="flex items-center p-0">
-          <button type="button" class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2" (click)="onUpdateNewsArticle($event)">
+          <button type="button"
+            class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2"
+            (click)="onUpdateNewsArticle($event)">
             <span class="flex grow">Random Article</span>
           </button>
-          <button type="button" class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2" (click)="onRefreshLatestNews($event)">
+          <button type="button"
+            class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2"
+            (click)="onRefreshLatestNews($event)">
             <span class="flex grow">Refresh News</span>
           </button>
+
+          <select [(ngModel)]="fontScaleSelected" (change)="onSelectFontScale($event)">
+            <option *ngFor="let item of fontScale;" [value]="item.key">{{item.value}}</option>
+          </select>
+
         </div>
       </div>
     </div>
 
     <div class="hover-scroll-overlay-y">
       <div class="container mx-auto px-10 py-10 w-full">
-        <article class="prose lg:prose-xl" [style.color]="fontColor" [style.font-family]="fontFamily">
-          <h1 class="my-0" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.title}}</h1>
+        <article class="prose prose-img:rounded-xl prose-headings:underline" [class]="fontScaleSelected" [style.color]="fontColor" [style.font-family]="fontFamily">
+          <ng-template [ngIf]="selectedNews.source.name">
+            <i class="ml-2" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.source.name}}</i>
+          </ng-template>
+          <h1 class="!my-5" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.title}}</h1>
           <div class="flex justify-start items-center">
             <ng-template [ngIf]="selectedNews.author">
               <strong [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.author}}</strong>
@@ -29,14 +41,11 @@
               <i class="ml-2" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.publishedAt}}</i>
             </ng-template>
           </div>
-          <div class="flex justify-start items-center py-2">
-            <img src="{{selectedNews.urlToImage}}" />
+          <p [style.color]="fontColor" [style.font-family]="fontFamily" [innerHtml]="selectedNews.description | safeHtml" *ngIf="selectedNews.description"></p>
+          <div class="flex justify-start items-center py-0 my-0">
+            <img class="py-0 !my-2" src="{{selectedNews.urlToImage}}" />
           </div>
-          <ng-template [ngIf]="textContent">
-            <div class="flex justify-start items-center py-2">
-              <p [style.color]="fontColor" [style.font-family]="fontFamily" [innerHtml]="textContent | safeHtml"></p>
-            </div>
-          </ng-template>
+          <p [style.color]="fontColor" [style.font-family]="fontFamily" [innerHtml]="textContent | safeHtml" *ngIf="textContent"></p>
         </article>
       </div>
     </div>
