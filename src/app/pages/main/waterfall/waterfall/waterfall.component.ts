@@ -53,7 +53,7 @@ export class WaterfallComponent implements OnChanges, OnInit {
       title: 'Golden Ratio'
     }
   ];
-  selectFontScale = this.fontScale[3].size;
+  selectFontScale = this.fontScale[2].size;
 
   constructor(
     private presentationService: PresentationService,
