@@ -5,7 +5,7 @@
 
     <app-alert></app-alert>
 
-    <div class="hover-scroll-overlay-y overflow-x-hidden" #scrollElement [class.loading]="isLoading">
+    <div class="hover-scrollbox-y overflow-x-hidden" #scrollElement [class.loading]="isLoading">
 
         <ng-container *ngFor="let item of resultSet; let i = index;">
           <figure [style.background-color]="backgroundColor" [attr.id]="item.id">

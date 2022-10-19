@@ -135,47 +135,74 @@ Component
 }
 
 /* ==========================================================================
-Component
+Scrollbox #00a1be;
 ========================================================================== */
 
-.hover-scroll-overlay-y {
-  --scrollbar-color: #00a0be;
+.hover-scrollbox-y {
+  --scrollbar-color: #00a1be7a;
+  --scrollbar-hover-color: #00a1bebd;
   --scrollbar-space: 0.3rem;
-  --scrollbar-width: calc(.3rem + var(--scrollbar-space));
+  --scrollbar-height: calc(.6rem + var(--scrollbar-space));
+  --scrollbar-width: calc(.6rem + var(--scrollbar-space));
 }
 
-.hover-scroll-overlay-y {
-  overflow-y: hidden;
+.hover-scrollbox-x,
+.hover-scrollbox-y {
   position: relative;
 }
 
-.hover-scroll-overlay-y::-webkit-scrollbar {
+.hover-scrollbox-x {
+  overflow-x: hidden;
+}
+
+.hover-scrollbox-y {
+  overflow-y: hidden;
+}
+
+.hover-scrollbox-x::-webkit-scrollbar {
+  height: var(--scrollbar-height);
+}
+
+.hover-scrollbox-y::-webkit-scrollbar {
   width: var(--scrollbar-width);
 }
 
-.hover-scroll-overlay-y::-webkit-scrollbar-thumb {
+.hover-scrollbox-x::-webkit-scrollbar-thumb {
+  background-clip: content-box;
+  border-bottom: var(--scrollbar-space) solid transparent;
+}
+
+.hover-scrollbox-y::-webkit-scrollbar-thumb {
   background-clip: content-box;
   border-right: var(--scrollbar-space) solid transparent;
 }
 
-.hover-scroll-overlay-y:hover {
+.hover-scrollbox-x:hover {
+  overflow-x: overlay;
+}
+
+.hover-scrollbox-y:hover {
   overflow-y: overlay;
 }
 
-.hover-scroll-overlay-y {
+.hover-scrollbox-x,
+.hover-scrollbox-y {
   scrollbar-color: var(--scrollbar-color) transparent;
 }
 
-.hover-scroll-overlay-y::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-color);
-}
-
-.hover-scroll-overlay-y:hover {
+.hover-scrollbox-x:hover,
+.hover-scrollbox-y:hover {
   scrollbar-color: var(--scrollbar-color) transparent;
 }
 
-.hover-scroll-overlay-y:hover::-webkit-scrollbar-thumb {
+.hover-scrollbox-x::-webkit-scrollbar-thumb,
+.hover-scrollbox-y::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-color);
+}
+
+.hover-scrollbox-x::-webkit-scrollbar-thumb:hover,
+.hover-scrollbox-y::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-hover-color);
 }
 
 /* ==========================================================================
@@ -358,7 +385,7 @@ Range Slider
 
 input[type="range"] {
   cursor: pointer;
-  -webkit-appearance: none;
+  appearance: none;
 }
 
 input[type="range"]:focus {
@@ -372,7 +399,7 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
+  appearance: none;
   height: 15px;
   width: 15px;
   background: pink;
