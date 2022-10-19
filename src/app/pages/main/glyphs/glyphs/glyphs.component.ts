@@ -16,8 +16,8 @@ export class GlyphsComponent implements OnChanges {
   fontBaseline: number;
 
   cellCount = 200;
-  cellWidth = 60;
-  cellHeight = 60;
+  cellWidth = 40;
+  cellHeight = 40;
   cellMarginTop = 1;
   cellMarginBottom = 1;
   cellMarginLeftRight = 1;
