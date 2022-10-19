@@ -17,11 +17,9 @@
             (click)="onRefreshLatestNews($event)">
             <span class="flex grow">Refresh News</span>
           </button>
-
           <select [(ngModel)]="fontScaleSelected" (change)="onSelectFontScale($event)">
             <option *ngFor="let item of fontScale;" [value]="item.key">{{item.value}}</option>
           </select>
-
         </div>
       </div>
     </div>

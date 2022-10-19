@@ -9,7 +9,7 @@ import { delay } from 'rxjs/operators';
 })
 export class InspectComponent implements OnInit {
 
-  componentName = 'article';
+  componentName = 'glyphs';
 
   fontObject: any;
   fontFamily: string;
