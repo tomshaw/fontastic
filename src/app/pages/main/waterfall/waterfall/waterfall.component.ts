@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { PresentationService, NewsService } from '@app/core/services';
+import { waterfallFontScale } from '@main/config/system';
 
 @Component({
   selector: 'app-waterfall',
@@ -19,41 +20,8 @@ export class WaterfallComponent implements OnChanges, OnInit {
   
   waterFall = [];
 
-  fontScale = [
-    {
-      size: 1.067,
-      title: 'Minor Second'
-    },
-    {
-      size: 1.125,
-      title: 'Major Second'
-    },
-    {
-      size: 1.200,
-      title: 'Minor Third'
-    },
-    {
-      size: 1.250,
-      title: 'Major Third'
-    },
-    {
-      size: 1.333,
-      title: 'Perfect Fourth'
-    },
-    {
-      size: 1.414,
-      title: 'Augmented Fourth'
-    },
-    {
-      size: 1.500,
-      title: 'Perfect Fifth'
-    },
-    {
-      size: 1.618,
-      title: 'Golden Ratio'
-    }
-  ];
-  selectFontScale = this.fontScale[2].size;
+  fontScale = waterfallFontScale;
+  fontScaleActive = this.fontScale[1].size;
 
   constructor(
     private presentationService: PresentationService,
@@ -91,7 +59,7 @@ export class WaterfallComponent implements OnChanges, OnInit {
 
   setFontScale(): void {
     let baseSize = (this.baseSize) ? this.baseSize / 16 : 1;
-    const scaleRatio = this.selectFontScale;
+    const scaleRatio = this.fontScaleActive;
     let result = baseSize;
 
     const waterFall = [];
@@ -114,9 +82,9 @@ export class WaterfallComponent implements OnChanges, OnInit {
     this.setFontScale();
   }
 
-  onSelectFontScale(event: Event): void {
+  onfontScaleSelect(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.selectFontScale = Number(target.value);
+    this.fontScaleActive = Number(target.value);
     this.setFontScale();
   }
 }

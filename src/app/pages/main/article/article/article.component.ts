@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MessageService, NewsService } from '@app/core/services';
+import { proseFontScale } from '@main/config/system';
 
 @Component({
   selector: 'app-article',
@@ -16,30 +17,8 @@ export class ArticleComponent implements OnInit {
   selectedNews: any;
   textContent: any;
 
-  fontScale = [
-    {
-      key: 'prose-sm',
-      value: '0.875rem (14px)'
-    },
-    {
-      key: 'prose-base',
-      value: '1rem (16px)'
-    },
-    {
-      key: 'prose-lg',
-      value: '1.125rem (18px)'
-    },
-    {
-      key: 'prose-xl',
-      value: '1.25rem (20px)'
-    },
-    {
-      key: 'prose-2xl',
-      value: '1.5rem (24px)'
-    }
-  ];
-
-  fontScaleSelected = this.fontScale[4].key;
+  fontScale = proseFontScale;
+  fontScaleActive = this.fontScale[4].key;
 
   constructor(
     private newsService: NewsService,
@@ -65,7 +44,6 @@ export class ArticleComponent implements OnInit {
 
   selectedNewsArticle(): void {
     this.selectedNews = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
-    console.log('selectedNews', this.selectedNews);
   }
 
   updateTextContent(url: string): void {
@@ -74,7 +52,7 @@ export class ArticleComponent implements OnInit {
 
   onSelectFontScale(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.fontScaleSelected = target.value;
+    this.fontScaleActive = target.value;
   }
 
 }

@@ -1,14 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fontMeta = exports.apiUrl = exports.systemFontsPaths = void 0;
+exports.tailwindProseScale = exports.fontMeta = exports.systemFontsPaths = void 0;
 exports.systemFontsPaths = new Map();
 exports.systemFontsPaths.set('win', 'C:\\Windows\\fonts');
 exports.systemFontsPaths.set('mac', '/Library/Fonts');
 exports.systemFontsPaths.set('unix', '/usr/share/fonts');
-exports.apiUrl = {
-    development: 'http://fontmanager.local/api/v1',
-    production: 'https://fontmanager.tomshaw.us/api/v1'
-};
 exports.fontMeta = [{
         code: 0,
         name: 'Copyright Information',
@@ -114,4 +110,26 @@ exports.fontMeta = [{
         name: 'Variations Postscript Name Prefix',
         description: ''
     }];
+exports.tailwindProseScale = [
+    {
+        key: 'prose-sm',
+        value: '0.875rem (14px)'
+    },
+    {
+        key: 'prose-base',
+        value: '1rem (16px)'
+    },
+    {
+        key: 'prose-lg',
+        value: '1.125rem (18px)'
+    },
+    {
+        key: 'prose-xl',
+        value: '1.25rem (20px)'
+    },
+    {
+        key: 'prose-2xl',
+        value: '1.5rem (24px)'
+    }
+];
 //# sourceMappingURL=system.js.map

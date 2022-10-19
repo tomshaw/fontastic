@@ -4,11 +4,6 @@ systemFontsPaths.set('win', 'C:\\Windows\\fonts');
 systemFontsPaths.set('mac', '/Library/Fonts');
 systemFontsPaths.set('unix', '/usr/share/fonts');
 
-export const apiUrl = {
-  development: 'http://fontmanager.local/api/v1',
-  production: 'https://fontmanager.tomshaw.us/api/v1'
-}
-
 export const fontMeta = [{
   code: 0,
   name: 'Copyright Information',
@@ -114,3 +109,61 @@ export const fontMeta = [{
   name: 'Variations Postscript Name Prefix',
   description: ''
 }];
+
+export const proseFontScale = [
+  {
+    key: 'prose-sm',
+    value: '0.875rem (14px)'
+  },
+  {
+    key: 'prose-base',
+    value: '1rem (16px)'
+  },
+  {
+    key: 'prose-lg',
+    value: '1.125rem (18px)'
+  },
+  {
+    key: 'prose-xl',
+    value: '1.25rem (20px)'
+  },
+  {
+    key: 'prose-2xl',
+    value: '1.5rem (24px)'
+  }
+];
+
+export const waterfallFontScale = [
+  {
+    size: 1.067,
+    title: 'Minor Second'
+  },
+  {
+    size: 1.125,
+    title: 'Major Second'
+  },
+  {
+    size: 1.200,
+    title: 'Minor Third'
+  },
+  {
+    size: 1.250,
+    title: 'Major Third'
+  },
+  {
+    size: 1.333,
+    title: 'Perfect Fourth'
+  },
+  {
+    size: 1.414,
+    title: 'Augmented Fourth'
+  },
+  {
+    size: 1.500,
+    title: 'Perfect Fifth'
+  },
+  {
+    size: 1.618,
+    title: 'Golden Ratio'
+  }
+];

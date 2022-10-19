@@ -131,7 +131,7 @@ export class GlyphsComponent implements OnChanges {
     const size = Number(target.value);
     this.cellHeight = size;
     this.cellWidth = size;
-    setTimeout(() => this.initialize(), 1e3);
+    setTimeout(() => this.initialize(), 1e3/3);
   }
 
   onChangeCount(event: Event) {
@@ -139,7 +139,7 @@ export class GlyphsComponent implements OnChanges {
     const count = Number(target.value);
     if (count < this.numGlyphs) {
       this.cellCount = count;
-      setTimeout(() => this.initialize(), 1e3);
+      setTimeout(() => this.initialize(), 1e3/3);
     }
   }
 }

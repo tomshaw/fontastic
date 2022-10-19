@@ -8,7 +8,7 @@
       <div class="controls__item flex justify-end items-center">
         <div class="pagination">
           <input type="text" class="w-[40px]" [(ngModel)]="baseSize" (change)="onUpdateBaseSize($event)">
-          <select [(ngModel)]="selectFontScale" (change)="onSelectFontScale($event)">
+          <select [(ngModel)]="fontScaleActive" (change)="onfontScaleSelect($event)">
             <option *ngFor="let item of fontScale;" [value]="item.size">{{item.title}}</option>
           </select>
         </div>
