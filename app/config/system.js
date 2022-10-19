@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tailwindProseScale = exports.fontMeta = exports.systemFontsPaths = void 0;
+exports.waterfallFontScale = exports.proseFontScale = exports.fontMeta = exports.systemFontsPaths = void 0;
 exports.systemFontsPaths = new Map();
 exports.systemFontsPaths.set('win', 'C:\\Windows\\fonts');
 exports.systemFontsPaths.set('mac', '/Library/Fonts');
@@ -110,7 +110,7 @@ exports.fontMeta = [{
         name: 'Variations Postscript Name Prefix',
         description: ''
     }];
-exports.tailwindProseScale = [
+exports.proseFontScale = [
     {
         key: 'prose-sm',
         value: '0.875rem (14px)'
@@ -130,6 +130,40 @@ exports.tailwindProseScale = [
     {
         key: 'prose-2xl',
         value: '1.5rem (24px)'
+    }
+];
+exports.waterfallFontScale = [
+    {
+        size: 1.067,
+        title: 'Minor Second'
+    },
+    {
+        size: 1.125,
+        title: 'Major Second'
+    },
+    {
+        size: 1.200,
+        title: 'Minor Third'
+    },
+    {
+        size: 1.250,
+        title: 'Major Third'
+    },
+    {
+        size: 1.333,
+        title: 'Perfect Fourth'
+    },
+    {
+        size: 1.414,
+        title: 'Augmented Fourth'
+    },
+    {
+        size: 1.500,
+        title: 'Perfect Fifth'
+    },
+    {
+        size: 1.618,
+        title: 'Golden Ratio'
     }
 ];
 //# sourceMappingURL=system.js.map

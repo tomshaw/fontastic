@@ -19,7 +19,7 @@
     "target": [
       "portable"
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "${productName}-v${version}.${ext}"
   },
   "portable": {
     "splashImage": "dist/assets/icons/electron.bmp"
