@@ -3,12 +3,13 @@
 
     <div class="controls flex justify-between items-center border-top border-bottom">
       <div class="controls__item flex justify-start items-center">
-        <h1>Waterfall</h1>
+        <span class="material-icons">arrow_right</span>
+        <span class="text-uppercase" title="Waterfall">Glyph Information</span>
       </div>
       <div class="controls__item flex justify-end items-center">
-        <div class="pagination">
-          <input type="text" class="w-[40px]" [(ngModel)]="baseSize" (change)="onUpdateBaseSize($event)">
-          <select [(ngModel)]="fontScaleActive" (change)="onfontScaleSelect($event)">
+        <div class="controls__item-elements">
+          <input type="text" class="form-control form-control-small w-[40px] mr-2" [(ngModel)]="baseSize" (change)="onUpdateBaseSize($event)">
+          <select class="form-control form-control-small mr-5" [(ngModel)]="fontScaleActive" (change)="onfontScaleSelect($event)">
             <option *ngFor="let item of fontScale;" [value]="item.size">{{item.title}}</option>
           </select>
         </div>

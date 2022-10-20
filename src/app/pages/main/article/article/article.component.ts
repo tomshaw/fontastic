@@ -17,8 +17,8 @@ export class ArticleComponent implements OnInit {
   selectedNews: any;
   textContent: any;
 
-  fontScale = proseFontScale;
-  fontScaleActive = this.fontScale[4].key;
+  proseFontScale = proseFontScale;
+  proseFontScaleSelect = 'prose-2xl';
 
   constructor(
     private newsService: NewsService,
@@ -50,9 +50,9 @@ export class ArticleComponent implements OnInit {
     this.messageService.fetchNewsContent(url).then((response: any) => this.textContent = response?.textContent);
   }
 
-  onSelectFontScale(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.fontScaleActive = target.value;
+  onSelectProseScale(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.proseFontScaleSelect = target.value;
   }
 
 }

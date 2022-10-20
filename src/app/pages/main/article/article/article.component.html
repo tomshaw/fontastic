@@ -3,10 +3,11 @@
 
     <div class="controls flex justify-between items-center border-top border-bottom">
       <div class="controls__item flex justify-start items-center">
-        <h1>Articles</h1>
+        <span class="material-icons">arrow_right</span>
+        <span class="text-uppercase whitespace-nowrap">News Article</span>
       </div>
       <div class="controls__item flex justify-end items-center">
-        <div class="flex items-center p-0">
+        <div class="controls__item-elements">
           <button type="button"
             class="flex items-center justify-center cursor-pointer bg-slate-50 rounded-md py-2 px-5 ml-2"
             (click)="onUpdateNewsArticle($event)">
@@ -17,16 +18,16 @@
             (click)="onRefreshLatestNews($event)">
             <span class="flex grow">Refresh News</span>
           </button>
-          <select [(ngModel)]="fontScaleActive" (change)="onSelectFontScale($event)">
-            <option *ngFor="let item of fontScale;" [value]="item.key">{{item.value}}</option>
+          <select class="form-control form-control-small mx-5" [(ngModel)]="proseFontScaleSelect" (change)="onSelectProseScale($event)">
+            <option *ngFor="let item of proseFontScale;" [value]="item.prose">{{item.title}}</option>
           </select>
         </div>
       </div>
     </div>
 
     <div class="hover-scrollbox-y">
-      <div class="container mx-auto px-10 py-10 w-full">
-        <article class="prose prose-img:rounded-xl prose-headings:underline" [class]="fontScaleActive" [style.color]="fontColor" [style.font-family]="fontFamily">
+      <div class="relative container mx-auto px-10 py-10 w-full">
+        <article class="prose prose-img:rounded-xl prose-headings:underline" [class]="proseFontScaleSelect" [style.color]="fontColor" [style.font-family]="fontFamily">
           <ng-template [ngIf]="selectedNews.source.name">
             <i class="ml-2" [style.color]="fontColor" [style.font-family]="fontFamily">{{selectedNews.source.name}}</i>
           </ng-template>

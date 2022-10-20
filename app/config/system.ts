@@ -112,24 +112,24 @@ export const fontMeta = [{
 
 export const proseFontScale = [
   {
-    key: 'prose-sm',
-    value: '0.875rem (14px)'
+    prose: 'prose-sm',
+    title: '0.875rem (14px)'
   },
   {
-    key: 'prose-base',
-    value: '1rem (16px)'
+    prose: 'prose-base',
+    title: '1rem (16px)'
   },
   {
-    key: 'prose-lg',
-    value: '1.125rem (18px)'
+    prose: 'prose-lg',
+    title: '1.125rem (18px)'
   },
   {
-    key: 'prose-xl',
-    value: '1.25rem (20px)'
+    prose: 'prose-xl',
+    title: '1.25rem (20px)'
   },
   {
-    key: 'prose-2xl',
-    value: '1.5rem (24px)'
+    prose: 'prose-2xl',
+    title: '1.5rem (24px)'
   }
 ];
 

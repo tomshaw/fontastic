@@ -8,6 +8,8 @@ import { DatabaseService, FontService } from '@app/core/services';
 })
 export class AsideComponent implements OnInit {
 
+  componentName = 'tables';
+
   _metaList: any = [];
 
   constructor(

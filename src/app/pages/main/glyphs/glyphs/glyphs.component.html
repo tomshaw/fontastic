@@ -11,19 +11,19 @@
         </ng-container>
       </div>
       <div class="controls__item flex justify-end items-center">
-        <div class="pagination">
-          <select class="form-control" (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
+        <div class="controls__item-elements">
+          <select class="form-control form-control-small mr-2" (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
             <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
           </select>
-          <select class="form-control" (change)="onChangeCount($event)" [(ngModel)]="cellCount">
+          <select class="form-control form-control-small mr-2" (change)="onChangeCount($event)" [(ngModel)]="cellCount">
             <ng-container *ngFor="let item of cellCountOptions">
               <option [value]="item" *ngIf="item < numGlyphs">{{item}}</option>
             </ng-container>
           </select>
-          <select class="form-control" (change)="onChangePage($event)">
+          <select class="form-control form-control-small" (change)="onChangePage($event)">
             <option *ngFor="let item of paginatorOptions" [value]="item.key">{{item.value}}</option>
           </select>
-          <span>Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
+          <span class="mx-5">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
         </div>
       </div>
     </div>

@@ -212,7 +212,10 @@ Controls
 .controls {
   @apply w-full p-0 m-0;
   &__item {
-    @apply py-0 px-2 w-full h-[38px] min-h-[38px] max-h-[38px] mt-[-1px];
+    @apply w-full h-[38px] min-h-[38px] max-h-[38px] p-0 px-2 m-0;
+  }
+  &__item-elements {
+    @apply flex flex-row flex-nowrap justify-start items-center whitespace-nowrap p-0 m-0;
   }
   &__item p,
   &__item div,
@@ -481,6 +484,12 @@ Form Control
   @apply select-none outline-0 focus:outline-none focus:ring-0;
 }
 
+.form-control-small {
+  height: 28px;
+  line-height: 1.2;
+  font-size: 14px;
+}
+
 /* ==========================================================================
 Page
 ========================================================================== */
@@ -566,7 +575,11 @@ Glyph Listing
 ========================================================================== */
 
 .glyph-list {
+  @apply flex flex-wrap justify-start items-start content-start p-[1px];
+  &__wrapper {
+    @apply grow;
+  }
   &__wrapper-item {
-    @apply bg-[#f9f9f9] border-2 border-[#fff];
+    @apply cursor-alias m-[1px] bg-[#f9f9f9] border-2 border-[#fff];
   }
 }
