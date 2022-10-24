@@ -583,3 +583,60 @@ Glyph Listing
     @apply cursor-alias m-[1px] bg-[#f9f9f9] border-2 border-[#fff];
   }
 }
+
+/* ==========================================================================
+Glyph Listing
+========================================================================== */
+
+.font-meta-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  figure {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px;
+    margin: 0;
+    width: 100%;
+    &:last-child {
+      border-bottom: 0;
+    }
+    figcaption {
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+      width: 100%;
+    }
+    figcaption h2 {
+      cursor: help;
+      display: inline-block;
+      font-size: 13px;
+    }
+    figcaption span {
+      cursor: help;
+      font-size: 14px;
+      position: absolute;
+      right: 10px;
+    }
+    p,
+    figcaption h2,
+    figcaption span {
+      opacity: 0;
+      visibility: hidden;
+      transition: visibility 0s, opacity 0.5s ease-in-out;
+    }
+    p {
+      cursor: text;
+      padding-top: 5px;
+    }
+  }
+}

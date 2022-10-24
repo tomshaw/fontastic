@@ -3,20 +3,6 @@ import { NgForm } from '@angular/forms';
 import { AlertService, ConfigService, BreadcrumbService, MessageService, UtilsService } from '@app/core/services';
 import { DbConnectionModel } from '@app/core/model';
 
-export class IDbConnection {
-  name?: string = '';
-  title?: string = '';
-  description?: string = '';
-  type?: string = '';
-  database?: string;
-  username?: string = '';
-  password?: string = '';
-  host?: string = '';
-  port?: string = '';
-  logging: boolean;
-  synchronize: boolean;
-}
-
 @Component({
   selector: 'app-settings-form-database',
   templateUrl: './database.component.html',
@@ -49,7 +35,7 @@ export class DatabaseComponent implements OnInit {
 
   screenToggle = false;
 
-  dbConnection: IDbConnection = new DbConnectionModel('', '', '', '', '');
+  dbConnection: DbConnectionModel = new DbConnectionModel('', '', '', '', '');
 
   constructor(
     private alertService: AlertService,

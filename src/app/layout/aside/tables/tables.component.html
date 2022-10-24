@@ -1,1 +1,25 @@
-<p>tables works!</p>
+<aside class="component border-left">
+  <div class="component__panel">
+    <div class="controls flex justify-between items-start border-bottom">
+      <div class="controls__item flex justify-start items-center">
+        <span class="material-icons">arrow_drop_down</span>
+        <span class="text-uppercase whitespace-nowrap">Font Information</span>
+      </div>
+      <div class="controls__item flex justify-end items-center">
+        <i class="material-icons">more_horiz</i>
+      </div>
+    </div>
+    <div class="hover-scrollbox-y">
+      <div class="font-meta-list">
+        <ng-container *ngFor="let item of tableNames">
+          <figure class="border-bottom-dashed" *ngIf="item.value && item.name.length > 4">
+            <figcaption>
+              <h2 [attr.title]="item.name">{{ item.name }}</h2>
+            </figcaption>
+            <p>{{ item.value }}</p>
+          </figure>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</aside>

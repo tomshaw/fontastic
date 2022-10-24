@@ -1,10 +1,94 @@
-import { Equal } from "typeorm";
+import { Brackets, Equal } from "typeorm";
 import { Store } from "../entity";
+import { searchDbColumns } from "../../config"
 
 export const StoreRepository = {
 
-  async fetch(options: any) {
+  async search(options: any) {
+    const db = this.createQueryBuilder();
 
+    if (options.where && options.where.length) {
+
+      const where = options.where;
+      const builder = [];
+
+      let isAndWhere = false;
+
+      const hasSearchTerm = where.some((item: any) => item.key === 'term');
+
+      if (hasSearchTerm) {
+        const searchTerm = where.find((item: any) => item.key === 'term');
+        searchDbColumns.forEach((item: any) => {
+          builder.push({
+            key: item,
+            type: 'like',
+            value: searchTerm.value.toLowerCase()
+          });
+        });
+      }
+
+      const hasFileTypes = where.some((item: any) => item.key === 'file_type');
+
+      if (hasFileTypes) {
+        const fileTypes = where.find((item: any) => item.key === 'file_type');
+        if (fileTypes && fileTypes.value.length) {
+          isAndWhere = true;
+          db.where(`${fileTypes.key} IN (:...mimes)`, { mimes: fileTypes.value });
+        }
+      }
+
+      if (isAndWhere) {
+
+        db.andWhere(
+          new Brackets((qb) => {
+            builder.forEach((item: any, i: any) => {
+              const column = item.key;
+              const value = item.value;
+              if (i === 0) {
+                qb.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+              } else {
+                qb.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+              }
+            });
+          }),
+        );
+
+      } else {
+
+        builder.forEach((item: any, i: any) => {
+          const column = item.key;
+          const value = item.value;
+          if (i === 0) {
+            db.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+          } else {
+            db.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+          }
+        });
+
+      }
+    }
+
+    if (options.take) {
+      db.limit(options.take);
+    }
+
+    if (options.skip) {
+      db.offset(options.skip);
+    }
+
+    if (options.order && options.order.column) {
+      const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
+      db.orderBy(`store.${options.order.column}`, direction);
+    }
+
+    // console.log(db.printSql());
+    // console.log(db.getSql());
+    console.log(db.getQuery());
+
+    return await db.getManyAndCount();
+  },
+
+  async fetch(options: any) {
     const db = this.createQueryBuilder();
 
     if (options.where && options.where.length) {
@@ -31,6 +115,10 @@ export const StoreRepository = {
       const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
       db.orderBy(`store.${options.order.column}`, direction);
     }
+
+    // console.log(db.printSql());
+    // console.log(db.getSql());
+    // console.log(db.getQuery());
 
     return await db.getManyAndCount();
   },
@@ -102,7 +190,7 @@ export const StoreRepository = {
 
     let results = await this.createQueryBuilder("store").select(['store.file_name']).where("store.system = 1").getMany();
 
-    let fileNames = results.map((item:any) => item.file_name);
+    let fileNames = results.map((item: any) => item.file_name);
 
     return await this.createQueryBuilder()
       .update(Store)
@@ -138,7 +226,7 @@ export const StoreRepository = {
   async create(item: Store) {
 
     let data = <Store>{};
-    
+
     data.collection_id = item.collection_id;
     data.file_name = (item.file_name) ? item.file_name : "";
     data.file_path = (item.file_path) ? item.file_path : "";
@@ -228,7 +316,7 @@ export const StoreRepository = {
       data.version = item.version;
     }
 
-    return await this.createQueryBuilder().insert().into(Store).values(data).execute().catch((err: any) => {});
+    return await this.createQueryBuilder().insert().into(Store).values(data).execute().catch((err: any) => { });
   },
 
   async fetchSystemStats() {

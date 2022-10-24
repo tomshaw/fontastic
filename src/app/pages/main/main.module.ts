@@ -19,7 +19,10 @@ import { ArticleComponent } from './article/article/article.component';
     GridComponent, 
     PreviewComponent, 
     ToolbarComponent, 
-    InspectComponent, GlyphsComponent, WaterfallComponent, ArticleComponent
+    InspectComponent, 
+    GlyphsComponent, 
+    WaterfallComponent, 
+    ArticleComponent
   ],
   imports: [
     CommonModule,

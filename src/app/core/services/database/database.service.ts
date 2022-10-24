@@ -58,6 +58,8 @@ export class DatabaseService {
   skip = 0;
   take = 100;
 
+  search = false;
+
   public _systemStats = new BehaviorSubject<SystemStats>({
     rowCount: 0,
     favoriteCount: 0,
@@ -94,6 +96,7 @@ export class DatabaseService {
 
       this.watchQueryOptions$.subscribe((options: any) => {
         if (options.run) {
+          options.search = this.search;
           this.execute(options);
         }
       });
@@ -224,6 +227,11 @@ export class DatabaseService {
 
   setTake(take: number): DatabaseService {
     this.take = take;
+    return this;
+  }
+
+  setSearch(search: boolean): DatabaseService {
+    this.search = search;
     return this;
   }
 

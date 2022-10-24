@@ -2,3 +2,4 @@
 export * from './AuthUserModel';
 export * from './DbConnectionModel';
 export * from './LatestNewsModel';
+export * from './SearchFormModel';

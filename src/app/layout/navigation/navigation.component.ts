@@ -141,6 +141,8 @@ export class NavigationComponent implements OnInit {
   handleNavigate(event: Event, collectionId: number): void {
     const target = event.target as HTMLInputElement;
 
+    this.databaseService.setSearch(false);
+
     this.messageService.resetEnabledCollection().then(() => {
 
       this.messageService.updateCollection(collectionId, { enabled: target.checked }).then((result) => {

@@ -2,7 +2,7 @@
   <div (contextmenu)="onComponentSwitch()">
     <app-glyphs [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'glyphs'"></app-glyphs>
     <app-waterfall [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'waterfall'"></app-waterfall>
-    <ng-container *ngIf="latestNews.length">
+    <ng-container *ngIf="latestNews && latestNews.length">
       <app-article [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'article'"></app-article>
     </ng-container>
   </div>

@@ -197,7 +197,9 @@ class MessageHandler {
          * Store
          */
         this.on(channel.IPCMAIN_REQUEST_STORE_FETCH_ALL, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            let [results, total] = yield this.getConnectionManager().getStoreRepository().fetch(args);
+            let [results, total] = (args.search) ?
+                yield this.getConnectionManager().getStoreRepository().search(args) :
+                yield this.getConnectionManager().getStoreRepository().fetch(args);
             event.sender.send(channel.IPCMAIN_RESPONSE_STORE_FETCH_ALL, [total, results]);
         }));
         this.on(channel.IPCMAIN_REQUEST_STORE_FETCH_ROW, (event, storeId) => __awaiter(this, void 0, void 0, function* () {

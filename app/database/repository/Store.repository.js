@@ -12,7 +12,77 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StoreRepository = void 0;
 const typeorm_1 = require("typeorm");
 const entity_1 = require("../entity");
+const config_1 = require("../../config");
 exports.StoreRepository = {
+    search(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const db = this.createQueryBuilder();
+            if (options.where && options.where.length) {
+                const where = options.where;
+                const builder = [];
+                let isAndWhere = false;
+                const hasSearchTerm = where.some((item) => item.key === 'term');
+                if (hasSearchTerm) {
+                    const searchTerm = where.find((item) => item.key === 'term');
+                    config_1.searchDbColumns.forEach((item) => {
+                        builder.push({
+                            key: item,
+                            type: 'like',
+                            value: searchTerm.value.toLowerCase()
+                        });
+                    });
+                }
+                const hasFileTypes = where.some((item) => item.key === 'file_type');
+                if (hasFileTypes) {
+                    const fileTypes = where.find((item) => item.key === 'file_type');
+                    if (fileTypes && fileTypes.value.length) {
+                        isAndWhere = true;
+                        db.where(`${fileTypes.key} IN (:...mimes)`, { mimes: fileTypes.value });
+                    }
+                }
+                if (isAndWhere) {
+                    db.andWhere(new typeorm_1.Brackets((qb) => {
+                        builder.forEach((item, i) => {
+                            const column = item.key;
+                            const value = item.value;
+                            if (i === 0) {
+                                qb.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                            }
+                            else {
+                                qb.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                            }
+                        });
+                    }));
+                }
+                else {
+                    builder.forEach((item, i) => {
+                        const column = item.key;
+                        const value = item.value;
+                        if (i === 0) {
+                            db.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                        }
+                        else {
+                            db.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                        }
+                    });
+                }
+            }
+            if (options.take) {
+                db.limit(options.take);
+            }
+            if (options.skip) {
+                db.offset(options.skip);
+            }
+            if (options.order && options.order.column) {
+                const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
+                db.orderBy(`store.${options.order.column}`, direction);
+            }
+            // console.log(db.printSql());
+            // console.log(db.getSql());
+            console.log(db.getQuery());
+            return yield db.getManyAndCount();
+        });
+    },
     fetch(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const db = this.createQueryBuilder();
@@ -38,6 +108,9 @@ exports.StoreRepository = {
                 const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
                 db.orderBy(`store.${options.order.column}`, direction);
             }
+            // console.log(db.printSql());
+            // console.log(db.getSql());
+            // console.log(db.getQuery());
             return yield db.getManyAndCount();
         });
     },

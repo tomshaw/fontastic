@@ -251,7 +251,9 @@ export default class MessageHandler {
      */
 
     this.on(channel.IPCMAIN_REQUEST_STORE_FETCH_ALL, async (event: IpcMainEvent, args: any) => {
-      let [results, total] = await this.getConnectionManager().getStoreRepository().fetch(args);
+      let [results, total] = (args.search) ?
+        await this.getConnectionManager().getStoreRepository().search(args) :
+        await this.getConnectionManager().getStoreRepository().fetch(args);
       event.sender.send(channel.IPCMAIN_RESPONSE_STORE_FETCH_ALL, [total, results]);
     });
 
