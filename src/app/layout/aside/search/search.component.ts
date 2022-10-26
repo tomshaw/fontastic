@@ -14,7 +14,7 @@ export class SearchComponent implements OnInit {
 
   @ViewChild(NgForm) form: NgForm;
 
-  model: SearchFormModel = new SearchFormModel('', [], 'id', 'DESC', true);
+  model: SearchFormModel = new SearchFormModel('', [], 'id', 'ASC', true);
 
   fontTypes = fontMimeTypes;
   dbColumns = dbColumns;

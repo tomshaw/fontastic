@@ -1,8 +1,10 @@
 <div class="component border-top">
   <div class="component__panel">
-    <div class="hover-scrollbox-y hover-scrollbox-x" #gridElement [class.loading]="isLoading">
+    <div class="hover-scrollbox-y hover-scrollbox-x h-full min-h-full">
 
-      <table class="table table-auto striped border-separate border-spacing-1">
+      <div #gridElement [class.loading]="isLoading"></div>
+
+      <table class="table border-separate border-spacing-1">
         <thead>
           <tr>
             <th class="sorting sort_center sort_input" (click)="onHandleSort($event, 'activated')"></th>
@@ -67,6 +69,7 @@
           </ng-container>
         </tbody>
       </table>
+
 
     </div>
   </div>
