@@ -272,14 +272,10 @@ export class PresentationService {
     this.messageService.set('PREVIEW_SETTINGS', settings);
   }
 
-  setThemeDefaults(theme: string): void {
-    if (ThemeColors.has(theme)) {
-      this.setFontColor(ThemeColors.get(theme).color);
-      this.setBackgroundColor(ThemeColors.get(theme).background);      
-    } else {
-      this.setFontColor(ThemeColors.get('default').color);
-      this.setBackgroundColor(ThemeColors.get('default').background); 
-    }
+  setThemeDefaults(name: string): void {
+    const config = ThemeColors.has(name) ? ThemeColors.get(name) : ThemeColors.get('default');
+    this.setFontColor(config.color);
+    this.setBackgroundColor(config.background);
   }
 
   getDisplayNews(): boolean {
