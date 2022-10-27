@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { DatabaseService } from '@app/core/services';
+import { DatabaseService, PresentationService } from '@app/core/services';
 import { SearchFormModel } from '@app/core/model';
 import { fontMimeTypes } from '@main/config/mimes';
 import { dbColumns } from '@main/config/database';
@@ -22,6 +22,7 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
+    private presentationService: PresentationService
   ) { }
 
   ngOnInit(): void {
@@ -52,6 +53,11 @@ export class SearchComponent implements OnInit {
   onReset(): void {
     this.databaseService.setSearch(false);
     this.databaseService.resetWhere().run();
+  }
+
+  onComponentSwitch() {
+    this.presentationService.setAsideComponent('tables');
+    this.presentationService.saveLayoutSettings();
   }
 
 }

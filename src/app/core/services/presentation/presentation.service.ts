@@ -42,6 +42,7 @@ export class PresentationService {
   _inspectEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   _navigationEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _asideEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _asideComponent = new BehaviorSubject<string>('tables');
   _statsCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   _systemLoading: BehaviorSubject<boolean> = new BehaviorSubject(true);
@@ -109,6 +110,11 @@ export class PresentationService {
     this.saveLayoutSettings();
   }
 
+  setAsideComponent(name: any): void {
+    this._asideComponent.next(name);
+    this.saveLayoutSettings();
+  }
+
   setGridEnabled(status: any): void {
     this._gridEnabled.next(status);
     this.saveLayoutSettings();
@@ -138,6 +144,7 @@ export class PresentationService {
     const settings = {
       _gridEnabled: this._gridEnabled.getValue(),
       _asideEnabled: this._asideEnabled.getValue(),
+      _asideComponent: this._asideComponent.getValue(),
       _navigationEnabled: this._navigationEnabled.getValue(),
       _toolbarEnabled: this._toolbarEnabled.getValue(),
       _previewEnabled: this._previewEnabled.getValue(),

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DatabaseService, FontService } from '@app/core/services';
+import { DatabaseService, FontService, PresentationService } from '@app/core/services';
 
 @Component({
   selector: 'app-tables',
@@ -13,6 +13,7 @@ export class TablesComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private fontService: FontService,
+    private presentationService: PresentationService
   ) { }
 
   ngOnInit() {
@@ -21,6 +22,11 @@ export class TablesComponent implements OnInit {
         this.tableNames = this.fontService.normalizeTableNames(result.font_meta.names);
       }
     });
+  }
+
+  onComponentSwitch() {
+    this.presentationService.setAsideComponent('search');
+    this.presentationService.saveLayoutSettings();
   }
 
 }

@@ -22,11 +22,11 @@ export class AppComponent implements OnInit {
     this.presentationService._systemLoading.pipe(delay(2e3)).subscribe((x) => this.init(x));
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const plugins = [ScrollToPlugin];
   }
 
-  init(x: boolean) {
+  init(x: boolean): void {
     const body = document.querySelector('body');
     body.classList.remove('app-loading');
     body.classList.add('app-loaded');

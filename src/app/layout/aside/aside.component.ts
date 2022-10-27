@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PresentationService } from '@app/core/services';
 
 @Component({
   selector: 'app-aside',
@@ -9,12 +10,18 @@ export class AsideComponent implements OnInit {
 
   componentName = 'tables';
 
-  constructor() { }
+  constructor(
+    private presentationService: PresentationService,
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.presentationService._asideComponent.subscribe((value: string) => this.componentName = value);
+  }
 
   onComponentSwitch(): void {
-    this.componentName = (this.componentName === 'tables') ? 'search' : 'tables';
+    const componentName = (this.componentName === 'tables') ? 'search' : 'tables';
+    this.presentationService.setAsideComponent(componentName);
+    this.presentationService.saveLayoutSettings();
   }
 
 }
