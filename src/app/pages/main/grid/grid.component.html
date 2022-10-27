@@ -2,7 +2,7 @@
   <div class="component__panel">
     <div class="hover-scrollbox-y hover-scrollbox-x h-full min-h-full">
 
-      <div #gridElement [class.loading]="isLoading"></div>
+      <div [class.loading]="isLoading" #gridElement></div>
 
       <table class="table border-separate border-spacing-1">
         <thead>
@@ -11,8 +11,8 @@
             <th class="sorting sort_center sort_input" (click)="onHandleSort($event, 'temporary')" *ngIf="isWindows"></th>
             <th class="text-left sorting" (click)="onHandleSort($event, 'full_name')">Name</th>
             <th class="text-left sorting" (click)="onHandleSort($event, 'font_family')">Family</th>
-            <th class="text-center sorting" (click)="onHandleSort($event, 'file_type')">Type</th>
-            <th class="text-center sorting" (click)="onHandleSort($event, 'file_size')">Size</th>
+            <th class="text-left sorting" (click)="onHandleSort($event, 'file_type')">Type</th>
+            <th class="text-left sorting" (click)="onHandleSort($event, 'file_size')">Size</th>
             <th class="text-left sorting" (click)="onHandleSort($event, 'designer')">Designer</th>
             <th class="text-left sorting" (click)="onHandleSort($event, 'manufacturer')">Manufacturer</th>
             <th class="text-left sorting" (click)="onHandleSort($event, 'version')">Version</th>

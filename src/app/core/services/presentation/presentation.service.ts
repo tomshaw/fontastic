@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
-import { AppThemes } from '@main/config/themes';
+import { AppThemes, ThemeColors } from '@main/config/themes';
 import { SystemTheme } from '@app/core/interface';
 
 export class ScrollToOptions {
@@ -273,27 +273,12 @@ export class PresentationService {
   }
 
   setThemeDefaults(theme: string): void {
-    if (theme === 'midnight') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#000000');
-    } else if (theme === 'euphoria') {
-      this.setFontColor('#f4b903');
-      this.setBackgroundColor('#23121c');
-    } else if (theme === 'dashboard') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#14202a');
-    } else if (theme === 'mellow') {
-      this.setFontColor('#252525');
-      this.setBackgroundColor('#ffdf00');
-    } else if (theme === 'swiss') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#ed1b24');
-    } else if (theme === 'passion') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#620f72');
+    if (ThemeColors.has(theme)) {
+      this.setFontColor(ThemeColors.get(theme).color);
+      this.setBackgroundColor(ThemeColors.get(theme).background);      
     } else {
-      this.setFontColor('#3e4245');
-      this.setBackgroundColor('#ffffff');
+      this.setFontColor(ThemeColors.get('default').color);
+      this.setBackgroundColor(ThemeColors.get('default').background); 
     }
   }
 

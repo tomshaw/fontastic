@@ -420,7 +420,7 @@ Tables
   @apply text-[#616467] opacity-0 invisible transition-opacity;
 
   thead > tr {
-    @apply text-white bg-[#00a0be];
+    @apply text-white bg-[#00a1becc];
   }
 
   &.striped > tbody > tr:nth-child(odd) {
@@ -428,10 +428,18 @@ Tables
   }
 
   tr {
-    
+
     th,
     td {
-      @apply p-3 bg-inherit relative align-middle whitespace-nowrap overflow-hidden;  
+      @apply bg-inherit relative align-middle whitespace-nowrap overflow-hidden;  
+    }
+
+    th {
+      @apply px-3 py-2.5;  
+    }
+
+    td {
+      @apply px-3 py-4;  
     }
 
     th.sort_input {

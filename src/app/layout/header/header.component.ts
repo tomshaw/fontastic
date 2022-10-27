@@ -64,42 +64,42 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  handleLogout(e: any) {
+  handleLogout(event: Event): void {
     this.authService.logout();
     this.router.navigate(['/settings']);
   }
 
-  handleToggleAside(e: any) {
+  handleToggleAside(event: Event): void {
     this.presentationService.setAsideEnabled(!this.asideEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleNavigation(e: any) {
+  handleToggleNavigation(event: Event): void {
     this.presentationService.setNavigationEnabled(!this.navigationEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleTogglePreview(e: any) {
+  handleTogglePreview(event: Event): void {
     this.presentationService.setPreviewEnabled(!this.previewEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleInspect(e: any) {
+  handleToggleInspect(event: Event): void {
     this.presentationService.setInspectEnabled(!this.inspectEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleToolbar(e: any) {
+  handleToggleToolbar(event: Event): void {
     this.presentationService.setToolbarEnabled(!this.toolbarEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleGrid(e: any) {
+  handleToggleGrid(event: Event): void {
     this.presentationService.setGridEnabled(!this.gridEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  enableTheme(theme: string) {
+  enableTheme(theme: string): void {
     const body = document.querySelector('body');
     const themes = this.presentationService.getThemes();
     if (themes.map(item => item.key).includes(theme)) {
@@ -107,7 +107,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  handleSwitchTheme(e: any) {
+  handleSwitchTheme(event: Event): void {
     const body = document.querySelector('body');
     const attr = body.getAttribute('data-theme');
     const themes = this.presentationService.getThemes();
@@ -127,6 +127,4 @@ export class HeaderComponent implements OnInit {
       this.presentationService.setThemeDefaults(theme);
     }
   }
-
-  onSubmit(data: any) { }
 }

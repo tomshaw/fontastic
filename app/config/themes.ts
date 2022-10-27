@@ -28,3 +28,11 @@ export const AppThemes: any[] = [{
   description: 'Purple Passion system theme.',
 }];
 
+export const ThemeColors = new Map();
+ThemeColors.set('midnight', { color: '#ffffff', background: '#000000' });
+ThemeColors.set('euphoria', { color: '#f4b903', background: '#23121c' });
+ThemeColors.set('dashboard', { color: '#ffffff', background: '#14202a' });
+ThemeColors.set('mellow', { color: '#252525', background: '#ffdf00' });
+ThemeColors.set('swiss', { color: '#ffffff', background: '#ed1b24' });
+ThemeColors.set('passion', { color: '#ffffff', background: '#620f72' });
+ThemeColors.set('default', { color: '#3e4245', background: '#ffffff' });
