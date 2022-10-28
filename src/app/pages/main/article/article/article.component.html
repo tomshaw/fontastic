@@ -3,11 +3,10 @@
 
     <div class="controls flex justify-between items-center border-top border-bottom">
       <div class="controls__item flex justify-start items-center">
-        <span class="material-icons">arrow_right</span>
-        <span class="text-uppercase whitespace-nowrap">News Article</span>
-      </div>
-      <div class="controls__item flex justify-end items-center">
         <div class="controls__item-elements">
+          <select class="form-control form-control-small" [(ngModel)]="proseFontScaleSelect" (change)="onSelectProseScale($event)">
+            <option *ngFor="let item of proseFontScale;" [value]="item.prose">{{item.title}}</option>
+          </select>
           <button type="button"
             class="app-btn ml-2"
             (click)="onUpdateNewsArticle($event)">
@@ -18,10 +17,10 @@
             (click)="onRefreshLatestNews($event)">
             <span>Refresh News</span>
           </button>
-          <select class="form-control form-control-small mx-5" [(ngModel)]="proseFontScaleSelect" (change)="onSelectProseScale($event)">
-            <option *ngFor="let item of proseFontScale;" [value]="item.prose">{{item.title}}</option>
-          </select>
         </div>
+      </div>
+      <div class="controls__item flex justify-end items-center">
+        <i class="material-icons" (click)="onComponentSwitch();">more_horiz</i>
       </div>
     </div>
 

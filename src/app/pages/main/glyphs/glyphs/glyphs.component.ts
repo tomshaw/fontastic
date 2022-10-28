@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { PresentationService } from '@app/core/services';
 
 @Component({
   selector: 'app-glyphs',
@@ -34,7 +35,9 @@ export class GlyphsComponent implements OnChanges {
 
   pixelRatio = window.devicePixelRatio || 1;
 
-  constructor() { }
+  constructor(
+    private presentationService: PresentationService
+  ) { }
 
   ngOnChanges() {
     if (this.fontObject && this.fontObject.tables) {
@@ -141,5 +144,10 @@ export class GlyphsComponent implements OnChanges {
       this.cellCount = count;
       setTimeout(() => this.initialize(), 1e3/3);
     }
+  }
+
+  onComponentSwitch() {
+    this.presentationService.setInspectComponent('waterfall');
+    this.presentationService.saveLayoutSettings();
   }
 }

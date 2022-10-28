@@ -3,10 +3,6 @@
 
     <div class="controls flex justify-between items-center border-top border-bottom">
       <div class="controls__item flex justify-start items-center">
-        <span class="material-icons">arrow_right</span>
-        <span class="text-uppercase" title="Waterfall">Glyph Information</span>
-      </div>
-      <div class="controls__item flex justify-end items-center">
         <div class="controls__item-elements">
           <input type="text" class="form-control form-control-small w-[40px] mr-2" [(ngModel)]="baseSize" (change)="onUpdateBaseSize($event)">
           <select class="form-control form-control-small mr-5" [(ngModel)]="fontScaleActive" (change)="onfontScaleSelect($event)">
@@ -14,9 +10,12 @@
           </select>
         </div>
       </div>
+      <div class="controls__item flex justify-end items-center">
+        <i class="material-icons" (click)="onComponentSwitch();">more_horiz</i>
+      </div>
     </div>
 
-    <div class="hover-scrollbox-y overflow-x-hidden">
+    <div class="hover-scrollbox-y h-full min-h-full">
       <ng-container *ngFor="let item of waterFall; let i = index">
         <div class="waterfall flex items-stretch w-full">
           <div class="waterfall__label flex items-end min-w-[140px] px-5 py-5 whitespace-nowrap">

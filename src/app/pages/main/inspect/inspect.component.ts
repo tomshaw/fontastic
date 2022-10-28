@@ -34,6 +34,8 @@ export class InspectComponent implements OnInit {
 
     this.presentationService.watchFontColor$.subscribe((value) => this.fontColor = value);
 
+    this.presentationService._inspectComponent.subscribe((value: string) => this.componentName = value);
+
     this.newsService.watchLatestNews$.subscribe((value: any) => this.latestNews = value.articles);
   }
 

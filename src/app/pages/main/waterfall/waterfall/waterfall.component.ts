@@ -87,4 +87,9 @@ export class WaterfallComponent implements OnChanges, OnInit {
     this.fontScaleActive = Number(target.value);
     this.setFontScale();
   }
+
+  onComponentSwitch() {
+    this.presentationService.setInspectComponent('article');
+    this.presentationService.saveLayoutSettings();
+  }
 }

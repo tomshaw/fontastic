@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MessageService, NewsService } from '@app/core/services';
+import { MessageService, NewsService, PresentationService } from '@app/core/services';
 import { proseFontScale } from '@main/config/system';
 
 @Component({
@@ -23,6 +23,7 @@ export class ArticleComponent implements OnInit {
   constructor(
     private newsService: NewsService,
     private messageService: MessageService,
+    private presentationService: PresentationService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +54,11 @@ export class ArticleComponent implements OnInit {
   onSelectProseScale(event: Event): void {
     const target = event.target as HTMLSelectElement;
     this.proseFontScaleSelect = target.value;
+  }
+
+  onComponentSwitch() {
+    this.presentationService.setInspectComponent('glyphs');
+    this.presentationService.saveLayoutSettings();
   }
 
 }

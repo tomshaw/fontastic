@@ -3,14 +3,6 @@
 
     <div class="controls flex justify-between items-center border-top border-bottom">
       <div class="controls__item flex justify-start items-center">
-        <span class="material-icons">arrow_right</span>
-        <i class="text-uppercase" title="Glyph Information">Glyph Information</i>
-        <ng-container *ngIf="glyphName">
-          <span class="material-icons">arrow_right</span>
-          <i class="text-uppercase" title="{{glyphName}}">{{glyphName}}</i>
-        </ng-container>
-      </div>
-      <div class="controls__item flex justify-end items-center">
         <div class="controls__item-elements">
           <select class="form-control form-control-small mr-2" (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
             <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
@@ -25,6 +17,9 @@
           </select>
           <span class="mx-5">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
         </div>
+      </div>
+      <div class="controls__item flex justify-end items-center">
+        <i class="material-icons" (click)="onComponentSwitch();">more_horiz</i>
       </div>
     </div>
 

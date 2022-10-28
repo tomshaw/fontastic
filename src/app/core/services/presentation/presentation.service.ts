@@ -40,6 +40,7 @@ export class PresentationService {
   _toolbarEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _previewEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _inspectEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _inspectComponent = new BehaviorSubject<string>('glyphs');
   _navigationEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _asideEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   _asideComponent = new BehaviorSubject<string>('tables');
@@ -135,6 +136,11 @@ export class PresentationService {
     this.saveLayoutSettings();
   }
 
+  setInspectComponent(name: any): void {
+    this._inspectComponent.next(name);
+    this.saveLayoutSettings();
+  }
+
   setStatsCollapsed(toggle: any): void {
     this._statsCollapsed.next(toggle);
     this.saveLayoutSettings();
@@ -149,6 +155,7 @@ export class PresentationService {
       _toolbarEnabled: this._toolbarEnabled.getValue(),
       _previewEnabled: this._previewEnabled.getValue(),
       _inspectEnabled: this._inspectEnabled.getValue(),
+      _inspectComponent: this._inspectComponent.getValue(),
       _statsCollapsed: this._statsCollapsed.getValue()
     };
     this.messageService.set('PANEL_SETTINGS', settings);
