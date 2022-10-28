@@ -9,6 +9,15 @@ body[data-theme="euphoria"] {
 
 [data-theme="euphoria"] {
 
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #deb431;
+    --scrollbar-hover-color: #deb431;
+    --scrollbar-space: 0.2rem;
+    --scrollbar-height: calc(.6rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.6rem + var(--scrollbar-space));
+  }
+
   a {
     color: $euphoriaTextColor;
     &:hover,
@@ -40,6 +49,20 @@ body[data-theme="euphoria"] {
 
   .material-icons {
     color: $euphoriaTextColor;
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#3a1f32];
+    span {
+      @apply text-[#deb431];
+    }
+    &:hover {
+      @apply bg-[#3a1f32b4];
+    }
   }
 
   .radio label,
@@ -199,6 +222,22 @@ body[data-theme="euphoria"] {
       &:hover {
         @apply bg-[#221723];
       }
+    }
+  }
+
+  /* ==========================================================================
+  Waterfall
+  ========================================================================== */
+
+  .waterfall {
+    &__label {
+      background-color: lighten($euphoriaBackground, 2%);
+    }
+    &__label-text {
+      @apply text-inherit;
+    }
+    &__wrapper {
+      background-color: lighten($euphoriaBackground, 3%);
     }
   }
 

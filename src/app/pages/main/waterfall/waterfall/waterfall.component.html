@@ -18,11 +18,11 @@
 
     <div class="hover-scrollbox-y overflow-x-hidden">
       <ng-container *ngFor="let item of waterFall; let i = index">
-        <div class="flex items-stretch w-full border-b-4 border-slate-200">
-          <div class="flex items-end min-w-[140px] px-5 py-5 whitespace-nowrap bg-slate-100">
-            <span>{{item.fontLabel}}</span>
+        <div class="waterfall flex items-stretch w-full">
+          <div class="waterfall__label flex items-end min-w-[140px] px-5 py-5 whitespace-nowrap">
+            <span class="waterfall__label-text">{{item.fontLabel}}</span>
           </div>
-          <div class="relative flex items-center w-full px-5 whitespace-nowrap">
+          <div class="waterfall__wrapper relative flex items-center w-full px-5 whitespace-nowrap">
             <h1 class="leading-tight" [style.color]="fontColor" [style.font-family]="item.fontFamily" [style.font-size]="item.fontSize" [innerHtml]="displayText"></h1>
           </div>
         </div>

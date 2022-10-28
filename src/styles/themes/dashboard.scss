@@ -8,6 +8,16 @@ body[data-theme="dashboard"] {
 
 [data-theme="dashboard"] {
 
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #00a1be79;
+    --scrollbar-hover-color: #00a1beb9;
+    --scrollbar-space: 0.2rem;
+    --scrollbar-height: calc(.5rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.5rem + var(--scrollbar-space));
+  }
+
+
   a {
     color: $dashboardTextColor;
     &:hover,
@@ -39,6 +49,17 @@ body[data-theme="dashboard"] {
 
   .material-icons {
     color: $dashboardTextColor;
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#35465ace];
+    &:hover {
+      @apply bg-[#00a1be79];
+    }
   }
 
   .radio label,
@@ -198,6 +219,22 @@ body[data-theme="dashboard"] {
       &:hover {
         @apply bg-[#91a8bebd];
       }
+    }
+  }
+
+  /* ==========================================================================
+  Waterfall
+  ========================================================================== */
+
+  .waterfall {
+    &__label {
+      background-color: lighten(#14202b, 5%);
+    }
+    &__label-text {
+      @apply text-inherit;
+    }
+    &__wrapper {
+      background-color: lighten(#14202b, 2%);
     }
   }
 

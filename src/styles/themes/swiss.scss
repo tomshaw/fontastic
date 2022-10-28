@@ -9,6 +9,15 @@ body[data-theme="swiss"] {
 
 [data-theme="swiss"] {
 
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #fff;
+    --scrollbar-hover-color: rgba(255, 255, 255, 0.76);
+    --scrollbar-space: 0.2rem;
+    --scrollbar-height: calc(.4rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.4rem + var(--scrollbar-space));
+  }
+
   a {
     color: $swissTextColor;
     &:hover,
@@ -40,6 +49,20 @@ body[data-theme="swiss"] {
 
   .material-icons {
     color: $swissTextColor;
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#d61720];
+    span {
+      @apply text-white;
+    }
+    &:hover {
+      @apply bg-[#fd1e29e0];
+    }
   }
 
   .radio label,
@@ -196,6 +219,22 @@ body[data-theme="swiss"] {
   .glyph-list {
     &__wrapper-item {
       @apply bg-[#ed1b24] border-2 border-[#fff];
+    }
+  }
+
+  /* ==========================================================================
+  Waterfall
+  ========================================================================== */
+
+  .waterfall {
+    &__label {
+      background-color: darken($swissBackground, 5%);
+    }
+    &__label-text {
+      @apply text-inherit;
+    }
+    &__wrapper {
+      background-color: darken($swissBackground, 2%);
     }
   }
 

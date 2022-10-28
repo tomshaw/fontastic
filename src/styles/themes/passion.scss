@@ -9,6 +9,15 @@ body[data-theme="passion"] {
 
 [data-theme="passion"] {
 
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #fe1963;
+    --scrollbar-hover-color: #fe1961cb;
+    --scrollbar-space: 0.2rem;
+    --scrollbar-height: calc(.6rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.6rem + var(--scrollbar-space));
+  }
+
   a {
     color: $passionTextColor;
     &:hover,
@@ -40,6 +49,20 @@ body[data-theme="passion"] {
 
   .material-icons {
     color: $passionTextColor;
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#fe1963];
+    span {
+      @apply text-white;
+    }
+    &:hover {
+      @apply bg-[#fe1961d7];
+    }
   }
 
   .radio label,
@@ -196,6 +219,23 @@ body[data-theme="passion"] {
   .glyph-list {
     &__wrapper-item {
       @apply bg-[#620f72] border-2 border-[#fe1963];
+    }
+  }
+
+  /* ==========================================================================
+  Waterfall
+  ========================================================================== */
+
+  .waterfall {
+    //@apply border-b-2 border-[#fe1963];
+    &__label {
+      background-color: lighten($passionBackground, 5%);
+    }
+    &__label-text {
+      @apply text-inherit;
+    }
+    &__wrapper {
+      background-color: lighten($passionBackground, 2%);
     }
   }
 

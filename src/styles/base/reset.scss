@@ -113,6 +113,20 @@ input.input--title {
 }
 
 /* ==========================================================================
+App Button
+========================================================================== */
+
+.app-btn {
+  @apply flex items-center justify-center cursor-pointer rounded-md py-2 px-5 bg-slate-50;
+  span {
+    @apply flex grow;
+  }
+  &:hover {
+    @apply bg-slate-100;
+  }
+}
+
+/* ==========================================================================
 Wrapper
 ========================================================================== */
 
@@ -135,15 +149,16 @@ Component
 }
 
 /* ==========================================================================
-Scrollbox #00a1be;
+Scrollbox
 ========================================================================== */
 
+.hover-scrollbox-x,
 .hover-scrollbox-y {
-  --scrollbar-color: #00a1be79;
-  --scrollbar-hover-color: #00a1beb9;
+  --scrollbar-color: #00a0be;
+  --scrollbar-hover-color: #00a1bece;
   --scrollbar-space: 0.2rem;
-  --scrollbar-height: calc(.6rem + var(--scrollbar-space));
-  --scrollbar-width: calc(.6rem + var(--scrollbar-space));
+  --scrollbar-height: calc(.5rem + var(--scrollbar-space));
+  --scrollbar-width: calc(.5rem + var(--scrollbar-space));
 }
 
 .hover-scrollbox-x,
@@ -646,5 +661,22 @@ Glyph Listing
       cursor: text;
       padding-top: 5px;
     }
+  }
+}
+
+/* ==========================================================================
+Waterfall
+========================================================================== */
+
+.waterfall {
+  //@apply border-b-2 border-slate-200;
+  &__label {
+    @apply bg-slate-100;
+  }
+  &__label-text {
+    @apply text-inherit;
+  }
+  &__wrapper {
+    @apply bg-white;
   }
 }

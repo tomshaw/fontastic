@@ -9,6 +9,15 @@ body[data-theme="midnight"] {
 
 [data-theme="midnight"] {
 
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #fff;
+    --scrollbar-hover-color: rgba(255, 255, 255, 0.507);
+    --scrollbar-space: 0.2rem;
+    --scrollbar-height: calc(.4rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.4rem + var(--scrollbar-space));
+  }
+
   a {
     color: $midnightTextColor;
     &:hover,
@@ -40,6 +49,20 @@ body[data-theme="midnight"] {
 
   .material-icons {
     color: $midnightTextColor;
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#121212];
+    span {
+      @apply text-[#fff];
+    }
+    &:hover {
+      @apply bg-[#1a1a1a];
+    }
   }
 
   .radio label,
@@ -198,6 +221,22 @@ body[data-theme="midnight"] {
       &:hover {
         @apply bg-[#111111];
       }
+    }
+  }
+
+  /* ==========================================================================
+  Waterfall
+  ========================================================================== */
+
+  .waterfall {
+    &__label {
+      background-color: lighten($midnightBackground, 5%);
+    }
+    &__label-text {
+      @apply text-inherit;
+    }
+    &__wrapper {
+      background-color: lighten($midnightBackground, 2%);
     }
   }
 
