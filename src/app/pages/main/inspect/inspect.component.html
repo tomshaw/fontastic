@@ -3,7 +3,7 @@
     <app-glyphs [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'glyphs'"></app-glyphs>
     <app-waterfall [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'waterfall'"></app-waterfall>
     <ng-container *ngIf="latestNews && latestNews.length">
-      <app-articles [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'article'"></app-articles>
+      <app-articles [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'articles'"></app-articles>
     </ng-container>
   </div>
 </ng-container>

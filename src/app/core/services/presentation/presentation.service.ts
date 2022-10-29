@@ -158,11 +158,13 @@ export class PresentationService {
       _inspectComponent: this._inspectComponent.getValue(),
       _statsCollapsed: this._statsCollapsed.getValue()
     };
+    console.log('settings', settings);
     this.messageService.set('PANEL_SETTINGS', settings);
   }
 
   loadLayoutSettings(): void {
     const settings = this.configService.get('PANEL_SETTINGS');
+    console.log('settings', settings);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {

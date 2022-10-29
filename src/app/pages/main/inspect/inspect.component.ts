@@ -44,7 +44,7 @@ export class InspectComponent implements OnInit {
   }
 
   onComponentSwitch(): void {
-    this.componentName = (this.componentName === 'glyphs') ? 'waterfall' : (this.componentName === 'waterfall') ? 'article' : 'glyphs';
+    this.componentName = (this.componentName === 'glyphs') ? 'waterfall' : (this.componentName === 'waterfall') ? 'articles' : 'glyphs';
   }
 
 }
