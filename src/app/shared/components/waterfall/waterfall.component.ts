@@ -89,7 +89,8 @@ export class WaterfallComponent implements OnChanges, OnInit {
   }
 
   onComponentSwitch() {
-    this.presentationService.setInspectComponent('article');
+    const componentName = (this.latestNews.length) ? 'articles' : 'glyphs';
+    this.presentationService.setInspectComponent(componentName);
     this.presentationService.saveLayoutSettings();
   }
 }

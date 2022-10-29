@@ -10,8 +10,6 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { AsideComponent } from './aside/aside.component';
-import { SearchComponent } from './aside/search/search.component';
-import { TablesComponent } from './aside/tables/tables.component';
 
 @NgModule({
   imports: [
@@ -25,9 +23,7 @@ import { TablesComponent } from './aside/tables/tables.component';
     HeaderComponent, 
     FooterComponent, 
     NavigationComponent, 
-    AsideComponent, 
-    SearchComponent, 
-    TablesComponent
+    AsideComponent
   ],
   exports: [
     LayoutComponent

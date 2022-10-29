@@ -3,11 +3,11 @@ import { MessageService, NewsService, PresentationService } from '@app/core/serv
 import { proseFontScale } from '@main/config/system';
 
 @Component({
-  selector: 'app-article',
-  templateUrl: './article.component.html',
-  styleUrls: ['./article.component.scss']
+  selector: 'app-articles',
+  templateUrl: './articles.component.html',
+  styleUrls: ['./articles.component.scss']
 })
-export class ArticleComponent implements OnInit {
+export class ArticlesComponent implements OnInit {
 
   @Input() fontObject: any;
   @Input() fontFamily: string;

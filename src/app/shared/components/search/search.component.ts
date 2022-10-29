@@ -18,7 +18,7 @@ export class SearchComponent implements OnInit {
 
   fontTypes = fontMimeTypes;
   dbColumns = dbColumns;
-  orderBy = ['ASC', 'DESC']
+  orderBy = ['ASC', 'DESC'];
 
   constructor(
     private databaseService: DatabaseService,
