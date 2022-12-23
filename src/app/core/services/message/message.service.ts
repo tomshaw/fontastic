@@ -95,8 +95,12 @@ export class MessageService {
   }
 
   enableDbConnection(item: any) {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_ENABLE_DBCONNECTION, item))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_ENABLE_DBCONNECTION, item);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_ENABLE_DBCONNECTION, (event, response) => {
+        resolve(response);
+      });
+    });
   }
 
   testDbConnection(item: any) {
@@ -243,19 +247,22 @@ export class MessageService {
     });
   }
 
-  // fetchCollections(): Observable<any[]> {
-  //   return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS))
-  //     .pipe(catchError((error: any) => throwError(() => new Error(error))));
-  // }
-
-  createCollection(parentId: number): Observable<any> {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, parentId))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  createCollection(parentId: number): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, parentId);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_CREATE_COLLECTION, (event, response) => {
+        resolve(response);
+      });
+    });
   }
 
-  deleteCollection(id: number): Observable<any[]> {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_DELETE_COLLECTION, id))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  deleteCollection(id: number): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_DELETE_COLLECTION, id);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_DELETE_COLLECTION, (event, response) => {
+        resolve(response);
+      });
+    });
   }
 
   updateCollection(id: number, data: any): Promise<any[]> {
@@ -307,14 +314,22 @@ export class MessageService {
     });
   }
 
-  updateCollectionCount(id: number): Observable<any[]> {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_UPDATE_COUNT, id))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  updateCollectionCount(id: number): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_UPDATE_COUNT, id);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_UPDATE_COUNT, (event, response) => {
+        resolve(response);
+      });
+    });
   }
 
-  updateCollectionCounts(): Observable<any[]> {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_UPDATE_COUNTS))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  updateCollectionCounts(): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_UPDATE_COUNTS);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_UPDATE_COUNTS, (event, response) => {
+        resolve(response);
+      });
+    });
   }
 
   syncSystemFonts(): Promise<any[]> {
@@ -357,9 +372,13 @@ export class MessageService {
    * Logger
    */
 
-  log(message: string, type: number): Observable<any> {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_LOGGER_CREATE, { message, type }))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  log(message: string, type: number): Promise<any[]> {
+      this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_LOGGER_CREATE, { message, type });
+      return new Promise((resolve, reject) => {
+        this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_LOGGER_CREATE, (event, response) => {
+          resolve(response);
+        });
+      });
   }
 
   fetchLogs(options: any = {}): Promise<any[]> {

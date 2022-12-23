@@ -27,7 +27,6 @@ export class GeneralComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
     if (this.authService.getAuthUser()) {
       this.user = this.authService.getAuthUser();
     }

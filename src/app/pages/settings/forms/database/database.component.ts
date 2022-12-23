@@ -118,7 +118,7 @@ export class DatabaseComponent implements OnInit {
   }
 
   enableConnection(event: Event, item: any): void {
-    this.messageService.enableDbConnection(item).subscribe((result: any) => {
+    this.messageService.enableDbConnection(item).then((result: any) => {
       setTimeout(() => this.messageService.reloadWindow(), 5e3);
       this.alertService.info('Applying changes please wait..');
     });

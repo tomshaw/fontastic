@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AlertService, UtilsService, DatabaseService, PresentationService, MessageService, ConfigService } from '@app/core/services';
+import { AlertService, UtilsService, DatabaseService, MessageService, ConfigService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -22,7 +22,6 @@ export class GridComponent implements OnInit {
     private configService: ConfigService,
     private messageService: MessageService,
     private databaseService: DatabaseService,
-    private presentationService: PresentationService
   ) {
     this.isWindows = this.configService.getIsWindows();
   }
@@ -46,9 +45,8 @@ export class GridComponent implements OnInit {
     });
   }
 
-  onRowClick(event: Event, item: any): void {
-    this.presentationService.saveLayoutSettings();
-    this.databaseService.setStoreId(item.id);
+  onRowClick(id: number): void {
+    this.databaseService.setStoreId(id);
   }
 
   onHandleSort(event: Event, column: string): void {

@@ -95,8 +95,8 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() { }
 
-  onRowClick(event: Event, item: any): void {
-    this.databaseService.setStoreId(item.id);
+  onRowClick(id: number): void {
+    this.databaseService.setStoreId(id);
   }
 
   getFontSize(): string {

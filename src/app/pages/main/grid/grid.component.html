@@ -1,8 +1,6 @@
 <div class="component border-top">
   <div class="component__panel">
-    <div class="hover-scrollbox-y hover-scrollbox-x h-full min-h-full">
-
-      <div [class.loading]="isLoading" #gridElement></div>
+    <div class="hover-scrollbox-y hover-scrollbox-x h-full min-h-full" [class.loading]="isLoading" #gridElement>
 
       <table class="table border-separate border-spacing-1">
         <thead>
@@ -24,7 +22,7 @@
         <tbody>
           <ng-container *ngFor="let item of resultSet">
 
-            <tr (click)="onRowClick($event, item)" [attr.id]="item.id" [attr.data-row]="item.id">
+            <tr (click)="onRowClick(item.id)" [attr.id]="item.id" [attr.data-row]="item.id">
 
               <ng-container *ngIf="item.installable; else p1">
                 <td [attr.title]="item.activated ? 'Remove' : 'Add'">

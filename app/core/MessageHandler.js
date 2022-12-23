@@ -46,14 +46,6 @@ class MessageHandler {
         return electron_1.ipcMain.on(channel, done);
     }
     initialize() {
-        // this.on(channel.IPCMAIN_SYSTEM_BOOT, async (event: IpcMainEvent) => {
-        //   let config = this.getConfigManager().get();
-        //   let system = this.getSystemManager().toArray();
-        //   event.returnValue = {
-        //     ...config,
-        //     system: system
-        //   };
-        // });
         this.on(channel.IPCMAIN_REQUEST_SYSTEM_BOOT, (event, args) => __awaiter(this, void 0, void 0, function* () {
             let config = this.getConfigManager().get();
             let system = this.getSystemManager().toArray();
@@ -64,7 +56,6 @@ class MessageHandler {
             this.getFontManager().reLaunch();
             event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_RESET, {});
         }));
-        //this.on(channel.IPCMAIN_SYSTEM_RESET, async (event: IpcMainEvent) => this.getFontManager().reLaunch());
         /**
          * Config Manager
          */
@@ -103,7 +94,7 @@ class MessageHandler {
         }));
         this.on(channel.IPCMAIN_REQUEST_ENABLE_DBCONNECTION, (event, item) => {
             this.getConfigManager().enableDbConnection(item);
-            event.returnValue = item;
+            event.sender.send(channel.IPCMAIN_RESPONSE_ENABLE_DBCONNECTION, item);
         });
         this.on(channel.IPCMAIN_REQUEST_TEST_CONNECTION, (event, args) => __awaiter(this, void 0, void 0, function* () {
             let activeConnectionOptions = this.getConnectionManager().dataSource.options;
@@ -190,22 +181,24 @@ class MessageHandler {
         }));
         this.on(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, (event, parentId) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getCollectionRepository().createCollection(parentId);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
+            const result = yield this.getConnectionManager().getCollection().find();
+            event.sender.send(channel.IPCMAIN_RESPONSE_CREATE_COLLECTION, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_DELETE_COLLECTION, (event, collectionId) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getCollectionRepository().deleteCollection(collectionId);
             yield this.getConnectionManager().getStoreRepository().deleteCollection(collectionId);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
+            const result = yield this.getConnectionManager().getCollection().find();
+            event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_COLLECTION, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_UPDATE_COLLECTION, (event, args) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getCollectionRepository().updateCollection(args);
-            let find = yield this.getConnectionManager().getCollection().find();
-            event.sender.send(channel.IPCMAIN_RESPONSE_UPDATE_COLLECTION, find);
+            const result = yield this.getConnectionManager().getCollection().find();
+            event.sender.send(channel.IPCMAIN_RESPONSE_UPDATE_COLLECTION, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_RESET_ENABLED, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getCollectionRepository().resetEnabled();
-            let find = yield this.getConnectionManager().getCollection().find();
-            event.sender.send(channel.IPCMAIN_RESPONSE_RESET_ENABLED, find);
+            const result = yield this.getConnectionManager().getCollection().find();
+            event.sender.send(channel.IPCMAIN_RESPONSE_RESET_ENABLED, result);
         }));
         /**
          * Store
@@ -227,12 +220,14 @@ class MessageHandler {
         this.on(channel.IPCMAIN_REQUEST_UPDATE_COUNT, (event, collectionId) => __awaiter(this, void 0, void 0, function* () {
             const { total } = yield this.getConnectionManager().getStoreRepository().fetchCollectionCount(collectionId);
             yield this.getConnectionManager().getCollectionRepository().updateCollectionCount(collectionId, total);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
+            const result = yield this.getConnectionManager().getCollection().find();
+            event.sender.send(channel.IPCMAIN_RESPONSE_UPDATE_COUNT, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_UPDATE_COUNTS, (event) => __awaiter(this, void 0, void 0, function* () {
             const items = yield this.getConnectionManager().getStoreRepository().fetchCollectionsCount();
             yield this.getConnectionManager().getCollectionRepository().updateCollectionCounts(items);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
+            const result = yield this.getConnectionManager().getCollection().find();
+            event.sender.send(channel.IPCMAIN_RESPONSE_UPDATE_COUNTS, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_SYNC_SYSTEM, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getStoreRepository().resetSystem();
@@ -260,7 +255,8 @@ class MessageHandler {
          * Logger
          */
         this.on(channel.IPCMAIN_REQUEST_LOGGER_CREATE, (event, data) => __awaiter(this, void 0, void 0, function* () {
-            event.returnValue = yield this.getConnectionManager().getLoggerRepository().log(data);
+            yield this.getConnectionManager().getLoggerRepository().log(data);
+            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_CREATE, data);
         }));
         this.on(channel.IPCMAIN_REQUEST_LOGGER_QUERY, (event, args) => __awaiter(this, void 0, void 0, function* () {
             let find = yield this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });

@@ -101,7 +101,7 @@ export class NavigationComponent implements OnInit {
     this.presentationService.setLoadingSpinner(true);
     this.alertService.info('Adding fonts please wait..', 1e3, true);
     this.messageService.scanFiles(response.filePaths, collectionId).then(this.utils.delay(1e3)).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => this.resultSet = this.utils.expandEntities(result));
+      this.messageService.updateCollectionCount(collectionId).then((result) => this.resultSet = this.utils.expandEntities(result));
       this.presentationService.setLoadingSpinner(false);
       this.alertService.dismiss();
       this.messageService.log(`Added files to collection id #${collectionId}.`, 1);
@@ -112,7 +112,7 @@ export class NavigationComponent implements OnInit {
     this.presentationService.setLoadingSpinner(true);
     this.alertService.info('Adding fonts please wait..', 1e3, true);
     this.messageService.scanFolders(response.filePaths, collectionId).then(this.utils.delay(1e3)).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => this.resultSet = this.utils.expandEntities(result));
+      this.messageService.updateCollectionCount(collectionId).then((result) => this.resultSet = this.utils.expandEntities(result));
       this.presentationService.setLoadingSpinner(false);
       this.alertService.dismiss();
       this.messageService.log(`Added folders to collection id #${collectionId}.`, 1);
@@ -197,7 +197,7 @@ export class NavigationComponent implements OnInit {
   handleCreateCollection(event: Event, parentId: number): void {
     this.presentationService.setLoadingSpinner(true);
 
-    this.messageService.createCollection(parentId).subscribe((result) => {
+    this.messageService.createCollection(parentId).then((result) => {
 
       this.databaseService.setCollection(result);
 
@@ -213,7 +213,7 @@ export class NavigationComponent implements OnInit {
 
     this.presentationService.setLoadingSpinner(true);
 
-    this.messageService.deleteCollection(id).subscribe((result) => {
+    this.messageService.deleteCollection(id).then((result) => {
 
       this.databaseService.setCollection(result);
 

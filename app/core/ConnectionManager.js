@@ -21,7 +21,6 @@ class ConnectionManager {
         this.omitables = ["title", "description", "enabled"];
         this.setConfigManager(configManager);
         let config = this.getConfigManager().get("database");
-        console.log('CONFIG', config);
         this.setConnections(this.normalize(config.connections));
         this.registerEntities(this.connections);
         this.registerSubscribers(this.connections);

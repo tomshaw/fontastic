@@ -30,6 +30,7 @@ export class HeaderComponent implements OnInit {
     private gravatar: GravatarService
   ) {
     this.authService.watchAuthUser$.subscribe((x: AuthUser) => {
+      console.log(x);
       if (x && x.email) {
         this.currentUser = x;
         this.gravatarUrl = this.gravatar.url(x.email, 128, 'mm');
@@ -59,7 +60,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit() { }
 
   handleCreateCollection(e: any): void {
-    this.messageService.createCollection(0).subscribe(result => {
+    this.messageService.createCollection(0).then(result => {
       this.databaseService.setCollection(result);
     });
   }
