@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { ElectronService } from '@app/core/services/electron/electron.service';
 import * as channel from '@main/config/channel';
 

@@ -2,11 +2,9 @@ import 'reflect-metadata';
 import '../polyfills';
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-
-//import { NgChartsModule } from 'ng2-charts';
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -21,7 +19,7 @@ import { MainModule } from './pages/main/main.module';
 import { SettingsModule } from './pages/settings/settings.module';
 import { AppRoutingModule } from './app-routing.module';
 
-import { ConfigService, ElectronService, MessageService } from '@app/core/services';
+import { BootService } from '@app/core/services/boot/boot.service';
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -38,7 +36,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ReactiveFormsModule,
     HttpClientModule,
     CoreModule,
-    //NgChartsModule,
     SharedModule,
     LayoutModule,
     MainModule,
@@ -52,21 +49,17 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [],
+  providers: [
+    BootService,
+    { 
+      provide: APP_INITIALIZER, 
+      useFactory: (bootService: BootService) => () => bootService.init(), 
+      deps: [BootService], 
+      multi: true 
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 
-  constructor(
-    private configService: ConfigService,
-    private messageService: MessageService,
-    private electronService: ElectronService,
-  ) {
-    if (this.electronService.isElectron) {
-      this.messageService.systemBoot().then((result) => {
-        console.log('SYSTEM-BOOT-CONFIG', result);
-        this.configService.setConfig(result);
-      });
-    }
-  }
 }

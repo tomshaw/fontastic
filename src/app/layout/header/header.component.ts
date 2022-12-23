@@ -28,9 +28,10 @@ export class HeaderComponent implements OnInit {
     private databaseService: DatabaseService,
     private presentationService: PresentationService,
     private gravatar: GravatarService
-  ) {
+  ) { }
+
+  ngOnInit() { 
     this.authService.watchAuthUser$.subscribe((x: AuthUser) => {
-      console.log(x);
       if (x && x.email) {
         this.currentUser = x;
         this.gravatarUrl = this.gravatar.url(x.email, 128, 'mm');
@@ -56,8 +57,6 @@ export class HeaderComponent implements OnInit {
     });
     this.presentationService._defaultTheme.subscribe((result) => this.enableTheme(result));
   }
-
-  ngOnInit() { }
 
   handleCreateCollection(e: any): void {
     this.messageService.createCollection(0).then(result => {

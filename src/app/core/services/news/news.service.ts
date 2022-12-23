@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
@@ -23,7 +22,6 @@ export class NewsService {
   watchLatestNews$ = this._latestNews.asObservable();
 
   constructor(
-    private http: HttpClient,
     private alertService: AlertService,
     private configService: ConfigService,
     private messageService: MessageService

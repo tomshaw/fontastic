@@ -10,3 +10,4 @@ export * from './alert/alert.service';
 export * from './auth/auth.service';
 export * from './font/font.service';
 export * from './news/news.service';
+export * from './boot/boot.service';
