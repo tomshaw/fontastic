@@ -64,16 +64,31 @@ export default class MessageHandler {
 
   initialize() {
 
-    this.on(channel.IPCMAIN_SYSTEM_BOOT, async (event: IpcMainEvent) => {
+    // this.on(channel.IPCMAIN_SYSTEM_BOOT, async (event: IpcMainEvent) => {
+    //   let config = this.getConfigManager().get();
+    //   let system = this.getSystemManager().toArray();
+    //   event.returnValue = {
+    //     ...config,
+    //     system: system
+    //   };
+    // });
+
+    this.on(channel.IPCMAIN_REQUEST_SYSTEM_BOOT, async (event: IpcMainEvent, args: any) => {
       let config = this.getConfigManager().get();
       let system = this.getSystemManager().toArray();
-      event.returnValue = {
+      const response = {
         ...config,
         system: system
       };
+      event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_BOOT, response);
     });
 
-    this.on(channel.IPCMAIN_SYSTEM_RESET, async (event: IpcMainEvent) => this.getFontManager().reLaunch());
+    this.on(channel.IPCMAIN_REQUEST_SYSTEM_RESET, async (event: IpcMainEvent, args: any) => {
+      this.getFontManager().reLaunch()
+      event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_RESET, {});
+    });
+
+    //this.on(channel.IPCMAIN_SYSTEM_RESET, async (event: IpcMainEvent) => this.getFontManager().reLaunch());
 
     /**
      * Config Manager
@@ -220,7 +235,8 @@ export default class MessageHandler {
      */
 
     this.on(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS, async (event: IpcMainEvent, ...args: any[]) => {
-      event.returnValue = await this.getConnectionManager().getCollection().find(...args);
+      const result = await this.getConnectionManager().getCollection().find(...args);
+      event.sender.send(channel.IPCMAIN_RESPONSE_FETCH_COLLECTIONS, result);
     });
 
     this.on(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, async (event: IpcMainEvent, parentId: number) => {

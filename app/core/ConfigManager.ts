@@ -77,7 +77,7 @@ export default class ConfigManager {
       this.set('database', config);
     } else {
       // Resets database store.
-      // this.set('database', config);
+      //this.set('database', config);
     }
   }
 

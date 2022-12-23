@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
-import { NgChartsModule } from 'ng2-charts';
+//import { NgChartsModule } from 'ng2-charts';
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -38,7 +38,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ReactiveFormsModule,
     HttpClientModule,
     CoreModule,
-    NgChartsModule,
+    //NgChartsModule,
     SharedModule,
     LayoutModule,
     MainModule,
@@ -63,7 +63,7 @@ export class AppModule {
     private electronService: ElectronService,
   ) {
     if (this.electronService.isElectron) {
-      this.messageService.systemBoot().subscribe((result) => {
+      this.messageService.systemBoot().then((result) => {
         console.log('SYSTEM-BOOT-CONFIG', result);
         this.configService.setConfig(result);
       });

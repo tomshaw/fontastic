@@ -23,13 +23,22 @@ export class MessageService {
   }
 
   systemBoot() {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_SYSTEM_BOOT))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SYSTEM_BOOT);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SYSTEM_BOOT, (event, response) => {
+        resolve(response);
+      });
+    });
+
   }
 
   systemReset() {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_SYSTEM_RESET))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SYSTEM_BOOT);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SYSTEM_BOOT, (event, response) => {
+        resolve(response);
+      });
+    });
   }
 
   /**
@@ -67,7 +76,7 @@ export class MessageService {
    * Connection Manager
    */
 
-   saveDbConnection(options: any) {
+  saveDbConnection(options: any) {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SAVE_DBCONNECTION, options);
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, (event, response) => {
@@ -112,7 +121,7 @@ export class MessageService {
    * Font Manager
    */
 
-   exec(cmd: string, options: object = {}): Promise<any[]> {
+  exec(cmd: string, options: object = {}): Promise<any[]> {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_EXECUTE_COMMAND, { cmd, options });
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_EXECUTE_COMMAND, (event, response) => {
@@ -225,10 +234,19 @@ export class MessageService {
    * Collection
    */
 
-  fetchCollections(): Observable<any[]> {
-    return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  fetchCollections(): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS);
+    return new Promise((resolve, reject) => {
+      this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_FETCH_COLLECTIONS, (event, response) => {
+        resolve(response);
+      });
+    });
   }
+
+  // fetchCollections(): Observable<any[]> {
+  //   return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS))
+  //     .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  // }
 
   createCollection(parentId: number): Observable<any> {
     return of(this.electron.ipcRenderer.sendSync(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, parentId))

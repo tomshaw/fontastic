@@ -57,7 +57,7 @@ export default class ConfigManager {
   }
 
   getCachePath(): string {
-    return app.getPath('cache');
+    return app.getPath('sessionData');
   }
 
   getAppDataPath(): string {

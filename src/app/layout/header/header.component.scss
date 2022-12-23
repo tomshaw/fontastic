@@ -24,7 +24,7 @@ header {
 .header-block {
   @apply p-0 h-full;
   a {
-    @apply cursor-pointer text-[11px] text-center no-underline py-[5px] px-[10px] inline-block outline-hidden whitespace-nowrap opacity-0 invisible transition-all;
+    @apply cursor-pointer text-[11px] text-center no-underline py-[5px] px-[10px] inline-block outline-none whitespace-nowrap opacity-0 invisible transition-all;
     i {
       @apply block text-[24px] leading-none p-0;
     }

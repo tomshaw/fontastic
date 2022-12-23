@@ -60,7 +60,7 @@ class ConfigManager {
         }
         else {
             // Resets database store.
-            // this.set('database', config);
+            //this.set('database', config);
         }
     }
     enableDbConnection(connection) {

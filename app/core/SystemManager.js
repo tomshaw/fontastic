@@ -41,7 +41,7 @@ class ConfigManager {
         return path.dirname(loc);
     }
     getCachePath() {
-        return electron_1.app.getPath('cache');
+        return electron_1.app.getPath('sessionData');
     }
     getAppDataPath() {
         return electron_1.app.getPath('appData');

@@ -115,7 +115,7 @@ export class DatabaseService {
       });
 
       // Boot system.
-      messageService.fetchCollections().subscribe(result => this.setCollection(result));
+      messageService.fetchCollections().then(result => this.setCollection(result));
 
       this.fetchSystemStats();
     }

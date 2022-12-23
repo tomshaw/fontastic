@@ -46,12 +46,25 @@ class MessageHandler {
         return electron_1.ipcMain.on(channel, done);
     }
     initialize() {
-        this.on(channel.IPCMAIN_SYSTEM_BOOT, (event) => __awaiter(this, void 0, void 0, function* () {
+        // this.on(channel.IPCMAIN_SYSTEM_BOOT, async (event: IpcMainEvent) => {
+        //   let config = this.getConfigManager().get();
+        //   let system = this.getSystemManager().toArray();
+        //   event.returnValue = {
+        //     ...config,
+        //     system: system
+        //   };
+        // });
+        this.on(channel.IPCMAIN_REQUEST_SYSTEM_BOOT, (event, args) => __awaiter(this, void 0, void 0, function* () {
             let config = this.getConfigManager().get();
             let system = this.getSystemManager().toArray();
-            event.returnValue = Object.assign(Object.assign({}, config), { system: system });
+            const response = Object.assign(Object.assign({}, config), { system: system });
+            event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_BOOT, response);
         }));
-        this.on(channel.IPCMAIN_SYSTEM_RESET, (event) => __awaiter(this, void 0, void 0, function* () { return this.getFontManager().reLaunch(); }));
+        this.on(channel.IPCMAIN_REQUEST_SYSTEM_RESET, (event, args) => __awaiter(this, void 0, void 0, function* () {
+            this.getFontManager().reLaunch();
+            event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_RESET, {});
+        }));
+        //this.on(channel.IPCMAIN_SYSTEM_RESET, async (event: IpcMainEvent) => this.getFontManager().reLaunch());
         /**
          * Config Manager
          */
@@ -172,7 +185,8 @@ class MessageHandler {
          * Collection
          */
         this.on(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS, (event, ...args) => __awaiter(this, void 0, void 0, function* () {
-            event.returnValue = yield this.getConnectionManager().getCollection().find(...args);
+            const result = yield this.getConnectionManager().getCollection().find(...args);
+            event.sender.send(channel.IPCMAIN_RESPONSE_FETCH_COLLECTIONS, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, (event, parentId) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getCollectionRepository().createCollection(parentId);
