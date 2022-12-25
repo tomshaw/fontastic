@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs/promises");
+const electron_log_1 = require("electron-log");
 const path = require('path');
 const child = require('child_process').execFile;
 class FontCatalog {
@@ -35,8 +36,12 @@ class FontCatalog {
     }
     getFolders(sourceFolder) {
         const appPath = this.getSystemManager().getAppPath();
+        const execPath = this.getPathExecutable();
         const src = path.normalize(sourceFolder);
-        const dest = path.normalize(appPath + path.sep + 'dist' + path.sep + 'catalog' + path.sep + Date.now());
+        //const dest = path.normalize(appPath + path.sep + 'resources' + path.sep + 'dist' + path.sep + 'catalog' + path.sep + Date.now());
+        const dest = path.normalize(appPath + path.sep + '..' + path.sep + 'catalog' + path.sep + Date.now());
+        electron_log_1.default.info(appPath);
+        electron_log_1.default.info(dest);
         return { src, dest };
     }
     createCatalog(folder) {

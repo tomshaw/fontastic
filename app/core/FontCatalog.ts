@@ -1,6 +1,7 @@
 import SystemManager from './SystemManager';
 import ConfigManager from './ConfigManager';
 import * as fs from 'fs/promises';
+import log from 'electron-log';
 
 const path = require('path');
 const child = require('child_process').execFile;
@@ -43,7 +44,12 @@ export default class FontCatalog {
     const appPath = this.getSystemManager().getAppPath();
 
     const src = path.normalize(sourceFolder);
-    const dest = path.normalize(appPath + path.sep + 'dist' + path.sep + 'catalog' + path.sep + Date.now());
+    const dest = this.getSystemManager().isProduction() ? 
+      path.normalize(appPath + path.sep + '..' + path.sep + 'catalog' + path.sep + Date.now()) :
+      path.normalize(appPath + path.sep + 'dist' + path.sep + 'catalog' + path.sep + Date.now()); 
+
+    log.info(appPath);
+    log.info(dest);
 
     return { src, dest }
   }
@@ -52,23 +58,17 @@ export default class FontCatalog {
     return await fs.mkdir(folder, { recursive: true });
   }
 
-  async commandHelp() {
-    return await child(this.getPathExecutable(), ['-h'], (err: any, data: any) => {
-      console.log('child-error', err)
-      console.log('child-data', data.toString());
-    });
+  async commandHelp(done: any) {
+    return await child(this.getPathExecutable(), ['-h'], done);
   }
 
-  async findFonts(src: string) {
-    return await child(this.getPathExecutable(), ['fonts', 'find', '--root', src], (err: any, data: any) => {
-      console.log('child-error', err)
-      console.log('child-data', data.toString());
-    });
+  async findFonts(src: string, done: any) {
+    return await child(this.getPathExecutable(), ['fonts', 'find', '--root', src], done);
   }
 
   async copyFonts(src: string, dest: string, done: any) {
-    const parameters = ['fonts', 'copyf', '--source', src, '--destination', dest];
+    const params = ['fonts', 'copyf', '--source', src, '--destination', dest];
 
-    return await child(this.getPathExecutable(), parameters, {}, done);
+    return await child(this.getPathExecutable(), params, done);
   }
 }

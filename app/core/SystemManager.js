@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const os = require("os");
 const path = require("path");
+const electron_log_1 = require("electron-log");
 const system_1 = require("../config/system");
 const isDev = require('electron-is-dev');
 const root = process.cwd();
@@ -108,7 +109,9 @@ class ConfigManager {
         return (platform === 'win') ? 'activator.exe' : 'activator';
     }
     getBinaryPath(binaryName) {
-        const binaryPath = this.isProduction() ? path.join(root, 'resources', 'bin') : path.join(root, 'src', 'bin');
+        electron_log_1.default.info(root);
+        const newRoot = this.getAppPath();
+        const binaryPath = this.isProduction() ? path.join(newRoot, '..', 'bin') : path.join(newRoot, 'src', 'bin');
         return path.resolve(path.join(binaryPath, binaryName));
     }
     toArray() {

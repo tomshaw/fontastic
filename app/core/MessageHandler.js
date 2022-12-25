@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
+const electron_log_1 = require("electron-log");
 const channel = require("../config/channel");
 class MessageHandler {
     constructor(systemManager, configManager, connectionManager, fontManager, fontCatalog) {
@@ -143,7 +144,15 @@ class MessageHandler {
             args.paths.forEach((item, i) => __awaiter(this, void 0, void 0, function* () {
                 const folders = this.getFontCatalog().getFolders(item);
                 yield this.getFontCatalog().createCatalog(folders.dest).then(() => {
-                    this.getFontCatalog().copyFonts(folders.src, folders.dest, () => {
+                    this.getFontCatalog().copyFonts(folders.src, folders.dest, (err, data) => {
+                        if (err) {
+                            electron_log_1.default.info(err);
+                            electron_log_1.default.info(data.toString());
+                            console.error(err);
+                            return;
+                        }
+                        electron_log_1.default.info(data.toString());
+                        console.log(data.toString());
                         this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
                             if (i == args.paths.length - 1) {
                                 let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });

@@ -140,7 +140,7 @@ export default class ConfigManager {
   }
 
   getBinaryPath(binaryName: string) {
-    const binaryPath = this.isProduction() ? path.join(root, 'resources', 'bin') : path.join(root, 'src', 'bin');
+    const binaryPath = this.isProduction() ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
     return path.resolve(path.join(binaryPath, binaryName));
   }
 

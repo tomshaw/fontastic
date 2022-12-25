@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainEvent } from "electron";
+import log from 'electron-log';
 
 import SystemManager from "./SystemManager";
 import ConfigManager from "./ConfigManager";
@@ -183,7 +184,12 @@ export default class MessageHandler {
       args.paths.forEach(async (item: string, i: number) => {
         const folders = this.getFontCatalog().getFolders(item);
         await this.getFontCatalog().createCatalog(folders.dest).then(() => {
-          this.getFontCatalog().copyFonts(folders.src, folders.dest, () => {
+          this.getFontCatalog().copyFonts(folders.src, folders.dest, (err: any, data: any) => {
+            if (err) {
+              log.error(err);
+              log.info(data.toString());
+              return;
+            }
             this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, async () => {
               if (i == args.paths.length - 1) {
                 let find = await this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });

@@ -11,13 +11,25 @@
     "!package-lock.json",
     {
       "from": "../dist",
-      "filter": ["**/*"]
+      "filter": [
+        "**/*"
+      ]
+    }
+  ],
+  "extraResources": [
+    {
+      "from": "src/catalog",
+      "to": "catalog"
+    },
+    {
+      "from": "src/bin",
+      "to": "bin"
     }
   ],
   "win": {
     "icon": "dist/assets/icons",
     "target": [
-      "portable"
+      "msi"
     ],
     "artifactName": "${productName}-v${version}.${ext}"
   },
