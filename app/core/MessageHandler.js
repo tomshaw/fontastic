@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const channel = require("../config/channel");
 class MessageHandler {
-    constructor(systemManager, configManager, connectionManager, fontManager) {
+    constructor(systemManager, configManager, connectionManager, fontManager, fontCatalog) {
         this.setSystemManager(systemManager);
         this.setConfigManager(configManager);
         this.setConnectionManager(connectionManager);
         this.setFontManager(fontManager);
+        this.setFontCatalog(fontCatalog);
     }
     setSystemManager(systemManager) {
         this.systemManager = systemManager;
@@ -41,6 +42,12 @@ class MessageHandler {
     }
     getFontManager() {
         return this.fontManager;
+    }
+    setFontCatalog(fontCatalog) {
+        this.fontCatalog = fontCatalog;
+    }
+    getFontCatalog() {
+        return this.fontCatalog;
     }
     on(channel, done) {
         return electron_1.ipcMain.on(channel, done);
@@ -133,9 +140,18 @@ class MessageHandler {
             }));
         }));
         this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().scanFolders(args.paths[0], { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-                event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, find);
+            args.paths.forEach((item, i) => __awaiter(this, void 0, void 0, function* () {
+                const folders = this.getFontCatalog().getFolders(item);
+                yield this.getFontCatalog().createCatalog(folders.dest).then(() => {
+                    this.getFontCatalog().copyFonts(folders.src, folders.dest, () => {
+                        this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
+                            if (i == args.paths.length - 1) {
+                                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+                                event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, find);
+                            }
+                        }));
+                    });
+                });
             }));
         }));
         this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, (event, args) => __awaiter(this, void 0, void 0, function* () {

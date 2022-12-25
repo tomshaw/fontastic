@@ -4,8 +4,11 @@ import SystemManager from "./SystemManager";
 import ConfigManager from "./ConfigManager";
 import ConnectionManager from "./ConnectionManager";
 import FontManager from "./FontManager";
+import FontCatalog from "./FontCatalog";
 
 import * as channel from "../config/channel";
+
+import * as path from "path";
 
 export default class MessageHandler {
 
@@ -13,17 +16,20 @@ export default class MessageHandler {
   configManager: ConfigManager;
   connectionManager: ConnectionManager;
   fontManager: FontManager;
+  fontCatalog: FontCatalog
 
   constructor(
     systemManager: SystemManager,
     configManager: ConfigManager,
     connectionManager: ConnectionManager,
-    fontManager: FontManager
+    fontManager: FontManager,
+    fontCatalog: FontCatalog
   ) {
     this.setSystemManager(systemManager);
     this.setConfigManager(configManager);
     this.setConnectionManager(connectionManager);
     this.setFontManager(fontManager);
+    this.setFontCatalog(fontCatalog);
   }
 
   setSystemManager(systemManager: SystemManager) {
@@ -56,6 +62,14 @@ export default class MessageHandler {
 
   getFontManager(): FontManager {
     return this.fontManager;
+  }
+
+  setFontCatalog(fontCatalog: FontCatalog) {
+    this.fontCatalog = fontCatalog;
+  }
+
+  getFontCatalog(): FontCatalog {
+    return this.fontCatalog;
   }
 
   on(channel: string, done: any) {
@@ -166,9 +180,18 @@ export default class MessageHandler {
     });
 
     this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, async (event: IpcMainEvent, args: any) => {
-      this.getFontManager().scanFolders(args.paths[0], { collection_id: args.collectionId }, async () => {
-        let find = await this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-        event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, find);
+      args.paths.forEach(async (item: string, i: number) => {
+        const folders = this.getFontCatalog().getFolders(item);
+        await this.getFontCatalog().createCatalog(folders.dest).then(() => {
+          this.getFontCatalog().copyFonts(folders.src, folders.dest, () => {
+            this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, async () => {
+              if (i == args.paths.length - 1) {
+                let find = await this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+                event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, find);
+              }
+            });
+          });
+        });
       });
     });
 

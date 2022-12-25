@@ -13,6 +13,7 @@ const SystemManager_1 = require("./core/SystemManager");
 const ConfigManager_1 = require("./core/ConfigManager");
 const ConnectionManager_1 = require("./core/ConnectionManager");
 const FontManager_1 = require("./core/FontManager");
+const FontCatalog_1 = require("./core/FontCatalog");
 const MessageHandler_1 = require("./core/MessageHandler");
 class Application {
     constructor(machineId, isProduction) {
@@ -22,12 +23,13 @@ class Application {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            let systemManager = new SystemManager_1.default(this.machineId);
-            let configManager = new ConfigManager_1.default(systemManager);
-            let connectionManager = new ConnectionManager_1.default(configManager);
+            const systemManager = new SystemManager_1.default(this.machineId);
+            const configManager = new ConfigManager_1.default(systemManager);
+            const connectionManager = new ConnectionManager_1.default(configManager);
             yield connectionManager.initialize();
-            let fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);
-            let messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager);
+            const fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);
+            const fontCatalog = new FontCatalog_1.default(systemManager, configManager);
+            const messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager, fontCatalog);
             messageHandler.initialize();
         });
     }

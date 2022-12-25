@@ -52,8 +52,16 @@ export default class ConfigManager {
     return app.getPath(name);
   }
 
-  getPathDir(loc: string) {
-    return path.dirname(loc)
+  getPathDir(str: string) {
+    return path.dirname(str)
+  }
+
+  getPathBase(str: string) {
+    return path.basename(str)
+  }
+
+  getAppPath(): string {
+    return app.getAppPath();
   }
 
   getCachePath(): string {

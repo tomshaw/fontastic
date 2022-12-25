@@ -18,6 +18,8 @@ export class BootService {
           this.configService.setConfig(result);
           resolve(result);
         });
+      } else {
+        resolve(true);
       }
     });
   }
