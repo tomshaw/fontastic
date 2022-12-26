@@ -146,13 +146,10 @@ class MessageHandler {
                 yield this.getFontCatalog().createCatalog(folders.dest).then(() => {
                     this.getFontCatalog().copyFonts(folders.src, folders.dest, (err, data) => {
                         if (err) {
-                            electron_log_1.default.info(err);
+                            electron_log_1.default.error(err);
                             electron_log_1.default.info(data.toString());
-                            console.error(err);
                             return;
                         }
-                        electron_log_1.default.info(data.toString());
-                        console.log(data.toString());
                         this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
                             if (i == args.paths.length - 1) {
                                 let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });

@@ -64,6 +64,18 @@ export default class ConfigManager {
     return app.getAppPath();
   }
 
+  getCatalogPath(): string {
+    return (this.isProduction()) ? 
+       app.getAppPath() + path.sep + '..' + path.sep  + 'catalog' + path.sep : 
+       app.getAppPath() + path.sep + 'src' + path.sep + 'catalog' + path.sep;
+  }
+
+  getSourcePath(): string {
+    return (this.isProduction()) ? 
+      app.getAppPath() + path.sep + '..' + path.sep : 
+      app.getAppPath() + path.sep + 'src' + path.sep;
+  }
+
   getCachePath(): string {
     return app.getPath('sessionData');
   }
@@ -110,7 +122,7 @@ export default class ConfigManager {
     let min = sec / 60;
     let hour = min / 60;
 
-    return  {
+    return {
       ts: sec,
       hours: Math.floor(hour) % 60,
       minutes: Math.floor(min) % 60,
@@ -155,11 +167,14 @@ export default class ConfigManager {
       'is_linux': this.linux(),
       'locale': this.getLocale(),
       'cache_path': this.getCachePath(),
+      'app_path': this.getAppPath(),
       'app_data_path': this.getAppDataPath(),
       'user_data_path': this.getUserDataPath(),
       'downloads_path': this.getDownloadsPath(),
       'error_log_path': this.getErrorLogPath(),
-      'session_path': this.getSessionPath()
+      'session_path': this.getSessionPath(),
+      'catalog_path': this.getCatalogPath(),
+      'source_path': this.getSourcePath(),
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { ConfigService } from '@app/core/services/config/config.service';
 import { FontService } from '@app/core/services/font/font.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { PresentationService } from '@app/core/services/presentation/presentation.service';
@@ -70,6 +71,7 @@ export class DatabaseService {
   watchSystemStats$ = this._systemStats.asObservable();
 
   constructor(
+    public configService: ConfigService,
     public fontService: FontService,
     public messageService: MessageService,
     public presentationService: PresentationService,
@@ -105,7 +107,9 @@ export class DatabaseService {
         if (Number.isInteger(id)) {
           messageService.fetchStoreRow(id).then(async (result: any) => {
             if (result) {
-              this.fontService.load(result.file_path).then((data) => {
+              const appDir = this.configService.getSourcePath();
+              const resourcePath = result.file_path.replace(appDir, '').replace(/\\/g, '/');
+              this.fontService.load(resourcePath).then((data) => {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 this.setStoreRow({ ...result, font_meta: data });
               });

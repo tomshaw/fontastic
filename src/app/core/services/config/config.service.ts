@@ -39,6 +39,22 @@ export class ConfigService {
    * Miscellaneous settings.
    */
 
+  getAppPath(): boolean {
+    return this.get('system')?.app_path;
+  }
+
+  getCatalogPath(): boolean {
+    return this.get('system')?.catalog_path;
+  }
+
+  getSourcePath(): boolean {
+    return this.get('system')?.source_path;
+  }
+
+  getIsProduction(): boolean {
+    return this.get('system')?.is_production;
+  }
+
   getIsWindows(): boolean {
     return this.get('system')?.is_windows;
   }

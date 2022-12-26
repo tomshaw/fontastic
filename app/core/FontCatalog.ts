@@ -44,12 +44,12 @@ export default class FontCatalog {
     const appPath = this.getSystemManager().getAppPath();
 
     const src = path.normalize(sourceFolder);
-    const dest = this.getSystemManager().isProduction() ? 
-      path.normalize(appPath + path.sep + '..' + path.sep + 'catalog' + path.sep + Date.now()) :
-      path.normalize(appPath + path.sep + 'dist' + path.sep + 'catalog' + path.sep + Date.now()); 
+
+    const dest = path.normalize(this.getSystemManager().getCatalogPath() + Date.now());
 
     log.info(appPath);
     log.info(dest);
+    log.info(process.resourcesPath)
 
     return { src, dest }
   }

@@ -36,12 +36,11 @@ class FontCatalog {
     }
     getFolders(sourceFolder) {
         const appPath = this.getSystemManager().getAppPath();
-        const execPath = this.getPathExecutable();
         const src = path.normalize(sourceFolder);
-        //const dest = path.normalize(appPath + path.sep + 'resources' + path.sep + 'dist' + path.sep + 'catalog' + path.sep + Date.now());
-        const dest = path.normalize(appPath + path.sep + '..' + path.sep + 'catalog' + path.sep + Date.now());
+        const dest = path.normalize(this.getSystemManager().getCatalogPath() + Date.now());
         electron_log_1.default.info(appPath);
         electron_log_1.default.info(dest);
+        electron_log_1.default.info(process.resourcesPath);
         return { src, dest };
     }
     createCatalog(folder) {
@@ -49,26 +48,20 @@ class FontCatalog {
             return yield fs.mkdir(folder, { recursive: true });
         });
     }
-    commandHelp() {
+    commandHelp(done) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield child(this.getPathExecutable(), ['-h'], (err, data) => {
-                console.log('child-error', err);
-                console.log('child-data', data.toString());
-            });
+            return yield child(this.getPathExecutable(), ['-h'], done);
         });
     }
-    findFonts(src) {
+    findFonts(src, done) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield child(this.getPathExecutable(), ['fonts', 'find', '--root', src], (err, data) => {
-                console.log('child-error', err);
-                console.log('child-data', data.toString());
-            });
+            return yield child(this.getPathExecutable(), ['fonts', 'find', '--root', src], done);
         });
     }
     copyFonts(src, dest, done) {
         return __awaiter(this, void 0, void 0, function* () {
-            const parameters = ['fonts', 'copyf', '--source', src, '--destination', dest];
-            return yield child(this.getPathExecutable(), parameters, {}, done);
+            const params = ['fonts', 'copyf', '--source', src, '--destination', dest];
+            return yield child(this.getPathExecutable(), params, done);
         });
     }
 }

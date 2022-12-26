@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { gsap, Power3 } from 'gsap';
+import { ConfigService } from '@app/core/services/config/config.service';
 
 @Injectable({ providedIn: 'root' })
 export class UtilsService {
+
+  constructor(
+    private configService: ConfigService,
+  ) { }
 
   delay = (time: number) => (result: any) => new Promise(resolve => setTimeout(() => resolve(result), time));
 
@@ -68,13 +73,19 @@ export class UtilsService {
     if (!data.length) {
       return;
     }
+
+    const sourcePath = this.configService.getSourcePath();
+
     let css = ``;
     data.forEach((item: any) => {
+      // Normalize font style name
       item.font_family = item.file_name.replace(/\.[^/.]+$/, '');
+      // Filesystem path to catalog url
+      item.file_path = item.file_path.replace(sourcePath, '').replace(/\\/g, '/');
       css += `
         @font-face {
           font-family: ${item.font_family};
-          src: url('${item.file_path.replace(/\\/g, '/')}');
+          src: url("${item.file_path}");
         }`;
     });
     const head = document.getElementsByTagName('head')[0];

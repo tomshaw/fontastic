@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const os = require("os");
 const path = require("path");
-const electron_log_1 = require("electron-log");
 const system_1 = require("../config/system");
 const isDev = require('electron-is-dev');
 const root = process.cwd();
@@ -46,6 +45,16 @@ class ConfigManager {
     }
     getAppPath() {
         return electron_1.app.getAppPath();
+    }
+    getCatalogPath() {
+        return (this.isProduction()) ?
+            electron_1.app.getAppPath() + path.sep + '..' + path.sep + 'catalog' + path.sep :
+            electron_1.app.getAppPath() + path.sep + 'src' + path.sep + 'catalog' + path.sep;
+    }
+    getSourcePath() {
+        return (this.isProduction()) ?
+            electron_1.app.getAppPath() + path.sep + '..' + path.sep :
+            electron_1.app.getAppPath() + path.sep + 'src' + path.sep;
     }
     getCachePath() {
         return electron_1.app.getPath('sessionData');
@@ -109,9 +118,7 @@ class ConfigManager {
         return (platform === 'win') ? 'activator.exe' : 'activator';
     }
     getBinaryPath(binaryName) {
-        electron_log_1.default.info(root);
-        const newRoot = this.getAppPath();
-        const binaryPath = this.isProduction() ? path.join(newRoot, '..', 'bin') : path.join(newRoot, 'src', 'bin');
+        const binaryPath = this.isProduction() ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
         return path.resolve(path.join(binaryPath, binaryName));
     }
     toArray() {
@@ -125,11 +132,14 @@ class ConfigManager {
             'is_linux': this.linux(),
             'locale': this.getLocale(),
             'cache_path': this.getCachePath(),
+            'app_path': this.getAppPath(),
             'app_data_path': this.getAppDataPath(),
             'user_data_path': this.getUserDataPath(),
             'downloads_path': this.getDownloadsPath(),
             'error_log_path': this.getErrorLogPath(),
-            'session_path': this.getSessionPath()
+            'session_path': this.getSessionPath(),
+            'catalog_path': this.getCatalogPath(),
+            'source_path': this.getSourcePath(),
         };
     }
 }
