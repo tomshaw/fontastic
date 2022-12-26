@@ -40,6 +40,9 @@ npm-debug.log
 testem.log
 /typings
 
+# catalog
+src/catalog/*
+
 # e2e
 /e2e/*.js
 !/e2e/protractor.conf.js
