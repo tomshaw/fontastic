@@ -14,17 +14,37 @@
 
 # Introduction
 
-Fontastic is a gorgeous font management and cataloging application. Features include temporary & permanent font installation, a breathtakingly beautiful interface, custom themes, glyph support, displayable table names, multi database support and much more.
+Fontastic is a stunning font management and cataloging application. Features include temporary & permanent font installation, a breathtakingly beautiful interface, custom themes, glyph support, displayable table names, multi database support and much more.
+
+## Getting Started
+
+🔧 Fontastic is under active development, some features may break or change over time.
+
+*Clone this repository locally:*
+
+``` bash
+git clone https://github.com/tomshaw/fontastic.git
+```
+
+Please use `npm` as dependencies manager. 
+
+Install dependencies with npm.
+
+``` bash
+npm install
+```
+
+Run the application in development mode.
+
+``` bash
+npm start
+```
+
+---
 
 ## Screen Shots
 
 As part of the documentation you can check out [screenshots here.](docs/screenshots/readme.md)
-
-## How To Instructions
-
-**Q: How do I view the Waterfall or News Articles?**
-
-**A:** On the inspector window right click to cycle thru the available components.
 
 ## Libraries Used
 
@@ -34,37 +54,6 @@ Fontastic was created with [Angular Electron](https://github.com/maximegris/angu
 + [Angular.js](https://github.com/angular/angular) - Development platform for building web and desktop applications
 + [Typeorm](https://github.com/typeorm/typeorm) - Data-Mapper ORM for TypeScript, ES7, ES6, ES5 with multi database support.
 + [opentype.js](https://github.com/opentypejs/opentype.js) - JavaScript parser and writer for TrueType and OpenType fonts.
-
-## Getting Started
-
-*Clone this repository locally:*
-
-``` bash
-git clone https://github.com/tomshaw/fontastic.git
-```
-
-There is an issue with `yarn` and `node_modules` when the application is built by the packager. Please use `npm` as dependencies manager. 
-
-This project follows [Electron Builder two package.json structure](https://www.electron.build/tutorials/two-package-structure) in order to optimize final bundle and still support Angular `ng add` feature.
-
-*Install dependencies with npm (used by Electron renderer process):*
-
-``` bash
-npm install
-```
-
-*Install NodeJS dependencies with npm (used by Electron main process):*
-
-``` bash
-cd app/
-npm install
-```
-
-Finally run the application in development mode.
-
-``` bash
-npm start
-```
 
 ## Resources
 Need free fonts for testing? 
