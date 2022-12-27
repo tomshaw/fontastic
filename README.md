@@ -14,7 +14,7 @@
 
 # Introduction
 
-Fontastic is a stunning font management and cataloging application. Features include temporary & permanent font installation, a breathtakingly beautiful interface, custom themes, glyph support, displayable table names, multi database support and much more.
+Fontastic is a stunning font management and cataloging application. Features include temporary & permanent font installation, a gorgeous interface, custom themes, multi database support and much more.
 
 ## Getting Started
 
