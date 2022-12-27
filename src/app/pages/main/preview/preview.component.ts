@@ -112,7 +112,8 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   renderFontList() {
     this.resultSet.forEach((item: any) => {
-      this.fontService.load(item.file_path).then((font) => {
+      const localFile = `file://${item.file_path}`;
+      this.fontService.load(localFile).then((font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
         const context = canvas?.getContext('2d') as CanvasRenderingContext2D;
 

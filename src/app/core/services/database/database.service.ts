@@ -105,11 +105,12 @@ export class DatabaseService {
 
       this.watchStoreId$.subscribe((id: number) => {
         if (Number.isInteger(id)) {
-          messageService.fetchStoreRow(id).then(async (result: any) => {
-            if (result) {
-              this.fontService.load(result.file_path).then((data) => {
+          messageService.fetchStoreRow(id).then(async (item: any) => {
+            if (item) {
+              const localFile = `file://${item.file_path}`;
+              this.fontService.load(localFile).then((data) => {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
-                this.setStoreRow({ ...result, font_meta: data });
+                this.setStoreRow({ ...item, font_meta: data });
               });
             }
           });

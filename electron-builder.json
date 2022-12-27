@@ -44,8 +44,9 @@
   },
   "linux": {
     "icon": "dist/assets/icons",
+    "category": "Utility",
     "target": [
-      "AppImage"
+      "AppImage", "deb", "snap"
     ]
   }
 }
