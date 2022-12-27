@@ -37,10 +37,12 @@ class FontCatalog {
     getFolders(sourceFolder) {
         const appPath = this.getSystemManager().getAppPath();
         const src = path.normalize(sourceFolder);
-        const dest = path.normalize(this.getSystemManager().getCatalogPath() + Date.now());
+        const dest = path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
         electron_log_1.default.info(appPath);
         electron_log_1.default.info(dest);
         electron_log_1.default.info(process.resourcesPath);
+        electron_log_1.default.info(this.getSystemManager().getAppDataPath());
+        electron_log_1.default.info(this.getSystemManager().getCatalogPath()); // C:\Users\tomsh\AppData\Roaming
         return { src, dest };
     }
     createCatalog(folder) {

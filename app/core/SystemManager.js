@@ -47,14 +47,7 @@ class ConfigManager {
         return electron_1.app.getAppPath();
     }
     getCatalogPath() {
-        return (this.isProduction()) ?
-            electron_1.app.getAppPath() + path.sep + '..' + path.sep + 'catalog' + path.sep :
-            electron_1.app.getAppPath() + path.sep + 'src' + path.sep + 'catalog' + path.sep;
-    }
-    getSourcePath() {
-        return (this.isProduction()) ?
-            electron_1.app.getAppPath() + path.sep + '..' + path.sep :
-            electron_1.app.getAppPath() + path.sep + 'src' + path.sep;
+        return path.join(this.getUserDataPath(), 'catalog');
     }
     getCachePath() {
         return electron_1.app.getPath('sessionData');
@@ -138,8 +131,7 @@ class ConfigManager {
             'downloads_path': this.getDownloadsPath(),
             'error_log_path': this.getErrorLogPath(),
             'session_path': this.getSessionPath(),
-            'catalog_path': this.getCatalogPath(),
-            'source_path': this.getSourcePath(),
+            'catalog_path': this.getCatalogPath()
         };
     }
 }

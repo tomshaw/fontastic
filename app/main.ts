@@ -1,10 +1,11 @@
-import { app, BrowserWindow, screen, Menu } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import { machineId } from 'node-machine-id';
 
 import Application from './Application';
+import MenuBuilder from './menu/Builder';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -32,6 +33,9 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,  // false if you want to run e2e test with Spectron
     },
   });
+
+  const menuBuilder = new MenuBuilder(win);
+  menuBuilder.buildMenu(serve);
 
   if (serve) {
     const debug = require('electron-debug');

@@ -9,7 +9,7 @@ import { PresentationService } from '@app/core/services';
 export class ToolbarComponent implements OnInit {
 
   fontColor = '#ac1fad';
-  fontSize = 48;
+  fontSize = 72;
   displayText: string;
 
   quickTextIndex = 0;

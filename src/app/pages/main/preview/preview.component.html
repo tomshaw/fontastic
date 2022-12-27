@@ -57,15 +57,10 @@
 
           <div (click)="onRowClick(item.id)">
             <ng-container *ngIf="displayNews && item.news; else previewDefault">
-              <p attr.id="preview_{{item.id}}" [style.font-family]="item.font_family" [style.color]="fontColor"
-                [style.font-size]="getFontSize()" [style.word-spacing]="getWordSpacing()"
-                [style.letter-spacing]="getLetterSpacing()" [innerHtml]="getDisplayText(item)"
-                title="{{item.news.title}}"></p>
+              <canvas attr.id="canvas_{{item.id}}"></canvas>
             </ng-container>
             <ng-template #previewDefault>
-              <p attr.id="preview_{{item.id}}" [style.font-family]="item.font_family" [style.color]="fontColor"
-                [style.font-size]="getFontSize()" [style.word-spacing]="getWordSpacing()"
-                [style.letter-spacing]="getLetterSpacing()" [innerHtml]="getDisplayText(item)"></p>
+              <canvas attr.id="canvas_{{item.id}}" height="150px" width="3000px"></canvas>
             </ng-template>
           </div>
 

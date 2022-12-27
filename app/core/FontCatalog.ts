@@ -45,11 +45,13 @@ export default class FontCatalog {
 
     const src = path.normalize(sourceFolder);
 
-    const dest = path.normalize(this.getSystemManager().getCatalogPath() + Date.now());
+    const dest = path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
 
     log.info(appPath);
     log.info(dest);
     log.info(process.resourcesPath)
+    log.info(this.getSystemManager().getAppDataPath());
+    log.info(this.getSystemManager().getCatalogPath()); // C:\Users\tomsh\AppData\Roaming
 
     return { src, dest }
   }

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 /* eslint-disable-next-line max-len */
-import { UtilsService, MessageService, DatabaseService, PresentationService, ConfigService, AlertService, NewsService } from '@app/core/services';
+import { UtilsService, MessageService, DatabaseService, PresentationService, ConfigService, AlertService, NewsService, FontService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -8,7 +8,7 @@ import { delay } from 'rxjs/operators';
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss']
 })
-export class PreviewComponent implements OnInit, OnDestroy {
+export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('scrollElement', { static: true }) scrollElement: ElementRef;
 
@@ -33,7 +33,8 @@ export class PreviewComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private databaseService: DatabaseService,
     private presentationService: PresentationService,
-    private newsService: NewsService
+    private newsService: NewsService,
+    private fontService: FontService,
   ) {
     this.isWindows = this.configService.getIsWindows();
   }
@@ -52,29 +53,41 @@ export class PreviewComponent implements OnInit, OnDestroy {
     });
 
     this.databaseService.watchResultSet$.subscribe((results) => {
-      this.utils.appendStyles(results, () => {
-        if (this.latestNews.length) {
-          const items = [];
-          for (let i = 0, total = results.length; i < total; i++) {
-            const item = results[i];
-            item.news = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
-            items.push(item);
-          }
-          this.resultSet = items;
-        } else {
-          this.resultSet = results;
+
+      if (this.latestNews.length) {
+        const items = [];
+        for (let i = 0, total = results.length; i < total; i++) {
+          const item = results[i];
+          console.log('item', item);
+          item.news = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
+          items.push(item);
         }
-        scrollElement.scrollTop = 0;
-      });
+        this.resultSet = items;
+      } else {
+        this.resultSet = results;
+      }
+
+      this.renderFontList();
+
+      scrollElement.scrollTop = 0;
     });
 
-    this.presentationService.watchFontColor$.subscribe((value) => this.fontColor = value);
+    this.presentationService.watchFontColor$.subscribe((value) => {
+      this.fontColor = value;
+      this.renderFontList();
+    });
 
-    this.presentationService.watchFontSize$.subscribe((value) => this.fontSize = value);
+    this.presentationService.watchFontSize$.subscribe((value) => {
+      this.fontSize = value;
+      this.renderFontList();
+    });
 
     this.presentationService.watchBackgroundColor$.subscribe((value) => this.backgroundColor = value);
 
-    this.presentationService.watchDisplayText$.subscribe((value) => this.displayText = value);
+    this.presentationService.watchDisplayText$.subscribe((value) => {
+      this.displayText = value;
+      this.renderFontList();
+    });
 
     this.newsService.watchLatestNews$.subscribe((value: any) => {
       if (value.articles && value.articles.length) {
@@ -93,14 +106,38 @@ export class PreviewComponent implements OnInit, OnDestroy {
     setTimeout(() => this.isLoading = false, 1e3);
   }
 
+  ngAfterViewInit() { }
+
   ngOnDestroy() { }
+
+  renderFontList() {
+    this.resultSet.forEach((item: any) => {
+      this.fontService.load(item.file_path).then((font) => {
+        const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
+        const context = canvas?.getContext('2d') as CanvasRenderingContext2D;
+
+        this.fontService.clearCanvas(context);
+
+        const fontSize = this.getFontSize();
+
+        const path = font.getPath(this.getDisplayText(item), 20, 100, fontSize);
+        path.fill = this.fontColor;
+
+        context.fillStyle = this.backgroundColor;
+
+        path.draw(context);
+      }).catch((err) => {
+        console.warn('load-font-error', err);
+      });
+    });
+  }
 
   onRowClick(id: number): void {
     this.databaseService.setStoreId(id);
   }
 
-  getFontSize(): string {
-    return this.fontSize + 'px';
+  getFontSize(): number {
+    return this.fontSize;
   }
 
   getWordSpacing(): string {

@@ -44,7 +44,7 @@
 
       <div class="input-preview preview-size">
         <ng-container *ngIf="buttonType === 0; else elseif1">
-          <input type="range" class="input" id="font_size" min="1" max="150" step="1" [value]="fontSize" (change)="onFontSize($event)" />
+          <input type="range" class="input" id="font_size" min="1" max="120" step="1" [value]="fontSize" (change)="onFontSize($event)" />
         </ng-container>
         <ng-template #elseif1>
           <ng-container *ngIf="buttonType === 1; else elseif2">

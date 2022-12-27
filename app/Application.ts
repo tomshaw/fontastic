@@ -4,6 +4,7 @@ import ConnectionManager from "./core/ConnectionManager";
 import FontManager from "./core/FontManager";
 import FontCatalog from "./core/FontCatalog";
 import MessageHandler from "./core/MessageHandler";
+import AppLogger from "./core/AppLogger"
 
 export default class Application {
 
@@ -17,7 +18,6 @@ export default class Application {
   }
 
   async init() {
-
     const systemManager = new SystemManager(this.machineId);
 
     const configManager = new ConfigManager(systemManager);
@@ -31,5 +31,7 @@ export default class Application {
 
     const messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager, fontCatalog);
     messageHandler.initialize();
+
+    AppLogger.getInstance('default').info('Finished system init.');
   }
 }

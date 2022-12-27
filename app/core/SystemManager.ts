@@ -64,16 +64,8 @@ export default class ConfigManager {
     return app.getAppPath();
   }
 
-  getCatalogPath(): string {
-    return (this.isProduction()) ? 
-       app.getAppPath() + path.sep + '..' + path.sep  + 'catalog' + path.sep : 
-       app.getAppPath() + path.sep + 'src' + path.sep + 'catalog' + path.sep;
-  }
-
-  getSourcePath(): string {
-    return (this.isProduction()) ? 
-      app.getAppPath() + path.sep + '..' + path.sep : 
-      app.getAppPath() + path.sep + 'src' + path.sep;
+  getCatalogPath() {
+    return path.join(this.getUserDataPath(), 'catalog');
   }
 
   getCachePath(): string {
@@ -173,8 +165,7 @@ export default class ConfigManager {
       'downloads_path': this.getDownloadsPath(),
       'error_log_path': this.getErrorLogPath(),
       'session_path': this.getSessionPath(),
-      'catalog_path': this.getCatalogPath(),
-      'source_path': this.getSourcePath(),
+      'catalog_path': this.getCatalogPath()
     }
   }
 }

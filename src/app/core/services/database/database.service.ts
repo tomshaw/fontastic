@@ -107,9 +107,7 @@ export class DatabaseService {
         if (Number.isInteger(id)) {
           messageService.fetchStoreRow(id).then(async (result: any) => {
             if (result) {
-              const appDir = this.configService.getSourcePath();
-              const resourcePath = result.file_path.replace(appDir, '').replace(/\\/g, '/');
-              this.fontService.load(resourcePath).then((data) => {
+              this.fontService.load(result.file_path).then((data) => {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 this.setStoreRow({ ...result, font_meta: data });
               });

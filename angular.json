@@ -32,8 +32,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/catalog"
+              "src/assets"
             ],
             "styles": [
               "src/styles/fonts/octicons.scss",
