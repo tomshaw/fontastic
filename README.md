@@ -75,7 +75,7 @@ Need free fonts for testing?
 + [Font Squirrell](https://www.fontsquirrel.com/) Great resource for hand-picked, high-quality, commercial-use fonts.
 + [Google Fonts](https://github.com/google/fonts) Download all 3K Google Fonts. Great for testing processing speeds. 
 
-If you're using Fontastic, consider 🌟 [starring or contributing][repo] fontastic on GitHub! 🎉
+If you're using Fontastic, consider 🌟 [starring or contributing][repo] to fontastic on GitHub! 🎉
 
 ## Contributing
 
