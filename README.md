@@ -12,9 +12,16 @@
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
 
-# Introduction
+# Fontastic
 
-Fontastic is a stunning font management and cataloging application. Features include temporary & permanent font installation, a gorgeous interface, custom themes, multi database support and much more.
+Fontastic is a stunning font management and cataloging application. 
+
+- A gorgeous interface.
+- Font cataloging and management.
+- Multi platform font installation.
+- Multi database support.
+- A selection of gorgeous themes.
+- Open source and completely free.
 
 ## Getting Started
 
@@ -42,6 +49,10 @@ npm start
 
 ---
 
+## Activator
+
+Fontastic uses [Activator](https://github.com/tomshaw/activator) for multi platform font installation and catalog management Go executable. 📡
+
 ## Screen Shots
 
 As part of the documentation you can check out [screenshots here.](docs/screenshots/readme.md)
@@ -56,7 +67,7 @@ Fontastic was created with [Angular Electron](https://github.com/maximegris/angu
 + [opentype.js](https://github.com/opentypejs/opentype.js) - JavaScript parser and writer for TrueType and OpenType fonts.
 
 ## Resources
-Need free fonts for testing? 
+Need free fonts for testing?
 
 + [IBM Plex](https://github.com/IBM/plex) Meet the IBM Plex typeface, our new corporate typeface family.
 + [Inter](https://github.com/rsms/inter/releases/tag/v3.19) A typeface carefully crafted & designed for computer screens.
@@ -64,17 +75,21 @@ Need free fonts for testing?
 + [Font Squirrell](https://www.fontsquirrel.com/) Great resource for hand-picked, high-quality, commercial-use fonts.
 + [Google Fonts](https://github.com/google/fonts) Download all 3K Google Fonts. Great for testing processing speeds. 
 
+If you're using Fontastic, consider 🌟 [starring or contributing][repo] fontastic on GitHub! 🎉
+
 ## Contributing
 
 The contribution guide can be found here [Contribution Guide](CONTRIBUTING.md).
 
 ## Code of Conduct
 
-Please review and abide by the [Code of Conduct](CODE_OF_CONDUCT.md).
+Please review and abide by the [Code of Conduct](CODE_OF_CONDUCT.md). 🚫
 
 ## License
 
 Fontastic is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+[repo]: https://github.com/tomshaw/fontastic
 
 [maintained-badge]: https://img.shields.io/badge/maintained-yes-brightgreen
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
