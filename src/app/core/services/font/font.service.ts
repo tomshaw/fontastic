@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from '@app/core/services/utils/utils.service';
-import opentype from 'opentype.js'
+import opentype from 'opentype.js';
 
 @Injectable({
   providedIn: 'root'
