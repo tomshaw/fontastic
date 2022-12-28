@@ -1,13 +1,22 @@
 {
   "name": "fontastic",
   "version": "0.0.5",
-  "description": "Fontastic is a visually stunning font management application built with Angular and Electron.",
+  "description": "Fontastic is a stunning font management and cataloging application.",
+  "private": false,
   "author": {
     "name": "Tom Shaw",
     "email": "tomshaw21@gmail.com"
   },
+  "keywords": [
+    "angular",
+    "electron",
+    "font",
+    "typography",
+    "typeface",
+    "character",
+    "printing"
+  ],
   "main": "main.js",
-  "private": true,
   "dependencies": {
     "@mozilla/readability": "^0.4.2",
     "electron-is-dev": "^2.0.0",
