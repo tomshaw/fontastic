@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const AppLogger_1 = require("./AppLogger");
 const command_1 = require("../helpers/command");
 const path = require("path");
 class FontInstaller {
@@ -58,6 +59,7 @@ class FontInstaller {
             }
             else {
                 yield this.activationCommand(args).then((result) => {
+                    AppLogger_1.default.getInstance('default').info(result);
                     if (result.stderr) {
                         return done({ errors: result.stderr });
                     }
@@ -82,11 +84,13 @@ class FontInstaller {
     }
     activationCommand(args) {
         return __awaiter(this, void 0, void 0, function* () {
-            let executable = this.getSystemManager().getBinaryName();
-            let cmdPath = this.getSystemManager().getBinaryPath(executable);
-            let temp = (this.getSystemManager().getPlatform() === "win" && args.temporary && args.temporary === true) ? true : false;
-            let files = args.files.map((item) => `"${path.normalize(item.file_path)}"`).join(" ");
-            let command = `${cmdPath} -activate=${args.activate} -temp=${temp} ${files}`;
+            const executable = this.getSystemManager().getBinaryName();
+            const cmdPath = this.getSystemManager().getBinaryPath(executable);
+            const activate = (args.activate) ? 'install' : 'uninstall';
+            const temporary = (this.getSystemManager().getPlatform() === "win" && args.temporary && args.temporary === true) ? '--temporary=true' : '--temporary=false';
+            const files = args.files.map((item) => `"${path.normalize(item.file_path)}"`).join(" ");
+            const command = `${cmdPath} ${activate} ${temporary} ${files}`;
+            AppLogger_1.default.getInstance('default').info(command);
             try {
                 return yield (0, command_1.prompt)(command, { name: "Font Activation" });
             }

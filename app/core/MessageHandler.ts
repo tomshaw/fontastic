@@ -9,8 +9,6 @@ import FontCatalog from "./FontCatalog";
 
 import * as channel from "../config/channel";
 
-import * as path from "path";
-
 export default class MessageHandler {
 
   systemManager: SystemManager;

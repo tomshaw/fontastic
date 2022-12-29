@@ -1,6 +1,6 @@
 import SystemManager from "./SystemManager";
 import ConnectionManager from "./ConnectionManager";
-
+import AppLogger from "./AppLogger"
 import { prompt } from "../helpers/command"
 
 const path = require("path");
@@ -44,7 +44,7 @@ export default class FontInstaller {
 
       let results = await this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
 
-      await this.activationCommand({ files: results, activate, temporary }).then((result) => {
+      await this.activationCommand({ files: results, activate, temporary }).then((result: any) => {
         if (result.stderr) {
           return done({ errors: result.stderr })
         } else if (result.stdout) {
@@ -62,7 +62,8 @@ export default class FontInstaller {
       });
 
     } else {
-      await this.activationCommand(args).then((result) => {
+      await this.activationCommand(args).then((result: any) => {
+        AppLogger.getInstance('default').info(result);
         if (result.stderr) {
           return done({ errors: result.stderr })
         } else if (result.stdout) {
@@ -83,14 +84,17 @@ export default class FontInstaller {
   }
 
   async activationCommand(args: any) {
-    let executable = this.getSystemManager().getBinaryName()
-    let cmdPath = this.getSystemManager().getBinaryPath(executable);
+    const executable = this.getSystemManager().getBinaryName()
+    const cmdPath = this.getSystemManager().getBinaryPath(executable);
 
-    let temp = (this.getSystemManager().getPlatform() === "win" && args.temporary && args.temporary === true) ? true : false;
-    let files = args.files.map((item: any) => `"${path.normalize(item.file_path)}"`).join(" ");
+    const activate = (args.activate) ? 'install' : 'uninstall';
+    const temporary = (this.getSystemManager().getPlatform() === "win" && args.temporary && args.temporary === true) ? '--temporary=true' : '--temporary=false';
+    const files = args.files.map((item: any) => `"${path.normalize(item.file_path)}"`).join(" ");
 
-    let command = `${cmdPath} -activate=${args.activate} -temp=${temp} ${files}`;
-    
+    const command = `${cmdPath} ${activate} ${temporary} ${files}`;
+
+    AppLogger.getInstance('default').info(command);
+
     try {
       return await prompt(command, { name: "Font Activation" });
     } catch (err) {
