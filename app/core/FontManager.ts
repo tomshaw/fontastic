@@ -101,9 +101,9 @@ export default class FontManager {
     return finder.scanFolders(dir, options, done);
   }
 
-  fontInstaller(options: any, done: any) {
+  fontInstaller(options: any) {
     let installer = new FontInstaller(this.getSystemManager(), this.getConnectionManager());
-    return installer.activate(options, done);
+    return installer.activate(options);
   }
 
   getSourceFolder(sourceFolder: string) {

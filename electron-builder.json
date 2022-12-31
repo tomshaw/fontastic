@@ -18,10 +18,6 @@
   ],
   "extraResources": [
     {
-      "from": "src/catalog",
-      "to": "catalog"
-    },
-    {
       "from": "src/bin",
       "to": "bin"
     }

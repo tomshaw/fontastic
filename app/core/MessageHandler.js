@@ -165,7 +165,7 @@ class MessageHandler {
             }));
         }));
         this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().fontInstaller(args, (results) => __awaiter(this, void 0, void 0, function* () {
+            this.getFontManager().fontInstaller(args).then((results) => __awaiter(this, void 0, void 0, function* () {
                 const result = yield this.fetchStore();
                 event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
             })).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));

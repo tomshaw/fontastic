@@ -91,9 +91,9 @@ class FontManager {
         let finder = new FontFinder_1.default(this.getConnectionManager());
         return finder.scanFolders(dir, options, done);
     }
-    fontInstaller(options, done) {
+    fontInstaller(options) {
         let installer = new FontInstaller_1.default(this.getSystemManager(), this.getConnectionManager());
-        return installer.activate(options, done);
+        return installer.activate(options);
     }
     getSourceFolder(sourceFolder) {
         return path.normalize(sourceFolder);

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AppLogger_1 = require("./AppLogger");
 const command_1 = require("../helpers/command");
 const path = require("path");
+const exec = require('child_process').exec;
 class FontInstaller {
     constructor(systemManager, connectionManager) {
         this.setSystemManager(systemManager);
@@ -29,7 +30,7 @@ class FontInstaller {
     getConnectionManager() {
         return this.connectionManager;
     }
-    activate(args, done) {
+    activate(args) {
         return __awaiter(this, void 0, void 0, function* () {
             const fonts = (args.files && args.files.length) ? args.files : [];
             const temporary = (args.temporary && args.temporary === true) ? true : false;
@@ -37,53 +38,32 @@ class FontInstaller {
             if (args.collectionId) {
                 let collectionId = parseInt(args.collectionId);
                 let results = yield this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
-                yield this.activationCommand({ files: results, activate, temporary }).then((result) => {
-                    if (result.stderr) {
-                        return done({ errors: result.stderr });
-                    }
-                    else if (result.stdout) {
-                        if (temporary) {
-                            this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
-                        }
-                        else {
-                            this.getConnectionManager().getStoreRepository().activateCollection(collectionId, activate);
-                        }
-                        return done({ result: result.stdout });
+                yield this.run({ files: results, activate, temporary }).then((result) => {
+                    if (temporary) {
+                        this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
                     }
                     else {
-                        return done({ errors: result });
+                        this.getConnectionManager().getStoreRepository().activateCollection(collectionId, activate);
                     }
-                }).catch((err) => {
-                    return done({ errors: err.message });
                 });
             }
             else {
-                yield this.activationCommand(args).then((result) => {
+                return yield this.run(args).then((result) => {
                     AppLogger_1.default.getInstance('default').info(result);
-                    if (result.stderr) {
-                        return done({ errors: result.stderr });
-                    }
-                    else if (result.stdout) {
-                        let ids = fonts.map((item) => item.id);
-                        if (temporary) {
-                            this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);
-                        }
-                        else {
-                            this.getConnectionManager().getStoreRepository().activateByIds(ids, activate);
-                        }
-                        return done({ result: result.stdout });
+                    let ids = fonts.map((item) => item.id);
+                    if (temporary) {
+                        this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);
                     }
                     else {
-                        return done({ errors: result });
+                        this.getConnectionManager().getStoreRepository().activateByIds(ids, activate);
                     }
-                }).catch((err) => {
-                    return done({ errors: err.message });
                 });
             }
         });
     }
-    activationCommand(args) {
+    run(args) {
         return __awaiter(this, void 0, void 0, function* () {
+            const platform = this.getSystemManager().getPlatform();
             const executable = this.getSystemManager().getBinaryName();
             const cmdPath = this.getSystemManager().getBinaryPath(executable);
             const activate = (args.activate) ? 'install' : 'uninstall';
@@ -91,11 +71,27 @@ class FontInstaller {
             const files = args.files.map((item) => `"${path.normalize(item.file_path)}"`).join(" ");
             const command = `${cmdPath} ${activate} ${temporary} ${files}`;
             AppLogger_1.default.getInstance('default').info(command);
-            try {
-                return yield (0, command_1.prompt)(command, { name: "Font Activation" });
+            if (platform === 'unix') {
+                return new Promise(function (resolve, reject) {
+                    exec(command, (error, stdout, stderr) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        resolve(stdout.trim());
+                    });
+                });
             }
-            catch (err) {
-                return err;
+            else if (platform === 'win') {
+                return new Promise(function (resolve, reject) {
+                    (0, command_1.prompt)(command, (error, stdout, stderr) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        resolve(stdout.trim());
+                    });
+                });
             }
         });
     }
