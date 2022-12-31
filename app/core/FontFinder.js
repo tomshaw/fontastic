@@ -60,8 +60,16 @@ class FileSystem {
             next();
         });
     }
-    scanFiles(dir, options, done) {
-        dir.forEach((fp) => __awaiter(this, void 0, void 0, function* () {
+    /**
+     * Deprecated
+     *
+     * @param files
+     * @param options
+     * @param done
+     * @returns
+     */
+    scanFiles(files, options, done) {
+        files.forEach((fp) => __awaiter(this, void 0, void 0, function* () {
             let stat = fs.statSync(fp);
             if (stat.isFile()) {
                 this.fontInstall(fp, stat, options);

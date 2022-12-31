@@ -1,22 +1,18 @@
 import SystemManager from './SystemManager';
-import ConfigManager from './ConfigManager';
 import * as fs from 'fs/promises';
-import log from 'electron-log';
 
 const path = require('path');
+const exec = require('child_process').exec;
 const child = require('child_process').execFile;
 
 export default class FontCatalog {
 
   systemManager: SystemManager;
-  configManager: ConfigManager;
 
   constructor(
     systemManager: SystemManager,
-    configManager: ConfigManager,
   ) {
     this.setSystemManager(systemManager);
-    this.setConfigManager(configManager);
   }
 
   setSystemManager(systemManager: SystemManager) {
@@ -27,33 +23,9 @@ export default class FontCatalog {
     return this.systemManager;
   }
 
-  setConfigManager(configManager: ConfigManager) {
-    this.configManager = configManager;
-  }
-
-  getConfigManager(): ConfigManager {
-    return this.configManager;
-  }
-
   getPathExecutable(): string {
     const name = this.getSystemManager().getBinaryName()
     return this.getSystemManager().getBinaryPath(name);
-  }
-
-  getFolders(sourceFolder: string) {
-    const appPath = this.getSystemManager().getAppPath();
-
-    const src = path.normalize(sourceFolder);
-
-    const dest = path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
-
-    log.info(appPath);
-    log.info(dest);
-    log.info(process.resourcesPath)
-    log.info(this.getSystemManager().getAppDataPath());
-    log.info(this.getSystemManager().getCatalogPath()); // C:\Users\tomsh\AppData\Roaming
-
-    return { src, dest }
   }
 
   async createCatalog(folder: string) {
@@ -68,9 +40,16 @@ export default class FontCatalog {
     return await child(this.getPathExecutable(), ['fonts', 'find', '--root', src], done);
   }
 
-  async copyFonts(src: string, dest: string, done: any) {
-    const params = ['fonts', 'copyf', '--source', src, '--destination', dest];
+  async copyFiles(files: any, dest: string, done: any) {
+    const cmdPath = this.getPathExecutable();
+    const items = files.map((item: string) => `"${path.normalize(item)}"`).join(" ");
+    const command = `${cmdPath} copy files --destination "${dest}" ${items}`;
+    return exec(command, done);
+  }
 
-    return await child(this.getPathExecutable(), params, done);
+  async copyFolders(src: string, dest: string, done: any) {
+    const params = ['copy', 'folders', '--source', src, '--destination', dest];
+
+    return child(this.getPathExecutable(), params, done);
   }
 }

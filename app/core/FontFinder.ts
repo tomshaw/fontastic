@@ -61,8 +61,16 @@ export default class FileSystem {
     });
   }
 
-  scanFiles(dir: any, options: any, done: any) {
-    dir.forEach(async (fp: any) => {
+  /**
+   * Deprecated
+   * 
+   * @param files 
+   * @param options 
+   * @param done 
+   * @returns 
+   */
+  scanFiles(files: any, options: any, done: any) {
+    files.forEach(async (fp: any) => {
       let stat = fs.statSync(fp);
       if (stat.isFile()) {
         this.fontInstall(fp, stat, options);

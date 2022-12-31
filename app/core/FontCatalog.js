@@ -10,13 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs/promises");
-const electron_log_1 = require("electron-log");
 const path = require('path');
+const exec = require('child_process').exec;
 const child = require('child_process').execFile;
 class FontCatalog {
-    constructor(systemManager, configManager) {
+    constructor(systemManager) {
         this.setSystemManager(systemManager);
-        this.setConfigManager(configManager);
     }
     setSystemManager(systemManager) {
         this.systemManager = systemManager;
@@ -24,26 +23,9 @@ class FontCatalog {
     getSystemManager() {
         return this.systemManager;
     }
-    setConfigManager(configManager) {
-        this.configManager = configManager;
-    }
-    getConfigManager() {
-        return this.configManager;
-    }
     getPathExecutable() {
         const name = this.getSystemManager().getBinaryName();
         return this.getSystemManager().getBinaryPath(name);
-    }
-    getFolders(sourceFolder) {
-        const appPath = this.getSystemManager().getAppPath();
-        const src = path.normalize(sourceFolder);
-        const dest = path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
-        electron_log_1.default.info(appPath);
-        electron_log_1.default.info(dest);
-        electron_log_1.default.info(process.resourcesPath);
-        electron_log_1.default.info(this.getSystemManager().getAppDataPath());
-        electron_log_1.default.info(this.getSystemManager().getCatalogPath()); // C:\Users\tomsh\AppData\Roaming
-        return { src, dest };
     }
     createCatalog(folder) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -60,10 +42,18 @@ class FontCatalog {
             return yield child(this.getPathExecutable(), ['fonts', 'find', '--root', src], done);
         });
     }
-    copyFonts(src, dest, done) {
+    copyFiles(files, dest, done) {
         return __awaiter(this, void 0, void 0, function* () {
-            const params = ['fonts', 'copyf', '--source', src, '--destination', dest];
-            return yield child(this.getPathExecutable(), params, done);
+            const cmdPath = this.getPathExecutable();
+            const items = files.map((item) => `"${path.normalize(item)}"`).join(" ");
+            const command = `${cmdPath} copy files --destination "${dest}" ${items}`;
+            return exec(command, done);
+        });
+    }
+    copyFolders(src, dest, done) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const params = ['copy', 'folders', '--source', src, '--destination', dest];
+            return child(this.getPathExecutable(), params, done);
         });
     }
 }

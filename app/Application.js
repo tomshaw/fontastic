@@ -13,9 +13,7 @@ const SystemManager_1 = require("./core/SystemManager");
 const ConfigManager_1 = require("./core/ConfigManager");
 const ConnectionManager_1 = require("./core/ConnectionManager");
 const FontManager_1 = require("./core/FontManager");
-const FontCatalog_1 = require("./core/FontCatalog");
 const MessageHandler_1 = require("./core/MessageHandler");
-const AppLogger_1 = require("./core/AppLogger");
 class Application {
     constructor(machineId, isProduction) {
         this.machineId = machineId;
@@ -29,10 +27,8 @@ class Application {
             const connectionManager = new ConnectionManager_1.default(configManager);
             yield connectionManager.initialize();
             const fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);
-            const fontCatalog = new FontCatalog_1.default(systemManager, configManager);
-            const messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager, fontCatalog);
+            const messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager);
             messageHandler.initialize();
-            AppLogger_1.default.getInstance('default').info('Finished system init.');
         });
     }
 }

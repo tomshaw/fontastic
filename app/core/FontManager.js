@@ -10,9 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
+const FontCatalog_1 = require("./FontCatalog");
 const FontFinder_1 = require("./FontFinder");
 const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
+const path = require('path');
 const fetch = require("node-fetch");
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
@@ -91,6 +93,29 @@ class FontManager {
     fontInstaller(options, done) {
         let installer = new FontInstaller_1.default(this.getSystemManager(), this.getConnectionManager());
         return installer.activate(options, done);
+    }
+    getSourceFolder(sourceFolder) {
+        return path.normalize(sourceFolder);
+    }
+    getDestinationFolder() {
+        return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
+    }
+    getSourceDestinationFolders(sourceFolder) {
+        const src = this.getSourceFolder(sourceFolder);
+        const dest = this.getDestinationFolder();
+        return { src, dest };
+    }
+    createCatalog(folder) {
+        const catalog = new FontCatalog_1.default(this.getSystemManager());
+        return catalog.createCatalog(folder);
+    }
+    copyFiles(files, dest, done) {
+        const catalog = new FontCatalog_1.default(this.getSystemManager());
+        catalog.copyFiles(files, dest, done);
+    }
+    copyFolders(src, dest, done) {
+        const catalog = new FontCatalog_1.default(this.getSystemManager());
+        catalog.copyFolders(src, dest, done);
     }
     showDialogBox(options) {
         return electron_1.dialog.showMessageBox(null, options);

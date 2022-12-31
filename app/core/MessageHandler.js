@@ -10,15 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-const electron_log_1 = require("electron-log");
+const AppLogger_1 = require("./AppLogger");
 const channel = require("../config/channel");
 class MessageHandler {
-    constructor(systemManager, configManager, connectionManager, fontManager, fontCatalog) {
+    constructor(systemManager, configManager, connectionManager, fontManager) {
         this.setSystemManager(systemManager);
         this.setConfigManager(configManager);
         this.setConnectionManager(connectionManager);
         this.setFontManager(fontManager);
-        this.setFontCatalog(fontCatalog);
     }
     setSystemManager(systemManager) {
         this.systemManager = systemManager;
@@ -43,12 +42,6 @@ class MessageHandler {
     }
     getFontManager() {
         return this.fontManager;
-    }
-    setFontCatalog(fontCatalog) {
-        this.fontCatalog = fontCatalog;
-    }
-    getFontCatalog() {
-        return this.fontCatalog;
     }
     on(channel, done) {
         return electron_1.ipcMain.on(channel, done);
@@ -135,35 +128,48 @@ class MessageHandler {
             }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_EXECUTE_COMMAND, err.message));
         }));
         this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().scanFiles(args.paths, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-                event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, find);
-            }));
+            const files = args.paths; // array of file paths
+            const dest = this.getFontManager().getDestinationFolder();
+            this.getFontManager().createCatalog(dest).then(() => {
+                this.getFontManager().copyFiles(files, dest, (err, stdout, stderr) => {
+                    if (!err) {
+                        this.getFontManager().scanFolders(dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
+                            const result = yield this.fetchStore();
+                            event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, result);
+                        }));
+                    }
+                    else {
+                        AppLogger_1.default.getInstance('default').error(err);
+                    }
+                });
+            });
         }));
         this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            args.paths.forEach((item, i) => __awaiter(this, void 0, void 0, function* () {
-                const folders = this.getFontCatalog().getFolders(item);
-                yield this.getFontCatalog().createCatalog(folders.dest).then(() => {
-                    this.getFontCatalog().copyFonts(folders.src, folders.dest, (err, data) => {
-                        if (err) {
-                            electron_log_1.default.error(err);
-                            electron_log_1.default.info(data.toString());
-                            return;
+            const dest = this.getFontManager().getDestinationFolder();
+            args.paths.forEach((folder, i) => __awaiter(this, void 0, void 0, function* () {
+                const src = this.getFontManager().getSourceFolder(folder);
+                this.getFontManager().createCatalog(dest).then(() => {
+                    this.getFontManager().copyFolders(src, dest, (err, data) => {
+                        if (!err) {
+                            this.getFontManager().scanFolders(dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
+                                if (i == args.paths.length - 1) {
+                                    const result = yield this.fetchStore();
+                                    event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
+                                }
+                            }));
                         }
-                        this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                            if (i == args.paths.length - 1) {
-                                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-                                event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, find);
-                            }
-                        }));
+                        else {
+                            AppLogger_1.default.getInstance('default').error(err);
+                            AppLogger_1.default.getInstance('default').info(data.toString());
+                        }
                     });
                 });
             }));
         }));
         this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, (event, args) => __awaiter(this, void 0, void 0, function* () {
             this.getFontManager().fontInstaller(args, (results) => __awaiter(this, void 0, void 0, function* () {
-                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-                event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, find);
+                const result = yield this.fetchStore();
+                event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
             })).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
         }));
         this.on(channel.IPCMAIN_REQUEST_AUTH_USER, (event, args) => __awaiter(this, void 0, void 0, function* () {
@@ -276,23 +282,35 @@ class MessageHandler {
         /**
          * Logger
          */
-        this.on(channel.IPCMAIN_REQUEST_LOGGER_CREATE, (event, data) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getLoggerRepository().log(data);
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_CREATE, data);
+        this.on(channel.IPCMAIN_REQUEST_LOGGER_CREATE, (event, args) => __awaiter(this, void 0, void 0, function* () {
+            yield this.getConnectionManager().getLoggerRepository().log(args);
+            const result = yield this.fetchLogger();
+            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_CREATE, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_LOGGER_QUERY, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            let find = yield this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_QUERY, find);
+            const result = yield this.fetchLogger();
+            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_QUERY, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_LOGGER_DELETE_ITEM, (event, args) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getLogger().delete(args.id);
-            let find = yield this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_DELETE_ITEM, find);
+            const result = yield this.fetchLogger();
+            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_DELETE_ITEM, result);
         }));
         this.on(channel.IPCMAIN_REQUEST_LOGGER_TRUNCATE, (event, args) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getLogger().clear();
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_TRUNCATE, args);
+            const result = yield this.fetchLogger();
+            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_TRUNCATE, result);
         }));
+    }
+    fetchStore() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+        });
+    }
+    fetchLogger() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+        });
     }
 }
 exports.default = MessageHandler;

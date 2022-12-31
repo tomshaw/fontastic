@@ -2,9 +2,7 @@ import SystemManager from "./core/SystemManager";
 import ConfigManager from "./core/ConfigManager";
 import ConnectionManager from "./core/ConnectionManager";
 import FontManager from "./core/FontManager";
-import FontCatalog from "./core/FontCatalog";
 import MessageHandler from "./core/MessageHandler";
-import AppLogger from "./core/AppLogger"
 
 export default class Application {
 
@@ -27,11 +25,7 @@ export default class Application {
 
     const fontManager = new FontManager(systemManager, configManager, connectionManager);
 
-    const fontCatalog = new FontCatalog(systemManager, configManager);
-
-    const messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager, fontCatalog);
+    const messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager);
     messageHandler.initialize();
-
-    AppLogger.getInstance('default').info('Finished system init.');
   }
 }

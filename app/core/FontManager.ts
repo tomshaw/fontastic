@@ -4,11 +4,13 @@ import SystemManager from "./SystemManager";
 import ConfigManager from "./ConfigManager";
 import ConnectionManager from "./ConnectionManager";
 
+import FontCatalog from "./FontCatalog";
 import FontFinder from "./FontFinder";
 import FontInstaller from "./FontInstaller";
 
 import { execute } from "../helpers/command"
 
+const path = require('path');
 const fetch = require("node-fetch");
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
@@ -101,6 +103,35 @@ export default class FontManager {
   fontInstaller(options: any, done: any) {
     let installer = new FontInstaller(this.getSystemManager(), this.getConnectionManager());
     return installer.activate(options, done);
+  }
+
+  getSourceFolder(sourceFolder: string) {
+    return path.normalize(sourceFolder);
+  }
+
+  getDestinationFolder() {
+    return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
+  }
+
+  getSourceDestinationFolders(sourceFolder: string) {
+    const src = this.getSourceFolder(sourceFolder);
+    const dest = this.getDestinationFolder();
+    return { src, dest }
+  }
+
+  createCatalog(folder: string) {
+    const catalog = new FontCatalog(this.getSystemManager());
+    return catalog.createCatalog(folder);
+  }
+
+  copyFiles(files: string[], dest: string, done: any) {
+    const catalog = new FontCatalog(this.getSystemManager());
+    catalog.copyFiles(files, dest, done);
+  }
+
+  copyFolders(src: string, dest: string, done: any) {
+    const catalog = new FontCatalog(this.getSystemManager());
+    catalog.copyFolders(src, dest, done);
   }
 
   showDialogBox(options: any) {
