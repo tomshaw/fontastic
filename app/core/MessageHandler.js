@@ -128,10 +128,9 @@ class MessageHandler {
             }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_EXECUTE_COMMAND, err.message));
         }));
         this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            const files = args.paths; // array of file paths
             const dest = this.getFontManager().getDestinationFolder();
             this.getFontManager().createCatalog(dest).then(() => {
-                this.getFontManager().copyFiles(files, dest, (err, stdout, stderr) => {
+                this.getFontManager().copyFiles(args.paths, dest, (err, stdout, stderr) => {
                     if (!err) {
                         this.getFontManager().scanFolders(dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
                             const result = yield this.fetchStore();
@@ -145,13 +144,12 @@ class MessageHandler {
             });
         }));
         this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            const dest = this.getFontManager().getDestinationFolder();
-            args.paths.forEach((folder, i) => __awaiter(this, void 0, void 0, function* () {
-                const src = this.getFontManager().getSourceFolder(folder);
-                this.getFontManager().createCatalog(dest).then(() => {
-                    this.getFontManager().copyFolders(src, dest, (err, data) => {
+            args.paths.forEach((sourceFolder, i) => __awaiter(this, void 0, void 0, function* () {
+                const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
+                this.getFontManager().createCatalog(folders.dest).then(() => {
+                    this.getFontManager().copyFolders(folders.src, folders.dest, (err, data) => {
                         if (!err) {
-                            this.getFontManager().scanFolders(dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
+                            this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
                                 if (i == args.paths.length - 1) {
                                     const result = yield this.fetchStore();
                                     event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);

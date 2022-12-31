@@ -9,6 +9,7 @@ import FontFinder from "./FontFinder";
 import FontInstaller from "./FontInstaller";
 
 import { execute } from "../helpers/command"
+import { randNumber } from "../helpers/random"
 
 const path = require('path');
 const fetch = require("node-fetch");
@@ -110,7 +111,7 @@ export default class FontManager {
   }
 
   getDestinationFolder() {
-    return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
+    return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now() + randNumber(7));
   }
 
   getSourceDestinationFolders(sourceFolder: string) {

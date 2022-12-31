@@ -14,6 +14,7 @@ const FontCatalog_1 = require("./FontCatalog");
 const FontFinder_1 = require("./FontFinder");
 const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
+const random_1 = require("../helpers/random");
 const path = require('path');
 const fetch = require("node-fetch");
 const { JSDOM } = require('jsdom');
@@ -98,7 +99,7 @@ class FontManager {
         return path.normalize(sourceFolder);
     }
     getDestinationFolder() {
-        return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now());
+        return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now() + (0, random_1.randNumber)(7));
     }
     getSourceDestinationFolders(sourceFolder) {
         const src = this.getSourceFolder(sourceFolder);
