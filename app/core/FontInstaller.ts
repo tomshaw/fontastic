@@ -1,10 +1,8 @@
 import SystemManager from "./SystemManager";
 import ConnectionManager from "./ConnectionManager";
-import AppLogger from "./AppLogger"
-import { prompt } from "../helpers/command"
+import { prompt, execute } from "../helpers/command"
 
 const path = require("path");
-const exec = require('child_process').exec;
 
 export default class FontInstaller {
 
@@ -43,7 +41,7 @@ export default class FontInstaller {
     if (args.collectionId) {
       let collectionId = parseInt(args.collectionId);
       let results = await this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
-      await this.run({ files: results, activate, temporary }).then((result: any) => {
+      return await this.run({ files: results, activate, temporary }).then((result: any) => {
         if (temporary) {
           this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
         } else {
@@ -52,7 +50,6 @@ export default class FontInstaller {
       });
     } else {
       return await this.run(args).then((result: any) => {
-        AppLogger.getInstance('default').info(result);
         let ids = fonts.map((item: any) => item.id);
         if (temporary) {
           this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);
@@ -74,28 +71,10 @@ export default class FontInstaller {
 
     const command = `${cmdPath} ${activate} ${temporary} ${files}`;
 
-    AppLogger.getInstance('default').info(command);
-
     if (platform === 'unix') {
-      return new Promise(function (resolve, reject) {
-        exec(command, (error: Error, stdout: string, stderr: string) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve(stdout.trim());
-        });
-      });
+      return execute(command);
     } else if (platform === 'win') {
-      return new Promise(function (resolve, reject) {
-        prompt(command, (error: Error, stdout: string, stderr: string) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve(stdout.trim());
-        });
-      });
+      return prompt(command, { name: "Font Activation" });
     }
   }
 }

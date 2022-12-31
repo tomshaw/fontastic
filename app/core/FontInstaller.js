@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AppLogger_1 = require("./AppLogger");
 const command_1 = require("../helpers/command");
 const path = require("path");
-const exec = require('child_process').exec;
 class FontInstaller {
     constructor(systemManager, connectionManager) {
         this.setSystemManager(systemManager);
@@ -71,27 +70,12 @@ class FontInstaller {
             const files = args.files.map((item) => `"${path.normalize(item.file_path)}"`).join(" ");
             const command = `${cmdPath} ${activate} ${temporary} ${files}`;
             AppLogger_1.default.getInstance('default').info(command);
+            AppLogger_1.default.getInstance('default').info(platform);
             if (platform === 'unix') {
-                return new Promise(function (resolve, reject) {
-                    exec(command, (error, stdout, stderr) => {
-                        if (error) {
-                            reject(error);
-                            return;
-                        }
-                        resolve(stdout.trim());
-                    });
-                });
+                return (0, command_1.execute)(command);
             }
             else if (platform === 'win') {
-                return new Promise(function (resolve, reject) {
-                    (0, command_1.prompt)(command, (error, stdout, stderr) => {
-                        if (error) {
-                            reject(error);
-                            return;
-                        }
-                        resolve(stdout.trim());
-                    });
-                });
+                return (0, command_1.prompt)(command, { name: "Font Activation" });
             }
         });
     }

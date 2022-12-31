@@ -197,7 +197,8 @@ export default class MessageHandler {
     });
 
     this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, async (event: IpcMainEvent, args: any) => {
-      this.getFontManager().fontInstaller(args).then(async (results: any) => {
+      this.getFontManager().fontInstaller(args).then(async (response: any) => {
+        AppLogger.getInstance('default').info(response);
         const result = await this.fetchStore();
         event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
       }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
