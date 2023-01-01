@@ -2,7 +2,7 @@ import { app } from 'electron';
 import * as os from 'os';
 import * as path from 'path';
 
-import { systemFontsPaths } from "../config/system";
+import { platformFontPaths } from "../config/system";
 
 const isDev = require('electron-is-dev');
 
@@ -105,8 +105,8 @@ export default class ConfigManager {
     return path.join(os.tmpdir(), file);
   }
 
-  getSystemFontsPath() {
-    return systemFontsPaths.get(this.getPlatform());
+  getPlatformFontPaths() {
+    return platformFontPaths.get(this.getPlatform());
   }
 
   getUpTime() {

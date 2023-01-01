@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.waterfallFontScale = exports.proseFontScale = exports.fontMeta = exports.systemFontsPaths = void 0;
 exports.systemFontsPaths = new Map();
-exports.systemFontsPaths.set('win', 'C:\\Windows\\fonts');
-exports.systemFontsPaths.set('mac', '/Library/Fonts');
-exports.systemFontsPaths.set('unix', '/usr/share/fonts');
+exports.systemFontsPaths.set('win', ['C:\\Windows\\fonts']);
+exports.systemFontsPaths.set('mac', ['/Library/Fonts']);
+exports.systemFontsPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.fonts']);
 exports.fontMeta = [{
         code: 0,
         name: 'Copyright Information',

@@ -258,11 +258,15 @@ class MessageHandler {
         }));
         this.on(channel.IPCMAIN_REQUEST_SYNC_SYSTEM, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getStoreRepository().resetSystem();
-            const path = this.getSystemManager().getSystemFontsPath();
-            this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, () => __awaiter(this, void 0, void 0, function* () {
-                const results = yield this.getConnectionManager().getStoreRepository().fetchSystemStats();
-                event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, results);
-            }));
+            const paths = this.getSystemManager().getSystemFontsPath();
+            paths.forEach((path, i) => {
+                this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, () => __awaiter(this, void 0, void 0, function* () {
+                    if (i == paths.length - 1) {
+                        const result = yield this.getConnectionManager().getStoreRepository().fetchSystemStats();
+                        event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
+                    }
+                }));
+            });
         }));
         this.on(channel.IPCMAIN_REQUEST_SYNC_ACTIVATED, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getStoreRepository().resetActivated();

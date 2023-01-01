@@ -1,8 +1,8 @@
 
-export const systemFontsPaths = new Map();
-systemFontsPaths.set('win', 'C:\\Windows\\fonts');
-systemFontsPaths.set('mac', '/Library/Fonts');
-systemFontsPaths.set('unix', '/usr/share/fonts');
+export const platformFontPaths = new Map();
+platformFontPaths.set('win', ['C:\\Windows\\fonts']);
+platformFontPaths.set('mac', ['/Library/Fonts']);
+platformFontPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.local/share/fonts']);
 
 export const fontMeta = [{
   code: 0,

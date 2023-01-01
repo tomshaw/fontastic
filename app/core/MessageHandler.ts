@@ -315,10 +315,14 @@ export default class MessageHandler {
 
     this.on(channel.IPCMAIN_REQUEST_SYNC_SYSTEM, async (event: IpcMainEvent) => {
       await this.getConnectionManager().getStoreRepository().resetSystem();
-      const path = this.getSystemManager().getSystemFontsPath();
-      this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, async () => {
-        const results = await this.getConnectionManager().getStoreRepository().fetchSystemStats();
-        event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, results);
+      const paths = this.getSystemManager().getPlatformFontPaths();
+      paths.forEach((path: string, i: number) => {
+        this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, async () => {
+          if (i == paths.length - 1) {
+            const result = await this.getConnectionManager().getStoreRepository().fetchSystemStats();
+            event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
+          }
+        });
       });
     });
 
