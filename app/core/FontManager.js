@@ -87,9 +87,16 @@ class FontManager {
         let finder = new FontFinder_1.default(this.getConnectionManager());
         return finder.scanFiles(dir, options, done);
     }
-    scanFolders(dir, options, done) {
-        let finder = new FontFinder_1.default(this.getConnectionManager());
-        return finder.scanFolders(dir, options, done);
+    scanFolders(dir, options) {
+        return new Promise((resolve, reject) => {
+            let finder = new FontFinder_1.default(this.getConnectionManager());
+            finder.scanFolders(dir, options, (err, stdout) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve({});
+            });
+        });
     }
     fontInstaller(options) {
         let installer = new FontInstaller_1.default(this.getSystemManager(), this.getConnectionManager());
@@ -110,13 +117,31 @@ class FontManager {
         const catalog = new FontCatalog_1.default(this.getSystemManager());
         return catalog.createCatalog(folder);
     }
-    copyFiles(files, dest, done) {
-        const catalog = new FontCatalog_1.default(this.getSystemManager());
-        catalog.copyFiles(files, dest, done);
+    copyFiles(files, dest) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                const catalog = new FontCatalog_1.default(this.getSystemManager());
+                catalog.copyFiles(files, dest, (err, stdout) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    return resolve({});
+                });
+            });
+        });
     }
-    copyFolders(src, dest, done) {
-        const catalog = new FontCatalog_1.default(this.getSystemManager());
-        catalog.copyFolders(src, dest, done);
+    copyFolders(src, dest) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                const catalog = new FontCatalog_1.default(this.getSystemManager());
+                catalog.copyFolders(src, dest, (err, stdout) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    return resolve({});
+                });
+            });
+        });
     }
     showDialogBox(options) {
         return electron_1.dialog.showMessageBox(null, options);

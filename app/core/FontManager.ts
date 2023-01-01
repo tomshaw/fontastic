@@ -96,9 +96,14 @@ export default class FontManager {
     return finder.scanFiles(dir, options, done);
   }
 
-  scanFolders(dir: any, options: any, done: any) {
-    let finder = new FontFinder(this.getConnectionManager());
-    return finder.scanFolders(dir, options, done);
+  scanFolders(dir: any, options: any) {
+    return new Promise((resolve, reject) => {
+      let finder = new FontFinder(this.getConnectionManager());
+      finder.scanFolders(dir, options, (err: any, stdout: any) => {
+        if (err) { return reject(err); }
+        return resolve({});
+      });
+    });
   }
 
   fontInstaller(options: any) {
@@ -125,14 +130,24 @@ export default class FontManager {
     return catalog.createCatalog(folder);
   }
 
-  copyFiles(files: string[], dest: string, done: any) {
-    const catalog = new FontCatalog(this.getSystemManager());
-    catalog.copyFiles(files, dest, done);
+  async copyFiles(files: string[], dest: string) {
+    return new Promise((resolve, reject) => {
+      const catalog = new FontCatalog(this.getSystemManager());
+      catalog.copyFiles(files, dest, (err: any, stdout: any) => {
+        if (err) { return reject(err); }
+        return resolve({});
+      });
+    });
   }
 
-  copyFolders(src: string, dest: string, done: any) {
-    const catalog = new FontCatalog(this.getSystemManager());
-    catalog.copyFolders(src, dest, done);
+  async copyFolders(src: string, dest: string) {
+    return new Promise((resolve, reject) => {
+      const catalog = new FontCatalog(this.getSystemManager());
+      catalog.copyFolders(src, dest, (err: any, stdout: any) => {
+        if (err) { return reject(err); }
+        return resolve({});
+      });
+    });
   }
 
   showDialogBox(options: any) {

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.waterfallFontScale = exports.proseFontScale = exports.fontMeta = exports.systemFontsPaths = void 0;
-exports.systemFontsPaths = new Map();
-exports.systemFontsPaths.set('win', ['C:\\Windows\\fonts']);
-exports.systemFontsPaths.set('mac', ['/Library/Fonts']);
-exports.systemFontsPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.fonts']);
+exports.waterfallFontScale = exports.proseFontScale = exports.fontMeta = exports.platformFontPaths = void 0;
+exports.platformFontPaths = new Map();
+exports.platformFontPaths.set('win', ['C:\\Windows\\fonts']);
+exports.platformFontPaths.set('mac', ['/Library/Fonts']);
+exports.platformFontPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.local/share/fonts', '~/.fonts']);
 exports.fontMeta = [{
         code: 0,
         name: 'Copyright Information',

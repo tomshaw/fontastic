@@ -129,44 +129,37 @@ class MessageHandler {
         }));
         this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
             const dest = this.getFontManager().getDestinationFolder();
-            this.getFontManager().createCatalog(dest).then(() => {
-                this.getFontManager().copyFiles(args.paths, dest, (err, stdout, stderr) => {
-                    if (!err) {
-                        this.getFontManager().scanFolders(dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                            const result = yield this.fetchStore();
-                            event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, result);
-                        }));
-                    }
-                    else {
-                        AppLogger_1.default.getInstance('default').error(err);
-                    }
-                });
+            const promises = [];
+            const myfunc = (files, dest, collectionId) => __awaiter(this, void 0, void 0, function* () {
+                yield this.getFontManager().createCatalog(dest);
+                yield this.getFontManager().copyFiles(files, dest);
+                yield this.getFontManager().scanFolders(dest, { collection_id: collectionId });
             });
+            promises.push(myfunc(args.paths, dest, args.collectionId));
+            Promise.allSettled(promises).then(() => __awaiter(this, void 0, void 0, function* () {
+                const result = yield this.fetchStore();
+                event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, result);
+            }));
         }));
         this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
+            const promises = [];
             args.paths.forEach((sourceFolder, i) => __awaiter(this, void 0, void 0, function* () {
                 const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
-                this.getFontManager().createCatalog(folders.dest).then(() => {
-                    this.getFontManager().copyFolders(folders.src, folders.dest, (err, data) => {
-                        if (!err) {
-                            this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                                if (i == args.paths.length - 1) {
-                                    const result = yield this.fetchStore();
-                                    event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
-                                }
-                            }));
-                        }
-                        else {
-                            AppLogger_1.default.getInstance('default').error(err);
-                            AppLogger_1.default.getInstance('default').info(data.toString());
-                        }
-                    });
+                const myfunc = (folders) => __awaiter(this, void 0, void 0, function* () {
+                    yield this.getFontManager().createCatalog(folders.dest);
+                    yield this.getFontManager().copyFolders(folders.src, folders.dest);
+                    yield this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId });
                 });
+                promises.push(myfunc(folders));
+            }));
+            Promise.allSettled(promises).then(() => __awaiter(this, void 0, void 0, function* () {
+                const result = yield this.fetchStore();
+                event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
             }));
         }));
         this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, (event, args) => __awaiter(this, void 0, void 0, function* () {
             this.getFontManager().fontInstaller(args).then((response) => __awaiter(this, void 0, void 0, function* () {
-                AppLogger_1.default.getInstance('default').info(response);
+                AppLogger_1.default.getInstance().info(response);
                 const result = yield this.fetchStore();
                 event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
             })).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
@@ -258,15 +251,17 @@ class MessageHandler {
         }));
         this.on(channel.IPCMAIN_REQUEST_SYNC_SYSTEM, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getStoreRepository().resetSystem();
-            const paths = this.getSystemManager().getSystemFontsPath();
-            paths.forEach((path, i) => {
-                this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, () => __awaiter(this, void 0, void 0, function* () {
-                    if (i == paths.length - 1) {
-                        const result = yield this.getConnectionManager().getStoreRepository().fetchSystemStats();
-                        event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
-                    }
+            const paths = this.getSystemManager().getPlatformFontPaths();
+            const promises = [];
+            paths.forEach((path, i) => __awaiter(this, void 0, void 0, function* () {
+                promises.push(this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }).catch((err) => {
+                    AppLogger_1.default.getInstance().error(err);
                 }));
-            });
+            }));
+            Promise.allSettled(promises).then(() => __awaiter(this, void 0, void 0, function* () {
+                const result = yield this.getConnectionManager().getStoreRepository().fetchSystemStats();
+                event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
+            }));
         }));
         this.on(channel.IPCMAIN_REQUEST_SYNC_ACTIVATED, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().getStoreRepository().resetActivated();

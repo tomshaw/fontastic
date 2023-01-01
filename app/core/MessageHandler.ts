@@ -161,44 +161,43 @@ export default class MessageHandler {
 
     this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, async (event: IpcMainEvent, args: any) => {
       const dest = this.getFontManager().getDestinationFolder();
-      this.getFontManager().createCatalog(dest).then(() => {
-        this.getFontManager().copyFiles(args.paths, dest, (err: Error, stdout: string, stderr: string) => {
-          if (!err) {
-            this.getFontManager().scanFolders(dest, { collection_id: args.collectionId }, async () => {
-              const result = await this.fetchStore();
-              event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, result);
-            });
-          } else {
-            AppLogger.getInstance('default').error(err);
-          }
-        });
+
+      const promises = [];
+
+      const catalogHandler = async (files: any[], dest: string, collectionId: number) => {
+        await this.getFontManager().createCatalog(dest);
+        await this.getFontManager().copyFiles(files, dest);
+        await this.getFontManager().scanFolders(dest, { collection_id: collectionId });
+      }
+
+      promises.push(catalogHandler(args.paths, dest, args.collectionId));
+
+      Promise.allSettled(promises).then(async () => {
+        const result = await this.fetchStore();
+        event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, result);
       });
     });
 
     this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, async (event: IpcMainEvent, args: any) => {
+      const promises = [];
       args.paths.forEach(async (sourceFolder: string, i: number) => {
         const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
-        this.getFontManager().createCatalog(folders.dest).then(() => {
-          this.getFontManager().copyFolders(folders.src, folders.dest, (err: Error, data: any) => {
-            if (!err) {
-              this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId }, async () => {
-                if (i == args.paths.length - 1) {
-                  const result = await this.fetchStore();
-                  event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
-                }
-              });
-            } else {
-              AppLogger.getInstance('default').error(err);
-              AppLogger.getInstance('default').info(data.toString());
-            }
-          });
-        })
+        const catalogHandler = async (folders: any) => {
+          await this.getFontManager().createCatalog(folders.dest);
+          await this.getFontManager().copyFolders(folders.src, folders.dest);
+          await this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId });
+        }
+        promises.push(catalogHandler(folders));
+      });
+      Promise.allSettled(promises).then(async () => {
+        const result = await this.fetchStore();
+        event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
       });
     });
 
     this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, async (event: IpcMainEvent, args: any) => {
       this.getFontManager().fontInstaller(args).then(async (response: any) => {
-        AppLogger.getInstance('default').info(response);
+        AppLogger.getInstance().info(response);
         const result = await this.fetchStore();
         event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
       }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
@@ -316,13 +315,17 @@ export default class MessageHandler {
     this.on(channel.IPCMAIN_REQUEST_SYNC_SYSTEM, async (event: IpcMainEvent) => {
       await this.getConnectionManager().getStoreRepository().resetSystem();
       const paths = this.getSystemManager().getPlatformFontPaths();
-      paths.forEach((path: string, i: number) => {
-        this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, async () => {
-          if (i == paths.length - 1) {
-            const result = await this.getConnectionManager().getStoreRepository().fetchSystemStats();
-            event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
-          }
-        });
+
+      const promises = [];
+      paths.forEach(async (path: string, i: number) => {
+        promises.push(this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }).catch((err: Error) => {
+          AppLogger.getInstance().error(err);
+        }));
+      });
+
+      Promise.allSettled(promises).then(async () => {
+        const result = await this.getConnectionManager().getStoreRepository().fetchSystemStats();
+        event.sender.send(channel.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
       });
     });
 

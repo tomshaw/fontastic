@@ -8,7 +8,7 @@ class AppLogger {
         this.logger.transports.file.fileName = logName + '.log';
         this.logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] {text}';
     }
-    static getInstance(name) {
+    static getInstance(name = 'default') {
         if (!this._instance) {
             this._instance = new AppLogger(name);
         }

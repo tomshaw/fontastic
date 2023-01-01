@@ -77,8 +77,8 @@ class ConfigManager {
     getTempDirFile(file) {
         return path.join(os.tmpdir(), file);
     }
-    getSystemFontsPath() {
-        return system_1.systemFontsPaths.get(this.getPlatform());
+    getPlatformFontPaths() {
+        return system_1.platformFontPaths.get(this.getPlatform());
     }
     getUpTime() {
         let sec = os.uptime();

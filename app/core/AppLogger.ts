@@ -13,7 +13,7 @@ export default class AppLogger {
     this.logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] {text}';
   }
 
-  public static getInstance(name: string): AppLogger {
+  public static getInstance(name: string = 'default'): AppLogger {
     if (!this._instance) {
       this._instance = new AppLogger(name);
     }
