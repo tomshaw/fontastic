@@ -25,12 +25,9 @@
   "win": {
     "icon": "dist/assets/icons",
     "target": [
+      "portable",
       "msi"
-    ],
-    "artifactName": "${productName}-v${version}.${ext}"
-  },
-  "portable": {
-    "splashImage": "dist/assets/icons/electron.bmp"
+    ]
   },
   "mac": {
     "icon": "dist/assets/icons",
@@ -41,8 +38,33 @@
   "linux": {
     "icon": "dist/assets/icons",
     "category": "Utility",
+    "synopsis": "A gorgeous cross platform font management and cataloging application.",
     "target": [
-      "AppImage", "deb", "snap"
-    ]
+      "deb",
+      "rpm",
+      "AppImage",
+      "snap"
+    ],
+    "desktop": {
+      "Name": "Fontastic",
+      "Type": "Application",
+      "GenericName": "Font Manager"
+    }
+  },
+  "msi": {
+    "artifactName": "${productName}-Installer-${version}.${ext}"
+  },
+  "portable": {
+    "splashImage": "dist/assets/icons/electron.bmp",
+    "artifactName": "${productName}-Portable-${version}.${ext}"
+  },
+  "deb": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
+  "rpm": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
+  "appImage": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
   }
 }

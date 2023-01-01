@@ -36,7 +36,7 @@ class FontInstaller {
             if (args.collectionId) {
                 let collectionId = parseInt(args.collectionId);
                 let results = yield this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
-                return yield this.run({ files: results, activate, temporary }).then((result) => {
+                return yield this.run({ files: results, activate, temporary }).then(() => {
                     if (temporary) {
                         this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
                     }
@@ -46,7 +46,7 @@ class FontInstaller {
                 });
             }
             else {
-                return yield this.run(args).then((result) => {
+                return yield this.run(args).then(() => {
                     let ids = fonts.map((item) => item.id);
                     if (temporary) {
                         this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);
