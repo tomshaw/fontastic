@@ -1,11 +1,11 @@
 {
   "name": "fontastic",
   "version": "0.0.6",
-  "description": "Fontastic is a stunning font management and cataloging application.",
+  "description": "A gorgeous font management and cataloging application.",
   "private": false,
   "author": {
     "name": "Tom Shaw",
-    "email": "tomshaw21@gmail.com"
+    "email": "tom@tomshaw.us"
   },
   "keywords": [
     "angular",
