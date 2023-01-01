@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const AppLogger_1 = require("./AppLogger");
 const command_1 = require("../helpers/command");
 const path = require("path");
 class FontInstaller {
@@ -37,7 +36,7 @@ class FontInstaller {
             if (args.collectionId) {
                 let collectionId = parseInt(args.collectionId);
                 let results = yield this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
-                yield this.run({ files: results, activate, temporary }).then((result) => {
+                return yield this.run({ files: results, activate, temporary }).then((result) => {
                     if (temporary) {
                         this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
                     }
@@ -48,7 +47,6 @@ class FontInstaller {
             }
             else {
                 return yield this.run(args).then((result) => {
-                    AppLogger_1.default.getInstance('default').info(result);
                     let ids = fonts.map((item) => item.id);
                     if (temporary) {
                         this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);
@@ -69,8 +67,6 @@ class FontInstaller {
             const temporary = (this.getSystemManager().getPlatform() === "win" && args.temporary && args.temporary === true) ? '--temporary=true' : '--temporary=false';
             const files = args.files.map((item) => `"${path.normalize(item.file_path)}"`).join(" ");
             const command = `${cmdPath} ${activate} ${temporary} ${files}`;
-            AppLogger_1.default.getInstance('default').info(command);
-            AppLogger_1.default.getInstance('default').info(platform);
             if (platform === 'unix') {
                 return (0, command_1.execute)(command);
             }

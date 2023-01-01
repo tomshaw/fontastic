@@ -41,7 +41,7 @@ export default class FontInstaller {
     if (args.collectionId) {
       let collectionId = parseInt(args.collectionId);
       let results = await this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
-      return await this.run({ files: results, activate, temporary }).then((result: any) => {
+      return await this.run({ files: results, activate, temporary }).then(() => {
         if (temporary) {
           this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
         } else {
@@ -49,7 +49,7 @@ export default class FontInstaller {
         }
       });
     } else {
-      return await this.run(args).then((result: any) => {
+      return await this.run(args).then(() => {
         let ids = fonts.map((item: any) => item.id);
         if (temporary) {
           this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);

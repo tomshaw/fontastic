@@ -347,6 +347,7 @@ Inputs
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .checkbox {
@@ -369,6 +370,7 @@ Inputs
   height: 14px;
   border: 2px solid #00a0be;
   border-radius: var(--border-radius);
+  pointer-events: none;
 }
 
 .radio label::before,

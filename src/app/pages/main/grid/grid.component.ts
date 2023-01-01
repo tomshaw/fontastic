@@ -87,9 +87,11 @@ export class GridComponent implements OnInit {
     }
   }
 
-  onHandleActivate(event: Event, item: any, temporary: boolean = false): void {
-    const target = event.target as HTMLInputElement;
+  onHandleActivate(event: any, item: any, temporary: boolean = false): void {
+    const target = event.target.firstChild as HTMLInputElement;
     const checked = target.checked ? true : false;
+
+    target.checked = (checked) ? false : true;
 
     if (!item.installable) {
       this.alertService.warning('Only (OpenType) and (TrueType) fonts are supported.');
