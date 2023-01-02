@@ -166,7 +166,7 @@ export default class MessageHandler {
         const dest = this.getFontManager().getDestinationFolder();
         await this.getFontManager().createCatalog(dest);
         await this.getFontManager().copyFiles(args.files, dest);
-        const files = this.getFontManager().sourceFilePaths(args.files, dest);
+        const files = this.getFontManager().getMapFilePaths(args.files, dest);
         await this.getFontManager().scanFiles(files, { collection_id: args.collectionId });
       }
 

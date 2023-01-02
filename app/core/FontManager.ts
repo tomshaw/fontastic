@@ -74,7 +74,7 @@ export default class FontManager {
     const body = await res.text();
     const dom = new JSDOM(body);
     const reader = new Readability(dom.window.document).parse();
-    //console.log('reader', reader.textContent);
+
     return reader;
   }
 
@@ -90,10 +90,6 @@ export default class FontManager {
     } catch (err) {
       return err;
     }
-  }
-
-  sourceFilePaths(files: string[], dest: string) {
-    return files.map((file: string) => dest + path.sep + path.basename(file));
   }
 
   scanFiles(files: string[], options: any) {
@@ -119,6 +115,10 @@ export default class FontManager {
   fontInstaller(options: any) {
     let installer = new FontInstaller(this.getSystemManager(), this.getConnectionManager());
     return installer.activate(options);
+  }
+
+  getMapFilePaths(files: string[], dest: string) {
+    return files.map((file: string) => dest + path.sep + path.basename(file));
   }
 
   getSourceFolder(sourceFolder: string) {
