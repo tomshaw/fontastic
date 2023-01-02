@@ -42,9 +42,10 @@
         </datalist>
       </div>
 
-      <div class="input-preview preview-size">
+      <div class="input-preview preview-size" [attr.title]="fontSize + 'px'">
         <ng-container *ngIf="buttonType === 0; else elseif1">
-          <input type="range" class="input" id="font_size" min="1" max="120" step="1" [value]="fontSize" (change)="onFontSize($event)" />
+          <span [attr.title]="fontSize + 'px'" style="margin-right: 15px;">{{fontSize}}px</span>
+          <input type="range" class="input" id="font_size" min="24" max="72" step="1" [value]="fontSize" (change)="onFontSize($event)" />
         </ng-container>
         <ng-template #elseif1>
           <ng-container *ngIf="buttonType === 1; else elseif2">

@@ -56,12 +56,7 @@
           </figcaption>
 
           <div (click)="onRowClick(item.id)">
-            <ng-container *ngIf="displayNews && item.news; else previewDefault">
-              <canvas attr.id="canvas_{{item.id}}"></canvas>
-            </ng-container>
-            <ng-template #previewDefault>
-              <canvas attr.id="canvas_{{item.id}}" height="150px" width="3000px"></canvas>
-            </ng-template>
+            <canvas attr.id="canvas_{{item.id}}" height="150px" width="1920px"></canvas>
           </div>
 
         </figure>

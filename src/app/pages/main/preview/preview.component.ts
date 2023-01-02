@@ -58,7 +58,6 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
         const items = [];
         for (let i = 0, total = results.length; i < total; i++) {
           const item = results[i];
-          console.log('item', item);
           item.news = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
           items.push(item);
         }
@@ -115,15 +114,22 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       const localFile = `file://${item.file_path}`;
       this.fontService.load(localFile).then((font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
-        const context = canvas?.getContext('2d') as CanvasRenderingContext2D;
+        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         this.fontService.clearCanvas(context);
 
         const fontSize = this.getFontSize();
 
-        const path = font.getPath(this.getDisplayText(item), 20, 100, fontSize);
+        const displayTest = this.getDisplayText(item);
+
+        // @TODO Center text based on font size using baseline.
+        const path = font.getPath(displayTest, 20, 100, fontSize);
+        // const metrics = context.measureText(displayTest);
+        // const top = font.ascender / font.unitsPerEm * 150;
+
         path.fill = this.fontColor;
 
+        context.textBaseline = 'middle';
         context.fillStyle = this.backgroundColor;
 
         path.draw(context);
@@ -174,7 +180,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       target.classList.add('favorite');
       target.innerHTML = 'favorite';
     }
-    
+
     this.messageService.updateStore(item.id, { favorite: !status }).then((result) => {
       this.databaseService.fetchSystemStats();
     });
