@@ -60,14 +60,6 @@ class FileSystem {
             next();
         });
     }
-    /**
-     * Deprecated
-     *
-     * @param files
-     * @param options
-     * @param done
-     * @returns
-     */
     scanFiles(files, options, done) {
         files.forEach((fp) => __awaiter(this, void 0, void 0, function* () {
             let stat = fs.statSync(fp);

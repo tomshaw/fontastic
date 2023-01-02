@@ -160,17 +160,25 @@ export default class MessageHandler {
     });
 
     this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, async (event: IpcMainEvent, args: any) => {
-      const dest = this.getFontManager().getDestinationFolder();
-
       const promises = [];
 
-      const catalogHandler = async (files: any[], dest: string, collectionId: number) => {
+      const addToCatalog = async () => {
+        const dest = this.getFontManager().getDestinationFolder();
         await this.getFontManager().createCatalog(dest);
-        await this.getFontManager().copyFiles(files, dest);
-        await this.getFontManager().scanFolders(dest, { collection_id: collectionId });
+        await this.getFontManager().copyFiles(args.files, dest);
+        const files = this.getFontManager().sourceFilePaths(args.files, dest);
+        await this.getFontManager().scanFiles(files, { collection_id: args.collectionId });
       }
 
-      promises.push(catalogHandler(args.paths, dest, args.collectionId));
+      const addInPlace = async () => {
+        await this.getFontManager().scanFiles(args.files, { collection_id: args.collectionId });
+      }
+
+      if (args.addToCatalog) {
+        promises.push(addToCatalog());
+      } else {
+        promises.push(addInPlace());
+      }
 
       Promise.allSettled(promises).then(async () => {
         const result = await this.fetchStore();
@@ -180,15 +188,27 @@ export default class MessageHandler {
 
     this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, async (event: IpcMainEvent, args: any) => {
       const promises = [];
-      args.paths.forEach(async (sourceFolder: string, i: number) => {
-        const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
-        const catalogHandler = async (folders: any) => {
+
+      args.folders.forEach(async (sourceFolder: string, i: number) => {
+        
+        const addToCatalog = async () => {
+          const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
           await this.getFontManager().createCatalog(folders.dest);
           await this.getFontManager().copyFolders(folders.src, folders.dest);
           await this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId });
         }
-        promises.push(catalogHandler(folders));
+
+        const addInPlace = async () => {
+          await this.getFontManager().scanFolders(sourceFolder, { collection_id: args.collectionId });
+        }
+
+        if (args.addToCatalog) {
+          promises.push(addToCatalog());
+        } else {
+          promises.push(addInPlace());
+        }
       });
+
       Promise.allSettled(promises).then(async () => {
         const result = await this.fetchStore();
         event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);

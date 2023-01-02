@@ -128,14 +128,23 @@ class MessageHandler {
             }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_EXECUTE_COMMAND, err.message));
         }));
         this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            const dest = this.getFontManager().getDestinationFolder();
             const promises = [];
-            const myfunc = (files, dest, collectionId) => __awaiter(this, void 0, void 0, function* () {
+            const addToCatalog = () => __awaiter(this, void 0, void 0, function* () {
+                const dest = this.getFontManager().getDestinationFolder();
                 yield this.getFontManager().createCatalog(dest);
-                yield this.getFontManager().copyFiles(files, dest);
-                yield this.getFontManager().scanFolders(dest, { collection_id: collectionId });
+                yield this.getFontManager().copyFiles(args.files, dest);
+                const files = this.getFontManager().sourceFilePaths(args.files, dest);
+                yield this.getFontManager().scanFiles(files, { collection_id: args.collectionId });
             });
-            promises.push(myfunc(args.paths, dest, args.collectionId));
+            const addInPlace = () => __awaiter(this, void 0, void 0, function* () {
+                yield this.getFontManager().scanFiles(args.files, { collection_id: args.collectionId });
+            });
+            if (args.addToCatalog) {
+                promises.push(addToCatalog());
+            }
+            else {
+                promises.push(addInPlace());
+            }
             Promise.allSettled(promises).then(() => __awaiter(this, void 0, void 0, function* () {
                 const result = yield this.fetchStore();
                 event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, result);
@@ -143,14 +152,22 @@ class MessageHandler {
         }));
         this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
             const promises = [];
-            args.paths.forEach((sourceFolder, i) => __awaiter(this, void 0, void 0, function* () {
-                const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
-                const myfunc = (folders) => __awaiter(this, void 0, void 0, function* () {
+            args.folders.forEach((sourceFolder, i) => __awaiter(this, void 0, void 0, function* () {
+                const addToCatalog = () => __awaiter(this, void 0, void 0, function* () {
+                    const folders = this.getFontManager().getSourceDestinationFolders(sourceFolder);
                     yield this.getFontManager().createCatalog(folders.dest);
                     yield this.getFontManager().copyFolders(folders.src, folders.dest);
                     yield this.getFontManager().scanFolders(folders.dest, { collection_id: args.collectionId });
                 });
-                promises.push(myfunc(folders));
+                const addInPlace = () => __awaiter(this, void 0, void 0, function* () {
+                    yield this.getFontManager().scanFolders(sourceFolder, { collection_id: args.collectionId });
+                });
+                if (args.addToCatalog) {
+                    promises.push(addToCatalog());
+                }
+                else {
+                    promises.push(addInPlace());
+                }
             }));
             Promise.allSettled(promises).then(() => __awaiter(this, void 0, void 0, function* () {
                 const result = yield this.fetchStore();

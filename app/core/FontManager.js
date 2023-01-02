@@ -15,7 +15,8 @@ const FontFinder_1 = require("./FontFinder");
 const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
 const random_1 = require("../helpers/random");
-const path = require('path');
+const path = require("path");
+//const path = require('path');
 const fetch = require("node-fetch");
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
@@ -83,14 +84,24 @@ class FontManager {
             }
         });
     }
-    scanFiles(dir, options, done) {
-        let finder = new FontFinder_1.default(this.getConnectionManager());
-        return finder.scanFiles(dir, options, done);
+    sourceFilePaths(files, dest) {
+        return files.map((file) => dest + path.sep + path.basename(file));
+    }
+    scanFiles(files, options) {
+        return new Promise((resolve, reject) => {
+            let finder = new FontFinder_1.default(this.getConnectionManager());
+            finder.scanFiles(files, options, (err) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve({});
+            });
+        });
     }
     scanFolders(dir, options) {
         return new Promise((resolve, reject) => {
             let finder = new FontFinder_1.default(this.getConnectionManager());
-            finder.scanFolders(dir, options, (err, stdout) => {
+            finder.scanFolders(dir, options, (err) => {
                 if (err) {
                     return reject(err);
                 }

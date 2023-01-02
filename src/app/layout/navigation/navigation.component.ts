@@ -76,19 +76,21 @@ export class NavigationComponent implements OnInit {
       buttons: ['Cancel', 'Select files', 'Select folders'],
       defaultId: 2,
       title: 'Select Fonts',
-      message: 'Do you want to add files or folders?'
+      message: 'Do you want to select files or folders?',
+      checkboxLabel: 'Add fonts to catalog.',
+      checkboxChecked: true
     };
 
     this.messageService.showMessageBox(settings).then((response: object | any) => {
-      if (response && response.response && response.response > 0) {
+      if (response?.response > 0) {
         const isFiles = (response.response === 1) ? true : false;
         const options = (isFiles) ? { properties: ['openFile', 'multiSelections'] } : { properties: ['openDirectory', 'multiSelections'] };
         this.messageService.showOpenDialog(options).then((dialog: object | any) => {
           if (dialog.filePaths.length) {
             if (isFiles) {
-              this.openFiles(collectionId, dialog);
+              this.openFiles(collectionId, { files: dialog.filePaths, addToCatalog: response.checkboxChecked });
             } else {
-              this.openFolders(collectionId, dialog);
+              this.openFolders(collectionId, { folders: dialog.filePaths, addToCatalog: response.checkboxChecked });
             }
           }
         });
@@ -99,7 +101,7 @@ export class NavigationComponent implements OnInit {
   openFiles(collectionId: number, options: any): void {
     this.presentationService.setLoadingSpinner(true);
     this.alertService.info('Adding fonts please wait..', 1e3, true);
-    this.messageService.scanFiles(options.filePaths, collectionId).then(this.utils.delay(1e3)).then(() => {
+    this.messageService.scanFiles(options, collectionId).then(this.utils.delay(1e3)).then(() => {
       this.messageService.updateCollectionCount(collectionId).then((result) => this.resultSet = this.utils.expandEntities(result));
       this.presentationService.setLoadingSpinner(false);
       this.alertService.dismiss();
@@ -110,7 +112,7 @@ export class NavigationComponent implements OnInit {
   openFolders(collectionId: number, options: any): void {
     this.presentationService.setLoadingSpinner(true);
     this.alertService.info('Adding fonts please wait..', 1e3, true);
-    this.messageService.scanFolders(options.filePaths, collectionId).then(this.utils.delay(1e3)).then(() => {
+    this.messageService.scanFolders(options, collectionId).then(this.utils.delay(1e3)).then(() => {
       this.messageService.updateCollectionCount(collectionId).then((result) => this.resultSet = this.utils.expandEntities(result));
       this.presentationService.setLoadingSpinner(false);
       this.alertService.dismiss();

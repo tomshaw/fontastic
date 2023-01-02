@@ -61,14 +61,6 @@ export default class FileSystem {
     });
   }
 
-  /**
-   * Deprecated
-   * 
-   * @param files 
-   * @param options 
-   * @param done 
-   * @returns 
-   */
   scanFiles(files: any, options: any, done: any) {
     files.forEach(async (fp: any) => {
       let stat = fs.statSync(fp);

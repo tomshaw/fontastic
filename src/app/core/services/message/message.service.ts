@@ -131,8 +131,8 @@ export class MessageService {
     });
   }
 
-  scanFiles(paths: string[], collectionId: number): Promise<any[]> {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FILES_SCAN, { paths, collectionId });
+  scanFiles(options: any, collectionId: number): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FILES_SCAN, { ...options, collectionId });
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_FILES_SCAN, (event, response) => {
         resolve(response);
@@ -140,8 +140,8 @@ export class MessageService {
     });
   }
 
-  scanFolders(paths: string[], collectionId: number): Promise<any[]> {
-    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, { paths, collectionId });
+  scanFolders(options: any, collectionId: number): Promise<any[]> {
+    this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, { ...options, collectionId });
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, (event, response) => {
         resolve(response);
