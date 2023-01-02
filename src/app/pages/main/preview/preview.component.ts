@@ -169,17 +169,14 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (status) {
       target.classList.remove('favorite');
+      target.innerHTML = 'favorite_bordered';
     } else {
       target.classList.add('favorite');
+      target.innerHTML = 'favorite';
     }
-
-    const message = (status) ? `Removed favorite ${item.file_name}` : `Created favorite ${item.file_name}`;
-
-    this.messageService.log(message, 1);
-
+    
     this.messageService.updateStore(item.id, { favorite: !status }).then((result) => {
       this.databaseService.fetchSystemStats();
-      this.alertService.success(message);
     });
   }
 

@@ -27,6 +27,7 @@
     font-size: 12px;
     @include font-family-medium();
     margin: 0 10px;
+    display: none;
   }
 }
 
@@ -65,6 +66,7 @@
 
 $inputColorWidth: 90px;
 .input-preview.preview-color {
+  margin-left: 10px;
   input {
     width: $inputColorWidth;
     min-width: $inputColorWidth;

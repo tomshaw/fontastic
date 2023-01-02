@@ -1,7 +1,5 @@
 @import "../../styles/tools/_variables";
 
-$sideColWidth: 15%;
-
 app-header {
   grid-area: header;
 }
@@ -28,14 +26,14 @@ app-aside {
 .application.navigation {
   display: grid;
   grid-template-areas: "header header" "navigation main" "footer footer";
-  grid-template-columns: $sideColWidth 1fr;
+  grid-template-columns: 300px 1fr;
   grid-template-rows: 56px 1fr 30px;
 }
 
 .application.aside {
   display: grid;
   grid-template-areas: "header header header" "main aside" "footer footer footer";
-  grid-template-columns: $sideColWidth 1fr $sideColWidth;
+  grid-template-columns: 300px 1fr 300px;
   grid-template-rows: 56px 1fr 30px;
 }
 
@@ -49,21 +47,21 @@ app-aside {
 .application.main.aside {
   display: grid;
   grid-template-areas: "header header" "main aside" "footer footer";
-  grid-template-columns: 1fr $sideColWidth;
+  grid-template-columns: 1fr 300px;
   grid-template-rows: 56px 1fr 30px;
 }
 
 .application.main.navigation {
   display: grid;
   grid-template-areas: "header header" "navigation main" "footer footer";
-  grid-template-columns: $sideColWidth 1fr;
+  grid-template-columns: 300px 1fr;
   grid-template-rows: 56px 1fr 30px;
 }
 
 .application.main.aside.navigation {
   display: grid;
   grid-template-areas: "header header header" "navigation main aside" "footer footer footer";
-  grid-template-columns: $sideColWidth 1fr $sideColWidth;
+  grid-template-columns: 300px 1fr 300px;
   grid-template-rows: 56px 1fr 30px;
 }
 
@@ -91,5 +89,56 @@ app-aside {
 .application.aside {
   app-aside {
     visibility: visible;
+  }
+}
+
+@media only screen and (max-width: 1440px) {
+  .application {
+    display: grid;
+    grid-template-areas: "header" "main" "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: 56px 1fr 30px;
+  }
+  
+  .application.navigation {
+    display: grid;
+    grid-template-areas: "header header" "navigation main" "footer footer";
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 56px 1fr 30px;
+  }
+  
+  .application.aside {
+    display: grid;
+    grid-template-areas: "header header header" "main aside" "footer footer footer";
+    grid-template-columns: 260px 1fr 260px;
+    grid-template-rows: 56px 1fr 30px;
+  }
+  
+  .application.main {
+    display: grid;
+    grid-template-areas: "header" "main" "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: 56px 1fr 30px;
+  }
+  
+  .application.main.aside {
+    display: grid;
+    grid-template-areas: "header header" "main aside" "footer footer";
+    grid-template-columns: 1fr 260px;
+    grid-template-rows: 56px 1fr 30px;
+  }
+  
+  .application.main.navigation {
+    display: grid;
+    grid-template-areas: "header header" "navigation main" "footer footer";
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 56px 1fr 30px;
+  }
+  
+  .application.main.aside.navigation {
+    display: grid;
+    grid-template-areas: "header header header" "navigation main aside" "footer footer footer";
+    grid-template-columns: 260px 1fr 260px;
+    grid-template-rows: 56px 1fr 30px;
   }
 }
