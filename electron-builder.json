@@ -52,11 +52,11 @@
     }
   },
   "msi": {
-    "artifactName": "${productName}-Installer-${version}.${ext}"
+    "artifactName": "${productName}-installer-${version}.${ext}"
   },
   "portable": {
     "splashImage": "dist/assets/icons/electron.bmp",
-    "artifactName": "${productName}-Portable-${version}.${ext}"
+    "artifactName": "${productName}-portable-${version}.${ext}"
   },
   "deb": {
     "artifactName": "${productName}-${version}-${arch}.${ext}"
