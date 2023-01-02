@@ -20,6 +20,7 @@ Fontastic is a stunning font management and cataloging application.
 - Font cataloging and management.
 - Multi platform font installation.
 - Multi database support.
+- Imports to catalog or inplace.
 - A selection of gorgeous themes.
 - Open source and completely free.
 
