@@ -16,7 +16,6 @@ const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
 const random_1 = require("../helpers/random");
 const path = require("path");
-//const path = require('path');
 const fetch = require("node-fetch");
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
@@ -63,7 +62,6 @@ class FontManager {
             const body = yield res.text();
             const dom = new JSDOM(body);
             const reader = new Readability(dom.window.document).parse();
-            //console.log('reader', reader.textContent);
             return reader;
         });
     }
@@ -83,9 +81,6 @@ class FontManager {
                 return err;
             }
         });
-    }
-    sourceFilePaths(files, dest) {
-        return files.map((file) => dest + path.sep + path.basename(file));
     }
     scanFiles(files, options) {
         return new Promise((resolve, reject) => {
@@ -112,6 +107,9 @@ class FontManager {
     fontInstaller(options) {
         let installer = new FontInstaller_1.default(this.getSystemManager(), this.getConnectionManager());
         return installer.activate(options);
+    }
+    getMapFilePaths(files, dest) {
+        return files.map((file) => dest + path.sep + path.basename(file));
     }
     getSourceFolder(sourceFolder) {
         return path.normalize(sourceFolder);

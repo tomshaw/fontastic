@@ -133,7 +133,7 @@ class MessageHandler {
                 const dest = this.getFontManager().getDestinationFolder();
                 yield this.getFontManager().createCatalog(dest);
                 yield this.getFontManager().copyFiles(args.files, dest);
-                const files = this.getFontManager().sourceFilePaths(args.files, dest);
+                const files = this.getFontManager().getMapFilePaths(args.files, dest);
                 yield this.getFontManager().scanFiles(files, { collection_id: args.collectionId });
             });
             const addInPlace = () => __awaiter(this, void 0, void 0, function* () {
