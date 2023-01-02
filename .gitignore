@@ -54,5 +54,5 @@ src/catalog/*
 .DS_Store
 Thumbs.db
 
-# Dev Notes
+# Developer Notes
 developer.md
