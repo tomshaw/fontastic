@@ -42,6 +42,14 @@ export class UtilsService {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  isEmptyObject(obj: any): boolean {
+    return (
+      Object.getPrototypeOf(obj) === Object.prototype &&
+      Object.getOwnPropertyNames(obj).length === 0 &&
+      Object.getOwnPropertySymbols(obj).length === 0
+    );
+  }
+
   scrollTo(element: Element, offset: number = 0) {
     gsap.to(element, {
       scrollTo: {
@@ -51,5 +59,44 @@ export class UtilsService {
       duration: 1,
       ease: Power3.easeOut
     });
+  }
+
+  appendStyles(css: string, id: string = 'fontmanager') {
+    const head = document.getElementsByTagName('head')[0];
+    const style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    style.setAttribute('id', id);
+    style.appendChild(document.createTextNode(css));
+    head.appendChild(style);
+  }
+
+  removeStyles(id: string) {
+    return new Promise((resolve, reject) => {
+      const el = document.getElementById(id);
+      if (el) {
+        resolve(el.remove());
+      } else {
+        reject(true);
+      }
+    });
+  }
+
+  createFontStyles(data: any[], next: any) {
+    let css = ``;
+    data.forEach((item: any) => {
+      try {
+        const fontFamily = (item.file_name?.length) ? item.file_name.replace(/\.[^/.]+$/, '') : item.file_name;
+        const filePath = (item.file_path.length) ? item.file_path.replace(/\\/g, '/') : item.file_path;
+        css += `
+          @font-face {
+            font-family: ${fontFamily};
+            src: url("${filePath}");
+          }
+        `;
+      } catch (error) {
+        console.warn('create-font-styles-error:', error as Error);
+      }
+    });
+    next(css);
   }
 }

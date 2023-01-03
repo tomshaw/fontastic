@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 /* eslint-disable-next-line max-len */
-import { UtilsService, MessageService, DatabaseService, PresentationService, ConfigService, AlertService, NewsService, FontService } from '@app/core/services';
+import { UtilsService, MessageService, DatabaseService, PresentationService, NewsService, FontService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -15,7 +15,6 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   resultSet: any[] = [];
 
   isLoading = true;
-  isWindows = false;
 
   fontColor = '#000000';
   fontSize = 3.5;
@@ -28,23 +27,26 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private utils: UtilsService,
-    private alertService: AlertService,
-    private configService: ConfigService,
     private messageService: MessageService,
     private databaseService: DatabaseService,
     private presentationService: PresentationService,
     private newsService: NewsService,
     private fontService: FontService,
-  ) {
-    this.isWindows = this.configService.getIsWindows();
-  }
+  ) { }
 
   ngOnInit(): void {
-
     const scrollElement: Element = this.scrollElement.nativeElement;
 
+    this.databaseService.watchStoreRow$.subscribe((result) => {
+      if (!this.utils.isEmptyObject(result)) {
+        this.utils.createFontStyles([result], (styleString: string) => {
+          this.utils.appendStyles(styleString);
+        });
+      }
+    });
+
     this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result) => {
-      if (result && result.id) {
+      if (!this.utils.isEmptyObject(result)) {
         const el = document.getElementById(result.id);
         if (el) {
           this.utils.scrollTo(scrollElement, el.offsetTop);
@@ -53,7 +55,6 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.databaseService.watchResultSet$.subscribe((results) => {
-
       if (this.latestNews.length) {
         const items = [];
         for (let i = 0, total = results.length; i < total; i++) {
@@ -67,7 +68,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
       this.renderFontList();
-
+      this.isLoading = false;
       scrollElement.scrollTop = 0;
     });
 
@@ -101,13 +102,13 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.presentationService._displayNews.subscribe((value) => this.displayNews = value);
     this.presentationService.watchWordSpacing$.subscribe((value) => this.wordSpacing = value);
     this.presentationService.watchLetterSpacing$.subscribe((value) => this.letterSpacing = value);
-
-    setTimeout(() => this.isLoading = false, 1e3);
   }
 
   ngAfterViewInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this.resultSet = [];
+  }
 
   renderFontList() {
     this.resultSet.forEach((item: any) => {

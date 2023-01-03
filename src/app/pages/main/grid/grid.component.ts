@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AlertService, UtilsService, DatabaseService, MessageService, ConfigService } from '@app/core/services';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { AlertService, UtilsService, DatabaseService, MessageService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -7,24 +7,20 @@ import { delay } from 'rxjs/operators';
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
-export class GridComponent implements OnInit {
+export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('gridElement', { static: true }) scrollElement: ElementRef;
 
   resultSet = [];
 
   isLoading = true;
-  isWindows = false;
 
   constructor(
     private utils: UtilsService,
     private alertService: AlertService,
-    private configService: ConfigService,
     private messageService: MessageService,
     private databaseService: DatabaseService,
-  ) {
-    this.isWindows = this.configService.getIsWindows();
-  }
+  ) { }
 
   ngOnInit() {
     const scrollElement: Element = this.scrollElement.nativeElement;
@@ -39,10 +35,16 @@ export class GridComponent implements OnInit {
     });
 
     this.databaseService.watchResultSet$.subscribe((results) => {
-      this.isLoading = false;
       this.resultSet = results;
+      this.isLoading = false;
       scrollElement.scrollTop = 0;
     });
+  }
+
+  ngAfterViewInit() { }
+
+  ngOnDestroy() {
+    this.resultSet = [];
   }
 
   onRowClick(id: number): void {
