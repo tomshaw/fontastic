@@ -278,48 +278,6 @@ export class NavigationComponent implements OnInit {
     });
   }
 
-  /**
-   * System Stats
-   */
-
-  handleClickAll(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
-
-    this.databaseService.resetWhere().run();
-
-    this.clearChecked();
-    this.clearSelected();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'Font Collection',
-      link: '/main'
-    }, {
-      title: 'Font Count',
-      link: ''
-    }]);
-  }
-
-  handleClickFavorites(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
-
-    this.databaseService.setWhere('store.favorite', 1).run();
-
-    this.clearChecked();
-    this.clearSelected();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'Font Collection',
-      link: '/main'
-    }, {
-      title: 'Favorites',
-      link: ''
-    }]);
-  }
-
   handleClickSystemScan(event: Event): void {
     this.alertService.info('Searching system fonts please wait..');
     this.presentationService.setLoadingSpinner(true);
@@ -342,6 +300,48 @@ export class NavigationComponent implements OnInit {
     }).catch((err) => { });
   }
 
+  /**
+   * System Statistics
+   */
+
+  handleClickAll(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode as HTMLElement;
+
+    this.databaseService.resetWhere().run();
+
+    this.clearChecked();
+    this.clearSelected();
+    this.toggleSelected(parent);
+
+    this.breadcrumbService.set([{
+      title: 'System Statistics',
+      link: '/main'
+    }, {
+      title: 'Font Count',
+      link: ''
+    }]);
+  }
+
+  handleClickFavorites(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode as HTMLElement;
+
+    this.databaseService.setWhere('store.favorite', 1).run();
+
+    this.clearChecked();
+    this.clearSelected();
+    this.toggleSelected(parent);
+
+    this.breadcrumbService.set([{
+      title: 'System Statistics',
+      link: '/main'
+    }, {
+      title: 'My Favorites',
+      link: ''
+    }]);
+  }
+
   handleClickSystem(event: Event): void {
     const target = event.target as HTMLInputElement;
     const parent = target.parentNode as HTMLElement;
@@ -353,7 +353,7 @@ export class NavigationComponent implements OnInit {
     this.toggleSelected(parent);
 
     this.breadcrumbService.set([{
-      title: 'Font Collection',
+      title: 'System Statistics',
       link: '/main'
     }, {
       title: 'System Fonts',
@@ -372,10 +372,10 @@ export class NavigationComponent implements OnInit {
     this.toggleSelected(parent);
 
     this.breadcrumbService.set([{
-      title: 'Font Collection',
+      title: 'System Statistics',
       link: '/main'
     }, {
-      title: 'Activated',
+      title: 'Activated Fonts',
       link: ''
     }]);
   }

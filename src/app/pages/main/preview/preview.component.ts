@@ -31,7 +31,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     private databaseService: DatabaseService,
     private presentationService: PresentationService,
     private newsService: NewsService,
-    private fontService: FontService,
+    private fontService: FontService
   ) { }
 
   ngOnInit(): void {

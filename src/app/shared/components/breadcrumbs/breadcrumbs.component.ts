@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BreadcrumbService } from '@app/core/services';
+import { BreadcrumbService, DatabaseService } from '@app/core/services';
 
 @Component({
   selector: 'app-breadcrumbs',
@@ -8,16 +8,28 @@ import { BreadcrumbService } from '@app/core/services';
 })
 export class BreadcrumbsComponent implements OnInit {
 
-  public breadCrumbs: any[] = [];
+  private breadCrumbs: any[] = [];
 
   constructor(
-    public breadcrumbService: BreadcrumbService
-  ) { 
-    breadcrumbService.getObservable().subscribe((result) => {
-      this.breadCrumbs = result;
+    private breadcrumbService: BreadcrumbService,
+    private databaseService: DatabaseService
+  ) { }
+
+  ngOnInit(): void {
+    this.breadcrumbService.getObservable().subscribe((result) => this.breadCrumbs = result);
+
+    this.databaseService.watchStoreRow$.subscribe((result) => {
+      if (result?.full_name) {
+        if (this.breadCrumbs.length > 2) {
+          this.breadCrumbs.pop();
+        }
+        if (result.full_name) {
+          this.breadCrumbs.push({
+            title: result.full_name, 
+            link: ''
+          });
+        }
+      }
     });
   }
-
-  ngOnInit(): void {}
-
 }
