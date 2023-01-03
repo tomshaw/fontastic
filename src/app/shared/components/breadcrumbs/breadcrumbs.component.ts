@@ -8,7 +8,7 @@ import { BreadcrumbService, DatabaseService } from '@app/core/services';
 })
 export class BreadcrumbsComponent implements OnInit {
 
-  private breadCrumbs: any[] = [];
+  public breadCrumbs: any[] = [];
 
   constructor(
     private breadcrumbService: BreadcrumbService,
