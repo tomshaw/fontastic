@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { AlertService, UtilsService, DatabaseService, MessageService } from '@app/core/services';
+import { AlertService, ConfigService, UtilsService, DatabaseService, MessageService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -14,13 +14,17 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   resultSet = [];
 
   isLoading = true;
+  isWindows = false;
 
   constructor(
     private utils: UtilsService,
     private alertService: AlertService,
+    private configService: ConfigService,
     private messageService: MessageService,
     private databaseService: DatabaseService,
-  ) { }
+  ) {
+    this.isWindows = this.configService.getIsWindows();
+  }
 
   ngOnInit() {
     const scrollElement: Element = this.scrollElement.nativeElement;
