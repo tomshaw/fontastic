@@ -22,6 +22,7 @@
       "to": "bin"
     }
   ],
+  "productName": "Fontastic", 
   "win": {
     "icon": "dist/assets/icons",
     "target": [
