@@ -4,11 +4,20 @@
     <div class="controls flex justify-between items-center border-top border-bottom">
       <div class="controls__item flex justify-start items-center">
         <div class="controls__item-elements">
-          <input type="text" class="form-control form-control-small w-[40px] mr-2" [(ngModel)]="baseSize" (change)="onUpdateBaseSize($event)">
-          <select class="form-control form-control-small mr-5" [(ngModel)]="fontScaleActive" (change)="onfontScaleSelect($event)">
+          <input type="text" class="form-control form-control-small w-[40px] mr-2" [(ngModel)]="baseSize"
+            (change)="onUpdateBaseSize($event)">
+          <select class="form-control form-control-small mr-5" [(ngModel)]="fontScaleActive"
+            (change)="onfontScaleSelect($event)">
             <option *ngFor="let item of fontScale;" [value]="item.size">{{item.title}}</option>
           </select>
         </div>
+
+        <ng-container *ngIf="latestNews.length">
+          <button type="button" class="app-btn ml-2" (click)="onRandomNewsArticle()">
+            <span>Random Article</span>
+          </button>
+        </ng-container>
+
       </div>
       <div class="controls__item flex justify-end items-center">
         <i class="material-icons" (click)="onComponentSwitch();">more_horiz</i>
@@ -22,7 +31,8 @@
             <span class="waterfall__label-text">{{item.fontLabel}}</span>
           </div>
           <div class="waterfall__wrapper relative flex items-center w-full px-5 whitespace-nowrap">
-            <h1 class="leading-tight" [style.color]="fontColor" [style.font-family]="item.fontFamily" [style.font-size]="item.fontSize" [innerHtml]="displayText"></h1>
+            <h1 class="leading-tight" [style.color]="fontColor" [style.font-family]="item.fontFamily"
+              [style.font-size]="item.fontSize" [innerHtml]="displayText"></h1>
           </div>
         </div>
       </ng-container>

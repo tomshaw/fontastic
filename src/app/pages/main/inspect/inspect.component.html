@@ -1,9 +1,6 @@
 <ng-container [ngSwitch]="componentName">
   <div (contextmenu)="onComponentSwitch()">
     <app-glyphs [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'glyphs'"></app-glyphs>
-    <app-waterfall [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" *ngSwitchCase="'waterfall'"></app-waterfall>
-    <ng-container *ngIf="latestNews && latestNews.length">
-      <app-articles [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'articles'"></app-articles>
-    </ng-container>
+    <app-waterfall [fontObject]="fontObject" [fontColor]="fontColor" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'waterfall'"></app-waterfall>
   </div>
 </ng-container>

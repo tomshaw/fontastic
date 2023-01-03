@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { PresentationService, NewsService } from '@app/core/services';
 import { waterfallFontScale } from '@main/config/system';
 
@@ -7,14 +7,14 @@ import { waterfallFontScale } from '@main/config/system';
   templateUrl: './waterfall.component.html',
   styleUrls: ['./waterfall.component.scss']
 })
-export class WaterfallComponent implements OnChanges, OnInit {
+export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
 
   @Input() fontObject: any;
   @Input() fontFamily: string;
   @Input() fontColor: string;
+  @Input() latestNews: any[] = [];
 
   displayText: string;
-  latestNews: any[] = [];
 
   baseSize = 16;
   
@@ -24,22 +24,15 @@ export class WaterfallComponent implements OnChanges, OnInit {
   fontScaleActive = this.fontScale[1].size;
 
   constructor(
-    private presentationService: PresentationService,
-    private newsService: NewsService
+    private presentationService: PresentationService
   ) { }
 
   ngOnInit(): void {
 
-    this.newsService.watchLatestNews$.subscribe((value: any) => {
-      if (value.articles && value.articles.length) {
-        this.latestNews = value.articles;
-      }
-    });
-
     this.presentationService.watchDisplayText$.subscribe((value) => {
       if (value === 'News headlines from sources across the web.') {
-        if (this.latestNews.length) {
-          this.displayText = this.latestNews[0].title;
+        if (this.latestNews?.length) {
+          this.displayText = this.latestNews[Math.floor(Math.random()*this.latestNews.length)].title;
         } else {
           this.displayText = this.presentationService.quickText[0];
         }
@@ -49,6 +42,10 @@ export class WaterfallComponent implements OnChanges, OnInit {
     });
 
     this.setFontScale();
+  }
+
+  ngOnDestroy() {
+    this.latestNews = [];
   }
 
   ngOnChanges(): void {
@@ -88,9 +85,14 @@ export class WaterfallComponent implements OnChanges, OnInit {
     this.setFontScale();
   }
 
+  onRandomNewsArticle(): void {
+    if (this.latestNews?.length) {
+      this.displayText = this.latestNews[Math.floor(Math.random()*this.latestNews.length)].title;
+    }
+  }
+
   onComponentSwitch() {
-    const componentName = (this.latestNews.length) ? 'articles' : 'glyphs';
-    this.presentationService.setInspectComponent(componentName);
+    this.presentationService.setInspectComponent('glyphs');
     this.presentationService.saveLayoutSettings();
   }
 }

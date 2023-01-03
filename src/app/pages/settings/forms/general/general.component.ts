@@ -14,6 +14,8 @@ export class GeneralComponent implements OnInit {
 
   config: SystemConfig;
 
+  hasNewsArticles = false;
+
   user: AuthUser = new AuthUserModel('', '', '');
 
   constructor(
@@ -30,6 +32,12 @@ export class GeneralComponent implements OnInit {
     if (this.authService.getAuthUser()) {
       this.user = this.authService.getAuthUser();
     }
+
+    this.newsService.watchLatestNews$.subscribe((value: any) => {
+      if (value?.articles.length) {
+        this.hasNewsArticles = true;
+      }
+    });
 
     this.breadcrumbService.set([{
       title: 'Dashboard',

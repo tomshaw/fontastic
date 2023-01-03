@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 /* eslint-disable-next-line max-len */
-import { AlertComponent, PageNotFoundComponent, ButtonComponent, LoadingComponent, SpinnerComponent, BreadcrumbsComponent, PaginatorComponent, ArticlesComponent, GlyphsComponent, SearchComponent, TablesComponent, WaterfallComponent } from './components/';
+import { AlertComponent, PageNotFoundComponent, ButtonComponent, LoadingComponent, SpinnerComponent, BreadcrumbsComponent, PaginatorComponent, GlyphsComponent, SearchComponent, TablesComponent, WaterfallComponent } from './components/';
 import { WebviewDirective, GravatarDirective } from './directives/';
 import { SafeHtmlPipe } from './pipes/safehtml.pipe';
 import { PrettyBytesPipe } from './pipes/prettybytes.pipe';
@@ -16,7 +16,6 @@ import { InstallablePipe } from './pipes/installable.pipe';
     WebviewDirective,
     GravatarDirective,
     AlertComponent,
-    ArticlesComponent,
     GlyphsComponent,
     SearchComponent,
     TablesComponent,
@@ -45,7 +44,6 @@ import { InstallablePipe } from './pipes/installable.pipe';
     PrettyBytesPipe,
     InstallablePipe,
     AlertComponent,
-    ArticlesComponent,
     GlyphsComponent,
     SearchComponent,
     TablesComponent,

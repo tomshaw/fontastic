@@ -1,5 +1,4 @@
 export * from './alert/alert.component';
-export * from './articles/articles.component';
 export * from './breadcrumbs/breadcrumbs.component';
 export * from './button/button.component';
 export * from './glyphs/glyphs.component';

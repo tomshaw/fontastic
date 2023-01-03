@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatabaseService, NewsService, PresentationService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
@@ -7,7 +7,7 @@ import { delay } from 'rxjs/operators';
   templateUrl: './inspect.component.html',
   styleUrls: ['./inspect.component.scss']
 })
-export class InspectComponent implements OnInit {
+export class InspectComponent implements OnInit, OnDestroy {
 
   componentName = 'glyphs';
 
@@ -15,16 +15,15 @@ export class InspectComponent implements OnInit {
   fontFamily: string;
   fontColor: string;
 
-  latestNews = [];
+  latestNews: any[] = [];
 
   constructor(
-    private newsService: NewsService,
     private databaseService: DatabaseService,
-    private presentationService: PresentationService
+    private presentationService: PresentationService,
+    private newsService: NewsService
   ) { }
 
   ngOnInit() {
-
     this.databaseService.watchStoreRow$.pipe(delay(1e3 / 2)).subscribe((result) => {
       if (result && result.font_meta && result.font_meta.tables) {
         this.fontObject = result.font_meta;
@@ -32,11 +31,19 @@ export class InspectComponent implements OnInit {
       }
     });
 
+    this.newsService.watchLatestNews$.subscribe((value: any) => {
+      if (value.articles && value.articles.length) {
+        this.latestNews = value.articles;
+      }
+    });
+
     this.presentationService.watchFontColor$.subscribe((value) => this.fontColor = value);
 
     this.presentationService._inspectComponent.subscribe((value: string) => this.componentName = value);
+  }
 
-    this.newsService.watchLatestNews$.subscribe((value: any) => this.latestNews = value.articles);
+  ngOnDestroy() {
+    this.fontObject = null;
   }
 
   startsWithNumber(str: string): boolean {
@@ -44,7 +51,7 @@ export class InspectComponent implements OnInit {
   }
 
   onComponentSwitch(): void {
-    this.componentName = (this.componentName === 'glyphs') ? 'waterfall' : (this.componentName === 'waterfall') ? 'articles' : 'glyphs';
+    this.componentName = (this.componentName === 'glyphs') ? 'waterfall' : 'glyphs';
   }
 
 }
