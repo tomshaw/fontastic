@@ -19,16 +19,14 @@ export class BreadcrumbsComponent implements OnInit {
     this.breadcrumbService.getObservable().subscribe((result) => this.breadCrumbs = result);
 
     this.databaseService.watchStoreRow$.subscribe((result) => {
+      if (this.breadCrumbs.length > 2) {
+        this.breadCrumbs.pop();
+      }
       if (result?.full_name) {
-        if (this.breadCrumbs.length > 2) {
-          this.breadCrumbs.pop();
-        }
-        if (result.full_name) {
-          this.breadCrumbs.push({
-            title: result.full_name, 
-            link: ''
-          });
-        }
+        this.breadCrumbs.push({
+          title: result.full_name,
+          link: ''
+        });
       }
     });
   }
