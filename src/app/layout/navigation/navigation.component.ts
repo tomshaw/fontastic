@@ -254,25 +254,35 @@ export class NavigationComponent implements OnInit {
     this.navCollapsed = !this.navCollapsed;
 
     const sections = document.querySelectorAll('figure[data-collection]');
-    sections.forEach((item) => {
-      const id = Number(item.getAttribute('data-collection'));
-      const icon = item.firstChild.firstChild as HTMLElement;
+    if (!sections?.length) {
+      return;
+    }
+
+    sections.forEach((figure: HTMLElement) => {
+      const collectionId = Number(figure.getAttribute('data-collection'));
+
+      const caption = figure?.firstChild as HTMLElement;
+      const spanArrow = (!caption.childNodes.length) ? caption : caption?.firstChild as HTMLElement;
+
+      if (!spanArrow) {
+        return;
+      }
 
       if (this.navCollapsed) {
-        this.messageService.updateCollection(id, { collapsed: true });
+        this.messageService.updateCollection(collectionId, { collapsed: true });
 
-        if (!item.classList.contains('isCollapsed')) {
-          item.classList.add('isCollapsed');
+        if (!figure.classList.contains('isCollapsed')) {
+          figure.classList.add('isCollapsed');
         }
-        icon.innerHTML = 'arrow_right';
+        spanArrow.innerHTML = 'arrow_right';
         this.presentationService.setStatsCollapsed(true);
       } else {
-        this.messageService.updateCollection(id, { collapsed: false });
+        this.messageService.updateCollection(collectionId, { collapsed: false });
 
-        if (item.classList.contains('isCollapsed')) {
-          item.classList.remove('isCollapsed');
+        if (figure.classList.contains('isCollapsed')) {
+          figure.classList.remove('isCollapsed');
         }
-        icon.innerHTML = 'arrow_drop_down';
+        spanArrow.innerHTML = 'arrow_drop_down';
         this.presentationService.setStatsCollapsed(false);
       }
     });
