@@ -115,6 +115,11 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       const localFile = `file://${item.file_path}`;
       this.fontService.load(localFile).then((font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
+
+        if (!canvas) {
+          return;
+        }
+
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         this.fontService.clearCanvas(context);
@@ -168,6 +173,11 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (item.sample_text) {
       this.fontService.load(`file://${item.file_path}`).then((font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
+
+        if (!canvas) {
+          return;
+        }
+
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         this.fontService.clearCanvas(context);
