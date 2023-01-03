@@ -166,7 +166,27 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSampleClick(event: Event, item: any): void {
     if (item.sample_text) {
-      document.getElementById(`preview_${item.id}`).innerText = item.sample_text;
+      this.fontService.load(`file://${item.file_path}`).then((font) => {
+        const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
+        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        this.fontService.clearCanvas(context);
+
+        const fontSize = this.getFontSize();
+
+        const displayTest = item.sample_text;
+
+        const path = font.getPath(displayTest, 20, 100, fontSize);
+ 
+        path.fill = this.fontColor;
+
+        context.textBaseline = 'middle';
+        context.fillStyle = this.backgroundColor;
+
+        path.draw(context);
+      }).catch((err) => {
+        console.warn('load-font-error', err);
+      });
     }
   }
 
