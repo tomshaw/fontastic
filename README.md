@@ -1,4 +1,4 @@
-[![Fontastic Logo](/docs/logo.png)](https://github.com/tomshaw/fontastic) 
+# Fontastic
 
 ![Maintained][maintained-badge]
 [![Make a pull request][prs-badge]][prs]
@@ -11,8 +11,6 @@
 [![Watch on GitHub][github-watch-badge]][github-watch]
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
-
-# Fontastic
 
 Fontastic is a stunning font management and cataloging application. 
 
