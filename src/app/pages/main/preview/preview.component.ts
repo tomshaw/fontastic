@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-/* eslint-disable-next-line max-len */
 import { UtilsService, MessageService, DatabaseService, PresentationService, NewsService, FontService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
 
@@ -46,7 +45,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result) => {
-      if (!this.utils.isEmptyObject(result)) {
+      if (result?.id) {
         const el = document.getElementById(result.id);
         if (el) {
           this.utils.scrollTo(scrollElement, el.offsetTop);
@@ -90,7 +89,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.newsService.watchLatestNews$.subscribe((value: any) => {
-      if (value.articles && value.articles.length) {
+      if (value?.articles?.length) {
         this.latestNews = value.articles;
         this.presentationService.quickText.push({
           title: 'Latest News',
@@ -218,19 +217,19 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openQuickInstall(event: Event, item: any) {
-    if (item && item.file_path) {
+    if (item?.file_path) {
       this.messageService.openPath(item.file_path);
     }
   }
 
   openFileLocation(event: Event, item: any) {
-    if (item && item.file_path) {
+    if (item?.file_path) {
       this.messageService.showItemInFolder(item.file_path);
     }
   }
 
   openNewsArticle(event: Event, item: any) {
-    if (item && item.news.url) {
+    if (item?.news.url) {
       this.messageService.openExternal(item.news.url);
     }
   }

@@ -79,7 +79,7 @@ exports.StoreRepository = {
             }
             // console.log(db.printSql());
             // console.log(db.getSql());
-            console.log(db.getQuery());
+            // console.log(db.getQuery());
             return yield db.getManyAndCount();
         });
     },

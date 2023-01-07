@@ -13,7 +13,7 @@ export class DatabaseComponent implements OnInit {
   config: any;
 
   connections = [];
-  connectionTypes = [];
+  drivers = [];
 
   loggers = [];
 
@@ -51,7 +51,7 @@ export class DatabaseComponent implements OnInit {
 
     if (this.config.database) {
       this.connections = this.config.database.connections;
-      this.connectionTypes = this.config.database.connectionTypes;
+      this.drivers = this.config.database.drivers;
     }
 
     this.breadcrumbService.set([{
@@ -104,7 +104,7 @@ export class DatabaseComponent implements OnInit {
   }
 
   updateConnection(event: Event, item: any): void {
-    if (item && item.name === 'default') {
+    if (item?.name === 'default') {
       return;
     }
 
@@ -112,7 +112,6 @@ export class DatabaseComponent implements OnInit {
 
     if (result) {
       this.toggleForm();
-      /* eslint-disable-next-line max-len */
       this.dbConnection = new DbConnectionModel(result.name, result.title, result.description, result.type, result.database, result.username, result.password, result.host, result.port, result.logging, result.synchronize);
     }
   }
@@ -149,11 +148,11 @@ export class DatabaseComponent implements OnInit {
 
     const options = form.value;
 
-    if (options && options.name === 'default') {
+    if (options?.name === 'default') {
       return;
     }
 
-    const isUpdate = (options.name && options.name !== '') ? true : false;
+    const isUpdate = (options?.name !== '') ? true : false;
 
     options.name = (isUpdate) ? options.name : this.utils.randomString(5).toUpperCase();
 

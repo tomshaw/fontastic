@@ -12,16 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const entity_1 = require("../database/entity");
 const repository_1 = require("../database/repository");
+const constants = require("../config/constants");
 class ConnectionManager {
     constructor(configManager) {
         this.schemas = [entity_1.Collection, entity_1.Store, entity_1.Logger];
         this.subscribers = [];
         this.migrations = [];
         this.connections = {};
-        this.omitables = ["title", "description", "enabled"];
+        this.omitables = ['title', 'description', 'enabled'];
         this.setConfigManager(configManager);
-        let config = this.getConfigManager().get("database");
-        this.setConnections(this.normalize(config.connections));
+        const dbConfig = this.getConfigManager().get(constants.STORE_DATABASE);
+        this.setConnections(this.normalize(dbConfig.connections));
         this.registerEntities(this.connections);
         this.registerSubscribers(this.connections);
         this.registerMigrations(this.connections);

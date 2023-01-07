@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UtilsService, MessageService, PresentationService, DatabaseService, BreadcrumbService, AlertService } from '@app/core/services';
+import { UtilsService, MessageService, PresentationService, DatabaseService, BreadcrumbService, AlertService, ConfigService } from '@app/core/services';
 import { Router } from '@angular/router';
 import { SystemStats } from '@app/core/interface';
+import * as constants from '@main/config/constants';
 
 @Component({
   selector: 'app-navigation',
@@ -29,6 +30,7 @@ export class NavigationComponent implements OnInit {
     private router: Router,
     private utils: UtilsService,
     private alertService: AlertService,
+    private configService: ConfigService,
     private messageService: MessageService,
     private databaseService: DatabaseService,
     private breadcrumbService: BreadcrumbService,
@@ -60,10 +62,10 @@ export class NavigationComponent implements OnInit {
     });
 
     this.databaseService.watchSystemStats$.subscribe((result: SystemStats | any) => {
-      this.rowCount = (result.rowCount && result.rowCount.total) ? result.rowCount.total : 0;
-      this.favoriteCount = (result.favoriteCount && result.favoriteCount.total) ? result.favoriteCount.total : 0;
-      this.systemCount = (result.systemCount && result.systemCount.total) ? result.systemCount.total : 0;
-      this.activatedCount = (result.activatedCount && result.activatedCount.total) ? result.activatedCount.total : 0;
+      this.rowCount = (result?.rowCount?.total) ? result.rowCount.total : 0;
+      this.favoriteCount = (result?.favoriteCount?.total) ? result.favoriteCount.total : 0;
+      this.systemCount = (result?.systemCount?.total) ? result.systemCount.total : 0;
+      this.activatedCount = (result?.activatedCount?.total) ? result.activatedCount.total : 0;
     });
   }
 
@@ -71,15 +73,26 @@ export class NavigationComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const collectionId = Number(target.dataset.id);
 
-    const settings = {
+    const config = this.configService.get(constants.STORE_SETTINGS);
+    const importType = (config?.import?.type) ? config.import.type : 'ask';
+
+    let settings = {
       type: 'question',
       buttons: ['Cancel', 'Select files', 'Select folders'],
       defaultId: 2,
       title: 'Select Fonts',
-      message: 'Do you want to select files or folders?',
-      checkboxLabel: 'Add fonts to catalog.',
-      checkboxChecked: true
+      message: 'Do you want to select files or folders?'
     };
+
+    if (importType === 'ask') {
+      settings = {
+        ...settings,
+        ...{
+          checkboxLabel: 'Add fonts to catalog.',
+          checkboxChecked: true
+        }
+      };
+    }
 
     this.messageService.showMessageBox(settings).then((response: object | any) => {
       if (response?.response > 0) {
@@ -87,10 +100,11 @@ export class NavigationComponent implements OnInit {
         const options = (isFiles) ? { properties: ['openFile', 'multiSelections'] } : { properties: ['openDirectory', 'multiSelections'] };
         this.messageService.showOpenDialog(options).then((dialog: object | any) => {
           if (dialog.filePaths.length) {
+            const addToCatalog = (importType === 'ask') ? response.checkboxChecked : (importType === 'catalog') ? true : false;
             if (isFiles) {
-              this.openFiles(collectionId, { files: dialog.filePaths, addToCatalog: response.checkboxChecked });
+              this.openFiles(collectionId, { files: dialog.filePaths, addToCatalog });
             } else {
-              this.openFolders(collectionId, { folders: dialog.filePaths, addToCatalog: response.checkboxChecked });
+              this.openFolders(collectionId, { folders: dialog.filePaths, addToCatalog });
             }
           }
         });

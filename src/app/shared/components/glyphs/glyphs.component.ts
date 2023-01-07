@@ -40,7 +40,7 @@ export class GlyphsComponent implements OnChanges {
   ) { }
 
   ngOnChanges() {
-    if (this.fontObject && this.fontObject.tables) {
+    if (this.fontObject?.tables) {
       this.initialize();
     }
   }

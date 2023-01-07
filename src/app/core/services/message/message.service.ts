@@ -9,11 +9,7 @@ export class MessageService {
 
   constructor(
     private electron: ElectronService
-  ) {
-    if (electron.isElectron) {
-      electron.ipcRenderer.setMaxListeners(50);
-    }
-  }
+  ) { }
 
   delay<T>(millis: number, value?: T): Promise<T> {
     return new Promise((resolve) => setTimeout(() => resolve(value), millis));

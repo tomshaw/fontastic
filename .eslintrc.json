@@ -36,7 +36,8 @@
           }
         ],
         "no-underscore-dangle": 0,
-        "no-trailing-spaces": 0
+        "no-trailing-spaces": 0,
+        "max-len": "off"
       }
     },
     {

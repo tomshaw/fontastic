@@ -16,9 +16,10 @@ export default class Application {
   }
 
   async init() {
-    const systemManager = new SystemManager(this.machineId);
+    const systemManager = new SystemManager(this.machineId, this.isProduction);
 
     const configManager = new ConfigManager(systemManager);
+    configManager.initialize();
 
     const connectionManager = new ConnectionManager(configManager);
     await connectionManager.initialize()

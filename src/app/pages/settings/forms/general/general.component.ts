@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-/* eslint-disable-next-line max-len */
-import { AuthService, BreadcrumbService, AlertService, NewsService, MessageService, DatabaseService, PresentationService } from '@app/core/services';
-import { SystemConfig, AuthUser } from '@app/core/interface';
-import { AuthUserModel } from '@app/core/model';
+import { AuthService, BreadcrumbService, AlertService, ConfigService, NewsService, MessageService, DatabaseService, PresentationService } from '@app/core/services';
+import { SystemConfig, AuthUser, ImportOptions } from '@app/core/interface';
+import { AuthUserModel, ImportOptionsModel } from '@app/core/model';
+import { importUserOptions } from '@main/config/system';
+import * as constants from '@main/config/constants';
 
 @Component({
   selector: 'app-settings-form-general',
@@ -18,10 +19,14 @@ export class GeneralComponent implements OnInit {
 
   user: AuthUser = new AuthUserModel('', '', '');
 
+  importOptions = importUserOptions;
+  importType: ImportOptions = new ImportOptionsModel('ask');
+
   constructor(
     private authService: AuthService,
     private alertService: AlertService,
     private newsService: NewsService,
+    private configService: ConfigService,
     private messageService: MessageService,
     private databaseService: DatabaseService,
     private breadcrumbService: BreadcrumbService,
@@ -29,8 +34,15 @@ export class GeneralComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.authService.getAuthUser()) {
+    if (this.authService.authUserValue) {
       this.user = this.authService.getAuthUser();
+    }
+
+    if (this.configService.has(constants.STORE_SETTINGS_IMPORT_TYPE)) {
+      const importType = this.configService.get(constants.STORE_SETTINGS_IMPORT_TYPE);
+      if (importType) {
+        this.importType = new ImportOptionsModel(importType);
+      }
     }
 
     this.newsService.watchLatestNews$.subscribe((value: any) => {
@@ -46,6 +58,13 @@ export class GeneralComponent implements OnInit {
       title: 'System Settings',
       link: '/settings'
     }]);
+  }
+
+  onImportOptionsChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
+    this.configService.set(constants.STORE_SETTINGS_IMPORT_TYPE, value);
+    this.messageService.set(constants.STORE_SETTINGS_IMPORT_TYPE, value);
   }
 
   onResetFavoritedFonts(event: Event): void {
@@ -131,7 +150,7 @@ export class GeneralComponent implements OnInit {
         if (response.status === 'ok') {
           this.authService.setAuthUser(response);
         }
-        this.alertService.info('Account setting updated successfully.');
+        this.alertService.info('Account settings have been updated successfully.');
       });
     }
   }

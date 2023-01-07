@@ -1,7 +1,9 @@
-import { DataSource } from "typeorm"
-import { Collection, Store, Logger } from "../database/entity";
-import { CollectionRepository, LoggerRepository, StoreRepository } from "../database/repository";
-import ConfigManager from "./ConfigManager";
+import { DataSource } from 'typeorm'
+import { Collection, Store, Logger } from '../database/entity';
+import { CollectionRepository, LoggerRepository, StoreRepository } from '../database/repository';
+import ConfigManager from './ConfigManager';
+
+import * as constants from '../config/constants';
 
 export default class ConnectionManager {
 
@@ -15,17 +17,16 @@ export default class ConnectionManager {
 
   connections: any = {};
 
-  omitables: any[] = ["title", "description", "enabled"];
+  omitables: any[] = ['title', 'description', 'enabled'];
 
   constructor(
     configManager: ConfigManager
   ) {
-
     this.setConfigManager(configManager);
 
-    let config = this.getConfigManager().get("database");
+    const dbConfig = this.getConfigManager().get(constants.STORE_DATABASE);
 
-    this.setConnections(this.normalize(config.connections));
+    this.setConnections(this.normalize(dbConfig.connections));
 
     this.registerEntities(this.connections);
 

@@ -4,7 +4,7 @@
  */
 
 export const database = {
-  connectionTypes: [
+  drivers: [
     "sqlite", 
     "mysql", 
     "sqlserver", 

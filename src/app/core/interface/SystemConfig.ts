@@ -1,6 +1,9 @@
 export interface SystemConfig {
-  api?: object;
+  data?: object;
   database?: object;
+  layout?: object;
+  news?: object;
+  settings?: object;
   system?: object;
   user?: object;
 }

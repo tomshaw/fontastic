@@ -4,17 +4,11 @@ const electron_1 = require("electron");
 const os = require("os");
 const path = require("path");
 const system_1 = require("../config/system");
-const isDev = require('electron-is-dev');
 const root = process.cwd();
 class ConfigManager {
-    constructor(machineId) {
+    constructor(machineId, isProduction) {
         this.machineId = machineId;
-    }
-    isDev() {
-        return isDev;
-    }
-    isProduction() {
-        return !this.isDev();
+        this.isProduction = isProduction;
     }
     x86() {
         return process.arch === 'ia32';
@@ -61,10 +55,6 @@ class ConfigManager {
     getDownloadsPath() {
         return electron_1.app.getPath('downloads');
     }
-    getErrorLogPath() {
-        const name = this.isDev() ? 'dev.dat' : 'pro.dat';
-        return path.resolve(this.getUserDataPath(), `./${name}`);
-    }
     getSessionPath() {
         return path.resolve(this.getUserDataPath(), './Session');
     }
@@ -78,7 +68,7 @@ class ConfigManager {
         return path.join(os.tmpdir(), file);
     }
     getPlatformFontPaths() {
-        return system_1.platformFontPaths.get(this.getPlatform());
+        return system_1.systemFontPaths.get(this.getPlatform());
     }
     getUpTime() {
         let sec = os.uptime();
@@ -107,29 +97,28 @@ class ConfigManager {
         }
     }
     getBinaryName() {
-        let platform = this.getPlatform();
-        return (platform === 'win') ? 'activator.exe' : 'activator';
+        return (this.getPlatform() === 'win') ? 'activator.exe' : 'activator';
     }
     getBinaryPath(binaryName) {
-        const binaryPath = this.isProduction() ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
+        const binaryPath = this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
         return path.resolve(path.join(binaryPath, binaryName));
     }
     toArray() {
         return {
-            'is_dev': this.isDev(),
-            'is_production': this.isProduction(),
+            'uptime': this.getUpTime(),
+            'locale': this.getLocale(),
+            'is_dev': !this.isProduction,
+            'is_production': this.isProduction,
             'is_x86': this.x86(),
             'is_x64': this.x64(),
             'is_mac': this.macOS(),
             'is_windows': this.windows(),
             'is_linux': this.linux(),
-            'locale': this.getLocale(),
             'cache_path': this.getCachePath(),
             'app_path': this.getAppPath(),
             'app_data_path': this.getAppDataPath(),
             'user_data_path': this.getUserDataPath(),
             'downloads_path': this.getDownloadsPath(),
-            'error_log_path': this.getErrorLogPath(),
             'session_path': this.getSessionPath(),
             'catalog_path': this.getCatalogPath()
         };

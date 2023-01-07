@@ -22,8 +22,9 @@ class Application {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            const systemManager = new SystemManager_1.default(this.machineId);
+            const systemManager = new SystemManager_1.default(this.machineId, this.isProduction);
             const configManager = new ConfigManager_1.default(systemManager);
+            configManager.initialize();
             const connectionManager = new ConnectionManager_1.default(configManager);
             yield connectionManager.initialize();
             const fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);

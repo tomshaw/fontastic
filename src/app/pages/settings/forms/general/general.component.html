@@ -8,6 +8,55 @@
           <div class="container mx-auto p-7">
 
             <fieldset>
+              <legend>Personalize</legend>
+
+              <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+
+                <div class="form-group">
+                  <label form="name">User name</label>
+                  <input type="text" class="form-control" name="name" id="name" [(ngModel)]="user.name"
+                    #selectedName="ngModel" required />
+                  <span class="form-text text-muted">Enter your user name.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email address</label>
+                  <input type="email" class="form-control" name="email" id="email" [(ngModel)]="user.email"
+                    #selectedEmail="ngModel" required />
+                  <span class="form-text text-muted">Enter your email address.</span>
+                </div>
+
+                <div class="form__actions">
+                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__xl app-button__rounded'"
+                    (handleButtonClick)="onSubmitButtonClick($event)" [attr.disabled]="!generalForm.form.valid">Submit
+                  </app-button>
+                  <app-button [type]="'reset'" [title]="'Reset'"
+                    [ngClass]="'app-button__xl app-button__rounded app-button__success'">Reset
+                  </app-button>
+                </div>
+
+              </form>
+
+            </fieldset>
+
+            <fieldset>
+              <legend>Miscellaneous</legend>
+
+              <form class="form">
+
+                <div class="form-group">
+                  <label for="import">Import options</label>
+                  <select class="form-control" name="import" id="import" [(ngModel)]="importType.type" #type="ngModel" (change)="onImportOptionsChange($event)">
+                    <option *ngFor="let item of importOptions;" [value]="item.key">{{item.title}}</option>
+                  </select>
+                  <span class="form-text">Choose whether fonts are added to catalog or in place.</span>
+                </div>
+
+              </form>
+
+            </fieldset>
+
+            <fieldset>
               <legend>Quick actions</legend>
 
               <form>
@@ -104,38 +153,6 @@
                       (handleButtonClick)="onClearStore($event)">Submit</app-button>
                   </dd>
                 </dl>
-              </form>
-
-            </fieldset>
-
-            <fieldset>
-              <legend>Personalize</legend>
-
-              <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
-
-                <div class="form-group">
-                  <label form="name">User name</label>
-                  <input type="text" class="form-control" name="name" id="name" [(ngModel)]="user.name"
-                    #selectedName="ngModel" required />
-                  <span class="form-text text-muted">Please enter your user name.</span>
-                </div>
-
-                <div class="form-group">
-                  <label for="email">Email address</label>
-                  <input type="email" class="form-control" name="email" id="email" [(ngModel)]="user.email"
-                    #selectedEmail="ngModel" required />
-                  <span class="form-text text-muted">Please enter your email address.</span>
-                </div>
-
-                <div class="form__actions">
-                  <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__xl app-button__rounded'"
-                    (handleButtonClick)="onSubmitButtonClick($event)" [attr.disabled]="!generalForm.form.valid">Submit
-                  </app-button>
-                  <app-button [type]="'reset'" [title]="'Reset'"
-                    [ngClass]="'app-button__xl app-button__rounded app-button__success'">Reset
-                  </app-button>
-                </div>
-
               </form>
 
             </fieldset>

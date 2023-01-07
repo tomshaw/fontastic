@@ -30,7 +30,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     const scrollElement: Element = this.scrollElement.nativeElement;
 
     this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result) => {
-      if (result && result.id) {
+      if (result?.id) {
         const el: HTMLDivElement = document.querySelector(`[data-row="${result.id}"]`);
         if (el) {
           this.utils.scrollTo(scrollElement, el.offsetTop);

@@ -6,7 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchDbColumns = exports.dbColumns = exports.database = void 0;
 exports.database = {
-    connectionTypes: [
+    drivers: [
         "sqlite",
         "mysql",
         "sqlserver",

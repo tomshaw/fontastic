@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ConfigService } from '../config/config.service';
-import { MessageService } from '../message/message.service';
-import { AlertService } from '../alert/alert.service';
+import { ConfigService } from '@app/core/services/config/config.service';
+import { MessageService } from '@app/core/services/message/message.service';
 import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
+import * as constants from '@main/config/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,11 @@ export class NewsService {
   watchLatestNews$ = this._latestNews.asObservable();
 
   constructor(
-    private alertService: AlertService,
     private configService: ConfigService,
     private messageService: MessageService
   ) {
-    if (this.configService.has('news')) {
-      this.setLatestNews(this.configService.get('news'));
+    if (this.configService.has(constants.STORE_NEWS)) {
+      this.setLatestNews(this.configService.get(constants.STORE_NEWS));
     }
 
     this.refreshLatestNews();
@@ -79,14 +78,12 @@ export class NewsService {
     this.messageService.fetchLatestNews({
       endpoint: this.endpoints.business + this.getApiKey()
     }).then((response: any) => {
-      if (response.status && response.status === 'ok') {
+      if (response?.status === 'ok') {
         const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
         this.setLatestNews(saved);
         this.messageService.set('news', saved);
         this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
-        this.alertService.info('Successfully fetched latest news.');
-      } else if (response.status && response.status === 'error' && response.message) {
-        this.alertService.error(response.message);
+      } else if (response?.message) {
         this.messageService.log(response.message, 1);
       }
     });

@@ -20,7 +20,7 @@ export class NewsComponent implements OnInit {
   ) {
 
     this.configService._systemConfig.subscribe((result: SystemConfig | any) => {
-      if (result?.news && result?.news?.apiKey) {
+      if (result?.news?.apiKey) {
         this.apiKey = result.news.apiKey;
       }
     });

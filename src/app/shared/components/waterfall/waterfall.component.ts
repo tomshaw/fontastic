@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { PresentationService, NewsService } from '@app/core/services';
+import { PresentationService } from '@app/core/services';
 import { waterfallFontScale } from '@main/config/system';
 
 @Component({
@@ -49,7 +49,7 @@ export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(): void {
-    if (this.fontObject && this.fontObject.tables) {
+    if (this.fontObject?.tables) {
       this.setFontScale();
     }
   }

@@ -76,21 +76,21 @@ class MessageHandler {
          * Connection Manager
          */
         this.on(channel.IPCMAIN_REQUEST_SAVE_DBCONNECTION, (event, options) => __awaiter(this, void 0, void 0, function* () {
-            if (options.name === "default") {
-                event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+            if (options.name === 'default') {
+                event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get('database').connections);
             }
             else {
                 this.getConfigManager().saveDbConnection(options);
-                event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+                event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get('database').connections);
             }
         }));
         this.on(channel.IPCMAIN_REQUEST_DELETE_DBCONNECTION, (event, name) => __awaiter(this, void 0, void 0, function* () {
-            if (name === "default") {
-                event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+            if (name === 'default') {
+                event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get('database').connections);
             }
             else {
                 this.getConfigManager().deleteDbConnection(name);
-                event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+                event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get('database').connections);
             }
         }));
         this.on(channel.IPCMAIN_REQUEST_ENABLE_DBCONNECTION, (event, item) => {
@@ -101,22 +101,22 @@ class MessageHandler {
             let activeConnectionOptions = this.getConnectionManager().dataSource.options;
             if (activeConnectionOptions.database === args.database) {
                 this.getConnectionManager().isInitialized().then(() => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "success", message: "Connection tested successfully" });
+                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
                 }).catch((err) => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
+                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
                 });
             }
             else {
                 this.getConnectionManager().createDataSourceWithOptions(args).then(() => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "success", message: "Connection tested successfully" });
+                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
                 }).catch((err) => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
+                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
                 });
             }
         }));
         this.on(channel.IPCMAIN_REQUEST_DROP_DATABASE, (event) => __awaiter(this, void 0, void 0, function* () {
             yield this.getConnectionManager().dropDatabase().then(() => {
-                event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: "IPCMAIN_RESPONSE_DROP_DATABASE" });
+                event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: 'IPCMAIN_RESPONSE_DROP_DATABASE' });
             });
         }));
         /**
@@ -319,12 +319,12 @@ class MessageHandler {
     }
     fetchStore() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+            return yield this.getConnectionManager().getStore().find({ order: { id: 'DESC' }, skip: 0, take: 100 });
         });
     }
     fetchLogger() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+            return yield this.getConnectionManager().getLogger().find({ order: { id: 'DESC' }, skip: 0, take: 100 });
         });
     }
 }

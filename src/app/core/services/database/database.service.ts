@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { ConfigService } from '@app/core/services/config/config.service';
 import { FontService } from '@app/core/services/font/font.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { PresentationService } from '@app/core/services/presentation/presentation.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
 
 import { QueryOptions, SystemStats } from '@app/core/interface';
+
+import * as constants from '@main/config/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +72,6 @@ export class DatabaseService {
   watchSystemStats$ = this._systemStats.asObservable();
 
   constructor(
-    public configService: ConfigService,
     public fontService: FontService,
     public messageService: MessageService,
     public presentationService: PresentationService,
@@ -81,16 +81,16 @@ export class DatabaseService {
     if (electronService.isElectron) {
 
       // Load saved collection row id.
-      if (this.electronService.store.has('COLLECTION_ID')) {
-        const id = this.electronService.store.get('COLLECTION_ID');
+      if (this.electronService.store.has(constants.STORE_DATA_COLLECTION_ID)) {
+        const id = this.electronService.store.get(constants.STORE_DATA_COLLECTION_ID);
         if (id) {
           this.setCollectionId(id);
         }
       }
 
       // Load saved store row id.
-      if (this.electronService.store.has('STORE_ID')) {
-        const id = this.electronService.store.get('STORE_ID');
+      if (this.electronService.store.has(constants.STORE_DATA_STORE_ID)) {
+        const id = this.electronService.store.get(constants.STORE_DATA_STORE_ID);
         if (id) {
           this.setStoreId(id);
         }
@@ -138,7 +138,7 @@ export class DatabaseService {
 
   setStoreId(id: number): void {
     this._storeId.next(id);
-    this.electronService.store.set('STORE_ID', id);
+    this.electronService.store.set(constants.STORE_DATA_STORE_ID, id);
   }
 
   getStoreId(): number {
@@ -185,7 +185,7 @@ export class DatabaseService {
 
   setCollectionId(id: number) {
     this._collectionId.next(id);
-    this.electronService.store.set('COLLECTION_ID', id);
+    this.electronService.store.set(constants.STORE_DATA_COLLECTION_ID, id);
   }
 
   getCollectionId(): number {

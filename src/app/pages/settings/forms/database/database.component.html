@@ -30,11 +30,11 @@
 
                   <input type="hidden" name="name" id="name" [(ngModel)]="dbConnection.name" readonly>
 
-                  <div class="form-group" *ngIf="connectionTypes.length">
+                  <div class="form-group" *ngIf="drivers.length">
                     <label for="type">Database Type</label>
                     <select class="form-control" name="type" id="type" [(ngModel)]="dbConnection.type" #type="ngModel"
                       required>
-                      <option *ngFor="let item of connectionTypes;" [value]="item">{{item}}</option>
+                      <option *ngFor="let item of drivers;" [value]="item">{{item}}</option>
                     </select>
                     <span class="form-text text-muted" [hidden]="type.valid || type.pristine">A database type is
                       required.</span>

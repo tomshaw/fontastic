@@ -18,9 +18,9 @@ export class AlertComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.alertService.getObservable().subscribe((ev: AppAlert) => {
-      if (ev && ev.message) {
-        this.alert = ev;
+    this.alertService.getObservable().subscribe((result: AppAlert) => {
+      if (result?.message) {
+        this.alert = result;
         this.alertEnabled = true;
       } else if (this.alertEnabled) {
         this.alertEnabled = false;

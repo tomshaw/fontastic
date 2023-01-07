@@ -39,11 +39,11 @@ export class SearchComponent implements OnInit {
       this.databaseService.setWhere('term', value.term);
     }
 
-    if (value.mimes && value.mimes.length) {
+    if (value?.mimes.length) {
       this.databaseService.setWhere('file_type', value.mimes);
     }
 
-    if (value.sort && value.order) {
+    if (value?.sort && value?.order) {
       this.databaseService.setOrder(value.sort, value.order);
     }
 

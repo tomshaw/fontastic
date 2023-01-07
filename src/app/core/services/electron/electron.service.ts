@@ -21,6 +21,8 @@ export class ElectronService {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
 
+      this.ipcRenderer.setMaxListeners(0);
+
       this.fs = window.require('fs');
 
       /* eslint-disable-next-line @typescript-eslint/naming-convention */

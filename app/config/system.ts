@@ -1,10 +1,11 @@
+// SYSTEM SETTINGS
 
-export const platformFontPaths = new Map();
-platformFontPaths.set('win', ['C:\\Windows\\fonts']);
-platformFontPaths.set('mac', ['/Library/Fonts']);
-platformFontPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.local/share/fonts', '~/.fonts']);
+export const systemFontPaths = new Map();
+systemFontPaths.set('win', ['C:\\Windows\\fonts']);
+systemFontPaths.set('mac', ['/Library/Fonts']);
+systemFontPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.local/share/fonts', '~/.fonts']);
 
-export const fontMeta = [{
+export const fontTableData = [{
   code: 0,
   name: 'Copyright Information',
   description: 'Copyright notice.'
@@ -110,28 +111,16 @@ export const fontMeta = [{
   description: ''
 }];
 
-export const proseFontScale = [
-  {
-    prose: 'prose-sm',
-    title: '0.875rem (14px)'
-  },
-  {
-    prose: 'prose-base',
-    title: '1rem (16px)'
-  },
-  {
-    prose: 'prose-lg',
-    title: '1.125rem (18px)'
-  },
-  {
-    prose: 'prose-xl',
-    title: '1.25rem (20px)'
-  },
-  {
-    prose: 'prose-2xl',
-    title: '1.5rem (24px)'
-  }
-];
+export const importUserOptions = [{
+  key: 'inplace',
+  title: 'Import fonts in place.'
+}, {
+  key: 'catalog',
+  title: 'Import fonts to catalog.'
+}, {
+  key: 'ask',
+  title: 'Always ask when importing.'
+}];
 
 export const waterfallFontScale = [
   {

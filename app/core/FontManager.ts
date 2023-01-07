@@ -1,19 +1,21 @@
-import { app, dialog, BrowserWindow, shell } from "electron";
+import { app, dialog, BrowserWindow, shell } from 'electron';
 
-import SystemManager from "./SystemManager";
-import ConfigManager from "./ConfigManager";
-import ConnectionManager from "./ConnectionManager";
+import SystemManager from './SystemManager';
+import ConfigManager from './ConfigManager';
+import ConnectionManager from './ConnectionManager';
 
-import FontCatalog from "./FontCatalog";
-import FontFinder from "./FontFinder";
-import FontInstaller from "./FontInstaller";
+import FontCatalog from './FontCatalog';
+import FontFinder from './FontFinder';
+import FontInstaller from './FontInstaller';
 
-import { execute } from "../helpers/command"
-import { randNumber } from "../helpers/random"
+import { execute } from '../helpers/command';
+import { randNumber } from '../helpers/random';
+
+import * as constants from '../config/constants';
 
 import * as path from 'path';
 
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
 
@@ -79,9 +81,9 @@ export default class FontManager {
   }
 
   async systemAuthenticate(args: any) {
-    args.status = "ok";
-    this.getConfigManager().set("ACCOUNT", args);
-    return this.getConfigManager().get("ACCOUNT");
+    args.status = 'ok';
+    this.getConfigManager().set(constants.STORE_USER, args);
+    return this.getConfigManager().get(constants.STORE_USER);
   }
 
   async executeCommand(args: any) {

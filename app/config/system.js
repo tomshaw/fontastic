@@ -1,11 +1,12 @@
 "use strict";
+// SYSTEM SETTINGS
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.waterfallFontScale = exports.proseFontScale = exports.fontMeta = exports.platformFontPaths = void 0;
-exports.platformFontPaths = new Map();
-exports.platformFontPaths.set('win', ['C:\\Windows\\fonts']);
-exports.platformFontPaths.set('mac', ['/Library/Fonts']);
-exports.platformFontPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.local/share/fonts', '~/.fonts']);
-exports.fontMeta = [{
+exports.waterfallFontScale = exports.importUserOptions = exports.fontTableData = exports.systemFontPaths = void 0;
+exports.systemFontPaths = new Map();
+exports.systemFontPaths.set('win', ['C:\\Windows\\fonts']);
+exports.systemFontPaths.set('mac', ['/Library/Fonts']);
+exports.systemFontPaths.set('unix', ['/usr/share/fonts', '/usr/local/share/fonts', '~/.local/share/fonts', '~/.fonts']);
+exports.fontTableData = [{
         code: 0,
         name: 'Copyright Information',
         description: 'Copyright notice.'
@@ -110,28 +111,16 @@ exports.fontMeta = [{
         name: 'Variations Postscript Name Prefix',
         description: ''
     }];
-exports.proseFontScale = [
-    {
-        prose: 'prose-sm',
-        title: '0.875rem (14px)'
-    },
-    {
-        prose: 'prose-base',
-        title: '1rem (16px)'
-    },
-    {
-        prose: 'prose-lg',
-        title: '1.125rem (18px)'
-    },
-    {
-        prose: 'prose-xl',
-        title: '1.25rem (20px)'
-    },
-    {
-        prose: 'prose-2xl',
-        title: '1.5rem (24px)'
-    }
-];
+exports.importUserOptions = [{
+        key: 'inplace',
+        title: 'Import fonts in place.'
+    }, {
+        key: 'catalog',
+        title: 'Import fonts to catalog.'
+    }, {
+        key: 'ask',
+        title: 'Always ask when importing.'
+    }];
 exports.waterfallFontScale = [
     {
         size: 1.067,

@@ -1,12 +1,12 @@
-import { ipcMain, IpcMainEvent } from "electron";
+import { ipcMain, IpcMainEvent } from 'electron';
 
-import SystemManager from "./SystemManager";
-import ConfigManager from "./ConfigManager";
-import ConnectionManager from "./ConnectionManager";
-import FontManager from "./FontManager";
-import AppLogger from "./AppLogger"
+import SystemManager from './SystemManager';
+import ConfigManager from './ConfigManager';
+import ConnectionManager from './ConnectionManager';
+import FontManager from './FontManager';
+import AppLogger from './AppLogger'
 
-import * as channel from "../config/channel";
+import * as channel from '../config/channel';
 
 export default class MessageHandler {
 
@@ -104,20 +104,20 @@ export default class MessageHandler {
      */
 
     this.on(channel.IPCMAIN_REQUEST_SAVE_DBCONNECTION, async (event: IpcMainEvent, options: any) => {
-      if (options.name === "default") {
-        event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+      if (options.name === 'default') {
+        event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get('database').connections);
       } else {
         this.getConfigManager().saveDbConnection(options);
-        event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+        event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get('database').connections);
       }
     });
 
     this.on(channel.IPCMAIN_REQUEST_DELETE_DBCONNECTION, async (event: IpcMainEvent, name: string) => {
-      if (name === "default") {
-        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+      if (name === 'default') {
+        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get('database').connections);
       } else {
         this.getConfigManager().deleteDbConnection(name);
-        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+        event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.getConfigManager().get('database').connections);
       }
     });
 
@@ -130,22 +130,22 @@ export default class MessageHandler {
       let activeConnectionOptions = this.getConnectionManager().dataSource.options;
       if (activeConnectionOptions.database === args.database) {
         this.getConnectionManager().isInitialized().then(() => {
-          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "success", message: "Connection tested successfully" });
+          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
         }).catch((err) => {
-          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
+          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
         });
       } else {
         this.getConnectionManager().createDataSourceWithOptions(args).then(() => {
-          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "success", message: "Connection tested successfully" });
+          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
         }).catch((err) => {
-          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
+          event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
         });
       }
     });
 
     this.on(channel.IPCMAIN_REQUEST_DROP_DATABASE, async (event: IpcMainEvent) => {
       await this.getConnectionManager().dropDatabase().then(() => {
-        event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: "IPCMAIN_RESPONSE_DROP_DATABASE" });
+        event.sender.send(channel.IPCMAIN_RESPONSE_DROP_DATABASE, { type: 'IPCMAIN_RESPONSE_DROP_DATABASE' });
       });
     });
 
@@ -395,11 +395,11 @@ export default class MessageHandler {
   }
 
   async fetchStore() {
-    return await this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+    return await this.getConnectionManager().getStore().find({ order: { id: 'DESC' }, skip: 0, take: 100 });
   }
 
   async fetchLogger() {
-    return await this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });
+    return await this.getConnectionManager().getLogger().find({ order: { id: 'DESC' }, skip: 0, take: 100 });
   }
 
 }

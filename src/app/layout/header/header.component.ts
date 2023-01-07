@@ -31,10 +31,10 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() { 
-    this.authService.watchAuthUser$.subscribe((x: AuthUser) => {
-      if (x && x.email) {
-        this.currentUser = x;
-        this.gravatarUrl = this.gravatar.url(x.email, 128, 'mm');
+    this.authService.watchAuthUser$.subscribe((result: AuthUser) => {
+      if (result?.email) {
+        this.currentUser = result;
+        this.gravatarUrl = this.gravatar.url(result.email, 128, 'mm');
       }
     });
     this.presentationService._asideEnabled.subscribe((result) => {
