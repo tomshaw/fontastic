@@ -50,7 +50,7 @@ npm start
 
 ## Activator
 
-Fontastic uses [Activator](https://github.com/tomshaw/activator) for multi platform font installation and catalog management Go executable. 📡
+Fontastic uses [Activator](https://github.com/tomshaw/activator) a Go Lang executable for multi platform font management and installation. 📡
 
 ## Screen Shots
 
