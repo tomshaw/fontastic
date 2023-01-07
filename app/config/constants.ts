@@ -7,6 +7,7 @@ export const STORE_SYSTEM = 'system';
 export const STORE_DATABASE = 'database';
 export const STORE_DATABASE_CONNECTIONS = 'database.connections';
 export const STORE_NEWS = 'news';
+export const STORE_LAYOUT = 'layout';
 export const STORE_LAYOUT_PANEL = 'layout.panel';
 export const STORE_LAYOUT_PREVIEW = 'layout.preview';
 export const STORE_LAYOUT_THEME = 'layout.theme';

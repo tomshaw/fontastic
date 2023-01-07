@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { getProperty, setProperty, hasProperty, deleteProperty } from 'dot-prop';
 import { SystemConfig } from '@app/core/interface';
 import * as constants from '@main/config/constants';
 
@@ -11,18 +12,6 @@ export class ConfigService {
   _systemConfig = new BehaviorSubject<SystemConfig>(null);
   watchSystemConfig$ = this._systemConfig.asObservable();
 
-  set(key: string, values: any): any {
-    const config: any = this.getConfig();
-    return config[key] = values;
-  }
-
-  get(key: string): any {
-    if (this.has(key)) {
-      return this.getConfig()[key];
-    }
-    return this.getConfig();
-  }
-
   setConfig(values: any): void {
     this._systemConfig.next(values);
   }
@@ -31,9 +20,24 @@ export class ConfigService {
     return this._systemConfig.getValue();
   }
 
+  set(key: string, value: any): any {
+    const config: any = this.getConfig();
+    return setProperty(config, key, value);
+  }
+
+  get(key: string): any {
+    const config = this.getConfig();
+    return getProperty(config, key);
+  }
+
   has(key: string): boolean {
     const config: any = this.getConfig();
-    return (config && config[key]) ? true : false;
+    return hasProperty(config, key);
+  }
+
+  delete(key: string): boolean {
+    const config: any = this.getConfig();
+    return deleteProperty(config, key);
   }
 
   debug() {
