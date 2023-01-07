@@ -26,14 +26,14 @@ app-aside {
 .application.navigation {
   display: grid;
   grid-template-areas: "header header" "navigation main" "footer footer";
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 240px 1fr;
   grid-template-rows: 56px 1fr 30px;
 }
 
 .application.aside {
   display: grid;
   grid-template-areas: "header header header" "main aside" "footer footer footer";
-  grid-template-columns: 300px 1fr 300px;
+  grid-template-columns: 240px 1fr 240px;
   grid-template-rows: 56px 1fr 30px;
 }
 
@@ -47,21 +47,21 @@ app-aside {
 .application.main.aside {
   display: grid;
   grid-template-areas: "header header" "main aside" "footer footer";
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 240px;
   grid-template-rows: 56px 1fr 30px;
 }
 
 .application.main.navigation {
   display: grid;
   grid-template-areas: "header header" "navigation main" "footer footer";
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 240px 1fr;
   grid-template-rows: 56px 1fr 30px;
 }
 
 .application.main.aside.navigation {
   display: grid;
   grid-template-areas: "header header header" "navigation main aside" "footer footer footer";
-  grid-template-columns: 300px 1fr 300px;
+  grid-template-columns: 240px 1fr 240px;
   grid-template-rows: 56px 1fr 30px;
 }
 
@@ -92,53 +92,24 @@ app-aside {
   }
 }
 
-@media only screen and (max-width: 1440px) {
-  .application {
-    display: grid;
-    grid-template-areas: "header" "main" "footer";
-    grid-template-columns: 1fr;
-    grid-template-rows: 56px 1fr 30px;
-  }
-  
+@media only screen and (min-width: 1440px) {
   .application.navigation {
-    display: grid;
-    grid-template-areas: "header header" "navigation main" "footer footer";
-    grid-template-columns: 240px 1fr;
-    grid-template-rows: 56px 1fr 30px;
+    grid-template-columns: 300px 1fr;
   }
   
   .application.aside {
-    display: grid;
-    grid-template-areas: "header header header" "main aside" "footer footer footer";
-    grid-template-columns: 240px 1fr 240px;
-    grid-template-rows: 56px 1fr 30px;
-  }
-  
-  .application.main {
-    display: grid;
-    grid-template-areas: "header" "main" "footer";
-    grid-template-columns: 1fr;
-    grid-template-rows: 56px 1fr 30px;
+    grid-template-columns: 300px 1fr 300px;
   }
   
   .application.main.aside {
-    display: grid;
-    grid-template-areas: "header header" "main aside" "footer footer";
-    grid-template-columns: 1fr 240px;
-    grid-template-rows: 56px 1fr 30px;
+    grid-template-columns: 1fr 300px;
   }
   
   .application.main.navigation {
-    display: grid;
-    grid-template-areas: "header header" "navigation main" "footer footer";
-    grid-template-columns: 240px 1fr;
-    grid-template-rows: 56px 1fr 30px;
+    grid-template-columns: 300px 1fr;
   }
   
   .application.main.aside.navigation {
-    display: grid;
-    grid-template-areas: "header header header" "navigation main aside" "footer footer footer";
-    grid-template-columns: 240px 1fr 240px;
-    grid-template-rows: 56px 1fr 30px;
+    grid-template-columns: 300px 1fr 300px;
   }
 }
