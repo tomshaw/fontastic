@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SystemConfig } from '@app/core/interface';
-import { AuthUser } from '@app/core/interface';
 import * as constants from '@main/config/constants';
 
 @Injectable({

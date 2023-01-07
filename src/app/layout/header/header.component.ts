@@ -32,6 +32,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() { 
     this.authService.watchAuthUser$.subscribe((result: AuthUser) => {
+      console.log('AuthUser', result);
       if (result?.email) {
         this.currentUser = result;
         this.gravatarUrl = this.gravatar.url(result.email, 128, 'mm');

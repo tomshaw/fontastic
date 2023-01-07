@@ -38,7 +38,6 @@ export class NavigationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.presentationService._statsCollapsed.subscribe((result) => this.statsCollapsed = result);
 
     // Bootup fetch store.
@@ -183,10 +182,6 @@ export class NavigationComponent implements OnInit {
     if (collectionId === this.collectionId) {
       return;
     }
-
-    // const target = event.target as HTMLInputElement;
-    // const parent = target.parentNode.previousSibling.firstChild as HTMLInputElement;
-    // parent.checked = true;
 
     this.messageService.resetEnabledCollection().then(() => {
 

@@ -16,7 +16,7 @@ export class BootService {
       if (this.electronService.isElectron) {
         this.messageService.systemBoot().then((result: any) => {
           this.configService.setConfig(result);
-          if (result?.user && result?.user?.ok) {
+          if (result?.user) {
             this.authService.setAuthUser(result.user);
           }
           if (result?.system?.is_dev) {
