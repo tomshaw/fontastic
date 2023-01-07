@@ -19,7 +19,7 @@ export class BootService {
           if (result?.user && result?.user?.ok) {
             this.authService.setAuthUser(result.user);
           }
-          if (result.is_dev) {
+          if (result?.system?.is_dev) {
             this.configService.debug();
           }
           resolve(result);
