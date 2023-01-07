@@ -46,7 +46,7 @@ export class GeneralComponent implements OnInit {
     }
 
     this.newsService.watchLatestNews$.subscribe((value: any) => {
-      if (value?.articles.length) {
+      if (value?.articles?.length) {
         this.hasNewsArticles = true;
       }
     });
