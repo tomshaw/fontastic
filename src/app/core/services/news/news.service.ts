@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '@app/core/services/config/config.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
-import * as constants from '@main/config/constants';
+import { StorageType } from '@main/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +25,8 @@ export class NewsService {
     private configService: ConfigService,
     private messageService: MessageService
   ) {
-    if (this.configService.has(constants.STORE_NEWS)) {
-      this.setLatestNews(this.configService.get(constants.STORE_NEWS));
+    if (this.configService.has(StorageType.News)) {
+      this.setLatestNews(this.configService.get(StorageType.News));
     }
 
     this.refreshLatestNews();

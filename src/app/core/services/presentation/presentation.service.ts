@@ -5,7 +5,7 @@ import { MessageService } from '../message/message.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
 import { AppThemes, ThemeColors } from '@main/config/themes';
 import { SystemTheme } from '@app/core/interface';
-import * as constants from '@main/config/constants';
+import { StorageType } from '@main/enums';
 
 export class ScrollToOptions {
   id: string;
@@ -83,15 +83,15 @@ export class PresentationService {
 
     if (this.electronService.isElectron) {
 
-      if (this.configService.has(constants.STORE_LAYOUT_PANEL)) {
+      if (this.configService.has(StorageType.LayoutPanel)) {
         this.loadLayoutSettings();
       }
 
-      if (this.configService.has(constants.STORE_LAYOUT_PREVIEW)) {
+      if (this.configService.has(StorageType.LayoutPreview)) {
         this.loadPreviewSettings();
       }
 
-      if (this.configService.has(constants.STORE_LAYOUT_THEME)) {
+      if (this.configService.has(StorageType.LayoutTheme)) {
         this.loadThemeSettings();
       }
 
@@ -159,11 +159,11 @@ export class PresentationService {
       _inspectComponent: this._inspectComponent.getValue(),
       _statsCollapsed: this._statsCollapsed.getValue()
     };
-    this.messageService.set(constants.STORE_LAYOUT_PANEL, settings);
+    this.messageService.set(StorageType.LayoutPanel, settings);
   }
 
   loadLayoutSettings(): void {
-    const settings = this.configService.get(constants.STORE_LAYOUT_PANEL);
+    const settings = this.configService.get(StorageType.LayoutPanel);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {
@@ -183,11 +183,11 @@ export class PresentationService {
       _letterSpacing: this._letterSpacing.getValue(),
       _displayNews: this._displayNews.getValue()
     };
-    this.messageService.set(constants.STORE_LAYOUT_PREVIEW, settings);
+    this.messageService.set(StorageType.LayoutPreview, settings);
   }
 
   loadPreviewSettings(): void {
-    const settings: any = this.configService.get(constants.STORE_LAYOUT_PREVIEW);
+    const settings: any = this.configService.get(StorageType.LayoutPreview);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {
@@ -201,11 +201,11 @@ export class PresentationService {
     const settings = {
       _defaultTheme: this._defaultTheme.getValue()
     };
-    this.messageService.set(constants.STORE_LAYOUT_THEME, settings);
+    this.messageService.set(StorageType.LayoutTheme, settings);
   }
 
   loadThemeSettings(): void {
-    const settings: any = this.configService.get(constants.STORE_LAYOUT_THEME);
+    const settings: any = this.configService.get(StorageType.LayoutTheme);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {
@@ -284,7 +284,7 @@ export class PresentationService {
         this[key].next(value);
       }
     }
-    this.messageService.set(constants.STORE_LAYOUT_PREVIEW, settings);
+    this.messageService.set(StorageType.LayoutPreview, settings);
   }
 
   setThemeDefaults(name: string): void {

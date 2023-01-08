@@ -2,8 +2,7 @@ import { DataSource } from 'typeorm'
 import { Collection, Store, Logger } from '../database/entity';
 import { CollectionRepository, LoggerRepository, StoreRepository } from '../database/repository';
 import ConfigManager from './ConfigManager';
-
-import * as constants from '../config/constants';
+import { StorageType } from '../enums';
 
 export default class ConnectionManager {
 
@@ -24,7 +23,7 @@ export default class ConnectionManager {
   ) {
     this.setConfigManager(configManager);
 
-    const dbConfig = this.getConfigManager().get(constants.STORE_DATABASE);
+    const dbConfig = this.getConfigManager().get(StorageType.Database);
 
     this.setConnections(this.normalize(dbConfig.connections));
 

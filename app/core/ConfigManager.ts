@@ -1,6 +1,6 @@
 import SystemManager from './SystemManager';
 import { database } from '../config/database';
-import * as constants from '../config/constants';
+import { StorageType } from '../enums';
 
 const Store = require('electron-store');
 const store = new Store();
@@ -11,7 +11,7 @@ export default class ConfigManager {
 
   constructor(systemManager: SystemManager) {
     this.setSystemManager(systemManager);
-    // store.delete('settings');
+    // store.delete(StorageType.Settings);
   }
 
   setSystemManager(systemManager: SystemManager) {
@@ -56,16 +56,16 @@ export default class ConfigManager {
         type: 'ask'
       }
     };
-    if (this.has(constants.STORE_SETTINGS)) {
-      const saved = this.get(constants.STORE_SETTINGS);
-      this.set('settings', { ...settings, ...saved });
+    if (this.has(StorageType.Settings)) {
+      const saved = this.get(StorageType.Settings);
+      this.set(StorageType.Settings, { ...settings, ...saved });
     } else {
-      this.set('settings', settings);
+      this.set(StorageType.Settings, settings);
     }
   }
 
   initDatabaseConfig(): void {
-    let store = this.get(constants.STORE_DATABASE);
+    let store = this.get(StorageType.Database);
 
     // @TODO Remove MySQL connection if not in production.
     // Problematic when switching between production and development. Problem arises when connection is not enabled.
@@ -80,26 +80,26 @@ export default class ConfigManager {
     })
 
     if (!store) {
-      this.set(constants.STORE_DATABASE, database);
+      this.set(StorageType.Database, database);
     } else {
       // Resets database store.
-      //this.set(constants.STORE_DATABASE, database);
+      //this.set(StorageType.Database, database);
     }
   }
 
   enableDbConnection(connection: any): void {
-    let config = this.get(constants.STORE_DATABASE);
+    let config = this.get(StorageType.Database);
 
     config.connections = config.connections.filter((item: any) => {
       item.enabled = (item.name === connection.name) ? true : false;
       return item;
     })
 
-    this.set(constants.STORE_DATABASE, config);
+    this.set(StorageType.Database, config);
   }
 
   saveDbConnection(options: any): void {
-    let connections = this.get(constants.STORE_DATABASE).connections;
+    let connections = this.get(StorageType.Database).connections;
 
     const found = connections.find((item: any) => item.name === options.name);
 
@@ -109,14 +109,14 @@ export default class ConfigManager {
           connections[i] = options;
         }
       }
-      this.set(constants.STORE_DATABASE_CONNECTIONS, connections);
+      this.set(StorageType.DatabaseConnections, connections);
     } else {
-      this.set(constants.STORE_DATABASE_CONNECTIONS, connections.push(options));
+      this.set(StorageType.DatabaseConnections, connections.push(options));
     }
   }
 
   deleteDbConnection(name: string): void {
-    let connections = this.get(constants.STORE_DATABASE).connections;
+    let connections = this.get(StorageType.Database).connections;
 
     const found = connections.find((item: any) => item.name === name);
 
@@ -126,7 +126,7 @@ export default class ConfigManager {
           connections.splice(i, 1);
         }
       }
-      this.set(constants.STORE_DATABASE_CONNECTIONS, connections);
+      this.set(StorageType.DatabaseConnections, connections);
     }
   }
 }

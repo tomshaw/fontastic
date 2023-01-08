@@ -1,7 +1,6 @@
 import { app } from 'electron';
 import * as os from 'os';
 import * as path from 'path';
-
 import { systemFontPaths } from '../config/system';
 
 const root = process.cwd();

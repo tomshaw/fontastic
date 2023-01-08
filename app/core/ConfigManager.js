@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../config/database");
-const constants = require("../config/constants");
+const enums_1 = require("../enums");
 const Store = require('electron-store');
 const store = new Store();
 class ConfigManager {
     constructor(systemManager) {
         this.setSystemManager(systemManager);
-        // store.delete('settings');
+        // store.delete(StorageType.Settings);
     }
     setSystemManager(systemManager) {
         this.systemManager = systemManager;
@@ -43,16 +43,16 @@ class ConfigManager {
                 type: 'ask'
             }
         };
-        if (this.has(constants.STORE_SETTINGS)) {
-            const saved = this.get(constants.STORE_SETTINGS);
-            this.set('settings', Object.assign(Object.assign({}, settings), saved));
+        if (this.has(enums_1.StorageType.Settings)) {
+            const saved = this.get(enums_1.StorageType.Settings);
+            this.set(enums_1.StorageType.Settings, Object.assign(Object.assign({}, settings), saved));
         }
         else {
-            this.set('settings', settings);
+            this.set(enums_1.StorageType.Settings, settings);
         }
     }
     initDatabaseConfig() {
-        let store = this.get(constants.STORE_DATABASE);
+        let store = this.get(enums_1.StorageType.Database);
         // @TODO Remove MySQL connection if not in production.
         // Problematic when switching between production and development. Problem arises when connection is not enabled.
         // database.connections = this.getSystemManager().isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
@@ -64,23 +64,23 @@ class ConfigManager {
             return item;
         });
         if (!store) {
-            this.set(constants.STORE_DATABASE, database_1.database);
+            this.set(enums_1.StorageType.Database, database_1.database);
         }
         else {
             // Resets database store.
-            //this.set(constants.STORE_DATABASE, database);
+            //this.set(StorageType.Database, database);
         }
     }
     enableDbConnection(connection) {
-        let config = this.get(constants.STORE_DATABASE);
+        let config = this.get(enums_1.StorageType.Database);
         config.connections = config.connections.filter((item) => {
             item.enabled = (item.name === connection.name) ? true : false;
             return item;
         });
-        this.set(constants.STORE_DATABASE, config);
+        this.set(enums_1.StorageType.Database, config);
     }
     saveDbConnection(options) {
-        let connections = this.get(constants.STORE_DATABASE).connections;
+        let connections = this.get(enums_1.StorageType.Database).connections;
         const found = connections.find((item) => item.name === options.name);
         if (found) {
             for (const i in connections) {
@@ -88,14 +88,14 @@ class ConfigManager {
                     connections[i] = options;
                 }
             }
-            this.set(constants.STORE_DATABASE_CONNECTIONS, connections);
+            this.set(enums_1.StorageType.DatabaseConnections, connections);
         }
         else {
-            this.set(constants.STORE_DATABASE_CONNECTIONS, connections.push(options));
+            this.set(enums_1.StorageType.DatabaseConnections, connections.push(options));
         }
     }
     deleteDbConnection(name) {
-        let connections = this.get(constants.STORE_DATABASE).connections;
+        let connections = this.get(enums_1.StorageType.Database).connections;
         const found = connections.find((item) => item.name === name);
         if (found) {
             for (const i in connections) {
@@ -103,7 +103,7 @@ class ConfigManager {
                     connections.splice(i, 1);
                 }
             }
-            this.set(constants.STORE_DATABASE_CONNECTIONS, connections);
+            this.set(enums_1.StorageType.DatabaseConnections, connections);
         }
     }
 }

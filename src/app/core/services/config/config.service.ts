@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { getProperty, setProperty, hasProperty, deleteProperty } from 'dot-prop';
 import { SystemConfig } from '@app/core/interface';
-import * as constants from '@main/config/constants';
+import { StorageType } from '@main/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -49,10 +49,10 @@ export class ConfigService {
    */
 
   getIsProduction(): boolean {
-    return this.get(constants.STORE_SYSTEM).is_production;
+    return this.get(StorageType.System).is_production;
   }
 
   getIsWindows(): boolean {
-    return this.get(constants.STORE_SYSTEM).is_windows;
+    return this.get(StorageType.System).is_windows;
   }
 }

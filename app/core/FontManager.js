@@ -15,7 +15,7 @@ const FontFinder_1 = require("./FontFinder");
 const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
 const random_1 = require("../helpers/random");
-const constants = require("../config/constants");
+const enums_1 = require("../enums");
 const path = require("path");
 const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
@@ -69,8 +69,8 @@ class FontManager {
     systemAuthenticate(args) {
         return __awaiter(this, void 0, void 0, function* () {
             args.status = 'ok';
-            this.getConfigManager().set(constants.STORE_USER, args);
-            return this.getConfigManager().get(constants.STORE_USER);
+            this.getConfigManager().set(enums_1.StorageType.User, args);
+            return this.getConfigManager().get(enums_1.StorageType.User);
         });
     }
     executeCommand(args) {

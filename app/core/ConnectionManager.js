@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const entity_1 = require("../database/entity");
 const repository_1 = require("../database/repository");
-const constants = require("../config/constants");
+const enums_1 = require("../enums");
 class ConnectionManager {
     constructor(configManager) {
         this.schemas = [entity_1.Collection, entity_1.Store, entity_1.Logger];
@@ -21,7 +21,7 @@ class ConnectionManager {
         this.connections = {};
         this.omitables = ['title', 'description', 'enabled'];
         this.setConfigManager(configManager);
-        const dbConfig = this.getConfigManager().get(constants.STORE_DATABASE);
+        const dbConfig = this.getConfigManager().get(enums_1.StorageType.Database);
         this.setConnections(this.normalize(dbConfig.connections));
         this.registerEntities(this.connections);
         this.registerSubscribers(this.connections);

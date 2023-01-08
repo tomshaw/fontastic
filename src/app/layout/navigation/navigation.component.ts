@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UtilsService, MessageService, PresentationService, DatabaseService, BreadcrumbService, AlertService, ConfigService } from '@app/core/services';
 import { Router } from '@angular/router';
 import { SystemStats } from '@app/core/interface';
-import * as constants from '@main/config/constants';
+import { StorageType } from '@main/enums';
 
 @Component({
   selector: 'app-navigation',
@@ -72,7 +72,7 @@ export class NavigationComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const collectionId = Number(target.dataset.id);
 
-    const config = this.configService.get(constants.STORE_SETTINGS);
+    const config = this.configService.get(StorageType.Settings);
     const importType = (config?.import?.type) ? config.import.type : 'ask';
 
     let settings = {

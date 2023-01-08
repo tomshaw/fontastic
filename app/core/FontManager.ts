@@ -11,7 +11,7 @@ import FontInstaller from './FontInstaller';
 import { execute } from '../helpers/command';
 import { randNumber } from '../helpers/random';
 
-import * as constants from '../config/constants';
+import { StorageType } from '../enums';
 
 import * as path from 'path';
 
@@ -82,8 +82,8 @@ export default class FontManager {
 
   async systemAuthenticate(args: any) {
     args.status = 'ok';
-    this.getConfigManager().set(constants.STORE_USER, args);
-    return this.getConfigManager().get(constants.STORE_USER);
+    this.getConfigManager().set(StorageType.User, args);
+    return this.getConfigManager().get(StorageType.User);
   }
 
   async executeCommand(args: any) {

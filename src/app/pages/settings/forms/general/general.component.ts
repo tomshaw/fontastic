@@ -4,7 +4,7 @@ import { AuthService, BreadcrumbService, AlertService, ConfigService, NewsServic
 import { SystemConfig, AuthUser, ImportOptions } from '@app/core/interface';
 import { AuthUserModel, ImportOptionsModel } from '@app/core/model';
 import { importUserOptions } from '@main/config/system';
-import * as constants from '@main/config/constants';
+import { StorageType } from '@main/enums';
 
 @Component({
   selector: 'app-settings-form-general',
@@ -38,8 +38,8 @@ export class GeneralComponent implements OnInit {
       this.user = this.authService.getAuthUser();
     }
 
-    if (this.configService.has(constants.STORE_SETTINGS_IMPORT_TYPE)) {
-      const importType = this.configService.get(constants.STORE_SETTINGS_IMPORT_TYPE);
+    if (this.configService.has(StorageType.Import)) {
+      const importType = this.configService.get(StorageType.Import);
       if (importType) {
         this.importType = new ImportOptionsModel(importType);
       }
@@ -63,8 +63,8 @@ export class GeneralComponent implements OnInit {
   onImportOptionsChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     const value = target.value;
-    this.configService.set(constants.STORE_SETTINGS_IMPORT_TYPE, value);
-    this.messageService.set(constants.STORE_SETTINGS_IMPORT_TYPE, value);
+    this.configService.set(StorageType.Import, value);
+    this.messageService.set(StorageType.Import, value);
   }
 
   onResetFavoritedFonts(event: Event): void {
