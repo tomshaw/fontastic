@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from '@app/core/services/electron/electron.service';
 import * as channel from '@main/config/channel';
+import { SystemStats } from '@main/types';
 
 @Injectable({
   providedIn: 'root'
@@ -352,7 +353,7 @@ export class MessageService {
     });
   }
 
-  fetchSystemStats(): Promise<any[]> {
+  fetchSystemStats(): Promise<SystemStats> {
     this.electron.ipcRenderer.send(channel.IPCMAIN_REQUEST_SYSTEM_STATS);
     return new Promise((resolve, reject) => {
       this.electron.ipcRenderer.on(channel.IPCMAIN_RESPONSE_SYSTEM_STATS, (event, response) => {

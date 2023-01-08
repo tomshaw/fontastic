@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { getProperty, setProperty, hasProperty, deleteProperty } from 'dot-prop';
-import { SystemConfig } from '@app/core/interface';
+import { SystemConfig } from '@main/types';
 import { StorageType } from '@main/enums';
 
 @Injectable({
@@ -41,7 +41,9 @@ export class ConfigService {
   }
 
   debug() {
-    console.log('SYSTEM-CONFIG', this.getConfig());
+    const config: SystemConfig = this.getConfig();
+    console.warn(config);
+    console.table(config.system);
   }
 
   /**

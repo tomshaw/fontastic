@@ -112,7 +112,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   renderFontList() {
     this.resultSet.forEach((item: any) => {
       const localFile = `file://${item.file_path}`;
-      this.fontService.load(localFile).then((font) => {
+      this.fontService.load(localFile).then((font: opentype.Font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
 
         if (!canvas) {
@@ -170,7 +170,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSampleClick(event: Event, item: any): void {
     if (item.sample_text) {
-      this.fontService.load(`file://${item.file_path}`).then((font) => {
+      this.fontService.load(`file://${item.file_path}`).then((font: opentype.Font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
 
         if (!canvas) {

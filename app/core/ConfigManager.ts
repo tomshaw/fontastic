@@ -11,7 +11,7 @@ export default class ConfigManager {
 
   constructor(systemManager: SystemManager) {
     this.setSystemManager(systemManager);
-    // store.delete(StorageType.Settings);
+    // store.delete(StorageType.Options);
   }
 
   setSystemManager(systemManager: SystemManager) {
@@ -56,11 +56,11 @@ export default class ConfigManager {
         type: 'ask'
       }
     };
-    if (this.has(StorageType.Settings)) {
-      const saved = this.get(StorageType.Settings);
-      this.set(StorageType.Settings, { ...settings, ...saved });
+    if (this.has(StorageType.Options)) {
+      const saved = this.get(StorageType.Options);
+      this.set(StorageType.Options, { ...settings, ...saved });
     } else {
-      this.set(StorageType.Settings, settings);
+      this.set(StorageType.Options, settings);
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from '@app/core/services/utils/utils.service';
-import opentype from 'opentype.js';
+import * as opentype from 'opentype.js';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +11,11 @@ export class FontService {
     private utils: UtilsService
   ) { }
 
-  async load(filePath: string) {
+  async load(filePath: string): Promise<opentype.Font> {
     return opentype.load(filePath);
   }
 
-  public clearCanvas(context: CanvasRenderingContext2D) {
+  clearCanvas(context: CanvasRenderingContext2D) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     context.beginPath();
   }

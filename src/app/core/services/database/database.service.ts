@@ -4,7 +4,7 @@ import { FontService } from '@app/core/services/font/font.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { PresentationService } from '@app/core/services/presentation/presentation.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
-import { QueryOptions, SystemStats } from '@app/core/interface';
+import { QueryOptions, SystemStats } from '@main/types';
 import { StorageType } from '@main/enums';
 
 @Injectable({
@@ -105,7 +105,7 @@ export class DatabaseService {
           messageService.fetchStoreRow(id).then(async (item: any) => {
             if (item) {
               const localFile = `file://${item.file_path}`;
-              this.fontService.load(localFile).then((data) => {
+              this.fontService.load(localFile).then((data: opentype.Font) => {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 this.setStoreRow({ ...item, font_meta: data });
               });
@@ -162,25 +162,23 @@ export class DatabaseService {
    * BEGIN SYSTEM STATS  
    */
 
-  setSystemStats(results: any) {
+  setSystemStats(results: SystemStats): void {
     this._systemStats.next(results);
   }
 
-  getSystemStats() {
+  getSystemStats(): SystemStats {
     return this._systemStats.getValue();
   }
 
-  fetchSystemStats() {
-    this.messageService.fetchSystemStats().then((result: any) => {
-      this.setSystemStats(result);
-    }).catch((err) => { });
+  fetchSystemStats(): void {
+    this.messageService.fetchSystemStats().then((result: SystemStats) => this.setSystemStats(result));
   }
 
   /**
    * BEGIN COLLECTION 
    */
 
-  setCollectionId(id: number) {
+  setCollectionId(id: number): void {
     this._collectionId.next(id);
     this.electronService.store.set(StorageType.CollectionId, id);
   }

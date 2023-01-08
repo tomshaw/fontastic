@@ -4,6 +4,7 @@ import { ConfigService } from '@app/core/services/config/config.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
 import { StorageType } from '@main/enums';
+import { NewsType } from '@main/types';
 
 @Injectable({
   providedIn: 'root'
@@ -77,14 +78,14 @@ export class NewsService {
   fetchNews() {
     this.messageService.fetchLatestNews({
       endpoint: this.endpoints.business + this.getApiKey()
-    }).then((response: any) => {
+    }).then((response: NewsType) => {
       if (response?.status === 'ok') {
         const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
         this.setLatestNews(saved);
-        this.messageService.set('news', saved);
+        this.messageService.set(StorageType.News, saved);
         this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
-      } else if (response?.message) {
-        this.messageService.log(response.message, 1);
+      } else {
+        this.messageService.log('Failed to fetch latest news articles.', 1);
       }
     });
   }

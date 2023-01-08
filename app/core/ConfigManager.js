@@ -7,7 +7,7 @@ const store = new Store();
 class ConfigManager {
     constructor(systemManager) {
         this.setSystemManager(systemManager);
-        // store.delete(StorageType.Settings);
+        // store.delete(StorageType.Options);
     }
     setSystemManager(systemManager) {
         this.systemManager = systemManager;
@@ -43,12 +43,12 @@ class ConfigManager {
                 type: 'ask'
             }
         };
-        if (this.has(enums_1.StorageType.Settings)) {
-            const saved = this.get(enums_1.StorageType.Settings);
-            this.set(enums_1.StorageType.Settings, Object.assign(Object.assign({}, settings), saved));
+        if (this.has(enums_1.StorageType.Options)) {
+            const saved = this.get(enums_1.StorageType.Options);
+            this.set(enums_1.StorageType.Options, Object.assign(Object.assign({}, settings), saved));
         }
         else {
-            this.set(enums_1.StorageType.Settings, settings);
+            this.set(enums_1.StorageType.Options, settings);
         }
     }
     initDatabaseConfig() {

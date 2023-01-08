@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService, BreadcrumbService } from '@app/core/services';
-import { SystemConfig } from '@app/core/interface';
+import { SystemConfig } from '@main/types';
 
 @Component({
   selector: 'app-settings',

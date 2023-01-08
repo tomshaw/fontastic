@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService, PresentationService, DatabaseService } from '@app/core/services';
 import { AuthService, GravatarService } from '@app/core/services';
-import { AuthUser } from '@app/core/interface';
+import { AuthUser } from '@main/types';
 
 @Component({
   selector: 'app-header',

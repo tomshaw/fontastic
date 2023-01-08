@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '@app/core/services';
-import { QueryOptions } from '@app/core/interface';
+import { QueryOptions } from '@main/types';
 
 @Component({
   selector: 'app-paginator',

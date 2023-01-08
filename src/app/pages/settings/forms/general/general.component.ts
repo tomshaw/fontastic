@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService, BreadcrumbService, AlertService, ConfigService, NewsService, MessageService, DatabaseService, PresentationService } from '@app/core/services';
-import { SystemConfig, AuthUser, ImportOptions } from '@app/core/interface';
 import { AuthUserModel, ImportOptionsModel } from '@app/core/model';
+import { SystemConfig, AuthUser, ImportOptions } from '@main/types';
 import { importUserOptions } from '@main/config/system';
 import { StorageType } from '@main/enums';
 

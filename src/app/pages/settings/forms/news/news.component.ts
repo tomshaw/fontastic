@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfigService, BreadcrumbService, MessageService, AlertService } from '@app/core/services';
-import { SystemConfig } from '@app/core/interface';
+import { NewsType, SystemConfig } from '@main/types';
+import { StorageType } from '@main/enums';
 
 @Component({
   selector: 'app-settings-form-news',
   templateUrl: './news.component.html',
   styleUrls: ['./news.component.scss']
 })
-export class NewsComponent implements OnInit {
+export class NewsComponent implements OnInit, OnDestroy {
 
   apiKey = '';
 
@@ -18,13 +19,6 @@ export class NewsComponent implements OnInit {
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService
   ) {
-
-    this.configService._systemConfig.subscribe((result: SystemConfig | any) => {
-      if (result?.news?.apiKey) {
-        this.apiKey = result.news.apiKey;
-      }
-    });
-
     this.breadcrumbService.set([{
       title: 'Dashboard',
       link: '/main'
@@ -37,12 +31,22 @@ export class NewsComponent implements OnInit {
     }]);
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.configService._systemConfig.subscribe((result: SystemConfig) => {
+      if (result?.news?.apiKey) {
+        this.apiKey = result.news.apiKey;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.apiKey = '';
+  }
 
   onSubmit(form: NgForm) {
     if (form.valid) {
-      this.messageService.set('news', { apiKey: form.value.apiKey }).then((result: any) => {
-        this.configService.set('news', result);
+      this.messageService.set(StorageType.News, { apiKey: form.value.apiKey }).then((result: NewsType) => {
+        this.configService.set(StorageType.News, result);
         this.messageService.log('Saved News Service API Key.', 1);
         this.alertService.success('Saved News Service API Key.');
       });

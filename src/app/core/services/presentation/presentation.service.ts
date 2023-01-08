@@ -4,7 +4,7 @@ import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
 import { AppThemes, ThemeColors } from '@main/config/themes';
-import { SystemTheme } from '@app/core/interface';
+import { SystemTheme, LayoutPanelType, LayoutPreviewType, LayoutThemeType } from '@main/types';
 import { StorageType } from '@main/enums';
 
 export class ScrollToOptions {
@@ -148,7 +148,7 @@ export class PresentationService {
   }
 
   saveLayoutSettings(): void {
-    const settings = {
+    const settings: LayoutPanelType = {
       _gridEnabled: this._gridEnabled.getValue(),
       _asideEnabled: this._asideEnabled.getValue(),
       _asideComponent: this._asideComponent.getValue(),
@@ -163,7 +163,7 @@ export class PresentationService {
   }
 
   loadLayoutSettings(): void {
-    const settings = this.configService.get(StorageType.LayoutPanel);
+    const settings: LayoutPanelType = this.configService.get(StorageType.LayoutPanel);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {
@@ -174,7 +174,7 @@ export class PresentationService {
   }
 
   savePreviewSettings(): void {
-    const settings = {
+    const settings: LayoutPreviewType = {
       _fontSize: this._fontSize.getValue(),
       _fontColor: this._fontColor.getValue(),
       _displayText: this._displayText.getValue(),
@@ -187,7 +187,7 @@ export class PresentationService {
   }
 
   loadPreviewSettings(): void {
-    const settings: any = this.configService.get(StorageType.LayoutPreview);
+    const settings: LayoutPreviewType = this.configService.get(StorageType.LayoutPreview);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {
@@ -198,14 +198,14 @@ export class PresentationService {
   }
 
   saveThemeSettings(): void {
-    const settings = {
+    const settings: LayoutThemeType = {
       _defaultTheme: this._defaultTheme.getValue()
     };
     this.messageService.set(StorageType.LayoutTheme, settings);
   }
 
   loadThemeSettings(): void {
-    const settings: any = this.configService.get(StorageType.LayoutTheme);
+    const settings: LayoutThemeType = this.configService.get(StorageType.LayoutTheme);
     if (Object.keys(settings).length) {
       for (const [key, value] of Object.entries(settings)) {
         if (this[key]) {
@@ -271,7 +271,7 @@ export class PresentationService {
   }
 
   resetPreview() {
-    const settings = {
+    const settings: LayoutPreviewType = {
       _fontSize: this.defaultFontSize,
       _fontColor: this.defaultFontColor,
       _displayText: this._displayText.getValue(),

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService, ConfigService, ElectronService, MessageService } from '@app/core/services';
+import { SystemConfig } from '@main/types';
 
 @Injectable()
 export class BootService {
@@ -14,7 +15,7 @@ export class BootService {
   public init() {
     return new Promise((resolve, reject) => {
       if (this.electronService.isElectron) {
-        this.messageService.systemBoot().then((result: any) => {
+        this.messageService.systemBoot().then((result: SystemConfig) => {
           this.configService.setConfig(result);
           if (result?.user) {
             this.authService.setAuthUser(result.user);

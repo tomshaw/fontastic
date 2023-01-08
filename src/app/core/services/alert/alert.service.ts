@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AppAlert } from '@app/core/interface';
+import { AppAlert } from '@main/types';
 import { AlertTypes, AlertTimeout, AlertProps } from '@main/config/alert';
 
 @Injectable({
@@ -15,18 +15,11 @@ export class AlertService {
   constructor(
     private router: Router
   ) {
-
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.clear();
       }
     });
-
-    // this.getObservable().subscribe((ev: AppAlert) => {
-    //   if (ev && !ev.keep) {
-    //     setTimeout(() => this.clear(), ev.timeout);
-    //   }
-    // });
   }
 
   getObservable(): Observable<AppAlert> {

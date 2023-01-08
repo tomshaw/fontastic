@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, ConfigService, BreadcrumbService, MessageService } from '@app/core/services';
-import { SystemConfig, AuthUser } from '@app/core/interface';
+import { SystemConfig, AuthUser } from '@main/types';
 
 @Component({
   selector: 'app-settings-form-logs',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '@app/core/services';
-import { AppAlert } from '@app/core/interface';
+import { AppAlert } from '@main/types';
 import { AlertProps } from '@main/config/alert';
 
 @Component({
@@ -10,8 +10,8 @@ import { AlertProps } from '@main/config/alert';
 })
 export class AlertComponent implements OnInit {
 
-  public alert: AppAlert = AlertProps;
-  public alertEnabled = false;
+  alert: AppAlert = AlertProps;
+  alertEnabled = false;
 
   constructor(
     private alertService: AlertService,
@@ -34,5 +34,4 @@ export class AlertComponent implements OnInit {
     this.alertService.clear();
     this.alertEnabled = false;
   }
-
 }
