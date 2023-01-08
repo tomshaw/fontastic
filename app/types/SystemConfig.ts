@@ -80,12 +80,6 @@ export interface NewsType {
 export interface OptionsType {
   import: {
     type: string
-  },
-  collection: {
-    id: number
-  },
-  store: {
-    id: number
   }
 }
 
@@ -115,6 +109,15 @@ export interface SystemType {
   catalog_path: string
 }
 
+export interface DbType {
+  collection: {
+    id: number
+  },
+  store: {
+    id: number
+  }
+}
+
 export interface SystemConfig {
   database: DatabaseType;
   layout?: LayoutType;
@@ -122,4 +125,5 @@ export interface SystemConfig {
   options: OptionsType;
   system: SystemType;
   user?: AuthUser;
+  db?: DbType
 }
