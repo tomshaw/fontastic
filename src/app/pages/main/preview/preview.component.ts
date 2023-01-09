@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } fr
 import { delay } from 'rxjs/operators';
 import { UtilsService, MessageService, DatabaseService, PresentationService, NewsService, FontService } from '@app/core/services';
 import { Store } from '@main/database/entity/Store.schema';
-import { NewsArticlesType } from '@main/types';
+import { NewsArticlesType, NewsType } from '@main/types';
 
 type StoreWithNews <T> = Partial<T> & { news: NewsArticlesType };
 
@@ -75,24 +75,24 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       scrollElement.scrollTop = 0;
     });
 
-    this.presentationService.watchFontColor$.subscribe((value) => {
+    this.presentationService.watchFontColor$.subscribe((value: string) => {
       this.fontColor = value;
       this.renderFontList();
     });
 
-    this.presentationService.watchFontSize$.subscribe((value) => {
+    this.presentationService.watchFontSize$.subscribe((value: number) => {
       this.fontSize = value;
       this.renderFontList();
     });
 
-    this.presentationService.watchBackgroundColor$.subscribe((value) => this.backgroundColor = value);
+    this.presentationService.watchBackgroundColor$.subscribe((value: string) => this.backgroundColor = value);
 
-    this.presentationService.watchDisplayText$.subscribe((value) => {
+    this.presentationService.watchDisplayText$.subscribe((value: string) => {
       this.displayText = value;
       this.renderFontList();
     });
 
-    this.newsService.watchLatestNews$.subscribe((value: any) => {
+    this.newsService.watchLatestNews$.subscribe((value: NewsType) => {
       if (value?.articles?.length) {
         this.latestNews = value.articles;
         this.presentationService.quickText.push({
@@ -102,9 +102,9 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.presentationService._displayNews.subscribe((value) => this.displayNews = value);
-    this.presentationService.watchWordSpacing$.subscribe((value) => this.wordSpacing = value);
-    this.presentationService.watchLetterSpacing$.subscribe((value) => this.letterSpacing = value);
+    this.presentationService._displayNews.subscribe((value: boolean) => this.displayNews = value);
+    this.presentationService.watchWordSpacing$.subscribe((value: number) => this.wordSpacing = value);
+    this.presentationService.watchLetterSpacing$.subscribe((value: number) => this.letterSpacing = value);
   }
 
   ngAfterViewInit() { }
@@ -216,24 +216,24 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       target.innerHTML = 'favorite';
     }
 
-    this.messageService.updateStore(item.id, { favorite: !status }).then((_result) => {
+    this.messageService.updateStore(item.id, { favorite: !status }).then((_result: Store) => {
       this.databaseService.fetchSystemStats();
     });
   }
 
-  openQuickInstall(_event: Event, item: any) {
+  openQuickInstall(_event: Event, item: Store) {
     if (item?.file_path) {
       this.messageService.openPath(item.file_path);
     }
   }
 
-  openFileLocation(_event: Event, item: any) {
+  openFileLocation(_event: Event, item: Store) {
     if (item?.file_path) {
       this.messageService.showItemInFolder(item.file_path);
     }
   }
 
-  openNewsArticle(_event: Event, item: any) {
+  openNewsArticle(_event: Event, item: StoreWithNews<Store>) {
     if (item?.news.url) {
       this.messageService.openExternal(item.news.url);
     }

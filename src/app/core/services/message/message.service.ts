@@ -124,7 +124,7 @@ export class MessageService {
    * Font Manager
    */
 
-  exec(cmd: string, options: object = {}): Promise<any[]> {
+  exec(cmd: string, options: object = {}): Promise<any> {
     this.electron.ipcRenderer.send(ChannelType.IPCMAIN_REQUEST_EXECUTE_COMMAND, { cmd, options });
     return new Promise((resolve, _reject) => {
       this.electron.ipcRenderer.on(ChannelType.IPCMAIN_RESPONSE_EXECUTE_COMMAND, (_event, response) => {
@@ -151,7 +151,7 @@ export class MessageService {
     });
   }
 
-  fontActivation(options: object = {}): Promise<any[]> {
+  fontActivation(options: object = {}): Promise<Store[]> {
     this.electron.ipcRenderer.send(ChannelType.IPCMAIN_REQUEST_FONT_ACTIVATION, options);
     return new Promise((resolve, _reject) => {
       this.electron.ipcRenderer.on(ChannelType.IPCMAIN_RESPONSE_FONT_ACTIVATION, (_event, response) => {

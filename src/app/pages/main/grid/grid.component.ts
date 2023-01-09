@@ -1,17 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { AlertService, ConfigService, UtilsService, DatabaseService, MessageService } from '@app/core/services';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { delay } from 'rxjs/operators';
+import { AlertService, ConfigService, UtilsService, DatabaseService, MessageService } from '@app/core/services';
+import { Store } from '@main/database/entity/Store.schema';
 
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
-export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
+export class GridComponent implements OnInit, OnDestroy {
 
   @ViewChild('gridElement', { static: true }) scrollElement: ElementRef;
 
-  resultSet = [];
+  resultSet: Store[] = [];
 
   isLoading = true;
   isWindows = false;
@@ -29,7 +30,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const scrollElement: Element = this.scrollElement.nativeElement;
 
-    this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result) => {
+    this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result: Store) => {
       if (result?.id) {
         const el: HTMLDivElement = document.querySelector(`[data-row="${result.id}"]`);
         if (el) {
@@ -38,14 +39,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.databaseService.watchResultSet$.subscribe((results) => {
-      this.resultSet = results;
+    this.databaseService.watchResultSet$.subscribe((result: Store[]) => {
+      this.resultSet = result;
       this.isLoading = false;
       scrollElement.scrollTop = 0;
     });
   }
-
-  ngAfterViewInit() { }
 
   ngOnDestroy() {
     this.resultSet = [];
@@ -114,8 +113,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const options = { files, activate: !checked, temporary };
 
-    this.messageService.fontActivation(options).then((result: any) => {
-
+    this.messageService.fontActivation(options).then((_result: Store[]) => {
       const message = (checked) ? `Successfully deactivated ${item.file_name}.` : `Successfully activated ${item.file_name}.`;
 
       this.messageService.log(message, 1);
