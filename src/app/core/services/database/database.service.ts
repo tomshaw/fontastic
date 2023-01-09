@@ -4,43 +4,47 @@ import { FontService } from '@app/core/services/font/font.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { PresentationService } from '@app/core/services/presentation/presentation.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
+import { Store } from '@main/database/entity/Store.schema';
+import { Collection } from '@main/database/entity/Collection.schema';
 import { QueryOptions, SystemStats } from '@main/types';
 import { StorageType } from '@main/enums';
+
+type StoreWithMeta <T> = Partial<T> & { meta: opentype.Font };
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
 
-  public _activePage = new BehaviorSubject<number>(1);
+  _activePage = new BehaviorSubject<number>(1);
   watchActivePage$ = this._activePage.asObservable();
 
-  public _resultSet = new BehaviorSubject<any[]>([]);
+  _resultSet = new BehaviorSubject<any[]>([]);
   watchResultSet$ = this._resultSet.asObservable();
 
-  public _resultSetCount = new BehaviorSubject<number>(0);
+  _resultSetCount = new BehaviorSubject<number>(0);
   watchResultSetCount$ = this._resultSetCount.asObservable();
 
-  public _resultSetTotal = new BehaviorSubject<number>(0);
+  _resultSetTotal = new BehaviorSubject<number>(0);
   watchResultSetTotal$ = this._resultSetTotal.asObservable();
 
   // Watch collection changes.
-  public _collection = new BehaviorSubject<any[]>([]);
+  _collection = new BehaviorSubject<any[]>([]);
   watchCollection$ = this._collection.asObservable();
 
   // Watch selected collection id.  
-  public _collectionId = new BehaviorSubject<number>(0);
+  _collectionId = new BehaviorSubject<number>(0);
   watchCollectionId$ = this._collectionId.asObservable();
 
   // Watch selected store id.
-  public _storeId = new BehaviorSubject<number>(0);
+  _storeId = new BehaviorSubject<number>(0);
   watchStoreId$ = this._storeId.asObservable();
 
   // Watch selected store row.
-  public _storeRow = new BehaviorSubject<any>({});
+  _storeRow = new BehaviorSubject<any>({});
   watchStoreRow$ = this._storeRow.asObservable();
 
-  public _queryOptions = new BehaviorSubject<QueryOptions>({
+  _queryOptions = new BehaviorSubject<QueryOptions>({
     order: {
       column: 'id',
       direction: 'ASC',
@@ -59,7 +63,7 @@ export class DatabaseService {
 
   search = false;
 
-  public _systemStats = new BehaviorSubject<SystemStats>({
+  _systemStats = new BehaviorSubject<SystemStats>({
     rowCount: 0,
     favoriteCount: 0,
     systemCount: 0,
@@ -77,7 +81,6 @@ export class DatabaseService {
 
     if (electronService.isElectron) {
 
-      // Load saved collection row id.
       if (this.electronService.store.has(StorageType.CollectionId)) {
         const id = this.electronService.store.get(StorageType.CollectionId);
         if (id) {
@@ -85,7 +88,6 @@ export class DatabaseService {
         }
       }
 
-      // Load saved store row id.
       if (this.electronService.store.has(StorageType.StoreId)) {
         const id = this.electronService.store.get(StorageType.StoreId);
         if (id) {
@@ -102,19 +104,19 @@ export class DatabaseService {
 
       this.watchStoreId$.subscribe((id: number) => {
         if (Number.isInteger(id)) {
-          messageService.fetchStoreRow(id).then(async (item: any) => {
+          messageService.fetchStoreRow(id).then(async (item: Store) => {
             if (item) {
-              const localFile = `file://${item.file_path}`;
-              this.fontService.load(localFile).then((data: opentype.Font) => {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                this.setStoreRow({ ...item, font_meta: data });
+              const resource = this.fontService.withTransferProtocol(item.file_path, 'file');
+              this.fontService.load(resource).then((font: opentype.Font) => {
+                const storeWithMeta: StoreWithMeta<Store> = { ...item, meta: font };
+                this.setStoreRow(storeWithMeta);
               });
             }
           });
         }
       });
 
-      // Boot system.
+      // System boot
       messageService.fetchCollections().then(result => this.setCollection(result));
 
       this.fetchSystemStats();
@@ -142,19 +144,19 @@ export class DatabaseService {
     return this._storeId.getValue();
   }
 
-  setStoreRow(items: any) {
+  setStoreRow(items: Store | StoreWithMeta<Store>) {
     this._storeRow.next(items);
   }
 
-  getStoreRow(): any {
+  getStoreRow(): Store | StoreWithMeta<Store> {
     return this._storeRow.getValue();
   }
 
-  setStoreResultSet(data: any[]): void {
+  setStoreResultSet(data: Store[]): void {
     this._resultSet.next(data);
   }
 
-  getStoreResultSet(): any {
+  getStoreResultSet(): Store[] {
     return this._resultSet.getValue();
   }
 
@@ -187,11 +189,11 @@ export class DatabaseService {
     return this._collectionId.getValue();
   }
 
-  setCollection(items: any[]) {
+  setCollection(items: Collection[]) {
     this._collection.next(items);
   }
 
-  getCollection(): object {
+  getCollection(): Collection[] {
     return this._collection.getValue();
   }
 
@@ -255,7 +257,7 @@ export class DatabaseService {
 
   async execute(options: QueryOptions) {
     const t0 = performance.now();
-    const [total, results] = await this.messageService.fetchStore(options);
+    const [total, results]: any = await this.messageService.fetchStore(options);
     const t1 = performance.now();
     this._resultSetCount.next(results.length);
     this._resultSetTotal.next(total);

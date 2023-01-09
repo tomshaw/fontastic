@@ -3,6 +3,9 @@ import { UtilsService, MessageService, PresentationService, DatabaseService, Bre
 import { Router } from '@angular/router';
 import { SystemStats } from '@main/types';
 import { StorageType } from '@main/enums';
+import { Collection } from '@main/database/entity/Collection.schema';
+
+type CollectionWithChildren <T> = Partial<T> & { children: Collection[] };
 
 @Component({
   selector: 'app-navigation',
@@ -11,10 +14,9 @@ import { StorageType } from '@main/enums';
 })
 export class NavigationComponent implements OnInit {
 
-  resultSet = [];
+  resultSet: CollectionWithChildren<Collection>[] = [];
 
   collectionId: number;
-  collectionResultSet = [];
 
   navCollapsed = false;
   statsCollapsed = true;
@@ -45,26 +47,24 @@ export class NavigationComponent implements OnInit {
       if (collectionId) {
         this.collectionId = collectionId;
         this.databaseService.setWhere('collection_id', collectionId).run();
-        this.breadcrumbService.setNavigation(collectionId, this.collectionResultSet);
+        this.breadcrumbService.setNavigation(collectionId, this.resultSet);
       } else {
         this.databaseService.run();
       }
     });
 
-    // Reloads changes when collections are created/deleted.
-    this.databaseService.watchCollection$.subscribe((result) => {
-      this.collectionResultSet = result;
+    this.databaseService.watchCollection$.subscribe((result: Collection[]) => {
       if (this.collectionId) {
         this.breadcrumbService.setNavigation(this.collectionId, result);
       }
       this.resultSet = this.utils.expandEntities(result);
     });
 
-    this.databaseService.watchSystemStats$.subscribe((result: SystemStats | any) => {
-      this.rowCount = (result?.rowCount?.total) ? result.rowCount.total : 0;
-      this.favoriteCount = (result?.favoriteCount?.total) ? result.favoriteCount.total : 0;
-      this.systemCount = (result?.systemCount?.total) ? result.systemCount.total : 0;
-      this.activatedCount = (result?.activatedCount?.total) ? result.activatedCount.total : 0;
+    this.databaseService.watchSystemStats$.subscribe((result: SystemStats) => {
+      this.rowCount = (result?.rowCount) ? result.rowCount : 0;
+      this.favoriteCount = (result?.favoriteCount) ? result.favoriteCount : 0;
+      this.systemCount = (result?.systemCount) ? result.systemCount : 0;
+      this.activatedCount = (result?.activatedCount) ? result.activatedCount : 0;
     });
   }
 
@@ -137,7 +137,7 @@ export class NavigationComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const collectionId = Number(target.dataset.id);
 
-    this.messageService.updateCollection(collectionId, { title: target.value }).then((result) => {
+    this.messageService.updateCollection(collectionId, { title: target.value }).then((result: Collection[]) => {
       if (collectionId === this.collectionId) {
         this.databaseService.setCollectionId(collectionId);
         this.databaseService.setCollection(result);
@@ -158,19 +158,12 @@ export class NavigationComponent implements OnInit {
     this.databaseService.setSearch(false);
 
     this.messageService.resetEnabledCollection().then(() => {
-
-      this.messageService.updateCollection(collectionId, { enabled: target.checked }).then((result) => {
-
+      this.messageService.updateCollection(collectionId, { enabled: target.checked }).then((result: Collection[]) => {
         this.databaseService.resetPage(1);
-
         this.databaseService.setCollectionId(collectionId);
-
         this.databaseService.setCollection(result);
-
         this.breadcrumbService.setNavigation(collectionId, result);
-
         this.clearSelected();
-
         if (this.router.url !== '/main') {
           this.router.navigate(['/main']);
         }
@@ -184,19 +177,12 @@ export class NavigationComponent implements OnInit {
     }
 
     this.messageService.resetEnabledCollection().then(() => {
-
-      this.messageService.updateCollection(collectionId, { enabled: true }).then((result) => {
-
+      this.messageService.updateCollection(collectionId, { enabled: true }).then((result: Collection[]) => {
         this.databaseService.resetPage(1);
-
         this.databaseService.setCollectionId(collectionId);
-
         this.databaseService.setCollection(result);
-
         this.breadcrumbService.setNavigation(collectionId, result);
-
         this.clearSelected();
-
         if (this.router.url !== '/main') {
           this.router.navigate(['/main']);
         }
@@ -207,12 +193,9 @@ export class NavigationComponent implements OnInit {
   handleCreateCollection(event: Event, parentId: number): void {
     this.presentationService.setLoadingSpinner(true);
 
-    this.messageService.createCollection(parentId).then((result) => {
-
+    this.messageService.createCollection(parentId).then((result: Collection[]) => {
       this.databaseService.setCollection(result);
-
       this.presentationService.setLoadingSpinner(false);
-
       this.messageService.log(`Created new sub collection in #${parentId}.`, 1);
     });
   }
@@ -223,12 +206,9 @@ export class NavigationComponent implements OnInit {
 
     this.presentationService.setLoadingSpinner(true);
 
-    this.messageService.deleteCollection(id).then((result) => {
-
+    this.messageService.deleteCollection(id).then((result: Collection[]) => {
       this.databaseService.setCollection(result);
-
       this.presentationService.setLoadingSpinner(false);
-
       this.messageService.log(`Deleted collection id #${id}.`, 1);
     });
   }

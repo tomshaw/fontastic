@@ -15,6 +15,10 @@ export class FontService {
     return opentype.load(filePath);
   }
 
+  withTransferProtocol(resource: string, protocol: string = 'file') {
+    return `${protocol}://${resource}`;
+  }
+
   clearCanvas(context: CanvasRenderingContext2D) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     context.beginPath();

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ConfigService, BreadcrumbService, MessageService, AlertService } from '@app/core/services';
+import { ConfigService, BreadcrumbService, MessageService, AlertService, NewsService } from '@app/core/services';
 import { NewsType, SystemConfig } from '@main/types';
 import { StorageType } from '@main/enums';
 
@@ -16,6 +16,7 @@ export class NewsComponent implements OnInit, OnDestroy {
   constructor(
     private alertService: AlertService,
     private configService: ConfigService,
+    private newsService: NewsService,
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService
   ) {
@@ -41,6 +42,14 @@ export class NewsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.apiKey = '';
+  }
+
+  onRefreshLatestNews(_event: Event): void {
+    this.newsService.fetchLatestNews(true).then((result: NewsType) => {
+      if (result?.articles?.length) {
+        this.alertService.success(`Successfully fetched ${result.articles.length} latest news articles!`);
+      }
+    });
   }
 
   onSubmit(form: NgForm) {

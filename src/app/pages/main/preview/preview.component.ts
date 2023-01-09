@@ -1,6 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { UtilsService, MessageService, DatabaseService, PresentationService, NewsService, FontService } from '@app/core/services';
 import { delay } from 'rxjs/operators';
+import { UtilsService, MessageService, DatabaseService, PresentationService, NewsService, FontService } from '@app/core/services';
+import { Store } from '@main/database/entity/Store.schema';
+import { NewsArticlesType } from '@main/types';
+
+type StoreWithNews <T> = Partial<T> & { news: NewsArticlesType };
 
 @Component({
   selector: 'app-preview',
@@ -11,7 +15,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('scrollElement', { static: true }) scrollElement: ElementRef;
 
-  resultSet: any[] = [];
+  resultSet = [];
 
   isLoading = true;
 
@@ -36,7 +40,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     const scrollElement: Element = this.scrollElement.nativeElement;
 
-    this.databaseService.watchStoreRow$.subscribe((result) => {
+    this.databaseService.watchStoreRow$.subscribe((result: Store) => {
       if (!this.utils.isEmptyObject(result)) {
         this.utils.createFontStyles([result], (styleString: string) => {
           this.utils.appendStyles(styleString);
@@ -44,22 +48,22 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result) => {
+    this.databaseService.watchStoreRow$.pipe(delay(1e3 / 5)).subscribe((result: Store) => {
       if (result?.id) {
-        const el = document.getElementById(result.id);
+        const el = document.getElementById(`${result.id}`);
         if (el) {
           this.utils.scrollTo(scrollElement, el.offsetTop);
         }
       }
     });
 
-    this.databaseService.watchResultSet$.subscribe((results) => {
+    this.databaseService.watchResultSet$.subscribe((results: Store[]) => {
       if (this.latestNews.length) {
-        const items = [];
+        const items: StoreWithNews<Store>[] = [];
         for (let i = 0, total = results.length; i < total; i++) {
           const item = results[i];
-          item.news = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
-          items.push(item);
+          const news: NewsArticlesType = this.latestNews[Math.floor(Math.random() * this.latestNews.length)];
+          items.push(Object.assign(item, { news }));
         }
         this.resultSet = items;
       } else {
@@ -111,8 +115,8 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   renderFontList() {
     this.resultSet.forEach((item: any) => {
-      const localFile = `file://${item.file_path}`;
-      this.fontService.load(localFile).then((font: opentype.Font) => {
+      const resource = this.fontService.withTransferProtocol(item.file_path, 'file');
+      this.fontService.load(resource).then((font: opentype.Font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
 
         if (!canvas) {
@@ -168,9 +172,10 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onSampleClick(event: Event, item: any): void {
+  onSampleClick(_event: Event, item: any): void {
     if (item.sample_text) {
-      this.fontService.load(`file://${item.file_path}`).then((font: opentype.Font) => {
+      const resource = this.fontService.withTransferProtocol(item.file_path, 'file');
+      this.fontService.load(resource).then((font: opentype.Font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
 
         if (!canvas) {
@@ -211,24 +216,24 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       target.innerHTML = 'favorite';
     }
 
-    this.messageService.updateStore(item.id, { favorite: !status }).then((result) => {
+    this.messageService.updateStore(item.id, { favorite: !status }).then((_result) => {
       this.databaseService.fetchSystemStats();
     });
   }
 
-  openQuickInstall(event: Event, item: any) {
+  openQuickInstall(_event: Event, item: any) {
     if (item?.file_path) {
       this.messageService.openPath(item.file_path);
     }
   }
 
-  openFileLocation(event: Event, item: any) {
+  openFileLocation(_event: Event, item: any) {
     if (item?.file_path) {
       this.messageService.showItemInFolder(item.file_path);
     }
   }
 
-  openNewsArticle(event: Event, item: any) {
+  openNewsArticle(_event: Event, item: any) {
     if (item?.news.url) {
       this.messageService.openExternal(item.news.url);
     }

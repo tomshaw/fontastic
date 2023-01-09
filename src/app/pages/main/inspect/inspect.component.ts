@@ -25,8 +25,8 @@ export class InspectComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.databaseService.watchStoreRow$.pipe(delay(1e3 / 2)).subscribe((result) => {
-      if (result?.font_meta?.tables) {
-        this.fontObject = result.font_meta;
+      if (result?.meta?.tables) {
+        this.fontObject = result.meta;
         this.fontFamily = result.file_name.replace(/\.[^/.]+$/, '');
       }
     });

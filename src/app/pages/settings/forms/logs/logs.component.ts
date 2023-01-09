@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, ConfigService, BreadcrumbService, MessageService } from '@app/core/services';
+import { Logger } from '@main/database/entity/Logger.schema';
 import { SystemConfig, AuthUser } from '@main/types';
 
 @Component({
@@ -36,7 +37,7 @@ export class LogsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.messageService.fetchLogs().then((results) => this.resultSet = results);
+    this.messageService.fetchLogs().then((result: Logger[]) => this.resultSet = result);
   }
 
   filterMessageType(type: number): string {
@@ -48,7 +49,7 @@ export class LogsComponent implements OnInit {
   }
 
   handleDelete(id: number): void {
-    this.messageService.deleteLog({ id }).then((results) => this.resultSet = results);
+    this.messageService.deleteLog({ id }).then((result: Logger[]) => this.resultSet = result);
   }
 
   handleTruncate(event: Event): void {

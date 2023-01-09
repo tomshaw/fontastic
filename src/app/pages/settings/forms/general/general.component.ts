@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService, BreadcrumbService, AlertService, ConfigService, NewsService, MessageService, DatabaseService, PresentationService } from '@app/core/services';
 import { AuthUserModel, ImportOptionsModel } from '@app/core/model';
-import { SystemConfig, AuthUser, ImportOptions } from '@main/types';
+import { SystemConfig, AuthUser, ImportOptions, NewsType } from '@main/types';
 import { importUserOptions } from '@main/config/system';
 import { StorageType } from '@main/enums';
 
@@ -15,7 +15,7 @@ export class GeneralComponent implements OnInit {
 
   config: SystemConfig;
 
-  hasNewsArticles = false;
+  hasNewsApiKey = false;
 
   user: AuthUser = new AuthUserModel('', '', '');
 
@@ -45,9 +45,10 @@ export class GeneralComponent implements OnInit {
       }
     }
 
-    this.newsService.watchLatestNews$.subscribe((value: any) => {
-      if (value?.articles?.length) {
-        this.hasNewsArticles = true;
+    this.newsService.watchLatestNews$.subscribe((result: NewsType) => {
+      console.log('watchLatestNews$', result);
+      if (result?.apiKey) {
+        this.hasNewsApiKey = true;
       }
     });
 
@@ -97,11 +98,16 @@ export class GeneralComponent implements OnInit {
     }).catch((err) => { });
   }
 
-  onRefreshLatestNews(event: Event): void {
-    this.newsService.refreshLatestNews(true);
+  onRefreshLatestNews(_event: Event): void {
+    this.newsService.fetchLatestNews(true);
   }
 
-  onExitApplication(event: Event): void {
+  onRestartApplication(_event: Event): void {
+    this.messageService.beep();
+    this.messageService.reloadWindow();
+  }
+
+  onExitApplication(_event: Event): void {
     this.messageService.beep();
     this.messageService.quitApplication();
   }

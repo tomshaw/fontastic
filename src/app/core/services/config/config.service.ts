@@ -42,8 +42,7 @@ export class ConfigService {
 
   debug() {
     const config: SystemConfig = this.getConfig();
-    console.warn(config);
-    console.table(config.system);
+    console.log(config);
   }
 
   /**

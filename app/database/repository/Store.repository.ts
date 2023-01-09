@@ -159,8 +159,8 @@ export const StoreRepository = {
   },
 
   async resetTemporaryFonts(uptime: number) {
-    let rows = await this.createQueryBuilder().where("store.temporary = 1").getMany();
-    let now = new Date().getTime();
+    const rows = await this.createQueryBuilder().where("store.temporary = 1").getMany();
+    const now = new Date().getTime();
     rows.forEach((row: any) => {
       let updated = new Date(row.updated).getTime() + (1000 * uptime);
       if (updated < now) {
@@ -187,10 +187,9 @@ export const StoreRepository = {
   },
 
   async syncActivated() {
+    const results = await this.createQueryBuilder("store").select(['store.file_name']).where("store.system = 1").getMany();
 
-    let results = await this.createQueryBuilder("store").select(['store.file_name']).where("store.system = 1").getMany();
-
-    let fileNames = results.map((item: any) => item.file_name);
+    const fileNames = results.map((item: any) => item.file_name);
 
     return await this.createQueryBuilder()
       .update(Store)
@@ -320,34 +319,37 @@ export const StoreRepository = {
   },
 
   async fetchSystemStats() {
-
-    let rowCount = await this.createQueryBuilder()
+    const rowCount = await this.createQueryBuilder()
       .select("COUNT(*)", "total")
       .getRawOne();
 
-    let activatedCount = await this.createQueryBuilder()
+    const activatedCount = await this.createQueryBuilder()
       .select("COUNT(*)", "total")
       .where("store.activated = 1")
       .andWhere("store.system = 0")
       .getRawOne();
 
-    let favoriteCount = await this.createQueryBuilder()
+    const favoriteCount = await this.createQueryBuilder()
       .select("COUNT(*)", "total")
       .where("store.favorite = 1")
       .getRawOne();
 
-    let systemCount = await this.createQueryBuilder()
+    const systemCount = await this.createQueryBuilder()
       .select("COUNT(*)", "total")
       .where("store.system = 1")
       .getRawOne();
 
-    let temporaryCount = await this.createQueryBuilder()
+    const temporaryCount = await this.createQueryBuilder()
       .select("COUNT(*)", "total")
       .where("store.temporary = 1")
       .getRawOne();
 
     return {
-      rowCount, activatedCount, favoriteCount, systemCount, temporaryCount
+      rowCount: rowCount.total,
+      activatedCount: activatedCount.total,
+      favoriteCount: favoriteCount.total,
+      systemCount: systemCount.total,
+      temporaryCount: temporaryCount.total
     }
   }
 }

@@ -30,7 +30,7 @@ export class NewsService {
       this.setLatestNews(this.configService.get(StorageType.News));
     }
 
-    this.refreshLatestNews();
+    this.fetchLatestNews();
   }
 
   get currentTime(): number {
@@ -61,7 +61,7 @@ export class NewsService {
     return this.getLatestNews().apiKey ? true : false;
   }
 
-  refreshLatestNews(skipTimeCheck: boolean = false) {
+  async fetchLatestNews(skipTimeCheck: boolean = false) {
     if (!this.hasApiKey()) {
       return;
     }
@@ -69,24 +69,26 @@ export class NewsService {
     const news = this.getLatestNews();
 
     if (skipTimeCheck) {
-      this.fetchNews();
+      return await this.sendRequest();
     } else if (this.checkTime(news.ts)) {
-      this.fetchNews();
+      return await this.sendRequest();
     }
   }
 
-  fetchNews() {
-    this.messageService.fetchLatestNews({
+  async sendRequest() {
+    const response: NewsType = await this.messageService.fetchLatestNews({
       endpoint: this.endpoints.business + this.getApiKey()
-    }).then((response: NewsType) => {
-      if (response?.status === 'ok') {
-        const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
-        this.setLatestNews(saved);
-        this.messageService.set(StorageType.News, saved);
-        this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
-      } else {
-        this.messageService.log('Failed to fetch latest news articles.', 1);
-      }
     });
+    
+    if (response?.status === 'ok') {
+      const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
+      this.setLatestNews(saved);
+      this.messageService.set(StorageType.News, saved);
+      this.messageService.log(`Updated latest news at: ${this.timeUTCString}`, 1);
+    } else {
+      this.messageService.log('Failed to fetch latest news articles.', 1);
+    }
+
+    return response;
   }
 }

@@ -12,13 +12,18 @@
               <!-- Head -->
               <div class="page__header">
                 <div class="text-left">
-                  <h1>Database Management</h1>
+                  <h1>Latest News</h1>
                 </div>
+                <ng-container *ngIf="apiKey">
+                  <div class="text-right">
+                    <app-button [type]="'button'" [title]="'Submit'" [ngClass]="'app-button__2xl app-button__rounded'"
+                      (handleButtonClick)="onRefreshLatestNews($event)">Fetch Articles</app-button>
+                  </div>
+                </ng-container>
               </div>
 
               <form class="form" #newsApiForm="ngForm" (ngSubmit)="onSubmit(newsApiForm)">
 
-                <!-- Body -->
                 <div class="page__body">
                   <div class="form-group">
                     <label for="apiKey">Api Key</label>
@@ -30,7 +35,6 @@
                   </div>
                 </div>
 
-                <!-- Footer -->
                 <div class="page__footer">
                   <div>
                     <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md app-button__rounded'"

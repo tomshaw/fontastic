@@ -18,8 +18,8 @@ export class TablesComponent implements OnInit {
 
   ngOnInit() {
     this.databaseService.watchStoreRow$.subscribe((result) => {
-      if (result?.font_meta?.names) {
-        this.tableNames = this.fontService.normalizeTableNames(result.font_meta.names);
+      if (result?.meta?.names) {
+        this.tableNames = this.fontService.normalizeTableNames(result.meta.names);
       }
     });
   }

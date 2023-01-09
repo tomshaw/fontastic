@@ -98,7 +98,7 @@
                 </dl>
               </form>
 
-              <form *ngIf="hasNewsArticles">
+              <form *ngIf="hasNewsApiKey">
                 <dl>
                   <dt>
                     <label>Fetch latest news</label>
@@ -107,6 +107,19 @@
                   <dd>
                     <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
                       (handleButtonClick)="onRefreshLatestNews($event)">Submit</app-button>
+                  </dd>
+                </dl>
+              </form>
+
+              <form>
+                <dl>
+                  <dt>
+                    <label>Restart application</label>
+                    <span>Restarts the application.</span>
+                  </dt>
+                  <dd>
+                    <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+                      (handleButtonClick)="onRestartApplication($event)">Submit</app-button>
                   </dd>
                 </dl>
               </form>
