@@ -80,21 +80,16 @@ export class PresentationService {
     private messageService: MessageService,
     private electronService: ElectronService
   ) {
-
     if (this.electronService.isElectron) {
-
       if (this.configService.has(StorageType.LayoutPanel)) {
         this.loadLayoutSettings();
       }
-
       if (this.configService.has(StorageType.LayoutPreview)) {
         this.loadPreviewSettings();
       }
-
       if (this.configService.has(StorageType.LayoutTheme)) {
         this.loadThemeSettings();
       }
-
     }
   }
 

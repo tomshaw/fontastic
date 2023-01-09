@@ -1,13 +1,13 @@
 export enum StorageType {
   User = 'user',
+  News = 'news',
   Options = 'options',
   Import = 'options.import.type',
-  CollectionId = 'db.collection.id',
-  StoreId = 'db.store.id',
   System = 'system',
   Database = 'database',
   DatabaseConnections = 'database.connections',
-  News = 'news',
+  CollectionId = 'catalog.collection.id',
+  StoreId = 'catalog.store.id',
   LayoutPanel = 'layout.panel',
   LayoutPreview = 'layout.preview',
   LayoutTheme = 'layout.theme'

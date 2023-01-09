@@ -57,33 +57,42 @@ export interface LayoutType {
 }
 
 export interface NewsArticlesType {
-  source: {
+  source?: {
     id: string,
     name: string
   },
-  author: string,
-  title: string,
-  description: string,
-  url: string,
-  urlToImage: string,
-  publishedAt: string,
-  content: string
+  author?: string,
+  title?: string,
+  description?: string,
+  url?: string,
+  urlToImage?: string,
+  publishedAt?: string,
+  content?: string
 }
 
 export interface NewsType {
-  ts: number,
-  articles: NewsArticlesType[],
-  apiKey: string,
+  ts?: number,
+  articles?: NewsArticlesType[],
+  apiKey?: string,
   status?: string
 }
 
 export interface OptionsType {
-  import: {
+  import?: {
     type: string
   }
 }
 
-export interface UpTimeType {
+export interface CatalogType {
+  collection?: {
+    id: number
+  },
+  store?: {
+    id: number
+  }
+}
+
+export interface UptimeType {
   ts: number,
   hours: number,
   minutes: number,
@@ -91,7 +100,7 @@ export interface UpTimeType {
 }
 
 export interface SystemType {
-  uptime: UpTimeType,
+  uptime: UptimeType,
   locale: string,
   is_dev: boolean,
   is_production: boolean,
@@ -109,21 +118,12 @@ export interface SystemType {
   catalog_path: string
 }
 
-export interface DbType {
-  collection: {
-    id: number
-  },
-  store: {
-    id: number
-  }
-}
-
 export interface SystemConfig {
+  catalog?: CatalogType;
   database: DatabaseType;
   layout?: LayoutType;
   news?: NewsType;
   options: OptionsType;
   system: SystemType;
   user?: AuthUser;
-  db?: DbType
 }

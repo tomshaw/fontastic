@@ -4,14 +4,14 @@ exports.StorageType = void 0;
 var StorageType;
 (function (StorageType) {
     StorageType["User"] = "user";
+    StorageType["News"] = "news";
     StorageType["Options"] = "options";
     StorageType["Import"] = "options.import.type";
-    StorageType["CollectionId"] = "db.collection.id";
-    StorageType["StoreId"] = "db.store.id";
     StorageType["System"] = "system";
     StorageType["Database"] = "database";
     StorageType["DatabaseConnections"] = "database.connections";
-    StorageType["News"] = "news";
+    StorageType["CollectionId"] = "catalog.collection.id";
+    StorageType["StoreId"] = "catalog.store.id";
     StorageType["LayoutPanel"] = "layout.panel";
     StorageType["LayoutPreview"] = "layout.preview";
     StorageType["LayoutTheme"] = "layout.theme";
