@@ -28,7 +28,6 @@ export class MessageService {
         resolve(response);
       });
     });
-
   }
 
   systemReset() {

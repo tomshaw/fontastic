@@ -41,7 +41,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const scrollElement: Element = this.scrollElement.nativeElement;
 
     this.databaseService.watchStoreRow$.subscribe((result: Store) => {
-      if (!this.utils.isEmptyObject(result)) {
+      if (result) {
         this.utils.createFontStyles([result], (styleString: string) => {
           this.utils.appendStyles(styleString);
         });

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DatabaseService, FontService, PresentationService } from '@app/core/services';
+import { FontService, PresentationService } from '@app/core/services';
 
 @Component({
   selector: 'app-tables',
@@ -11,15 +11,14 @@ export class TablesComponent implements OnInit {
   tableNames: any = [];
 
   constructor(
-    private databaseService: DatabaseService,
     private fontService: FontService,
     private presentationService: PresentationService
   ) { }
 
   ngOnInit() {
-    this.databaseService.watchStoreRow$.subscribe((result) => {
-      if (result?.meta?.names) {
-        this.tableNames = this.fontService.normalizeTableNames(result.meta.names);
+    this.fontService.watchFontObject$.subscribe((result: opentype.Font) => {
+      if (result?.names) {
+        this.tableNames = this.fontService.normalizeTableNames(result.names);
       }
     });
   }

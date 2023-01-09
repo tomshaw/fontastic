@@ -9,7 +9,7 @@ import { waterfallFontScale } from '@main/config/system';
 })
 export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
 
-  @Input() fontObject: any;
+  @Input() fontObject: opentype.Font;
   @Input() fontFamily: string;
   @Input() fontColor: string;
   @Input() latestNews: any[] = [];
@@ -18,7 +18,7 @@ export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
 
   baseSize = 16;
   
-  waterFall = [];
+  typeScale = [];
 
   fontScale = waterfallFontScale;
   fontScaleActive = this.fontScale[1].size;
@@ -28,8 +28,7 @@ export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
-    this.presentationService.watchDisplayText$.subscribe((value) => {
+    this.presentationService.watchDisplayText$.subscribe((value: string) => {
       if (value === 'News headlines from sources across the web.') {
         if (this.latestNews?.length) {
           this.displayText = this.latestNews[Math.floor(Math.random()*this.latestNews.length)].title;
@@ -40,8 +39,9 @@ export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
         this.displayText = value;
       }
     });
-
-    this.setFontScale();
+    if (this.fontObject?.tables) {
+      this.setFontScale();
+    }
   }
 
   ngOnDestroy() {
@@ -59,9 +59,9 @@ export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
     const scaleRatio = this.fontScaleActive;
     let result = baseSize;
 
-    const waterFall = [];
+    const items = [];
     for (let i = 0; i < 9; i++) {
-      waterFall.push({
+      items.push({
         fontSize: Math.round(result * 1000) / 1000 + 'em',
         fontFamily: this.fontFamily,
         fontLabel: Math.round(result * 1000) / 1000 + 'rem/' + ((baseSize * 16) * result).toFixed(2) + 'px'
@@ -70,7 +70,7 @@ export class WaterfallComponent implements OnChanges, OnInit, OnDestroy {
       baseSize = result;
     }
 
-    this.waterFall = waterFall;
+    this.typeScale = items;
   }
 
   onUpdateBaseSize(event: Event): void {

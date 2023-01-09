@@ -19,7 +19,7 @@ export class DatabaseService {
   _activePage = new BehaviorSubject<number>(1);
   watchActivePage$ = this._activePage.asObservable();
 
-  _resultSet = new BehaviorSubject<any[]>([]);
+  _resultSet = new BehaviorSubject<Store[]>([]);
   watchResultSet$ = this._resultSet.asObservable();
 
   _resultSetCount = new BehaviorSubject<number>(0);
@@ -28,20 +28,17 @@ export class DatabaseService {
   _resultSetTotal = new BehaviorSubject<number>(0);
   watchResultSetTotal$ = this._resultSetTotal.asObservable();
 
-  // Watch collection changes.
-  _collection = new BehaviorSubject<any[]>([]);
+  _collection = new BehaviorSubject<Collection[]>([]);
   watchCollection$ = this._collection.asObservable();
-
-  // Watch selected collection id.  
+  
   _collectionId = new BehaviorSubject<number>(0);
   watchCollectionId$ = this._collectionId.asObservable();
 
-  // Watch selected store id.
   _storeId = new BehaviorSubject<number>(0);
   watchStoreId$ = this._storeId.asObservable();
 
   // Watch selected store row.
-  _storeRow = new BehaviorSubject<any>({});
+  _storeRow = new BehaviorSubject<Store>(null);
   watchStoreRow$ = this._storeRow.asObservable();
 
   _queryOptions = new BehaviorSubject<QueryOptions>({
@@ -104,30 +101,28 @@ export class DatabaseService {
 
       this.watchStoreId$.subscribe((id: number) => {
         if (Number.isInteger(id)) {
-          messageService.fetchStoreRow(id).then(async (item: Store) => {
-            if (item) {
-              const resource = this.fontService.withTransferProtocol(item.file_path, 'file');
-              this.fontService.load(resource).then((font: opentype.Font) => {
-                const storeWithMeta: StoreWithMeta<Store> = { ...item, meta: font };
-                this.setStoreRow(storeWithMeta);
-              });
+          messageService.fetchStoreRow(id).then((result: Store) => {
+            if (result) {
+              this.setStoreRow(result);
+              const resource = this.fontService.withTransferProtocol(result.file_path, 'file');
+              this.fontService.load(resource).then((font: opentype.Font) => this.fontService.setFontObject(font));
             }
           });
         }
       });
 
       // System boot
-      messageService.fetchCollections().then(result => this.setCollection(result));
+      messageService.fetchCollections().then((result: Collection[]) => this.setCollection(result));
 
       this.fetchSystemStats();
     }
   }
 
-  getResultSetCount() {
+  getResultSetCount(): number {
     return this._resultSetCount.getValue();
   }
 
-  getResultSetTotal() {
+  getResultSetTotal(): number {
     return this._resultSetTotal.getValue();
   }
 
@@ -144,11 +139,11 @@ export class DatabaseService {
     return this._storeId.getValue();
   }
 
-  setStoreRow(items: Store | StoreWithMeta<Store>) {
+  setStoreRow(items: Store) {
     this._storeRow.next(items);
   }
 
-  getStoreRow(): Store | StoreWithMeta<Store> {
+  getStoreRow(): Store {
     return this._storeRow.getValue();
   }
 

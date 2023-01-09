@@ -8,7 +8,7 @@ import { PresentationService } from '@app/core/services';
 })
 export class GlyphsComponent implements OnChanges {
 
-  @Input() fontObject: any;
+  @Input() fontObject: opentype.Font;
   @Input() fontFamily: string;
   @Input() fontColor: string;
 

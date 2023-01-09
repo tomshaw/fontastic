@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from '@app/core/services/utils/utils.service';
 import * as opentype from 'opentype.js';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FontService {
+
+  _fontObject = new BehaviorSubject<opentype.Font>(undefined);
+  watchFontObject$ = this._fontObject.asObservable();
 
   constructor(
     private utils: UtilsService
@@ -13,6 +17,14 @@ export class FontService {
 
   async load(filePath: string): Promise<opentype.Font> {
     return opentype.load(filePath);
+  }
+
+  setFontObject(font: opentype.Font): void {
+    this._fontObject.next(font);
+  }
+
+  getFontObject(): opentype.Font {
+    return this._fontObject.getValue();
   }
 
   withTransferProtocol(resource: string, protocol: string = 'file') {
