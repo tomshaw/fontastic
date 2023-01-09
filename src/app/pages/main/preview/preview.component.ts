@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { delay } from 'rxjs/operators';
 import { UtilsService, MessageService, DatabaseService, PresentationService, NewsService, FontService } from '@app/core/services';
 import { Store } from '@main/database/entity/Store.schema';
@@ -11,7 +11,7 @@ type StoreWithNews <T> = Partial<T> & { news: NewsArticlesType };
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss']
 })
-export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PreviewComponent implements OnInit, OnDestroy {
 
   @ViewChild('scrollElement', { static: true }) scrollElement: ElementRef;
 
@@ -107,14 +107,12 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.presentationService.watchLetterSpacing$.subscribe((value: number) => this.letterSpacing = value);
   }
 
-  ngAfterViewInit() { }
-
   ngOnDestroy() {
     this.resultSet = [];
   }
 
   renderFontList() {
-    this.resultSet.forEach((item: any) => {
+    this.resultSet.forEach((item: StoreWithNews<Store>) => {
       const resource = this.fontService.withTransferProtocol(item.file_path, 'file');
       this.fontService.load(resource).then((font: opentype.Font) => {
         const canvas = document.getElementById(`canvas_${item.id}`) as HTMLCanvasElement;
@@ -164,7 +162,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.letterSpacing + 'em';
   }
 
-  getDisplayText(item: any): string {
+  getDisplayText(item: StoreWithNews<Store>): string {
     if (this.presentationService.getDisplayNews()) {
       return (item.news) ? item.news.title : this.displayText;
     } else {
@@ -172,7 +170,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onSampleClick(_event: Event, item: any): void {
+  onSampleClick(_event: Event, item: Store): void {
     if (item.sample_text) {
       const resource = this.fontService.withTransferProtocol(item.file_path, 'file');
       this.fontService.load(resource).then((font: opentype.Font) => {
@@ -204,7 +202,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onFavoriteClick(event: Event, item: any): void {
+  onFavoriteClick(event: Event, item: Store): void {
     const target = event.target as HTMLInputElement;
     const status = target.classList.contains('favorite') ? true : false;
 
