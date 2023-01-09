@@ -9,8 +9,6 @@ import { Collection } from '@main/database/entity/Collection.schema';
 import { QueryOptions, SystemStats } from '@main/types';
 import { StorageType } from '@main/enums';
 
-type StoreWithMeta <T> = Partial<T> & { meta: opentype.Font };
-
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +35,6 @@ export class DatabaseService {
   _storeId = new BehaviorSubject<number>(0);
   watchStoreId$ = this._storeId.asObservable();
 
-  // Watch selected store row.
   _storeRow = new BehaviorSubject<Store>(null);
   watchStoreRow$ = this._storeRow.asObservable();
 
