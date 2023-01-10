@@ -31,20 +31,25 @@ export default class MessageHandler {
     return ipcMain.on(channel, done);
   }
 
+  send(event: IpcMainEvent, channel: string, data: any): void {
+    event.sender.send(channel, data);
+  }
+
+  handle(channel: string, done: any) {
+    return ipcMain.handle(channel, done);
+  }
+
   initialize() {
-    this.on(ChannelType.IPCMAIN_REQUEST_SYSTEM_BOOT, async (event: IpcMainEvent, _args: any) => {
+    this.handle(ChannelType.IPCMAIN_SYSTEM_BOOT, async (_event: IpcMainEvent, _args: any) => {
       let config = this.configManager.get();
       let system = this.systemManager.toArray();
-      const response: SystemConfig = {
-        ...config,
-        system: system
-      };
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_SYSTEM_BOOT, response);
+      const response: SystemConfig = { ...config, system: system };
+      return response;
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_SYSTEM_RESET, async (event: IpcMainEvent, _args: any) => {
       this.fontManager.reLaunch()
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_SYSTEM_RESET, {});
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_SYSTEM_RESET, {});
     });
 
     /**
@@ -54,17 +59,17 @@ export default class MessageHandler {
     this.on(ChannelType.IPCMAIN_REQUEST_SET_CONFIG, async (event: IpcMainEvent, args: any) => {
       this.configManager.set(args.key, args.values);
       const saved = this.configManager.get(args.key);
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_SET_CONFIG, saved);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_SET_CONFIG, saved);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_GET_CONFIG, async (event: IpcMainEvent, args: any) => {
       const saved = this.configManager.get(args.key);
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_SET_CONFIG, saved);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_SET_CONFIG, saved);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_CLEAR_STORE, async (event: IpcMainEvent) => {
       const response = this.configManager.clear();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_CLEAR_STORE, response);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_CLEAR_STORE, response);
     });
 
     /**
@@ -73,49 +78,49 @@ export default class MessageHandler {
 
     this.on(ChannelType.IPCMAIN_REQUEST_SAVE_DBCONNECTION, async (event: IpcMainEvent, options: any) => {
       if (options.name === 'default') {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
       } else {
         this.configManager.saveDbConnection(options);
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
       }
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_DELETE_DBCONNECTION, async (event: IpcMainEvent, name: string) => {
       if (name === 'default') {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
       } else {
         this.configManager.deleteDbConnection(name);
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, this.configManager.get(StorageType.DatabaseConnections));
       }
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_ENABLE_DBCONNECTION, (event: IpcMainEvent, item: any) => {
       this.configManager.enableDbConnection(item);
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_ENABLE_DBCONNECTION, item);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_ENABLE_DBCONNECTION, item);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_TEST_CONNECTION, async (event: IpcMainEvent, args: any) => {
       let activeConnectionOptions = this.connectionManager.dataSource.options;
       if (activeConnectionOptions.database === args.database) {
         this.connectionManager.isInitialized().then(() => {
-          event.sender.send(ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
+          this.send(event, ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
         }).catch((err: Error) => {
-          event.sender.send(ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
+          this.send(event, ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
         });
       } else {
         this.connectionManager.createDataSource(args).then(() => {
-          event.sender.send(ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
+          this.send(event, ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'success', message: 'Connection tested successfully' });
         }).catch((err: Error) => {
-          event.sender.send(ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
+          this.send(event, ChannelType.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: 'error', message: err.message });
         });
       }
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_DROP_DATABASE, async (event: IpcMainEvent) => {
       this.connectionManager.dropDatabase().then(() => {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_DROP_DATABASE, { type: 'success', message: 'Database droped successfully' });
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_DROP_DATABASE, { type: 'success', message: 'Database droped successfully' });
       }).catch((err: Error) => {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_DROP_DATABASE, { type: 'error', message: err.message });
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_DROP_DATABASE, { type: 'error', message: err.message });
       });
     });
 
@@ -125,8 +130,8 @@ export default class MessageHandler {
 
     this.on(ChannelType.IPCMAIN_REQUEST_EXECUTE_COMMAND, async (event: IpcMainEvent, args: any) => {
       await this.fontManager.executeCommand(args).then((response) => {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_EXECUTE_COMMAND, response);
-      }).catch((err: Error) => event.sender.send(ChannelType.IPCMAIN_RESPONSE_EXECUTE_COMMAND, err.message));
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_EXECUTE_COMMAND, response);
+      }).catch((err: Error) => this.send(event, ChannelType.IPCMAIN_RESPONSE_EXECUTE_COMMAND, err.message));
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_FILES_SCAN, async (event: IpcMainEvent, args: any) => {
@@ -152,7 +157,7 @@ export default class MessageHandler {
 
       Promise.allSettled(promises).then(async () => {
         const result = await this.fetchStore();
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_FILES_SCAN, result);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_FILES_SCAN, result);
       });
     });
 
@@ -181,7 +186,7 @@ export default class MessageHandler {
 
       Promise.allSettled(promises).then(async () => {
         const result = await this.fetchStore();
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_FOLDERS_SCAN, result);
       });
     });
 
@@ -189,34 +194,34 @@ export default class MessageHandler {
       this.fontManager.fontInstaller(args).then(async (response: any) => {
         AppLogger.getInstance().info(response);
         const result = await this.fetchStore();
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
-      }).catch((err: Error) => event.sender.send(ChannelType.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_FONT_ACTIVATION, result);
+      }).catch((err: Error) => this.send(event, ChannelType.IPCMAIN_RESPONSE_FONT_ACTIVATION, err.message));
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_AUTH_USER, async (event: IpcMainEvent, args: any) => {
       await this.fontManager.systemAuthenticate(args).then((response: any) => {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_AUTH_USER, response);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_AUTH_USER, response);
       });
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_FETCH_NEWS, async (event: IpcMainEvent, args: any) => {
       await this.fontManager.fetchLatestNews(args).then((response: any) => {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_FETCH_NEWS, response);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_FETCH_NEWS, response);
       });
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_NEWS_CONTENT, async (event: IpcMainEvent, url: string) => {
       await this.fontManager.fetchNewsContent(url).then((response: any) => {
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_NEWS_CONTENT, response);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_NEWS_CONTENT, response);
       });
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_MESSAGE_BOX, async (event: IpcMainEvent, options: any) => {
-      this.fontManager.showDialogBox(options).then((response: any) => event.sender.send(ChannelType.IPCMAIN_RESPONSE_MESSAGE_BOX, response));
+      this.fontManager.showDialogBox(options).then((response: any) => this.send(event, ChannelType.IPCMAIN_RESPONSE_MESSAGE_BOX, response));
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_OPEN_DIALOG, async (event: IpcMainEvent, options: any) => {
-      this.fontManager.showOpenDialog(options).then((response: any) => event.sender.send(ChannelType.IPCMAIN_RESPONSE_OPEN_DIALOG, response));
+      this.fontManager.showOpenDialog(options).then((response: any) => this.send(event, ChannelType.IPCMAIN_RESPONSE_OPEN_DIALOG, response));
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_OPEN_PATH, async (_event: IpcMainEvent, path: string) => this.fontManager.openPath(path));
@@ -239,32 +244,32 @@ export default class MessageHandler {
 
     this.on(ChannelType.IPCMAIN_REQUEST_FETCH_COLLECTIONS, async (event: IpcMainEvent, ...args: any[]) => {
       const result: Collection[] = await this.connectionManager.getCollection().find(...args);
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_FETCH_COLLECTIONS, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_FETCH_COLLECTIONS, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_CREATE_COLLECTION, async (event: IpcMainEvent, parentId: number) => {
       await this.connectionManager.getCollectionRepository().createCollection(parentId);
       const result: Collection[] = await this.connectionManager.getCollection().find();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_CREATE_COLLECTION, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_CREATE_COLLECTION, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_DELETE_COLLECTION, async (event: IpcMainEvent, collectionId: number) => {
       await this.connectionManager.getCollectionRepository().deleteCollection(collectionId);
       await this.connectionManager.getStoreRepository().deleteCollection(collectionId);
       const result: Collection[] = await this.connectionManager.getCollection().find();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_DELETE_COLLECTION, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_DELETE_COLLECTION, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_UPDATE_COLLECTION, async (event: IpcMainEvent, args: any) => {
       await this.connectionManager.getCollectionRepository().updateCollection(args);
       const result: Collection[] = await this.connectionManager.getCollection().find();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_UPDATE_COLLECTION, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_UPDATE_COLLECTION, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_RESET_ENABLED, async (event: IpcMainEvent) => {
       await this.connectionManager.getCollectionRepository().resetEnabled();
       const result: Collection[] = await this.connectionManager.getCollection().find();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_RESET_ENABLED, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_RESET_ENABLED, result);
     });
 
     /**
@@ -274,36 +279,36 @@ export default class MessageHandler {
     this.on(ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ALL, async (event: IpcMainEvent, args: any) => {
       if (args.search) {
         const result: StoreManyAndCountType = await this.connectionManager.getStoreRepository().search(args);
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
       } else {
         const result: StoreManyAndCountType = await this.connectionManager.getStoreRepository().fetch(args);
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
       }
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ROW, async (event: IpcMainEvent, storeId: number) => {
       const result: Store = await this.connectionManager.getStoreRepository().findOne({ where: { id: storeId } });
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ROW, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ROW, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_STORE_UPDATE, async (event: IpcMainEvent, args: any) => {
       await this.connectionManager.getStoreRepository().update(args.id, args.data);
       const result: Store = await this.connectionManager.getStoreRepository().findOne({ where: { id: args.id } });
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_UPDATE, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_STORE_UPDATE, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_UPDATE_COUNT, async (event: IpcMainEvent, collectionId: number) => {
       const { total } = await this.connectionManager.getStoreRepository().fetchCollectionCount(collectionId);
       await this.connectionManager.getCollectionRepository().updateCollectionCount(collectionId, total);
       const result: Collection[] = await this.connectionManager.getCollection().find();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_UPDATE_COUNT, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_UPDATE_COUNT, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_UPDATE_COUNTS, async (event: IpcMainEvent) => {
       const items = await this.connectionManager.getStoreRepository().fetchCollectionsCount();
       await this.connectionManager.getCollectionRepository().updateCollectionCounts(items);
       const result: Collection[] = await this.connectionManager.getCollection().find();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_UPDATE_COUNTS, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_UPDATE_COUNTS, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_SYNC_SYSTEM, async (event: IpcMainEvent) => {
@@ -315,24 +320,26 @@ export default class MessageHandler {
       });
       Promise.allSettled(promises).then(async () => {
         const result = await this.connectionManager.getStoreRepository().fetchSystemStats();
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
+        this.send(event, ChannelType.IPCMAIN_RESPONSE_SYNC_SYSTEM, result);
       });
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_SYNC_ACTIVATED, async (event: IpcMainEvent) => {
       await this.connectionManager.getStoreRepository().resetActivated();
-      const result = await this.connectionManager.getStoreRepository().syncActivated();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_SYNC_ACTIVATED, result);
+      await this.connectionManager.getStoreRepository().syncActivated();
+      const result = await this.connectionManager.getStoreRepository().fetchSystemStats();
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_SYNC_ACTIVATED, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_RESET_FAVORITES, async (event: IpcMainEvent) => {
-      const results = await this.connectionManager.getStoreRepository().resetFavorites();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_RESET_FAVORITES, results);
+      await this.connectionManager.getStoreRepository().resetFavorites();
+      const result = await this.connectionManager.getStoreRepository().fetchSystemStats();
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_RESET_FAVORITES, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_SYSTEM_STATS, async (event: IpcMainEvent) => {
       const results = await this.connectionManager.getStoreRepository().fetchSystemStats();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_SYSTEM_STATS, results);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_SYSTEM_STATS, results);
     });
 
     /**
@@ -342,24 +349,24 @@ export default class MessageHandler {
     this.on(ChannelType.IPCMAIN_REQUEST_LOGGER_CREATE, async (event: IpcMainEvent, args: any) => {
       await this.connectionManager.getLoggerRepository().log(args);
       const result: Logger[] = await this.fetchLogger();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_LOGGER_CREATE, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_LOGGER_CREATE, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_LOGGER_QUERY, async (event: IpcMainEvent) => {
       const result: Logger[] = await this.fetchLogger();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_LOGGER_QUERY, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_LOGGER_QUERY, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_LOGGER_DELETE_ITEM, async (event: IpcMainEvent, args: any) => {
       await this.connectionManager.getLogger().delete(args.id);
       const result: Logger[] = await this.fetchLogger();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_LOGGER_DELETE_ITEM, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_LOGGER_DELETE_ITEM, result);
     });
 
     this.on(ChannelType.IPCMAIN_REQUEST_LOGGER_TRUNCATE, async (event: IpcMainEvent) => {
       await this.connectionManager.getLogger().clear();
       const result: Logger[] = await this.fetchLogger();
-      event.sender.send(ChannelType.IPCMAIN_RESPONSE_LOGGER_TRUNCATE, result);
+      this.send(event, ChannelType.IPCMAIN_RESPONSE_LOGGER_TRUNCATE, result);
     });
   }
 
