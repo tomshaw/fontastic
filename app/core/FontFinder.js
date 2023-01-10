@@ -21,15 +21,9 @@ class FileSystem {
         this.counter = 0;
         this.errors = [];
         this.found = [];
-        this.setConnectionManager(connectionManager);
+        this.connectionManager = connectionManager;
         this.counter = 0;
         this.errors = [];
-    }
-    setConnectionManager(connectionManager) {
-        this.connectionManager = connectionManager;
-    }
-    getConnectionManager() {
-        return this.connectionManager;
     }
     setCounter(count) {
         this.counter = count;
@@ -79,7 +73,7 @@ class FileSystem {
             let fileType = mime.getType(fp);
             let data = Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: fileSize, file_size_pretty: prettyBytes(fileSize), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options);
             try {
-                this.getConnectionManager().getStoreRepository().create(Object.assign(Object.assign({}, data), font.getNamesTable()));
+                this.connectionManager.getStoreRepository().create(Object.assign(Object.assign({}, data), font.getNamesTable()));
             }
             catch (err) {
                 this.errors.push(err.message);

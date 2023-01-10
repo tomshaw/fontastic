@@ -22,27 +22,9 @@ const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
 class FontManager {
     constructor(systemManager, configManager, connectionManager) {
-        this.setSystemManager(systemManager);
-        this.setConfigManager(configManager);
-        this.setConnectionManager(connectionManager);
-    }
-    setSystemManager(systemManager) {
         this.systemManager = systemManager;
-    }
-    getSystemManager() {
-        return this.systemManager;
-    }
-    setConfigManager(configManager) {
         this.configManager = configManager;
-    }
-    getConfigManager() {
-        return this.configManager;
-    }
-    setConnectionManager(connectionManager) {
         this.connectionManager = connectionManager;
-    }
-    getConnectionManager() {
-        return this.connectionManager;
     }
     fetchLatestNews(args) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -69,8 +51,8 @@ class FontManager {
     systemAuthenticate(args) {
         return __awaiter(this, void 0, void 0, function* () {
             args.status = 'ok';
-            this.getConfigManager().set(enums_1.StorageType.User, args);
-            return this.getConfigManager().get(enums_1.StorageType.User);
+            this.configManager.set(enums_1.StorageType.User, args);
+            return this.configManager.get(enums_1.StorageType.User);
         });
     }
     executeCommand(args) {
@@ -85,7 +67,7 @@ class FontManager {
     }
     scanFiles(files, options) {
         return new Promise((resolve, reject) => {
-            let finder = new FontFinder_1.default(this.getConnectionManager());
+            let finder = new FontFinder_1.default(this.connectionManager);
             finder.scanFiles(files, options, (err) => {
                 if (err) {
                     return reject(err);
@@ -96,7 +78,7 @@ class FontManager {
     }
     scanFolders(dir, options) {
         return new Promise((resolve, reject) => {
-            let finder = new FontFinder_1.default(this.getConnectionManager());
+            let finder = new FontFinder_1.default(this.connectionManager);
             finder.scanFolders(dir, options, (err) => {
                 if (err) {
                     return reject(err);
@@ -106,7 +88,7 @@ class FontManager {
         });
     }
     fontInstaller(options) {
-        let installer = new FontInstaller_1.default(this.getSystemManager(), this.getConnectionManager());
+        let installer = new FontInstaller_1.default(this.systemManager, this.connectionManager);
         return installer.activate(options);
     }
     getMapFilePaths(files, dest) {
@@ -116,7 +98,7 @@ class FontManager {
         return path.normalize(sourceFolder);
     }
     getDestinationFolder() {
-        return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now() + (0, random_1.randNumber)(7));
+        return path.normalize(this.systemManager.getCatalogPath() + path.sep + Date.now() + (0, random_1.randNumber)(7));
     }
     getSourceDestinationFolders(sourceFolder) {
         const src = this.getSourceFolder(sourceFolder);
@@ -124,13 +106,13 @@ class FontManager {
         return { src, dest };
     }
     createCatalog(folder) {
-        const catalog = new FontCatalog_1.default(this.getSystemManager());
+        const catalog = new FontCatalog_1.default(this.systemManager);
         return catalog.createCatalog(folder);
     }
     copyFiles(files, dest) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                const catalog = new FontCatalog_1.default(this.getSystemManager());
+                const catalog = new FontCatalog_1.default(this.systemManager);
                 catalog.copyFiles(files, dest, (err, stdout) => {
                     if (err) {
                         return reject(err);
@@ -143,7 +125,7 @@ class FontManager {
     copyFolders(src, dest) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                const catalog = new FontCatalog_1.default(this.getSystemManager());
+                const catalog = new FontCatalog_1.default(this.systemManager);
                 catalog.copyFolders(src, dest, (err, stdout) => {
                     if (err) {
                         return reject(err);

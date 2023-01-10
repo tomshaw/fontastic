@@ -25,38 +25,10 @@ export default class FontManager {
   configManager: ConfigManager;
   connectionManager: ConnectionManager;
 
-  constructor(
-    systemManager: SystemManager,
-    configManager: ConfigManager,
-    connectionManager: ConnectionManager
-  ) {
-    this.setSystemManager(systemManager);
-    this.setConfigManager(configManager);
-    this.setConnectionManager(connectionManager);
-  }
-
-  setSystemManager(systemManager: SystemManager) {
+  constructor(systemManager: SystemManager, configManager: ConfigManager, connectionManager: ConnectionManager) {
     this.systemManager = systemManager;
-  }
-
-  getSystemManager(): SystemManager {
-    return this.systemManager;
-  }
-
-  setConfigManager(configManager: ConfigManager) {
     this.configManager = configManager;
-  }
-
-  getConfigManager(): ConfigManager {
-    return this.configManager;
-  }
-
-  setConnectionManager(connectionManager: ConnectionManager) {
     this.connectionManager = connectionManager;
-  }
-
-  getConnectionManager(): ConnectionManager {
-    return this.connectionManager;
   }
 
   async fetchLatestNews(args: any) {
@@ -82,8 +54,8 @@ export default class FontManager {
 
   async systemAuthenticate(args: any) {
     args.status = 'ok';
-    this.getConfigManager().set(StorageType.User, args);
-    return this.getConfigManager().get(StorageType.User);
+    this.configManager.set(StorageType.User, args);
+    return this.configManager.get(StorageType.User);
   }
 
   async executeCommand(args: any) {
@@ -96,7 +68,7 @@ export default class FontManager {
 
   scanFiles(files: string[], options: any) {
     return new Promise((resolve, reject) => {
-      let finder = new FontFinder(this.getConnectionManager());
+      let finder = new FontFinder(this.connectionManager);
       finder.scanFiles(files, options, (err: any) => {
         if (err) { return reject(err); }
         return resolve({});
@@ -106,7 +78,7 @@ export default class FontManager {
 
   scanFolders(dir: any, options: any) {
     return new Promise((resolve, reject) => {
-      let finder = new FontFinder(this.getConnectionManager());
+      let finder = new FontFinder(this.connectionManager);
       finder.scanFolders(dir, options, (err: any) => {
         if (err) { return reject(err); }
         return resolve({});
@@ -115,7 +87,7 @@ export default class FontManager {
   }
 
   fontInstaller(options: any) {
-    let installer = new FontInstaller(this.getSystemManager(), this.getConnectionManager());
+    let installer = new FontInstaller(this.systemManager, this.connectionManager);
     return installer.activate(options);
   }
 
@@ -128,7 +100,7 @@ export default class FontManager {
   }
 
   getDestinationFolder() {
-    return path.normalize(this.getSystemManager().getCatalogPath() + path.sep + Date.now() + randNumber(7));
+    return path.normalize(this.systemManager.getCatalogPath() + path.sep + Date.now() + randNumber(7));
   }
 
   getSourceDestinationFolders(sourceFolder: string) {
@@ -138,13 +110,13 @@ export default class FontManager {
   }
 
   createCatalog(folder: string) {
-    const catalog = new FontCatalog(this.getSystemManager());
+    const catalog = new FontCatalog(this.systemManager);
     return catalog.createCatalog(folder);
   }
 
   async copyFiles(files: string[], dest: string) {
     return new Promise((resolve, reject) => {
-      const catalog = new FontCatalog(this.getSystemManager());
+      const catalog = new FontCatalog(this.systemManager);
       catalog.copyFiles(files, dest, (err: any, stdout: any) => {
         if (err) { return reject(err); }
         return resolve({});
@@ -154,7 +126,7 @@ export default class FontManager {
 
   async copyFolders(src: string, dest: string) {
     return new Promise((resolve, reject) => {
-      const catalog = new FontCatalog(this.getSystemManager());
+      const catalog = new FontCatalog(this.systemManager);
       catalog.copyFolders(src, dest, (err: any, stdout: any) => {
         if (err) { return reject(err); }
         return resolve({});

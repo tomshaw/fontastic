@@ -15,17 +15,7 @@ const exec = require('child_process').exec;
 const child = require('child_process').execFile;
 class FontCatalog {
     constructor(systemManager) {
-        this.setSystemManager(systemManager);
-    }
-    setSystemManager(systemManager) {
         this.systemManager = systemManager;
-    }
-    getSystemManager() {
-        return this.systemManager;
-    }
-    getPathExecutable() {
-        const name = this.getSystemManager().getBinaryName();
-        return this.getSystemManager().getBinaryPath(name);
     }
     createCatalog(folder) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,17 +24,17 @@ class FontCatalog {
     }
     commandHelp(done) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield child(this.getPathExecutable(), ['-h'], done);
+            return yield child(this.systemManager.getExecutable(), ['-h'], done);
         });
     }
     findFonts(src, done) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield child(this.getPathExecutable(), ['fonts', 'find', '--root', src], done);
+            return yield child(this.systemManager.getExecutable(), ['fonts', 'find', '--root', src], done);
         });
     }
     copyFiles(files, dest, done) {
         return __awaiter(this, void 0, void 0, function* () {
-            const cmdPath = this.getPathExecutable();
+            const cmdPath = this.systemManager.getExecutable();
             const items = files.map((item) => `"${path.normalize(item)}"`).join(" ");
             const command = `${cmdPath} copy files --destination "${dest}" ${items}`;
             return exec(command, done);
@@ -53,7 +43,7 @@ class FontCatalog {
     copyFolders(src, dest, done) {
         return __awaiter(this, void 0, void 0, function* () {
             const params = ['copy', 'folders', '--source', src, '--destination', dest];
-            return child(this.getPathExecutable(), params, done);
+            return child(this.systemManager.getExecutable(), params, done);
         });
     }
 }

@@ -17,7 +17,7 @@ function createWindow(): BrowserWindow {
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
   machineId(true).then((machineId: string) => {
-    new Application(machineId, !serve)
+    new Application(machineId, !serve).initialize();
   });
 
   // Create the browser window.

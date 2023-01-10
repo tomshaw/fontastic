@@ -99,9 +99,11 @@ class ConfigManager {
     getBinaryName() {
         return (this.getPlatform() === 'win') ? 'activator.exe' : 'activator';
     }
-    getBinaryPath(binaryName) {
-        const binaryPath = this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
-        return path.resolve(path.join(binaryPath, binaryName));
+    getBinaryPath() {
+        return this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
+    }
+    getExecutable() {
+        return path.resolve(path.join(this.getBinaryPath(), this.getBinaryName()));
     }
     toArray() {
         return {

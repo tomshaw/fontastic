@@ -18,9 +18,8 @@ class Application {
     constructor(machineId, isProduction) {
         this.machineId = machineId;
         this.isProduction = isProduction;
-        this.init();
     }
-    init() {
+    initialize() {
         return __awaiter(this, void 0, void 0, function* () {
             const systemManager = new SystemManager_1.default(this.machineId, this.isProduction);
             const configManager = new ConfigManager_1.default(systemManager);

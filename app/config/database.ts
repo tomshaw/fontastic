@@ -16,7 +16,7 @@ export const database = {
     name: "default",
     type: "sqlite",
     title: "Default Database.",
-    description: "The default system database.",
+    description: "The default application database.",
     enabled: true,
     synchronize: true,
     database: "fontastic.sqlite",

@@ -10,16 +10,7 @@ export default class ConfigManager {
   systemManager: SystemManager;
 
   constructor(systemManager: SystemManager) {
-    this.setSystemManager(systemManager);
-    // store.delete(StorageType.Options);
-  }
-
-  setSystemManager(systemManager: SystemManager) {
     this.systemManager = systemManager;
-  }
-
-  getSystemManager(): SystemManager {
-    return this.systemManager;
   }
 
   set(key: string, value: any) {
@@ -69,12 +60,12 @@ export default class ConfigManager {
 
     // @TODO Remove MySQL connection if not in production.
     // Problematic when switching between production and development. Problem arises when connection is not enabled.
-    // database.connections = this.getSystemManager().isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
+    // database.connections = this.systemManager.isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
 
     // Assign user data path to default database.
     database.connections = database.connections.filter((item: any) => {
       if (item.name === 'default' && item.type === 'sqlite') {
-        item.database = this.getSystemManager().getDatabasePath(item.database);
+        item.database = this.systemManager.getDatabasePath(item.database);
       }
       return item;
     })
@@ -82,7 +73,7 @@ export default class ConfigManager {
     if (!store) {
       this.set(StorageType.Database, database);
     } else {
-      // Resets database store.
+      // Resets database.
       //this.set(StorageType.Database, database);
     }
   }

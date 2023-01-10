@@ -13,24 +13,8 @@ export default class FontInstaller {
     systemManager: SystemManager,
     connectionManager: ConnectionManager
   ) {
-    this.setSystemManager(systemManager);
-    this.setConnectionManager(connectionManager);
-  }
-
-  setSystemManager(systemManager: SystemManager) {
     this.systemManager = systemManager;
-  }
-
-  getSystemManager(): SystemManager {
-    return this.systemManager;
-  }
-
-  setConnectionManager(connectionManager: ConnectionManager) {
     this.connectionManager = connectionManager;
-  }
-
-  getConnectionManager(): ConnectionManager {
-    return this.connectionManager;
   }
 
   async activate(args: any) {
@@ -40,41 +24,40 @@ export default class FontInstaller {
 
     if (args.collectionId) {
       let collectionId = parseInt(args.collectionId);
-      let results = await this.getConnectionManager().getStore().find({ where: { collection_id: collectionId } });
+      let results = await this.connectionManager.getStore().find({ where: { collection_id: collectionId } });
       return await this.run({ files: results, activate, temporary }).then(() => {
         if (temporary) {
-          this.getConnectionManager().getStoreRepository().temporaryCollection(collectionId, activate);
+          this.connectionManager.getStoreRepository().temporaryCollection(collectionId, activate);
         } else {
-          this.getConnectionManager().getStoreRepository().activateCollection(collectionId, activate);
+          this.connectionManager.getStoreRepository().activateCollection(collectionId, activate);
         }
       });
     } else {
       return await this.run(args).then(() => {
         let ids = fonts.map((item: any) => item.id);
         if (temporary) {
-          this.getConnectionManager().getStoreRepository().temporaryByIds(ids, activate);
+          this.connectionManager.getStoreRepository().temporaryByIds(ids, activate);
         } else {
-          this.getConnectionManager().getStoreRepository().activateByIds(ids, activate);
+          this.connectionManager.getStoreRepository().activateByIds(ids, activate);
         }
       });
     }
   }
 
   async run(args: any) {
-    const platform = this.getSystemManager().getPlatform();
-    const executable = this.getSystemManager().getBinaryName()
-    const cmdPath = this.getSystemManager().getBinaryPath(executable);
+    const platform = this.systemManager.getPlatform();
+    const executable = this.systemManager.getExecutable();
 
     const activate = (args.activate) ? 'install' : 'uninstall';
-    const temporary = (this.getSystemManager().getPlatform() === "win" && args.temporary && args.temporary === true) ? '--temporary=true' : '--temporary=false';
+    const temporary = (platform === "win" && args.temporary && args.temporary === true) ? '--temporary=true' : '--temporary=false';
     const files = args.files.map((item: any) => `"${path.normalize(item.file_path)}"`).join(" ");
 
-    const command = `${cmdPath} ${activate} ${temporary} ${files}`;
+    const command = `${executable} ${activate} ${temporary} ${files}`;
 
-    if (platform === 'unix') {
-      return execute(command);
-    } else if (platform === 'win') {
+    if (platform === 'win') {
       return prompt(command, { name: "Font Activation" });
+    } else {
+      return execute(command);
     }
   }
 }

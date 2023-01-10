@@ -6,14 +6,7 @@ const Store = require('electron-store');
 const store = new Store();
 class ConfigManager {
     constructor(systemManager) {
-        this.setSystemManager(systemManager);
-        // store.delete(StorageType.Options);
-    }
-    setSystemManager(systemManager) {
         this.systemManager = systemManager;
-    }
-    getSystemManager() {
-        return this.systemManager;
     }
     set(key, value) {
         store.set(key, value);
@@ -55,11 +48,11 @@ class ConfigManager {
         let store = this.get(enums_1.StorageType.Database);
         // @TODO Remove MySQL connection if not in production.
         // Problematic when switching between production and development. Problem arises when connection is not enabled.
-        // database.connections = this.getSystemManager().isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
+        // database.connections = this.systemManager.isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
         // Assign user data path to default database.
         database_1.database.connections = database_1.database.connections.filter((item) => {
             if (item.name === 'default' && item.type === 'sqlite') {
-                item.database = this.getSystemManager().getDatabasePath(item.database);
+                item.database = this.systemManager.getDatabasePath(item.database);
             }
             return item;
         });
@@ -67,7 +60,7 @@ class ConfigManager {
             this.set(enums_1.StorageType.Database, database_1.database);
         }
         else {
-            // Resets database store.
+            // Resets database.
             //this.set(StorageType.Database, database);
         }
     }

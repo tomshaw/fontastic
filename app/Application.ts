@@ -12,10 +12,9 @@ export default class Application {
   constructor(machineId: string, isProduction: boolean) {
     this.machineId = machineId;
     this.isProduction = isProduction;
-    this.init();
   }
 
-  async init() {
+  async initialize() {
     const systemManager = new SystemManager(this.machineId, this.isProduction);
 
     const configManager = new ConfigManager(systemManager);

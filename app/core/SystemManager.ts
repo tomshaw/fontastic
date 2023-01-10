@@ -128,9 +128,12 @@ export default class ConfigManager {
     return (this.getPlatform() === 'win') ? 'activator.exe' : 'activator';
   }
 
-  getBinaryPath(binaryName: string) {
-    const binaryPath = this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
-    return path.resolve(path.join(binaryPath, binaryName));
+  getBinaryPath() {
+    return this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
+  }
+
+  getExecutable(): string {
+    return path.resolve(path.join(this.getBinaryPath(), this.getBinaryName()));
   }
 
   toArray() {

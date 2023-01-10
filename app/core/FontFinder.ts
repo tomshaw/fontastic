@@ -18,18 +18,10 @@ export default class FileSystem {
   found: any[] = [];
 
   constructor(connectionManager: ConnectionManager) {
-    this.setConnectionManager(connectionManager);
+    this.connectionManager = connectionManager;
 
     this.counter = 0;
     this.errors = [];
-  }
-
-  setConnectionManager(connectionManager: ConnectionManager): void {
-    this.connectionManager = connectionManager;
-  }
-
-  getConnectionManager(): ConnectionManager {
-    return this.connectionManager;
   }
 
   setCounter(count: number): void {
@@ -93,7 +85,7 @@ export default class FileSystem {
       }
 
       try {
-        this.getConnectionManager().getStoreRepository().create({ ...data, ...font.getNamesTable() });
+        this.connectionManager.getStoreRepository().create({ ...data, ...font.getNamesTable() });
       } catch(err) {
         this.errors.push(err.message);
       }
