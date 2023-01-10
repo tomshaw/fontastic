@@ -243,12 +243,12 @@ class MessageHandler {
          */
         this.on(enums_1.ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ALL, (event, args) => __awaiter(this, void 0, void 0, function* () {
             if (args.search) {
-                const [results, total] = yield this.getConnectionManager().getStoreRepository().search(args);
-                event.sender.send(enums_1.ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, [total, results]);
+                const result = yield this.getConnectionManager().getStoreRepository().search(args);
+                event.sender.send(enums_1.ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
             }
             else {
-                const [results, total] = yield this.getConnectionManager().getStoreRepository().fetch(args);
-                event.sender.send(enums_1.ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, [total, results]);
+                const result = yield this.getConnectionManager().getStoreRepository().fetch(args);
+                event.sender.send(enums_1.ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
             }
         }));
         this.on(enums_1.ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ROW, (event, storeId) => __awaiter(this, void 0, void 0, function* () {

@@ -249,7 +249,7 @@ export class DatabaseService {
 
   async execute(options: QueryOptions) {
     const t0 = performance.now();
-    const [total, results]: any = await this.messageService.fetchStore(options);
+    const [results, total]: any = await this.messageService.fetchStore(options);
     const t1 = performance.now();
     this._resultSetCount.next(results.length);
     this._resultSetTotal.next(total);

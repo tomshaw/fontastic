@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { ElectronService } from '@app/core/services/electron/electron.service';
 import { Collection } from '@main/database/entity/Collection.schema';
 import { Logger } from '@main/database/entity/Logger.schema';
-import { Store } from '@main/database/entity/Store.schema';
+import { Store, StoreManyAndCountType } from '@main/database/entity/Store.schema';
 import { ChannelType } from '@main/enums';
 import { SystemStats } from '@main/types';
-
-type StoreWithCountType = Array <number | Store[]>;
 
 @Injectable({
   providedIn: 'root'
@@ -285,10 +283,10 @@ export class MessageService {
    * Store
    */
 
-  fetchStore(data: any): Promise<StoreWithCountType> {
-    this.electron.ipcRenderer.send(ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ALL, data);
+  fetchStore(options: any): Promise<StoreManyAndCountType> {
+    this.electron.ipcRenderer.send(ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ALL, options);
     return new Promise((resolve, _reject) => {
-      this.electron.ipcRenderer.on(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, (_event, response: StoreWithCountType) => {
+      this.electron.ipcRenderer.on(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, (_event, response: StoreManyAndCountType) => {
         resolve(response);
       });
     });

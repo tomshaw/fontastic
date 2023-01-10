@@ -8,7 +8,7 @@ import AppLogger from './AppLogger'
 
 import { Collection } from '../database/entity/Collection.schema';
 import { Logger } from '../database/entity/Logger.schema';
-import { Store } from '../database/entity/Store.schema';
+import { Store, StoreManyAndCountType } from '../database/entity/Store.schema';
 
 import { ChannelType } from '../enums';
 import { SystemConfig } from '../types';
@@ -309,11 +309,11 @@ export default class MessageHandler {
 
     this.on(ChannelType.IPCMAIN_REQUEST_STORE_FETCH_ALL, async (event: IpcMainEvent, args: any) => {
       if (args.search) {
-        const [results, total]: Store[] = await this.getConnectionManager().getStoreRepository().search(args);
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, [total, results]);
+        const result: StoreManyAndCountType = await this.getConnectionManager().getStoreRepository().search(args);
+        event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
       } else {
-        const [results, total]: Store[] = await this.getConnectionManager().getStoreRepository().fetch(args);
-        event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, [total, results]);
+        const result: StoreManyAndCountType = await this.getConnectionManager().getStoreRepository().fetch(args);
+        event.sender.send(ChannelType.IPCMAIN_RESPONSE_STORE_FETCH_ALL, result);
       }
     });
 

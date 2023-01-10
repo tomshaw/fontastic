@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from "typeorm";
 
+export type StoreManyAndCountType = Array <Store[] | number>;
+
 @Entity()
 export class Store {
 
