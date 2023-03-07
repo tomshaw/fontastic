@@ -1,0 +1,21 @@
+<div class="paginator">
+  <div class="paginator-block">
+    
+    <div class="paginator-panel">
+      <a href="#" class="prev" title="Prev" [class.page-disabled]="deactivatePrev" (click)="onButtonClick('prev')"><i class="material-icons">arrow_left</i></a>
+      <input type="text" class="form-control form-control-reset" maxlength="5" value="{{page}}" (keyup.enter)="handlePageInput($event)" (change)="handlePageInput($event)">
+      <a href="#" class="next" title="Next" [class.page-disabled]="deactivateNext" (click)="onButtonClick('next')"><i class="material-icons">arrow_right</i></a>
+    </div>
+
+    <span class="paginator-counts" [attr.title]="resultSetCount"> Page {{page}} of {{pages}} - {{ resultSetTotal }} total.</span>
+
+    <div class="paginator-results">
+      <label>
+        <select class="form-control form-control-reset" [(ngModel)]="limit" (change)="onSelectChange($event)">
+          <option *ngFor="let item of limitOptions" [value]="item.value">{{item.title}}</option>
+        </select>
+      </label>
+    </div>
+
+  </div>
+</div>

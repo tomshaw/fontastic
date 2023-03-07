@@ -1,0 +1,71 @@
+{
+  "asar": true,
+  "directories": {
+    "output": "release/"
+  },
+  "files": [
+    "**/*",
+    "!**/*.ts",
+    "!*.map",
+    "!package.json",
+    "!package-lock.json",
+    {
+      "from": "../dist",
+      "filter": [
+        "**/*"
+      ]
+    }
+  ],
+  "extraResources": [
+    {
+      "from": "src/bin",
+      "to": "bin"
+    }
+  ],
+  "productName": "Typepress", 
+  "win": {
+    "icon": "dist/assets/icons",
+    "target": [
+      "portable",
+      "msi"
+    ]
+  },
+  "mac": {
+    "icon": "dist/assets/icons",
+    "target": [
+      "dmg"
+    ]
+  },
+  "linux": {
+    "icon": "dist/assets/icons",
+    "category": "Utility",
+    "synopsis": "A gorgeous multi-platform font management application.",
+    "target": [
+      "deb",
+      "rpm",
+      "AppImage",
+      "snap"
+    ],
+    "desktop": {
+      "Name": "Typepress",
+      "Type": "Application",
+      "GenericName": "Font Manager"
+    }
+  },
+  "msi": {
+    "artifactName": "${productName}-installer-${version}.${ext}"
+  },
+  "portable": {
+    "splashImage": "dist/assets/images/electron.bmp",
+    "artifactName": "${productName}-portable-${version}.${ext}"
+  },
+  "deb": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
+  "rpm": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
+  "appImage": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  }
+}

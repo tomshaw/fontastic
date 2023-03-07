@@ -1,0 +1,30 @@
+<div class="page">
+
+  <div class="page__header border-bottom">
+    <div class="page__header-title">
+      <h1>System Settings</h1>
+    </div>
+  </div>
+
+  <div class="page__body">
+    <div class="flex flex-col p-5">
+      <table class="table table-settings">
+        <thead>
+          <tr>
+            <th class="text-left uppercase w-2/6">Key</th>
+            <th class="text-left uppercase w-4/6">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of systemSettings; let i = index;">
+            <tr>
+              <td class="text-left">{{item.key}}</td>
+              <td class="text-left">{{item.value}}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

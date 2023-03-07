@@ -1,0 +1,87 @@
+/* ==========================================================================
+Page loading
+========================================================================== */
+
+body.app-loaded {
+  .header-block {
+    a {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+body.app-loaded {
+  figure {
+    opacity: 1;
+    visibility: visible;
+    figcaption {
+      opacity: 1;
+      visibility: visible;
+    }
+    ul {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+body.app-loaded {
+  details {
+    opacity: 1;
+    visibility: visible;
+    summary {
+      opacity: 1;
+      visibility: visible;
+    }
+    ul {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+body.app-loaded {
+  .preview {
+    opacity: 1;
+    visibility: visible;
+  }
+  .glyph-list {
+    opacity: 1;
+    visibility: visible;
+  }
+  .typescale {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+body.app-loaded {
+  .controls {
+    &__item {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+body.app-loaded {
+  .input-preview {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+body.app-loaded {
+  .paginator {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+body.app-loaded {
+  .table {
+    opacity: 1;
+    visibility: visible;
+  }
+}

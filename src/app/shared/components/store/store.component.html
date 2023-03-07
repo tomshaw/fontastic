@@ -1,0 +1,22 @@
+<figure class="border-bottom" [class.collapsed]="openTabs.includes('store')">
+  <figcaption class="border-bottom">
+    <span class="material-icons">arrow_drop_down</span>
+    <span class="grow whitespace-nowrap">Font Store</span>
+    <span class="flex items-center justify-end material-icons-rounded">
+      <span title="Collapse" class="material-icons" (click)="onComponentSwitch();">more_horiz</span>
+    </span>
+  </figcaption>
+  <div class="hover-scrollbox-y">
+    <div class="table-data flex flex-col justify-start items-start w-full">
+      <ng-container *ngFor="let item of results;">
+        <div
+          class="table-data__item flex flex-col justify-start items-start border-bottom-dashed py-2 px-2 w-full cursor-text">
+          <div class="flex items-center justify-between w-full mb-1">
+            <h2 class="text-sm font-bold uppercase select-auto" [attr.title]="item.name">{{ item.name }}</h2>
+          </div>
+          <p class="mb-1 select-all">{{ item.value }}</p>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</figure>

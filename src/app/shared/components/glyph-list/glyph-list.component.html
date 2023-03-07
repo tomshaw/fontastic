@@ -1,0 +1,40 @@
+<div class="component">
+  <div class="component__panel">
+
+    <div class="controls flex justify-between items-center border-top border-bottom">
+      <div class="controls__item flex justify-start items-center">
+        <div>
+          <select class="form-control form-control-reset mr-2" (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
+            <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
+          </select>
+          <select class="form-control form-control-reset mr-2" (change)="onChangeCount($event)" [(ngModel)]="cellCount">
+            <ng-container *ngFor="let item of cellCountOptions">
+              <option [value]="item" *ngIf="item < numGlyphs">{{item}}</option>
+            </ng-container>
+          </select>
+          <select class="form-control form-control-reset" (change)="onChangePage($event)">
+            <option *ngFor="let item of paginatorOptions" [value]="item.key">{{item.value}}</option>
+          </select>
+          <span class="mx-5">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total</span>
+        </div>
+      </div>
+      <div class="controls__item flex justify-end items-center material-icons-rounded">
+        <i class="material-icons" (click)="onComponentSwitch();">more_horiz</i>
+      </div>
+    </div>
+
+    <div class="hover-scrollbox-y">
+
+      <div class="glyph-list">
+        <ng-container *ngFor="let item of createRange(cellCount); let i = index">
+          <div class="glyph-list__wrapper">
+            <canvas class="glyph-list__wrapper-item" width="{{cellWidth}}" height="{{cellHeight}}" id="g{{i}}"
+              (mouseenter)="onCellHover($event)" (click)="onCellSelect($event)"></canvas>
+          </div>
+        </ng-container>
+      </div>
+
+    </div>
+
+  </div>
+</div>

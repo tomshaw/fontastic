@@ -1,0 +1,108 @@
+/* ==========================================================================
+Paginator
+========================================================================== */
+
+.paginator {
+    padding: 0;
+    margin: 0;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.5s ease-in-out;
+
+    .paginator-block {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .paginator-panel {
+        display: flex !important;
+        align-items: center;
+    }
+
+    a,
+    input,
+    .paginator-panel,
+    .paginator-counts,
+    .paginator-results {
+        display: inline-block;
+    }
+
+    .paginator-counts,
+    .paginator-results {
+        padding-left: 15px;
+    }
+
+    .paginator-results {
+        margin: 0;
+
+        label {
+            margin: 0;
+        }
+    }
+
+    .paginator-counts {
+        font-size: 13px;
+        line-height: 1;
+        vertical-align: middle;
+        margin-top: 3px;
+    }
+
+    a {
+        cursor: pointer;
+        //border: 1px solid transparent;
+        border-radius: 0;
+        border-width: 0;
+        height: 26px;
+        width: 26px;
+        outline: none;
+        filter: none;
+        box-shadow: none;
+        text-shadow: none;
+        user-select: none;
+        padding: 0px;
+        margin: 0 3px;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        white-space: nowrap;
+
+        i.material-icons {
+            margin-top: 1px;
+        }
+    }
+
+    a.page-disabled {
+        pointer-events: none;
+        i.material-icons {
+            opacity: 0.50;
+        }
+    }
+
+    input {
+        padding: 5px 10px;
+        text-align: center;
+        width: 45px;
+    }
+}
+
+@media only screen and (max-width: 1440px) {
+    .paginator {
+        .paginator-counts {
+            display: none;
+        }
+    }
+}
+
+.paginator {
+    a {
+        @apply border-none bg-gray-100;
+        i.material-icons {
+            @apply text-default;
+        }
+    }
+}

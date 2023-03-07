@@ -1,0 +1,408 @@
+@use "sass:map";
+
+@import "../tools/_variables";
+@import "../tools/_functions";
+@import "../tools/_mixins";
+@import "../tools/_placeholders";
+
+:root {
+  --border-radius: 50%;
+}
+
+* {
+  @apply select-none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body,
+html {
+  @apply text-[12px] h-full;
+}
+
+body {
+  @apply text-default bg-default m-0 overflow-hidden;
+}
+
+a {
+  @apply text-default outline-none no-underline;
+
+  &:hover,
+  &:focus,
+  &:active {
+    @apply text-default outline-none no-underline;
+  }
+}
+
+p {
+  @apply m-0;
+}
+
+ul {
+  @apply list-none m-0 p-0;
+}
+
+.active {
+  @apply text-default;
+}
+
+.checkout {
+  @apply text-default;
+}
+
+.favorite {
+  @apply text-default;
+}
+
+.errors {
+  @apply text-red-600;
+}
+
+.disabled,
+.disabled i {
+  @apply text-gray-400;
+}
+
+.enabled {
+  @apply text-default;
+}
+
+.selected {
+  @apply bg-gray-100;
+}
+
+.material-icons {
+  @apply text-default;
+}
+
+.hidden {
+  display: none !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================================
+Borders
+========================================================================== */
+
+.border-top {
+  @apply border-t border-[#00a0be];
+}
+
+.border-right {
+  @apply border-r border-[#00a0be];
+}
+
+.border-bottom {
+  @apply border-b border-[#00a0be];
+}
+
+.border-left {
+  @apply border-l border-[#00a0be];
+}
+
+.border-top-dashed {
+  @apply border-t border-[#00a0be] border-dashed;
+}
+
+.border-right-dashed {
+  @apply border-r border-[#00a0be] border-dashed;
+}
+
+.border-bottom-dashed {
+  @apply border-b border-[#00a0be] border-dashed;
+}
+
+.border-left-dashed {
+  @apply border-l border-[#00a0be] border-dashed;
+}
+
+/* ==========================================================================
+Wrapper
+========================================================================== */
+
+.application {
+  @apply w-screen h-screen opacity-100 overflow-hidden transition-opacity;
+
+  &.app-loading {
+    @apply opacity-0 invisible;
+  }
+}
+
+/* ==========================================================================
+Component
+========================================================================== */
+
+.component {
+  @extend %full;
+
+  &__panel {
+    @apply relative flex flex-col justify-start flex-nowrap overflow-hidden w-full h-full;
+  }
+
+  &__panel-wrapper {
+    @apply relative flex flex-col justify-start overflow-hidden h-full w-full;
+  }
+}
+
+/* ==========================================================================
+Controls
+========================================================================== */
+
+.controls {
+  @apply w-full p-0 m-0;
+  height: $figureCaptionHeight;
+  min-height: $figureCaptionHeight;
+  max-height: $figureCaptionHeight;
+
+  &__item {
+    @apply w-full py-0 px-2 m-0;
+    height: $figureCaptionHeight;
+    min-height: $figureCaptionHeight;
+    max-height: $figureCaptionHeight;
+    @include loading-transition(0s, 1s);
+  }
+
+  &__item-elements {
+    @apply flex flex-row flex-nowrap justify-start items-center whitespace-nowrap py-0 px-1 m-0;
+  }
+}
+
+/* ==========================================================================
+Page 
+========================================================================== */
+
+.page {
+  @apply flex flex-col grow;
+
+  &__header {
+    @apply flex items-center justify-between relative p-5 min-h-[48px];
+
+    &-title {
+      @apply w-full;
+      h1 {
+        @apply text-lg font-semibold;
+      }
+    }
+  }
+
+  &__body {
+    @apply flex flex-col p-5 overflow-hidden;
+  }
+
+  &__footer {
+    @apply flex items-center justify-between relative p-5 min-h-[48px];
+  }
+}
+
+/* ==========================================================================
+Details
+========================================================================== */
+
+details {
+  margin: 0;
+
+  @include loading-transition(0s, 1s);
+
+  >summary {
+    @include nav-summary;
+    @include loading-transition(0s, 1s);
+
+    &:hover {
+      .material-icons-hidden {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+
+  >summary {
+    span.collapsed-icon:before {
+      @include include-material-icon('arrow_right');
+    }
+  }
+
+  &[open]>summary {
+    span.collapsed-icon:before {
+      @include include-material-icon('arrow_drop_down');
+    }
+  }
+
+  >details {
+    @include tree-lines(32px);
+  }
+
+  ul {
+    @include loading-transition(0s, 1s);
+
+    li {
+      @include nav-details;
+      @include tree-lines(24px);
+    }
+  }
+}
+
+/* ==========================================================================
+Figure
+========================================================================== */
+
+figure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: $figureCaptionHeight;
+  min-height: $figureCaptionHeight;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  text-align: left;
+  overflow: hidden;
+  @include loading-transition(0s, 1s);
+
+  &.collapsed {
+    height: auto;
+  }
+
+  figcaption {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: $figureCaptionHeight;
+    min-height: $figureCaptionHeight;
+    max-height: $figureCaptionHeight;
+    padding: 0px 5px;
+    width: 100%;
+    @include loading-transition(0s, 1s);
+  }
+
+  ul {
+    @include loading-transition(0s, 1s);
+  }
+
+  ul.statistics {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    padding: 7px 0;
+    height: 136px;
+    width: 100%;
+    overflow: hidden;
+
+    li {
+      padding: 0px;
+      margin: 0px;
+      width: 100%;
+    }
+
+    li a {
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 15px 0 10px;
+      margin: 0;
+      width: 100%;
+      height: 28px;
+    }
+  }
+}
+
+figure.figure-stats {
+  &.collapsed {
+    height: 162px;
+    min-height: 162px;
+  }
+}
+
+/* ==========================================================================
+Aside Table Data
+========================================================================== */
+
+.table-data {
+  &__item:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+Glyph Listing
+========================================================================== */
+
+.glyph-list {
+  @apply flex flex-wrap justify-start items-start content-start p-[1px];
+  @include loading-transition(0s, 1s);
+
+  &__wrapper {
+    @apply grow;
+  }
+
+  &__wrapper-item {
+    @apply cursor-pointer m-[1px] bg-[#f9f9f9] border-2 border-[#fff];
+  }
+}
+
+/* ==========================================================================
+Glyph Display
+========================================================================== */
+
+.glyph-info {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1;
+  text-transform: uppercase;
+}
+
+.glyph-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .glyph-display-wrapper {
+    position: relative;
+    width: 400px;
+    height: 400px;
+  }
+
+  #glyph-fg,
+  #glyph-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* ==========================================================================
+Typescale
+========================================================================== */
+
+.typescale {
+  @include loading-transition(0s, 1s);
+
+  &__label {
+    @apply bg-slate-100;
+  }
+
+  &__label-text {
+    @apply text-inherit;
+  }
+
+  &__wrapper {
+    @apply bg-white;
+
+    &.active {
+      @apply bg-slate-100;
+    }
+  }
+}

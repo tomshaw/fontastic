@@ -1,0 +1,31 @@
+<div id="{{id}}" class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true" *ngIf="enabled">
+
+  <!-- Modal dialog -->
+  <div class="modal__dialog" [class]="size">
+
+    <!-- Modal content -->
+    <div class="modal__content" [ngClass]="addContentStyles()">
+
+      <!-- Modal header -->
+      <div class="modal__header border-bottom" *ngIf="showHeader">
+        <h4 class="modal__header-title" id="modal-title">{{title}}</h4>
+        <button type="button" (click)="close()"><span class="material-icons">close</span></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal__body">
+        <ng-content></ng-content>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal__footer border-top" *ngIf="showFooter">
+        <button type="button" class="btn btn-default" (click)="close()">Close</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-bg" *ngIf="enabled"></div>

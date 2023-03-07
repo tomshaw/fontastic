@@ -1,0 +1,54 @@
+@use "sass:map";
+
+.app-alert {
+    @apply bg-white absolute top-0 left-0 opacity-0 invisible transition-opacity -z-10;
+
+    &.app-alert-enabled {
+        @apply opacity-100 visible z-10;
+    }
+
+    &.app-alert-info {
+        color: map.get($alert-colors, "info");
+        background-color: map.get($alert-backgrounds, "info");
+
+        .material-icons {
+            color: map.get($alert-colors, "info");
+        }
+    }
+
+    &.app-alert-success {
+        color: map.get($alert-colors, "success");
+        background-color: map.get($alert-backgrounds, "success");
+
+        .material-icons {
+            color: map.get($alert-colors, "success");
+        }
+    }
+
+    &.app-alert-error {
+        color: map.get($alert-colors, "error");
+        background-color: map.get($alert-backgrounds, "error");
+
+        .material-icons {
+            color: map.get($alert-colors, "error");
+        }
+    }
+
+    &.app-alert-warning {
+        color: map.get($alert-colors, "warning");
+        background-color: map.get($alert-backgrounds, "warning");
+
+        .material-icons {
+            color: map.get($alert-colors, "warning");
+        }
+    }
+
+    &.app-alert-danger {
+        color: map.get($alert-colors, "danger");
+        background-color: map.get($alert-backgrounds, "danger");
+
+        .material-icons {
+            color: map.get($alert-colors, "danger");
+        }
+    }
+}

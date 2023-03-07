@@ -1,0 +1,191 @@
+$toolbarHeight: 38px;
+
+.panel.preview.inspect.grid.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr $toolbarHeight 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+.panel.preview.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0 0 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.preview.inspect {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 0 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.preview.inspect.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr $toolbarHeight 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.preview.inspect.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 0 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.inspect.grid.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 1fr $toolbarHeight 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.inspect.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 1fr $toolbarHeight 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.toolbar.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 0 $toolbarHeight 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.inspect.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 1fr 0 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.preview.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0 $toolbarHeight 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.preview.toolbar.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0 $toolbarHeight 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.preview {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0 0 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.inspect {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 1fr 0 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  .border-top {
+    border-top: none !important;
+  }
+}
+
+.panel.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 0 $toolbarHeight 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.panel.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0 0 0 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+app-preview {
+  visibility: hidden;
+}
+
+app-inspect {
+  visibility: hidden;
+}
+
+app-grid {
+  visibility: hidden;
+}
+
+app-toolbar {
+  visibility: hidden;
+}
+
+.panel.grid {
+  app-grid {
+    visibility: visible;
+  }
+}
+
+.panel.toolbar {
+  app-toolbar {
+    visibility: visible;
+  }
+}
+
+.panel.preview {
+  app-preview {
+    visibility: visible;
+  }
+}
+
+.panel.inspect {
+  app-inspect {
+    visibility: visible;
+  }
+}
+
+app-preview,
+app-inspect,
+app-toolbar,
+app-grid {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+// app-preview {
+//   grid-area: 1 / 1 / 2 / 2;
+// }
+// app-toolbar {
+//   grid-area: 2 / 1 / 3 / 2;
+// }
+// app-grid {
+//   grid-area: 3 / 1 / 4 / 2;
+// }

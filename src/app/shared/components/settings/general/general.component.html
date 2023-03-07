@@ -1,0 +1,170 @@
+<div class="page">
+
+  <div class="page__header border-bottom">
+    <div class="page__header-title">
+      <h1>General Settings</h1>
+    </div>
+  </div>
+
+  <div class="page__body">
+
+    <fieldset>
+      <legend><span>Personalize</span></legend>
+      <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+        <div class="form-group">
+          <label form="name">User name</label>
+          <input type="text" class="form-control" name="name" id="name" [(ngModel)]="user.name" #selectedName="ngModel"
+            required />
+          <span class="form-text text-muted">Enter your user name.</span>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" class="form-control" name="email" id="email" [(ngModel)]="user.email"
+            #selectedEmail="ngModel" required />
+          <span class="form-text text-muted">Enter your email address.</span>
+        </div>
+        <div class="form__actions">
+          <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__xl app-button__rounded'"
+            (handleButtonClick)="onSubmitButtonClick($event)" [attr.disabled]="!generalForm.form.valid">Submit
+          </app-button>
+          <app-button [type]="'reset'" [title]="'Reset'"
+            [ngClass]="'app-button__xl app-button__rounded app-button__success'">Reset
+          </app-button>
+        </div>
+      </form>
+    </fieldset>
+
+    <fieldset>
+      <legend><span>Miscellaneous</span></legend>
+
+      <form class="form">
+
+        <div class="form-group">
+          <label for="import">Import options</label>
+          <select class="form-control" name="import" id="import" [(ngModel)]="importType.type" #type="ngModel"
+            (change)="onImportOptionsChange($event)">
+            <option *ngFor="let item of importOptions;" [value]="item.key">{{item.title}}</option>
+          </select>
+          <span class="form-text">Choose whether fonts are added to catalog or in place.</span>
+        </div>
+
+      </form>
+
+    </fieldset>
+
+    <fieldset>
+      <legend><span>Quick actions</span></legend>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Reset favorited fonts</label>
+            <span>Resets fonts that have been favorited.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onResetFavoritedFonts($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Synchronize system fonts</label>
+            <span>Imports fonts from system fonts folder.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onSystemScan($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Synchronize activated fonts</label>
+            <span>Marks catalog fonts activated if installed.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onSyncActivated($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+      <form *ngIf="hasNewsApiKey">
+        <dl>
+          <dt>
+            <label>Fetch latest news</label>
+            <span>Updates latest news from selected sources.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onRefreshLatestNews($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Restart application</label>
+            <span>Restarts the application.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onRestartApplication($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Exit application</label>
+            <span>Exits the application.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onExitApplication($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+    </fieldset>
+
+    <fieldset>
+      <legend><span>Danger zone</span></legend>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Drop active database</label>
+            <span>Drops the database and all its data.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onDropDatabase($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+      <form>
+        <dl>
+          <dt>
+            <label>Clear system storage</label>
+            <span>Removes all settings from system store.</span>
+          </dt>
+          <dd>
+            <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'"
+              (handleButtonClick)="onClearStore($event)">Submit</app-button>
+          </dd>
+        </dl>
+      </form>
+
+    </fieldset>
+
+  </div>
+</div>

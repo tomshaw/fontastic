@@ -1,0 +1,11 @@
+/* ==========================================================================
+Spinner
+========================================================================== */
+
+.app-spinner {
+    @apply relative rounded-full w-[19px] h-[19px] m-0 p-0 opacity-0 indent-[150%] border-4 border-[#00a0be];
+    border-left: 4px solid #fff;
+    &.is-animating {
+      @apply opacity-100 animate-spin;
+    }
+}

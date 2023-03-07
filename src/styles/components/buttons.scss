@@ -1,0 +1,93 @@
+/* ==========================================================================
+App button
+========================================================================== */
+
+.app-btn {
+    @apply flex items-center justify-center cursor-pointer rounded-md py-1.5 px-5 bg-slate-100;
+    span {
+      @apply flex grow;
+    }
+    &:hover {
+      @apply bg-slate-200;
+    }
+}
+
+.app-button {
+    display: inline-block;
+    background: #25b8c8;
+    color: #fff;
+    border: 0;
+    border-bottom: 0.15em solid rgba(0, 0, 0, 0.5);
+    font-weight: 500;
+    width: auto;
+    height: 2em;
+    font-size: 1em;
+    outline: none;
+    text-transform: uppercase;
+
+    &.active,
+    &:active {
+        border-bottom: 0.15em solid transparent;
+        transform: scale(0.95);
+    }
+
+    &__rounded {
+        border-radius: 2em;
+    }
+
+    &__xs {
+        width: 5em;
+    }
+
+    &__sm {
+        width: 6em;
+    }
+
+    &__md {
+        width: 7em;
+    }
+
+    &__lg {
+        width: 8em;
+    }
+
+    &__xl {
+        width: 9em !important;
+    }
+
+    &__1xl {
+        width: 10em !important;
+    }
+
+    &__2xl {
+        width: 11em !important;
+    }
+
+    &__3xl {
+        width: 12em !important;
+    }
+
+    &__4xl {
+        width: 13em !important;
+    }
+
+    &__danger {
+        background: #ed1d27f6;
+    }
+
+    &__warning {
+        background: #ffba30fb;
+    }
+
+    &__info {
+        background: #025cc9fd;
+    }
+
+    &__success {
+        background: #00a979fd;
+    }
+}
+
+app-button+app-button {
+    margin-left: 5px !important;
+}

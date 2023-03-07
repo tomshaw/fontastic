@@ -1,0 +1,14 @@
+<div class="application main" [class.navigation]="navigationEnabled" [class.aside]="asideEnabled">
+  <app-header></app-header>
+  <app-navigation></app-navigation>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+  <app-aside></app-aside>
+  <app-footer></app-footer>
+</div>
+
+<app-glyph></app-glyph>
+<app-settings></app-settings>
+<app-update-collection></app-update-collection>
+<app-create-collection></app-create-collection>

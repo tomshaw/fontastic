@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html,
+    body {
+        font-family: Roboto, system-ui, sans-serif;
+    }
+}
+
+@import "./styles/tools/_variables";
+@import "./styles/tools/_mixins";
+@import "./styles/tools/_functions";
+@import "./styles/tools/_placeholders";
+
+@import "./styles/base/reset";
+@import "./styles/base/loading";
+
+@import "./styles/components/alert";
+@import "./styles/components/buttons";
+@import "./styles/components/forms";
+@import "./styles/components/inputs";
+@import "./styles/components/tables";
+@import "./styles/components/scrollbox";
+@import "./styles/components/toolbar";
+@import "./styles/components/paginator";
+@import "./styles/components/tabs";
+@import "./styles/components/spinner";
+@import "./styles/components/modal";
+
+@import "./styles/themes/swiss";
+@import "./styles/themes/mellow";
+@import "./styles/themes/passion";
+@import "./styles/themes/euphoria";
+@import "./styles/themes/midnight";
+@import "./styles/themes/dashboard";

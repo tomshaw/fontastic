@@ -1,0 +1,46 @@
+<app-modal id="system-settings" title="System Settings" size="xl" rounded="rounded-md">
+
+  <!-- Flex columns -->
+  <div class="flex justify-start p-0 m-0 h-full">
+
+    <!-- Navigation -->
+    <div class="w-[240px] min-w-[240px] border-right hover-scrollbox-x hover-scrollbox-y">
+      <div class="p-5">
+        <ul>
+          <li class="my-2">
+            <a href="#" (click)="onComponentSwitch('general')">General</a>
+          </li>
+          <li class="my-2">
+            <a href="#" (click)="onComponentSwitch('database')">Database</a>
+          </li>
+          <li class="my-2">
+            <a href="#" (click)="onComponentSwitch('theme')">Theme</a>
+          </li>
+          <li class="my-2">
+            <a href="#" (click)="onComponentSwitch('news')">News</a>
+          </li>
+          <li class="my-2">
+            <a href="#" (click)="onComponentSwitch('logs')">Logs</a>
+          </li>
+          <li class="my-2">
+            <a href="#" (click)="onComponentSwitch('system')">System</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="relative w-full hover-scrollbox-y">
+      <ng-container [ngSwitch]="componentName">
+        <app-settings-general *ngSwitchCase="'general'"></app-settings-general>
+        <app-settings-database *ngSwitchCase="'database'"></app-settings-database>
+        <app-settings-theme *ngSwitchCase="'theme'"></app-settings-theme>
+        <app-settings-news *ngSwitchCase="'news'"></app-settings-news>
+        <app-settings-logs *ngSwitchCase="'logs'"></app-settings-logs>
+        <app-settings-system *ngSwitchCase="'system'"></app-settings-system>
+      </ng-container>
+    </div>
+
+  </div>
+
+</app-modal>

@@ -1,0 +1,35 @@
+<header class="component">
+  <div class="left border-top border-bottom">
+    <div class="header-block flex justify-items-start items-center">
+      <a class="enabled" title="New Collection"><i class="material-icons" (click)="handleCreateCollection($event)">widgets</i> New Collection</a>
+      <ng-container *ngIf="collectionId>0; else elseAddFontsDisabled">
+        <a class="enabled" title="New Collection"><i class="material-icons" (click)="handleAddFonts($event, collectionId)">list_alt</i> Add Fonts</a>
+      </ng-container>
+      <ng-template #elseAddFontsDisabled>
+        <a class="disabled" title="New Collection"><i class="material-icons">list_alt</i> Add Fonts</a>
+      </ng-template>
+    </div>
+  </div>
+  <div class="middle border-top border-bottom">
+    <div class="header-block flex justify-start items-center">
+      <a href="javascript:;" (click)="handleToggleNavigation($event)" [className]="navigationEnabled ? 'enabled' : 'disabled'" title="Toggle Navigation"><i class="material-icons">border_all</i> Navigation</a>
+      <a href="javascript:;" (click)="handleToggleAside($event)" [className]="asideEnabled ? 'enabled' : 'disabled'" title="Toggle Aside"><i class="material-icons">border_all</i> Aside</a>
+      <a href="javascript:;" (click)="handleTogglePreview($event)" [className]="previewEnabled ? 'enabled' : 'disabled'" title="Toggle Preview"><i class="material-icons">border_all</i> Preview</a>
+      <a href="javascript:;" (click)="handleToggleInspect($event)" [className]="inspectEnabled ? 'enabled' : 'disabled'" title="Toggle Inspect"><i class="material-icons">border_all</i> Inspect</a>
+      <a href="javascript:;" (click)="handleToggleToolbar($event)" [className]="toolbarEnabled ? 'enabled' : 'disabled'" title="Toggle Toolbar"><i class="material-icons">border_all</i> Toolbar</a>
+      <a href="javascript:;" (click)="handleToggleGrid($event)" [className]="gridEnabled ? 'enabled' : 'disabled'" title="Toggle Grid"><i class="material-icons">border_all</i> Grid</a>
+    </div>
+  </div>
+  <div class="right border-top border-bottom">
+    <div class="header-block flex justify-end items-center">
+      <a class="enabled" title="Theme" (click)="handleToggleSearch($event)"><i class="material-icons">search</i> Search</a>
+      <a class="enabled" title="Theme" (click)="handleSwitchTheme($event)"><i class="material-icons">burst_mode</i> Theme</a>
+      <ng-container *ngIf="currentUser; else elseif1">
+        <a (click)="handleLoadSettings()" class="gravatar" title="Settings"><img src="{{gravatarUrl}}" alt="{{currentUser.name}}" /></a>
+      </ng-container>
+      <ng-template #elseif1>
+        <a (click)="handleLoadSettings()" title="Settings"><i class="material-icons">exit_to_app</i> Settings</a>
+      </ng-template>
+    </div>
+  </div>
+</header>

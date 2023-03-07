@@ -1,0 +1,22 @@
+<div class="page">
+
+  <div class="page__header border-bottom">
+    <div class="page__header-title">
+      <h1>Theme Settings</h1>
+    </div>
+  </div>
+
+  <div class="page__body">
+    <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+      <div class="form-group">
+        <label for="key">Selected theme</label>
+        <select class="form-control" name="key" id="key" [(ngModel)]="theme.key" #key="ngModel"
+          (change)="onChange($event)">
+          <option *ngFor="let item of themes;" [value]="item.key">{{item.title}}</option>
+        </select>
+        <span class="form-text">{{ theme.description }}</span>
+      </div>
+    </form>
+  </div>
+
+</div>

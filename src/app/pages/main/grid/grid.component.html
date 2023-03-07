@@ -1,0 +1,160 @@
+<div class="component border-top">
+  <div class="component__panel">
+    <div class="hover-scrollbox-y hover-scrollbox-x h-full min-h-full" [class.loading]="isLoading" #gridElement>
+
+      <table class="table striped border-separate border-spacing-1">
+        <thead>
+          <tr>
+            <th class="sorting sort_center sort_input" (click)="handleSort('activated')">
+              <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'activated'">&uarr;</span>
+              <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'activated'">&darr;</span>
+            </th>
+            <th class="sorting sort_center sort_input" (click)="handleSort('temporary')" *ngIf="isWindows">
+              <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'temporary'">&uarr;</span>
+              <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'temporary'">&darr;</span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('full_name')">
+              <span class="flex items-center justify-between w-full">
+                <span>Name</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'full_name'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'full_name'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('font_family')">
+              <span class="flex items-center justify-between w-full">
+                <span>Family</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'font_family'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'font_family'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('file_type')">
+              <span class="flex items-center justify-between w-full">
+                <span>Type</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'file_type'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'file_type'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('file_size')">
+              <span class="flex items-center justify-between w-full">
+                <span>Size</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'file_size'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'file_size'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('designer')">
+              <span class="flex items-center justify-between w-full">
+                <span>Designer</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'designer'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'designer'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('manufacturer')">
+              <span class="flex items-center justify-between w-full">
+                <span>Manufacturer</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'manufacturer'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'manufacturer'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('version')">
+              <span class="flex items-center justify-between w-full">
+                <span>Version</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'version'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'version'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('unique_id')">
+              <span class="flex items-center justify-between w-full">
+                <span>Unique Id</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'unique_id'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'unique_id'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-center" (click)="handleSort('created')">
+              <span class="flex items-center justify-between w-full">
+                <span>Created</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'created'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'created'">&darr;</span>
+                </span>
+              </span>
+            </th>
+            <th class="sorting text-center" (click)="handleSort('updated')">
+              <span class="flex items-center justify-between w-full">
+                <span>Updated</span>
+                <span>
+                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'updated'">&uarr;</span>
+                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'updated'">&darr;</span>
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of resultSet">
+
+            <tr (click)="onRowClick(item.id)" [attr.id]="item.id" [attr.data-row]="item.id">
+
+              <ng-container *ngIf="item.installable; else p1">
+                <td [attr.title]="item.activated ? 'Remove' : 'Add'">
+                  <div class="checkbox" (click)="handleActivate($event, item, false)">
+                    <input type="checkbox" name="activate--{{item.id}}" id="{{item.id}}" value="{{item.id}}"
+                      [checked]="item.activated" />
+                    <label for="{{item.id}}"></label>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-template #p1>
+                <td></td>
+              </ng-template>
+
+              <ng-container *ngIf="isWindows">
+                <ng-container *ngIf="item.installable; else t1">
+                  <td [attr.title]="item.temporary ? 'Remove' : 'Add'">
+                    <div class="radio" (click)="handleActivate($event, item, true)">
+                      <input type="radio" name="temporary--{{item.id}}" id="{{item.id}}" value="{{item.id}}"
+                        [checked]="item.temporary" />
+                      <label for="{{item.id}}"></label>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-template #t1>
+                  <td></td>
+                </ng-template>
+              </ng-container>
+
+              <td class="text-left">{{ item.full_name }}</td>
+              <td class="text-left">{{ item.font_family }}</td>
+              <td class="text-center">{{ item.file_type }}</td>
+              <td class="text-center">{{ item.file_size_pretty }}</td>
+              <td class="text-left">{{ item.designer }}</td>
+              <td class="text-left">{{ item.manufacturer }}</td>
+              <td class="text-left">{{ item.version }}</td>
+              <td class="text-left">{{ item.unique_id }}</td>
+              <td class="text-center">{{item.created | date :'medium'}}</td>
+              <td class="text-center">{{item.updated | date :'medium'}}</td>
+            </tr>
+
+          </ng-container>
+        </tbody>
+      </table>
+
+
+    </div>
+  </div>
+</div>

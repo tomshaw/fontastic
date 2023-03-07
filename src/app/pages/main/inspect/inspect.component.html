@@ -1,0 +1,7 @@
+<ng-container [ngSwitch]="componentName">
+  <div>
+    <app-glyph-list [fontObject]="fontObject" [fontColor]="fontColor" *ngSwitchCase="'glyph-list'"></app-glyph-list>
+    <app-typescale [fontObject]="fontObject" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'typescale'"></app-typescale>
+    <app-pairing [fontObject]="fontObject" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'pairing'"></app-pairing>
+  </div>
+</ng-container>

@@ -1,0 +1,151 @@
+<div class="page">
+
+  <div class="page__header border-bottom">
+    <div class="page__header-title">
+      <h1>Database Management</h1>
+    </div>
+    <div class="flex items-center justify-end p-0 text-right">
+      <div>
+        <app-button [type]="'button'" [title]="'Add New'" [ngClass]="'app-button__md'" (click)="toggleForm()">Add
+          New</app-button>
+      </div>
+    </div>
+  </div>
+
+  <form class="form" (ngSubmit)="onSubmit(databaseForm)" #databaseForm="ngForm" *ngIf="screenToggle">
+
+    <div class="page__body">
+
+      <input type="hidden" name="name" id="name" [(ngModel)]="dbConnection.name" readonly>
+
+      <div class="form-group" *ngIf="drivers.length">
+        <label for="type">Database Type</label>
+        <select class="form-control" name="type" id="type" [(ngModel)]="dbConnection.type" #type="ngModel" required>
+          <option *ngFor="let item of drivers;" [value]="item">{{item}}</option>
+        </select>
+        <span class="form-text text-muted" [hidden]="type.valid || type.pristine">A database type is
+          required.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" name="title" id="title" [(ngModel)]="dbConnection.title"
+          #title="ngModel" placeholder="My Connection" required>
+        <span class="form-text text-muted">A unique name to identify the connection.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="host">Host</label>
+        <input type="text" class="form-control" name="host" id="host" [(ngModel)]="dbConnection.host" #host="ngModel"
+          placeholder="localhost">
+        <span class="form-text text-muted">The hostname used to make a connection.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="port">Port</label>
+        <input type="text" class="form-control" name="port" id="port" [(ngModel)]="dbConnection.port" #port="ngModel"
+          placeholder="3306">
+        <span class="form-text text-muted">The port used to make a connection.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" name="username" id="username" [(ngModel)]="dbConnection.username"
+          #username="ngModel">
+        <span class="form-text text-muted">Please enter your database username.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" name="password" id="password" [(ngModel)]="dbConnection.password"
+          #password="ngModel">
+        <span class="form-text text-muted">Please enter your database password.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="database">Database</label>
+        <input type="text" class="form-control" name="database" id="database" [(ngModel)]="dbConnection.database"
+          #database="ngModel" required>
+        <span class="form-text text-muted">Please enter a database name.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="logging">Logging</label>
+        <select class="form-control" name="logging" id="logging" [(ngModel)]="dbConnection.logging" #logging="ngModel">
+          <option *ngFor="let item of loggingTypes;" [value]="item.value">{{item.key}}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="synchronize">Synchronize</label>
+        <select class="form-control" name="synchronize" id="synchronize" [(ngModel)]="dbConnection.synchronize"
+          #synchronize="ngModel">
+          <option *ngFor="let item of synchronizeTypes;" [value]="item.value">{{item.key}}</option>
+        </select>
+      </div>
+
+      <div class="form-group form-group-last">
+        <label for="description">Description</label>
+        <textarea class="form-control" name="description" id="description" [(ngModel)]="dbConnection.description"
+          #description="ngModel" rows="3" required></textarea>
+      </div>
+
+    </div>
+
+    <div class="page__footer border-top">
+      <div class="flex items-center justify-end w-full">
+        <app-button [type]="'reset'" [title]="'Reset'" [ngClass]="'app-button__md app-button__success'" (click)="handleReset($event); databaseForm.reset()">Reset</app-button>
+        <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md'" [attr.disabled]="buttonDisabled(databaseForm.form.valid)">Submit</app-button>
+      </div>
+    </div>
+
+  </form>
+
+  <!-- Body -->
+  <div class="flex flex-col p-5" *ngIf="!screenToggle">
+
+    <table class="table table-auto striped">
+      <thead>
+        <tr>
+          <th class="text-center sort_input">ID</th>
+          <th class="text-left">Title</th>
+          <th class="text-left">Description</th>
+          <th class="text-center">Type</th>
+          <th class="text-center">Enabled</th>
+          <th class="text-center">Synchronize</th>
+          <th class="text-center">Logging</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of connections; let i = index;">
+          <tr>
+            <td class="text-center">
+              <span class="material-icons" (click)="updateConnection($event, item)"
+                title="Update Connection">settings</span>
+            </td>
+            <td class="text-left">{{item.title}}</td>
+            <td class="text-left">{{item.description}}</td>
+            <td class="text-center">{{item.type}}</td>
+            <td class="text-center">
+              <span class="material-icons" *ngIf="item.enabled">done</span>
+            </td>
+            <td class="text-center">{{filterBoolean(item.synchronize)}}</td>
+            <td class="text-center">{{filterBoolean(item.logging)}}</td>
+            <td class="text-center">
+              <div class="flex items-center justify-end w-full">
+                <span class="material-icons" (click)="testConnection($event, item)"
+                  title="Test Connection">refresh</span>
+                <span class="material-icons" (click)="enableConnection($event, item)"
+                  title="Set As Default">grade</span>
+                <span class="material-icons" (click)="deleteConnection($event, item)"
+                  title="Delete Connection">delete_outline</span>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+</div>

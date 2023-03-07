@@ -1,0 +1,294 @@
+body[data-theme="dashboard"] {
+  @apply text-dashboard bg-dashboard;
+}
+
+[data-theme="dashboard"] {
+
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #00a1be79;
+    --scrollbar-hover-color: #00a1beb9;
+    --scrollbar-space: 0.2rem;
+    --scrollbar-height: calc(.5rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.5rem + var(--scrollbar-space));
+  }
+
+  a {
+    @apply text-dashboard;
+    &:hover,
+    &:active {
+      @apply text-dashboard;
+    }
+  }
+
+  .active {
+    @apply text-[#637785];
+  }
+
+  .favorite {
+    @apply text-red-600;
+  }
+
+  .disabled,
+  .disabled i {
+    @apply text-[#637785];
+  }
+
+  .enabled {
+    @apply text-dashboard;
+  }
+
+  .selected {
+    @apply bg-[#1a2631];
+  }
+
+  .material-icons {
+    @apply text-dashboard;
+  }
+
+  .material-icons-rounded {
+    .material-icons {
+      &:hover {
+        @apply text-dashboard bg-[#1a2631];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  Inputs
+  ========================================================================== */
+
+  input,
+  select {
+    @apply text-gray-700;
+    &:focus {
+      @apply text-gray-700;
+    }
+  }
+
+  input:not([type='range']):not([type='color']):not(.form-control-hidden),
+  select:not([type='range']):not(.form-control-hidden) {
+    @apply border border-solid border-dashboard;
+  }
+
+  input[type='color'] {
+    @apply border-none;
+  }
+
+  .radio label,
+  .checkbox label {
+    @apply border-2 border-solid border-white;
+  }
+  
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    @apply bg-white;
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
+    @apply text-white;
+  }
+
+  /* ==========================================================================
+  Range Slider
+  ========================================================================== */
+
+  input[type="range"] {
+    @apply bg-dashboard;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    @apply bg-[#2d3e50];
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    @apply bg-[#2d3e50] border-[#00a0be];
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#1a2631];
+    &:hover {
+      @apply bg-[#2b3b4b];
+    }
+  }
+
+  /* ==========================================================================
+  Toolbar
+  ========================================================================== */
+
+  .input-preview.preview-text button {
+    span.material-icons {
+      color: #fff;
+    }
+    background-color: #2d3e50;
+  }
+
+  .input-preview.quick-text button span.material-icons,
+  .input-preview.latest-news button span.material-icons,
+  .input-preview.preview-casing button span.material-icons,
+  .input-preview.preview-reset button span.material-icons {
+    color: #495d74;
+  }
+
+  .paginator {
+    a {
+      @apply bg-[#1a2631];
+      i.material-icons {
+        color: #fff;
+      }
+    }
+  }
+
+  .border-top {
+    @apply border-t border-solid border-dashboard;
+  }
+
+  .border-right {
+    @apply border-r border-solid border-dashboard;
+  }
+
+  .border-bottom {
+    @apply border-b border-solid border-dashboard;
+  }
+
+  .border-left {
+    @apply border-l border-solid border-dashboard;
+  }
+
+  .border-top-dashed {
+    @apply border-t border-dashed border-dashboard;
+  }
+  
+  .border-right-dashed {
+    @apply border-r border-dashed border-dashboard;
+  }
+  
+  .border-bottom-dashed {
+    @apply border-b border-dashed border-dashboard;
+  }
+  
+  .border-left-dashed {
+    @apply border-left border-dashed border-dashboard;
+  }
+
+  details {
+    >summary {
+      @apply text-white;
+    }
+    >details {
+      &::after {
+        background-color: #00a0be;
+      }
+      &::before {
+        background-color: #00a0be;
+      }
+    }
+    ul {
+      li {
+        &::after {
+          background-color: #00a0be;
+        }
+        &::before {
+          background-color: #00a0be;
+        }
+        span {
+          color: #fff;
+        }
+        span:last-child {
+          color: #00a0be;
+        }
+      }
+    }
+  }
+
+  .table {
+    @apply text-white;
+    thead > tr {
+      @apply bg-[#1a2631];
+    }
+    &.striped > tbody > tr:nth-child(odd) {
+      @apply bg-[#172230ce];
+    }
+    .material-icons {
+      @apply text-white;
+    }
+    [class^="icon-"] {
+      @apply text-white;
+    }
+  }
+
+  .form-control {
+    @apply text-white bg-dashboard border border-solid border-dashboard;
+    .input-group-checkbox {
+      @apply bg-dashboard;
+    }
+  }
+
+  fieldset {
+    @apply border border-solid border-dashboard;
+    legend {
+      @apply text-dashboard;
+    }
+    dt {
+      label {
+        @apply text-white;
+      }
+    }
+    dd {
+      @apply border-l border-solid border-[#91a8bebd];
+    }
+    dl:hover dt,
+    dl:hover dd {
+      @apply border-[#0e161f];
+    }
+    dl:hover dt label {
+      @apply text-dashboard;
+    }
+    dl dd label:hover {
+      @apply text-dashboard;
+    }
+  }
+
+  .glyph-list {
+    &__wrapper-item {
+      @apply bg-[#14202b] border-2 border-[#0e161f];
+      &:hover {
+        @apply bg-[#91a8bebd];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  Typescale
+  ========================================================================== */
+
+  .typescale {
+    &__label {
+      @apply bg-[#1a2631];
+    }
+    &__label-text {
+      @apply text-white;
+    }
+    &__wrapper {
+      @apply bg-[#14202b];
+      &.active {
+        @apply bg-[#1a2631];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  Modal
+  ========================================================================== */
+
+  .modal {
+    &__content {
+      @apply bg-dashboard;
+    }
+  }
+}

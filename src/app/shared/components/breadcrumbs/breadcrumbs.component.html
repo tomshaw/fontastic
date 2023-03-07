@@ -1,0 +1,14 @@
+<div class="controls flex justify-start items-start border-bottom breadcrumbs">
+  <div class="controls__item flex justify-start items-center">
+    <ng-container *ngFor="let item of breadCrumbs">
+      <ng-template [ngIf]="item.link" [ngIfElse]="other">
+        <span class="material-icons">arrow_right</span>
+        <a [routerLink]="[item.link]" class="cursor-pointer" title={{item.title}} [attr.data-link]="item.link"><span class="text-uppercase">{{ item.title }}</span></a>
+      </ng-template>
+      <ng-template #other>
+        <span class="material-icons">arrow_right</span>
+        <span class="text-uppercase" title="{{item.title}}">{{ item.title }}</span>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

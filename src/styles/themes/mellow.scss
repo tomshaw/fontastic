@@ -1,0 +1,280 @@
+body[data-theme="mellow"] {
+  @apply text-mellow bg-mellow;
+}
+
+[data-theme="mellow"] {
+
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #252525;
+    --scrollbar-hover-color: #252525d7;
+    --scrollbar-space: 0.1rem;
+    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
+  }
+
+  a {
+    color: var(--font-color);
+    &:hover,
+    &:active {
+      color: var(--font-color);
+    }
+  }
+
+  .active {
+    color: #cc0000 !important;
+  }
+
+  .favorite {
+    color: #cc0000 !important;
+  }
+
+  .disabled,
+  .disabled i {
+    color: var(--border-color);
+  }
+
+  .enabled {
+    color: var(--font-color);
+  }
+
+  .selected {
+    background-color: #ebd01a;
+  }
+
+  .material-icons {
+    color: var(--font-color);
+  }
+
+  .material-icons-rounded {
+    .material-icons {
+      &:hover {
+        @apply text-[#ebd01a] bg-[#111111];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#252525];
+    span {
+      @apply text-[#ebd01a];
+    }
+    &:hover {
+      @apply bg-[#472107];
+    }
+  }
+
+  input:not(.form-control-hidden):not([type="range"]),
+  select:not(.form-control-hidden) {
+    border: 1px solid var(--border-color) !important;
+  }
+
+  .radio label,
+  .checkbox label {
+    border: 2px solid var(--font-color);
+  }
+  
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    background-color: var(--font-color);
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
+    color: var(--font-color);
+  }
+
+  // Toolbar text.
+  .input-preview.preview-text button {
+    background-color: var(--border-color) !important;
+  }
+
+  // Toolbar switch text.
+  .input-preview.quick-text button span.material-icons,
+  .input-preview.latest-news button span.material-icons,
+  .input-preview.preview-casing button span.material-icons,
+  .input-preview.preview-reset button span.material-icons {
+    color: var(--font-color) !important;
+  }
+
+  .input-preview.preview-size {
+    input {
+      color: red !important;
+    }
+  }
+
+  // input[type="range"] {
+  //   accent-color: #cc2ea4;
+  // }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: #000000;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    background: var(--font-color) !important;
+    border: 3px solid var(--background-color) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .paginator {
+    a {
+      background-color: #252525;
+      i.material-icons {
+        color: #dfc136; 
+      }
+    }
+  }
+
+  .border-top {
+    border-top: 1px solid var(--border-color) !important;
+  }
+
+  .border-right {
+    border-right: 1px solid var(--border-color) !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+
+  .border-left {
+    border-left: 1px solid var(--border-color) !important;
+  }
+
+  .border-top-dashed {
+    border-top: 1px dashed var(--border-color) !important;
+  }
+  
+  .border-right-dashed {
+    border-right: 1px dashed var(--border-color) !important;
+  }
+  
+  .border-bottom-dashed {
+    border-bottom: 1px dashed var(--border-color) !important;
+  }
+  
+  .border-left-dashed {
+    border-left: 1px dashed var(--border-color) !important;
+  }
+
+  details {
+    >summary {
+      color: #252525;
+    }
+    >details {
+      &::after {
+        background-color: #252525;
+      }
+      &::before {
+        background-color: #252525;
+      }
+    }
+    ul {
+      li {
+        &::after {
+          background-color: #252525;
+        }
+        &::before {
+          background-color: #252525;
+        }
+        span {
+          color: #252525;
+        }
+        span:last-child {
+          color: #ff2f2f;
+        }
+      }
+    }
+  }
+
+  .table {
+    color: var(--font-color);
+    thead > tr {
+      color: var(--background-color);
+      background-color: var(--font-color);
+    }
+    &.striped > tbody > tr:nth-child(odd) {
+      @apply bg-mellow;
+    }
+    .material-icons {
+      color: var(--font-color);
+    }
+    [class^="icon-"] {
+      color: var(--font-color);
+    }
+  }
+
+  .form-control {
+    color: var(--font-color);
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    .input-group-checkbox {
+      background-color: var(--border-color);
+    }
+  }
+
+  fieldset {
+    border: 1px solid var(--border-color);
+    legend {
+      color: var(--font-color);
+    }
+    dt {
+      label {
+        color: var(--font-color);
+      }
+    }
+    dd {
+      border-left: 1px solid var(--font-color);
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: #c10156;
+    }
+    dl:hover dt label {
+      color: var(--font-color);
+    }
+    dl dd label:hover {
+      color: var(--font-color);
+    }
+  }
+
+  .glyph-list {
+    &__wrapper-item {
+      @apply bg-[#ffdf00] border-2 border-[#252525];
+    }
+  }
+
+  /* ==========================================================================
+  Typescale
+  ========================================================================== */
+
+  .typescale {
+    &__label {
+      @apply bg-[#ddc000];
+    }
+    &__label-text {
+      @apply text-[#252525];
+    }
+    &__wrapper {
+      @apply bg-[#ffdf00];
+      &.active {
+        @apply bg-[#ddc000];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  Modal
+  ========================================================================== */
+
+  .modal {
+    &__content {
+      @apply bg-mellow;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<app-modal id="glyph-view" title="Glyph Viewer" size="sm" shadow="shadow-md" [showHeader]="false" [showFooter]="false">
+
+  <div class="controls flex justify-between items-center border-bottom">
+    <div class="controls__item flex justify-start items-center">
+      <div>
+        <h2 class="glyph-info">Glyph name: {{this.glyph?.name}}</h2>
+      </div>
+    </div>
+    <div class="controls__item flex justify-end items-center">
+      <i class="material-icons" (click)="modalService.close();">close</i>
+    </div>
+  </div>
+
+  <div class="hover-scrollbox-y">
+    <div class="glyph-display">
+      <div class="glyph-display-wrapper">
+        <canvas id="glyph-bg" width="400" height="400"></canvas>
+        <canvas id="glyph-fg" width="400" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+</app-modal>

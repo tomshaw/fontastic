@@ -1,0 +1,142 @@
+<nav class="component border-right">
+  <div class="component__panel">
+
+    <figure class="figure-stats border-bottom" [class.collapsed]="statsCollapsed === true">
+
+      <figcaption class="border-bottom">
+        <span class="material-icons" (click)="toggleCollapse($event)" data-figure-stats>
+          <ng-container *ngIf="statsCollapsed === true; else elseStatsCollapsed">
+            arrow_drop_down
+          </ng-container>
+          <ng-template #elseStatsCollapsed>
+            arrow_right
+          </ng-template>
+        </span>
+        <span class="grow">System Statistics</span>
+        <span class="flex items-center justify-end mr-1 material-icons-rounded">
+          <span class="material-icons cursor-pointer" (click)="toggleFigureCollapse()" title="Collapse">more_horiz</span>
+        </span>
+      </figcaption>
+
+      <ul class="statistics">
+        <li>
+          <a href="#" (click)="handleClickAll($event)">
+            <span class="material-icons">playlist_add</span>
+            <span class="statistics__title ml-[5px] w-full" title="All Collections">Font Count</span>
+            <span class="statistics__count">{{ rowCount }}</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" (click)="handleClickFavorites($event)">
+            <span class="material-icons">playlist_add</span>
+            <span class="statistics__title ml-[5px] w-full" title="My Favorites">My Favorites</span>
+            <span class="statistics__count">{{ favoriteCount }}</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" (click)="handleClickSystem($event)">
+            <span class="material-icons">playlist_add</span>
+            <span class="statistics__title ml-[5px] w-full" title="System Fonts">System Fonts</span>
+            <span class="statistics__count">{{ systemCount }}</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" (click)="handleClickActivated($event)">
+            <span class="material-icons">playlist_add</span>
+            <span class="statistics__title ml-[5px] w-full" title="Activated Fonts">Activated Fonts</span>
+            <span class="statistics__count">{{ activatedCount }}</span>
+          </a>
+        </li>
+      </ul>
+
+    </figure>
+
+    <figure class="figure-folders" [class.collapsed]="foldersCollapsed === true">
+      <figcaption class="border-bottom">
+        <span class="material-icons" (click)="toggleCollapse($event)" data-figure-folders>
+          <ng-container *ngIf="foldersCollapsed === true; else elseFoldersCollapsed">
+            arrow_drop_down
+          </ng-container>
+          <ng-template #elseFoldersCollapsed>
+            arrow_right
+          </ng-template>
+        </span>
+        <span class="grow">Font Collections</span>
+        <span class="flex items-center justify-end mr-1 material-icons-rounded">
+          <span class="material-icons cursor-pointer" (click)="toggleDetailsOpen()" title="Collapse">more_horiz</span>
+        </span>
+      </figcaption>
+
+      <div *ngIf="resultSet.length" class="flex flex-col w-full h-full overflow-hidden">
+
+        <div class="hover-scrollbox-x hover-scrollbox-y p-0">
+          <ng-template #recursiveList let-items>
+            <ng-container *ngFor="let item of items">
+              <details [attr.open]="item.collapsed ? '1' : null" [attr.data-id]="item.id">
+
+                <summary [class.selected]="item.enabled">
+                  <span class="flex items-center justify-center">
+                    <span class="material-icons collapsed-icon cursor-pointer" (click)="handleCollapse($event, item.id)"></span>
+                  </span>
+                  <span class="flex grow w-full cursor-pointer" [attr.title]="item.title" (click)="handleNavigate($event, item.id)">{{item.title}}</span>
+                  <span class="flex items-center justify-center mr-1.5" *ngIf="item.enabled" >
+                    <span class="material-icons cursor-pointer" (click)="handleUpdate($event)" [attr.data-id]="item.id" title="Update Collection">more_horiz</span>
+                  </span>
+                </summary>
+
+                <ng-container *ngIf="item.children.length; else elseif1">
+                  <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.children }"></ng-container>
+                </ng-container>
+                <ng-template #elseif1>
+                  <ul>
+                    <li class="flex items-center justify-start"><span>Font count:</span>
+                      <span>{{item.storeCount}}</span>
+                    </li>
+                    <li class="flex items-center justify-start"><span>Installable:</span>
+                      <span>{{item.installableCount}}</span>
+                    </li>
+                    <li class="flex items-center justify-start"><span>Activated:</span>
+                      <span>{{item.activatedCount}}</span>
+                    </li>
+                    <li class="flex items-center justify-start"><span>Favorited:</span>
+                      <span>{{item.favoriteCount}}</span>
+                    </li>
+                    <li class="flex items-center justify-start"><span>Temporary :</span>
+                      <span>{{item.temporaryCount}}</span>
+                    </li>
+                  </ul>
+                </ng-template>
+
+              </details>
+            </ng-container>
+          </ng-template>
+
+          <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: resultSet }"></ng-container>
+
+        </div>
+
+      </div>
+    </figure>
+
+    <figure class="figure-options hidden" [class.collapsed]="optionsCollapsed === true">
+      <figcaption class="border-bottom">
+        <span class="material-icons" (click)="toggleCollapse($event)" data-figure-options>
+          <ng-container *ngIf="optionsCollapsed === true; else elseOptionsCollapsed">
+            arrow_drop_down
+          </ng-container>
+          <ng-template #elseOptionsCollapsed>
+            arrow_right
+          </ng-template>
+        </span>
+        <span class="grow">Folder Options</span>
+        <span class="flex items-center justify-end mr-3">{{resultSet.length}}</span>
+      </figcaption>
+      <ul class="w-full py-2 hidden">
+        <li class="py-1 px-4">Sort collection</li>
+        <li class="py-1 px-4">Sort collection</li>
+        <li class="py-1 px-4">Sort collection</li>
+      </ul>
+    </figure>
+
+  </div>
+</nav>

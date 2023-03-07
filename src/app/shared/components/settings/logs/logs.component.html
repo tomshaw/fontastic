@@ -1,0 +1,44 @@
+<div class="page">
+
+  <div class="page__header border-bottom">
+    <div class="page__header-title">
+      <h1>System Logs</h1>
+    </div>
+    <div class="flex items-center justify-end p-0 text-right">
+      <div>
+        <app-button [type]="'button'" [title]="'Truncate Table'" [ngClass]="'app-button__xl'" (click)="handleTruncate($event)">Empty Table</app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__body">
+    <div class="flex flex-col p-5">
+      <table class="table table-auto striped">
+        <thead>
+          <tr>
+            <th class="uppercase sort_input">ID</th>
+            <th class="text-left">Message</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of resultSet; let i = index;" title="{{item.message}}">
+            <td class="text-center">
+              <i class="material-icons" (click)="handleDelete(item.id)" title="Delete Item">delete</i>
+            </td>
+            <td class="text-left">
+              <div class="flex flex-col items-start justify-center w-full">
+                <strong>{{filterMessageType(item.type)}}</strong>
+                <span>{{item.message.substring(0, 100)}}</span>
+              </div>
+            </td>
+            <td class="text-center">{{filterMessageStatus(item.status)}}</td>
+            <td class="text-center">{{item.created | date :'medium'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

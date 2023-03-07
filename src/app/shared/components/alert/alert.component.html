@@ -1,0 +1,9 @@
+<div class="controls app-alert flex justify-start items-start border-bottom" [class]="alert.class" [class.app-alert-enabled]="alertEnabled">
+  <div class="controls__item flex justify-start items-center">
+    <span class="material-icons">arrow_right</span>
+    <p class="whitespace-nowrap">{{alert.message}}</p>
+  </div>
+  <div class="controls__item flex justify-end items-center mr-2">
+    <i class="material-icons cursor-pointer" (click)="handleIconClick($event)" title="Close Message">{{alert.icon}}</i>
+  </div>
+</div>

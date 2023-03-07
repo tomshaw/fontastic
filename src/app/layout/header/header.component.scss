@@ -1,0 +1,60 @@
+@import "../../../styles/tools/variables";
+
+header {
+    display: grid;
+    grid-template-areas: "left middle right";
+    grid-template-columns: 240px 1fr 240px;
+    grid-template-rows: $appHeaderHeight;
+}
+
+@media only screen and (min-width: 1440px) {
+    header {
+        grid-template-columns: 300px 1fr 300px;
+    }
+}
+
+.left {
+    grid-area: left;
+}
+
+.middle {
+    grid-area: middle;
+}
+
+.right {
+    grid-area: right;
+}
+
+.left,
+.middle,
+.right {
+    @apply relative;
+}
+
+.middle {
+    @apply m-0;
+}
+
+.header-block {
+    @apply p-0 h-full;
+
+    a {
+        @apply cursor-pointer text-[11px] text-center no-underline py-[5px] px-[10px] inline-block outline-none whitespace-nowrap opacity-0 invisible transition-all;
+
+        i {
+            @apply block text-[24px] leading-none p-0;
+        }
+    }
+
+    a+a {
+        @apply pl-[5px];
+    }
+
+    a.gravatar {
+        @apply mt-[1px];
+
+        img {
+            @apply w-[38px] rounded-full;
+        }
+    }
+}

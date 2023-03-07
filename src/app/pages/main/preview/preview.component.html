@@ -1,0 +1,46 @@
+<div class="component">
+  <div class="component__panel">
+    <app-breadcrumbs></app-breadcrumbs>
+    <app-alert></app-alert>
+    <div class="hover-scrollbox-y overflow-x-hidden" #scrollElement [class.loading]="isLoading">
+      <ng-container *ngFor="let item of resultSet; let i = index;">
+        <div class="previews flex flex-col w-full" [style.background-color]="backgroundColor" [attr.id]="item.id">
+          <div [className]="i === 0 ? 'previews__info flex justify-between items-center w-full py-1 -mt-[1px] border-bottom border-top' : 'previews__info flex justify-between items-center w-full py-1 -mt-[1px] border-bottom border-top'">
+            <div class="flex justify-start items-center whitespace-nowrap w-full px-3">
+              <h2 class="text-base font-medium cursor-pointer mr-1" title="{{item.file_path}}" (click)="openFileLocation($event, item)">{{item.font_family }}</h2>
+              <h2 class="text-base font-medium cursor-pointer mr-1" title="{{item.file_size}}" (click)="openFileViewer($event, item)">({{item.file_size_pretty }})</h2>
+              <h2 class="text-base font-medium uppercase mr-1" title="{{item.file_type}}">{{ item.file_type }}</h2>
+              <ng-container *ngIf="displayNews && item.news">
+                <h2 class="text-base font-medium cursor-pointer mr-1" [attr.title]="item.news.description" [innerHtml]="item.news.source.name" (click)="openNewsArticle($event, item)"></h2>
+              </ng-container>
+              <ng-container *ngIf="displayNews && item.news && item.news.publishedAt">
+                <h2 class="text-base font-medium mr-1" [attr.title]="item.news.publishedAt | date: 'short':'UTC'">&mdash; &nbsp;{{item.news.publishedAt | date: 'short':'UTC'}}</h2>
+              </ng-container>
+              <ng-container *ngIf="displayNews && item.news && item.news.author">
+                <h2 class="text-base font-medium mr-1" [attr.title]="item.news.author">&mdash; &nbsp;<i [innerHtml]="item.news.author"></i></h2>
+              </ng-container>
+            </div>
+            <div class="flex justify-end items-center w-full px-1.5">
+              <i class="material-icons mr-1" title="File location" (click)="openFileLocation($event, item)">folder_open</i>
+              <ng-container *ngIf="item.installable;">
+                <i class="material-icons mr-1" title="File open" (click)="openFileViewer($event, item)">view_list</i>
+              </ng-container>
+              <ng-container *ngIf="item.favorite; else elseBordered">
+                <i class="material-icons material-icons-sized mr-1" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite</i>
+              </ng-container>
+              <ng-template #elseBordered>
+                <i class="material-icons material-icons-sized mr-1" [class.favorite]="item.favorite" title="Favorite" (click)="onFavoriteClick($event, item)">favorite_border</i>
+              </ng-template>
+              <ng-container *ngIf="item.sample_text">
+                <i class="material-icons" [attr.title]="item.sample_text" (click)="onSampleClick($event, item)">g_translate</i>
+              </ng-container>
+            </div>
+          </div>
+          <div class="previews__typography" (click)="onRowClick(item.id)">
+            <canvas attr.id="canvas_{{item.id}}" height="150px" width="1920px"></canvas>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

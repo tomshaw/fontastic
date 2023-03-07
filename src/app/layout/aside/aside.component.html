@@ -1,0 +1,9 @@
+<ng-container [ngSwitch]="componentName">
+  <aside class="component border-left">
+    <div class="component__panel">
+      <app-tables *ngSwitchCase="'tables'"></app-tables>
+      <app-search *ngSwitchCase="'search'"></app-search>
+      <app-store *ngSwitchCase="'store'"></app-store>
+    </div>
+  </aside>
+</ng-container>

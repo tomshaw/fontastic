@@ -1,0 +1,42 @@
+/* ==========================================================================
+Tables
+========================================================================== */
+
+.table {
+    @apply text-[#616467] opacity-0 invisible transition-opacity;
+
+    thead>tr {
+        @apply text-white bg-[#00a1be];
+    }
+
+    &.striped>tbody>tr:nth-child(odd) {
+        @apply bg-[#f5f5f5];
+    }
+
+    tr {
+
+        th,
+        td {
+            @apply bg-inherit relative align-middle whitespace-nowrap overflow-hidden;
+        }
+
+        th {
+            @apply cursor-pointer p-3;
+            .material-icons {
+                color: #fff;
+            }
+        }
+
+        td {
+            @apply p-3;
+        }
+
+        th:not(.sort_input) {
+            min-width: 120px;
+        }
+
+        th.sort_input {
+            min-width: 40px;
+        }
+    }
+}

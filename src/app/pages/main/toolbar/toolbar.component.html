@@ -1,0 +1,78 @@
+<div class="component">
+  <div class="component__panel">
+    <div class="controls flex justify-between items-center border-top">
+      <div class="controls__item flex justify-start items-center">
+
+        <app-paginator></app-paginator>
+
+        <div class="input-preview preview-text">
+          <input type="text" [value]="displayText" (keyup.enter)="handleDisplayInput($event)" (input)="handleDisplayInput($event)" />
+          <button (click)="handleDisplayButton($event)"><span class="material-icons">menu</span></button>
+        </div>
+
+        <div class="input-preview quick-text !mr-5">
+          <button (click)="handleQuickText($event)" title="Switch Text"><span class="material-icons">view_list</span></button>
+        </div>
+
+        <div class="input-preview preview-color">
+          <label for="font_color">Font</label>
+          <input type="color" class="input" id="font_color" list="font_color" [value]="fontColor" (change)="onFontColor($event)" />
+          <datalist id="font_color">
+            <option>#00a0be</option>
+            <option>#3f144f</option>
+            <option>#ff0000</option>
+            <option>#cc0000</option>
+            <option>#990000</option>
+            <option>#660000</option>
+            <option>#330000</option>
+          </datalist>
+        </div>
+
+        <div class="input-preview preview-color">
+          <label for="background_color">Background</label>
+          <input type="color" class="input" id="background_color" list="background_color" [value]="backgroundColor" (change)="onBackgroundColor($event)" />
+          <datalist id="background_color">
+            <option>#00a0be</option>
+            <option>#3f144f</option>
+            <option>#ff0000</option>
+            <option>#cc0000</option>
+            <option>#990000</option>
+            <option>#660000</option>
+            <option>#330000</option>
+          </datalist>
+        </div>
+
+        <div class="input-preview preview-size" [attr.title]="fontSize + 'px'">
+          <ng-container *ngIf="buttonType === 0; else elseif1">
+            <span [attr.title]="fontSize + 'px'">{{fontSize}}px</span>
+          </ng-container>
+        </div>
+
+        <div class="input-preview preview-range" [attr.title]="fontSize + 'px'">
+          <ng-container *ngIf="buttonType === 0; else elseif1">
+            <input type="range" class="input" id="font_size" min="24" max="72" step="1" [value]="fontSize" (change)="onFontSize($event)" />
+          </ng-container>
+          <ng-template #elseif1>
+            <ng-container *ngIf="buttonType === 1; else elseif2">
+              <input type="range" class="input" id="word_spacing" min="-1" max="1" step="0.1" value="0" (change)="onWordSpacing($event)" />
+            </ng-container>
+          </ng-template>
+          <ng-template #elseif2>
+            <ng-container *ngIf="buttonType === 2">
+              <input type="range" class="input" id="letter_spacing" min="-1" max="1" step="0.1" value="0" (change)="onLetterSpacing($event)" />
+            </ng-container>
+          </ng-template>
+        </div>
+
+        <!-- <div class="input-preview preview-casing">
+          <button (click)="handleSpacingButton($event);" [attr.data-type]="buttonType"><span class="material-icons">format_size</span></button>
+        </div> -->
+
+        <div class="input-preview preview-reset">
+          <button (click)="handleResetButton($event);" [attr.data-type]="buttonType" title="Reset Preview"><span class="material-icons">cached</span></button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

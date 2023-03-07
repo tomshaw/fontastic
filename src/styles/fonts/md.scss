@@ -1,0 +1,54 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../../assets/fonts/md/MaterialIcons-Regular.woff2) format('woff2');
+}
+
+.material-icons {
+  color: inherit;
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  cursor: pointer;
+  vertical-align: middle;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: "liga";
+
+  // fixes icon resizing when clicking
+  &.material-icons-sized {
+    height: 26px;
+    width: 26px;
+  }
+}
+
+.material-icons-rounded {
+  .material-icons {
+    border-radius: 50%;
+    padding: 4px;
+    transition-property: background-color, color;
+    transition-duration: 0.2s;
+    &:hover {
+      color: #008197;
+      background-color: #f3f4f6;
+    }
+  }
+}

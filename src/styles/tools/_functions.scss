@@ -1,0 +1,5 @@
+// Functions
+
+@function z-index($level: 'base') {
+  @return map-get($layers, $level);
+}

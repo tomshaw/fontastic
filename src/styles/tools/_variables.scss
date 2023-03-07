@@ -1,0 +1,67 @@
+@use "sass:map";
+
+$appHeaderHeight: 54px;
+$figureCaptionHeight: 36px;
+$figureSectionHeight: 30px;
+
+$thin: 100;
+$light: 300;
+$regular: 400;
+$semibold: 600;
+$bold: 700;
+
+$font-weights: ("thin": $thin, "light": $light, "regular": $regular, "medium": $semibold, "bold": $bold);
+
+$color-white:             #ffffff;
+$color-black:             #000000;
+$color-light:             rgba(255, 255, 255, 0.8);
+$color-dark:              rgba(0, 0, 0, 0.8);
+
+$color-green:             #6cbe63;
+$color-blue:              #00a0be; // #9b9af1;
+$color-red:               #d86161;   
+
+$color-1:                 #181d23; // Background
+$color-2:                 #616467; // Text/Icons/Toolbar
+$color-3:                 #eaeaea; // Borders
+$color-4:                 #00a0be; // Enabled/Highlighted
+$color-5:                 #a6b0b3; // Disabled
+$color-6:                 #61616191; // Navigation Icons
+
+$color-text:              $color-2;
+$color-text-enabled:      $color-4;
+$color-text-disabled:     $color-5;
+$color-text-selection:    $color-5;
+
+$color-link:              $color-4;
+$color-link-hover:        $color-4;
+
+$color-background:        $color-white;
+$color-foreground:        $color-white;
+$color-toolbar:           $color-2;
+$color-border:            $color-4;
+
+$theme-color: $color-4;
+
+$alert-colors: ("info": #004085, "success": #155724, "error": #721c24, "warning": #856404, "danger": #721c24);
+$alert-backgrounds: ("info": #cce5ff, "success": #d4edda, "error": #f8d7da, "warning": #fff3cd, "danger": #f8d7da);
+
+// Fonts
+$base-fonts: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$base-font-family: "Roboto", $base-fonts;
+
+// Layers
+$layers: (
+  below: -1,
+  base: 0,
+  above: 1,
+  modal: 50,
+  header: 30,
+  footer: 25,
+  loader: 100
+);
+
+$gray: lighten($color-black, 40%);
+$dark-gray: lighten($color-black, 20%);
+$light-gray: lighten($color-black, 60%);
+$lighter-gray: lighten($color-black, 80%);
