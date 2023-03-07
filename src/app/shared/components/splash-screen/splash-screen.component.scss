@@ -1,0 +1,31 @@
+.splash-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    .d {
+        font-size: 2rem;
+        animation: dots 1.5s ease-out infinite;
+    }
+    .d-2 {
+        animation-delay: .5s;
+    }
+    .d-3 {
+        animation-delay: 1s;
+    }
+}
+
+@keyframes dots {
+    50% {
+        transform: translateY(-.4rem);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}

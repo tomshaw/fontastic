@@ -13,4 +13,5 @@ export * from './search/search.component';
 export * from './settings/settings.component';
 export * from './store/store.component';
 export * from './spinner/spinner.component';
+export * from './splash-screen/splash-screen.component';
 export * from './typescale/typescale.component';

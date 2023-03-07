@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { AlertComponent, BreadcrumbsComponent, ButtonComponent, GlyphListComponent, GlyphViewComponent, LoadingComponent, ModalComponent, PageNotFoundComponent, PaginatorComponent, PairingComponent, SpinnerComponent, SearchComponent, SettingsComponent, StoreComponent, TablesComponent, TypescaleComponent } from './components/';
+import { AlertComponent, BreadcrumbsComponent, ButtonComponent, GlyphListComponent, GlyphViewComponent, LoadingComponent, ModalComponent, PageNotFoundComponent, PaginatorComponent, PairingComponent, SpinnerComponent, SplashScreenComponent, SearchComponent, SettingsComponent, StoreComponent, TablesComponent, TypescaleComponent } from './components/';
 import { WebviewDirective, GravatarDirective } from './directives/';
 import { SafeHtmlPipe } from './pipes/safehtml.pipe';
 import { PrettyBytesPipe } from './pipes/prettybytes.pipe';
@@ -52,7 +52,8 @@ import { FormCollectionComponent } from './components/collection/form-collection
     SystemComponent,
     CreateCollectionComponent,
     UpdateCollectionComponent,
-    FormCollectionComponent
+    FormCollectionComponent,
+    SplashScreenComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +87,8 @@ import { FormCollectionComponent } from './components/collection/form-collection
     SystemComponent,
     CreateCollectionComponent,
     UpdateCollectionComponent,
-    FormCollectionComponent
+    FormCollectionComponent,
+    SplashScreenComponent
   ]
 })
 export class SharedModule { }
