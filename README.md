@@ -1,4 +1,4 @@
-# Typepress
+# Fontastic
 
 ![Maintained][maintained-badge]
 [![Make a pull request][prs-badge]][prs]
@@ -12,7 +12,7 @@
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
 
-Typepress is a stunning font management and cataloging application. 
+Fontastic is a stunning font management and cataloging application. 
 
 - A gorgeous interface.
 - Font cataloging and management.
@@ -24,12 +24,12 @@ Typepress is a stunning font management and cataloging application.
 
 ## Getting Started
 
-🔧 Typepress is under active development, some features may break or change over time.
+🔧 Fontastic is under active development, some features may break or change over time.
 
 *Clone this repository locally:*
 
 ``` bash
-git clone https://github.com/tomshaw/typepress.git
+git clone https://github.com/tomshaw/fontastic.git
 ```
 
 Please use `npm` as dependencies manager. 
@@ -50,7 +50,7 @@ npm start
 
 ## Activator
 
-Typepress uses [Activator](https://github.com/tomshaw/activator) a multi platform Go executable for font installation and management. 📡
+Fontastic uses [Activator](https://github.com/tomshaw/activator) a multi platform Go executable for font installation and management. 📡
 
 ## Screen Shots
 
@@ -58,7 +58,7 @@ As part of the documentation you can check out [screenshots here.](docs/screensh
 
 ## Libraries Used
 
-Typepress was created with [Angular Electron](https://github.com/maximegris/angular-electron) an excellent boilerplate for Angular Electron applications
+Fontastic was created with [Angular Electron](https://github.com/maximegris/angular-electron) an excellent boilerplate for Angular Electron applications
 
 + [Electron.js](https://electronjs.org) - Build cross platform desktop apps with JavaScript, HTML, and CSS.
 + [Angular.js](https://github.com/angular/angular) - Development platform for building web and desktop applications
@@ -74,7 +74,7 @@ Need free fonts for testing?
 + [Font Squirrell](https://www.fontsquirrel.com/) Great resource of hand-picked, high-quality, commercial-use fonts.
 + [Google Fonts](https://github.com/google/fonts) Download all 3K Google Fonts. Great for testing processing speeds. 
 
-If you're using Typepress, consider 🌟 [starring or contributing][repo] on GitHub! 🎉
+If you're using Fontastic, consider 🌟 [starring or contributing][repo] on GitHub! 🎉
 
 ## Contributing
 
@@ -86,26 +86,26 @@ Please review and abide by the [Code of Conduct](CODE_OF_CONDUCT.md). 🚫
 
 ## License
 
-Typepress is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Fontastic is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-[repo]: https://github.com/tomshaw/typepress
+[repo]: https://github.com/tomshaw/fontastic
 
 [maintained-badge]: https://img.shields.io/badge/maintained-yes-brightgreen
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license]: https://github.com/tomshaw/typepress/blob/main/LICENSE.md
+[license]: https://github.com/tomshaw/fontastic/blob/main/LICENSE.md
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-red.svg
 [prs]: http://makeapullrequest.com
 
-[linux-build-badge]: https://github.com/tomshaw/typepress/workflows/Linux%20Build/badge.svg
-[linux-build]: https://github.com/tomshaw/typepress/actions?query=workflow%3A%22Linux+Build%22
-[macos-build-badge]: https://github.com/tomshaw/typepress/workflows/MacOS%20Build/badge.svg
-[macos-build]: https://github.com/tomshaw/typepress/actions?query=workflow%3A%22MacOS+Build%22
-[windows-build-badge]: https://github.com/tomshaw/typepress/workflows/Windows%20Build/badge.svg
-[windows-build]: https://github.com/tomshaw/typepress/actions?query=workflow%3A%22Windows+Build%22
+[linux-build-badge]: https://github.com/tomshaw/fontastic/workflows/Linux%20Build/badge.svg
+[linux-build]: https://github.com/tomshaw/fontastic/actions?query=workflow%3A%22Linux+Build%22
+[macos-build-badge]: https://github.com/tomshaw/fontastic/workflows/MacOS%20Build/badge.svg
+[macos-build]: https://github.com/tomshaw/fontastic/actions?query=workflow%3A%22MacOS+Build%22
+[windows-build-badge]: https://github.com/tomshaw/fontastic/workflows/Windows%20Build/badge.svg
+[windows-build]: https://github.com/tomshaw/fontastic/actions?query=workflow%3A%22Windows+Build%22
 
-[github-watch-badge]: https://img.shields.io/github/watchers/tomshaw/typepress.svg?style=social
-[github-watch]: https://github.com/tomshaw/typepress/watchers
-[github-star-badge]: https://img.shields.io/github/stars/tomshaw/typepress.svg?style=social
-[github-star]: https://github.com/tomshaw/typepress/stargazers
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20typepress!%20https://github.com/tomshaw/typepress%20%F0%9F%91%8D
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/tomshaw/typepress.svg?style=social
+[github-watch-badge]: https://img.shields.io/github/watchers/tomshaw/fontastic.svg?style=social
+[github-watch]: https://github.com/tomshaw/fontastic/watchers
+[github-star-badge]: https://img.shields.io/github/stars/tomshaw/fontastic.svg?style=social
+[github-star]: https://github.com/tomshaw/fontastic/stargazers
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20fontastic!%20https://github.com/tomshaw/fontastic%20%F0%9F%91%8D
+[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/tomshaw/fontastic.svg?style=social
