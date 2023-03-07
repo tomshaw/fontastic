@@ -53,6 +53,7 @@
     "electron-log": "4.4.8",
     "electron-store": "8.1.0",
     "gsap": "3.11.4",
+    "material-icons": "1.13.2",
     "mime": "3.0.0",
     "mysql": "2.18.1",
     "node-machine-id": "1.1.12",
