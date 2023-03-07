@@ -1,4 +1,4 @@
-# Typepress Screen Shots
+# Screen Shots
  
 ![](screen-grab1.png)
 
