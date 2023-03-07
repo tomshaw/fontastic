@@ -19,7 +19,7 @@ export const database = {
     description: "The default application database.",
     enabled: true,
     synchronize: true,
-    database: "typepress.sqlite",
+    database: "fontastic.sqlite",
     charset: "utf8mb4_unicode_ci",
     logger: "simple-console",
     logging: false
@@ -33,7 +33,7 @@ export const database = {
     port: 3306,
     username: "root",
     password: "password",
-    database: "project_typepress",
+    database: "project_fontastic",
     charset: "utf8mb4_unicode_ci",
     synchronize: true,
     logger: "simple-console",

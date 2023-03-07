@@ -22,7 +22,7 @@
       "to": "bin"
     }
   ],
-  "productName": "Typepress", 
+  "productName": "Fontastic", 
   "win": {
     "icon": "dist/assets/icons",
     "target": [
@@ -47,7 +47,7 @@
       "snap"
     ],
     "desktop": {
-      "Name": "Typepress",
+      "Name": "Fontastic",
       "Type": "Application",
       "GenericName": "Font Manager"
     }
