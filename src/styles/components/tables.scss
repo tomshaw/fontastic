@@ -21,7 +21,7 @@ Tables
         }
 
         th {
-            @apply cursor-pointer p-3;
+            @apply cursor-pointer px-3 py-1.5;
             .material-icons {
                 color: #fff;
             }
@@ -31,9 +31,9 @@ Tables
             @apply p-3;
         }
 
-        th:not(.sort_input) {
-            min-width: 120px;
-        }
+        // th:not(.sort_input) {
+        //     min-width: 160px;
+        // }
 
         th.sort_input {
             min-width: 40px;

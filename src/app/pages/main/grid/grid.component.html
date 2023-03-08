@@ -6,19 +6,32 @@
         <thead>
           <tr>
             <th class="sorting sort_center sort_input" (click)="handleSort('activated')">
-              <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'activated'">&uarr;</span>
-              <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'activated'">&darr;</span>
+              <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'activated'">arrow_drop_up</span>
+              <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'activated'">arrow_drop_down</span>
+              <span class="material-icons" *ngIf="queryOptions.order.column !== 'activated'">swap_vert</span>
             </th>
             <th class="sorting sort_center sort_input" (click)="handleSort('temporary')" *ngIf="isWindows">
-              <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'temporary'">&uarr;</span>
-              <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'temporary'">&darr;</span>
+              <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'temporary'">arrow_drop_up</span>
+              <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'temporary'">arrow_drop_down</span>
+              <span class="material-icons" *ngIf="queryOptions.order.column !== 'temporary'">swap_vert</span>
+            </th>
+            <th class="sorting text-left" (click)="handleSort('id')">
+              <span class="flex items-center justify-between w-full">
+                <span>ID</span>
+                <span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'id'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'id'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'id'">swap_vert</span>
+                </span>
+              </span>
             </th>
             <th class="sorting text-left" (click)="handleSort('full_name')">
               <span class="flex items-center justify-between w-full">
                 <span>Name</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'full_name'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'full_name'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'full_name'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'full_name'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'full_name'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -26,8 +39,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Family</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'font_family'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'font_family'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'font_family'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'font_family'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'font_family'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -35,8 +49,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Type</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'file_type'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'file_type'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'file_type'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'file_type'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'file_type'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -44,8 +59,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Size</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'file_size'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'file_size'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'file_size'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'file_size'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'file_size'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -53,8 +69,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Designer</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'designer'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'designer'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'designer'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'designer'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'designer'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -62,8 +79,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Manufacturer</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'manufacturer'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'manufacturer'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'manufacturer'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'manufacturer'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'manufacturer'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -71,8 +89,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Version</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'version'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'version'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'version'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'version'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'version'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -80,8 +99,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Unique Id</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'unique_id'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'unique_id'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'unique_id'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'unique_id'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'unique_id'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -89,8 +109,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Created</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'created'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'created'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'created'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'created'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'created'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -98,8 +119,9 @@
               <span class="flex items-center justify-between w-full">
                 <span>Updated</span>
                 <span>
-                  <span *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'updated'">&uarr;</span>
-                  <span *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'updated'">&darr;</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'DESC' && queryOptions.order.column === 'updated'">arrow_drop_up</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.direction === 'ASC' && queryOptions.order.column === 'updated'">arrow_drop_down</span>
+                  <span class="material-icons" *ngIf="queryOptions.order.column !== 'updated'">swap_vert</span>
                 </span>
               </span>
             </th>
@@ -138,6 +160,7 @@
                 </ng-template>
               </ng-container>
 
+              <td class="text-left">{{ item.id }}</td>
               <td class="text-left">{{ item.full_name }}</td>
               <td class="text-left">{{ item.font_family }}</td>
               <td class="text-center">{{ item.file_type }}</td>
