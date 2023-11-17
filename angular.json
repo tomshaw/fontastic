@@ -1,8 +1,10 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics",
-    "analytics": false
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": "d3f4d848-cf46-4b28-9bab-c8c5f4d90ab8"
   },
   "version": 1,
   "newProjectRoot": "projects",
@@ -190,7 +192,6 @@
       }
     }
   },
-  "defaultProject": "angular-electron",
   "schematics": {
     "@angular-eslint/schematics:application": {
       "setParserOptionsProject": true

@@ -6,7 +6,7 @@ import { machineId } from 'node-machine-id';
 
 import Application from './Application';
 
-let win: BrowserWindow = null;
+let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
