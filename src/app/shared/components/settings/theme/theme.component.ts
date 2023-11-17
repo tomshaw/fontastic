@@ -45,6 +45,6 @@ export class ThemeComponent implements OnInit {
   }
 
   onSubmit(form: NgForm): void {
-    if (form.valid) { }
+    // if (form.valid) { }
   }
 }
