@@ -32,7 +32,7 @@ export class TablesComponent implements OnInit {
 
         const data = [];
         for (const name in tables) {
-          if (tables.hasOwnProperty(name)) {
+          if (Object.prototype.hasOwnProperty.call(tables, name)) {
             const table = tables[name];
 
             if (this.omitable.includes(name)) {

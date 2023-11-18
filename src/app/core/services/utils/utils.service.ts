@@ -66,7 +66,7 @@ export class UtilsService {
   sortKeys(dict: any) {
     const keys = [];
     for (const key in dict) {
-      if (dict.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(dict, key)) {
         keys.push(key);
       }
     }

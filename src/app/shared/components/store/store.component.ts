@@ -27,7 +27,7 @@ export class StoreComponent implements OnInit {
       if (result?.id) {
         const results = [];
         this.resultsTemplate.forEach((key: string) => {
-          if (result.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(result, key)) {
             const name = key.replace(/_/g, ' ');
             const value = (this.uppercase.includes(key)) ? result[key].toUpperCase() : result[key];
             if (this.optionable.includes(key)) {

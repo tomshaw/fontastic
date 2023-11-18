@@ -46,18 +46,8 @@
         "prefer-arrow/prefer-arrow-functions": 0,
         "@angular-eslint/directive-selector":  0,
         "@angular-eslint/no-empty-lifecycle-method": 0,
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ],
         "no-underscore-dangle": 0,
-        "no-trailing-spaces": 0,
-        "no-prototype-builtins": 0,
-        "max-len": "off"
+        "no-trailing-spaces": 0
       }
     },
     {
