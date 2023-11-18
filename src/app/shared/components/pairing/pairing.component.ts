@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { PresentationService } from '@app/core/services';
 
 @Component({
@@ -6,7 +6,7 @@ import { PresentationService } from '@app/core/services';
   templateUrl: './pairing.component.html',
   styleUrls: ['./pairing.component.scss']
 })
-export class PairingComponent implements OnChanges, OnInit, OnDestroy {
+export class PairingComponent implements OnInit {
 
   @Input() fontObject: opentype.Font;
   @Input() fontFamily: string;
@@ -22,10 +22,6 @@ export class PairingComponent implements OnChanges, OnInit, OnDestroy {
     const root = document.documentElement as HTMLElement;
     this.fontColor = root.style.getPropertyValue('--fill-color');
   }
-
-  ngOnDestroy() { }
-
-  ngOnChanges() { }
 
   onComponentSwitch() {
     this.presentationService.setInspectComponent('glyph-list');

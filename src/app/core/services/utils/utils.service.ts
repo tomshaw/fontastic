@@ -10,15 +10,16 @@ export class UtilsService {
 
   listToTree(arr: any[] = [], parentId: number = 0) {
     const tree = [];
-    for (const i in arr) {
-      if (arr[i].parent_id === parentId) {
-        const children = this.listToTree(arr, arr[i].id);
-        arr[i].children = (children.length) ? children : [];
-        tree.push(arr[i]);
+    arr.forEach((item) => {
+      if (item.parent_id === parentId) {
+        const children = this.listToTree(arr, item.id);
+        item.children = (children.length) ? children : [];
+        tree.push(item);
       }
-    }
+    });
     return tree;
   }
+  
 
   randomString(length: number): string {
     let result = '';

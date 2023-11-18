@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BreadcrumbService, DatabaseService, PresentationService } from '@app/core/services';
 import { SearchFormModel } from '@app/core/model';
@@ -10,7 +10,7 @@ import { dbColumns } from '@main/config/database';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
 
   @ViewChild(NgForm) form: NgForm;
 
@@ -25,9 +25,6 @@ export class SearchComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private presentationService: PresentationService
   ) { }
-
-  ngOnInit(): void {
-  }
 
   onSubmit(): void {
     const value = this.form.value;

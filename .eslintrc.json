@@ -41,13 +41,7 @@
         "@typescript-eslint/no-unnecessary-type-assertion": 0,
         "@typescript-eslint/unbound-method": 0,
         "@typescript-eslint/no-inferrable-types": 0,
-        "@typescript-eslint/require-await": 0,
-        "@typescript-eslint/no-for-in-array": 0,
-        "prefer-arrow/prefer-arrow-functions": 0,
-        "@angular-eslint/directive-selector":  0,
-        "@angular-eslint/no-empty-lifecycle-method": 0,
-        "no-underscore-dangle": 0,
-        "no-trailing-spaces": 0
+        "@typescript-eslint/require-await": 0
       }
     },
     {
