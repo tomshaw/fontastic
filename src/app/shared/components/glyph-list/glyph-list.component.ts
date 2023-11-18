@@ -62,26 +62,33 @@ export class GlyphListComponent implements OnInit, OnChanges {
     this.paginate().then(() => this.initGlyphList(0));
   }
 
-  async paginate() {
-    const numGlyphs: number = this.fontObject.numGlyphs;
-    const numPages: number = Math.ceil(numGlyphs / this.cellCount);
-
-    const data = [];
-    for (let i = 0; i < numPages; i++) {
-      const lastIndex = Math.min(numGlyphs - 1, (i + 1) * this.cellCount - 1);
-      const text = i * this.cellCount + '-' + lastIndex;
-      data.push({
-        key: i,
-        value: text
-      });
-    }
-
-    this.paginatorOptions = data;
-    this.numGlyphs = numGlyphs - 1;
-    this.numPages = numPages;
-
-    return data;
+  paginate() {
+    return new Promise((resolve, reject) => {
+      try {
+        const numGlyphs: number = this.fontObject.numGlyphs;
+        const numPages: number = Math.ceil(numGlyphs / this.cellCount);
+  
+        const data = [];
+        for (let i = 0; i < numPages; i++) {
+          const lastIndex = Math.min(numGlyphs - 1, (i + 1) * this.cellCount - 1);
+          const text = i * this.cellCount + '-' + lastIndex;
+          data.push({
+            key: i,
+            value: text
+          });
+        }
+  
+        this.paginatorOptions = data;
+        this.numGlyphs = numGlyphs - 1;
+        this.numPages = numPages;
+  
+        resolve(data);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
+  
 
   initGlyphList(page: number = 0) {
     const firstGlyph = page * this.cellCount;

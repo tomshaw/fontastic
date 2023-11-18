@@ -40,8 +40,7 @@
         "@typescript-eslint/no-floating-promises": 0,
         "@typescript-eslint/no-unnecessary-type-assertion": 0,
         "@typescript-eslint/unbound-method": 0,
-        "@typescript-eslint/no-inferrable-types": 0,
-        "@typescript-eslint/require-await": 0
+        "@typescript-eslint/no-inferrable-types": 0
       }
     },
     {
