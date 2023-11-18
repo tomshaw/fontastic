@@ -51,7 +51,7 @@ export class TablesComponent implements OnInit {
           }
         }
 
-        this.tableData = data.sort(this.utilsService.compare);
+        this.tableData = data.sort(this.utilsService.compare.bind(this.utilsService));
       }
     });
   }

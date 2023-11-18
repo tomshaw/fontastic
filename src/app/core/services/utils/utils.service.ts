@@ -54,7 +54,7 @@ export class UtilsService {
       .replace(/\u0027/g, '&#039;');
   }
 
-  compare(a: any, b: any): any {
+  compare = (a: any, b: any): any => {
     if (a.order < b.order) {
       return -1;
     }
