@@ -1,98 +1,104 @@
 <nav class="component border-right">
   <div class="component__panel">
-
     <div class="scrollbox">
       <div class="scrollbox-content">
 
-        <figure data-collection="0" class="border-top border-bottom" [class.isCollapsed]="statsCollapsed === true">
-
-          <figcaption class="border-top border-bottom">
-            <span class="material-icons cursor" (click)="toggleCollapse($event)" data-widget="status">
-              <ng-container *ngIf="statsCollapsed; else elseif1">
-                arrow_right
-              </ng-container>
-              <ng-template #elseif1>
-                arrow_drop_down
-              </ng-template>
-            </span>
-            <span class="text-uppercase flex-grow-1">System Statistics</span>
-            <span class="system-stats-buttons">
-              <span class="material-icons cursor" (click)="toggleCollapseAll()" title="Collapse Menus">more_horiz</span>
-            </span>
-          </figcaption>
-
-          <ul>
-            <li>
-              <a class="system">
-                <span class="material-icons">playlist_add</span>
-                <span class="nav-text nav-status" (click)="handleClickAll($event)" title="All Collections">Font Count</span>
-                <span class="font-count">{{ rowCount }}</span>
-              </a>
-              <a class="system">
-                <span class="material-icons">playlist_add</span>
-                <span class="nav-text nav-status" (click)="handleClickFavorites($event)" title="My Favorites">My Favorites</span>
-                <span class="font-count">{{ favoriteCount }}</span>
-              </a>
-              <a class="system">
-                <span class="material-icons" (click)="handleClickSystemScan($event)" title="System Scan">playlist_add</span>
-                <span class="nav-text nav-status" (click)="handleClickSystem($event)" title="System Fonts">System Fonts</span>
-                <span class="font-count">{{ systemCount }}</span>
-              </a>
-              <a class="system">
-                <span class="material-icons">playlist_add</span>
-                <span class="nav-text nav-status" (click)="handleClickActivated($event)" title="Activated Fonts">Activated Fonts</span>
-                <span class="font-count">{{ activatedCount }}</span>
-              </a>
+        <!-- Library (Smart Filters) -->
+        <div class="nav-section">
+          <div class="nav-section__header">
+            <span class="nav-section__title text-uppercase">Library</span>
+          </div>
+          <ul class="nav-list">
+            <li class="nav-item" [class.is-active]="activeFilter === 'all'" (click)="handleClickAll($event)">
+              <div class="nav-item__row">
+                <span class="material-icons nav-item__icon">folder_open</span>
+                <span class="nav-item__label">All Fonts</span>
+                <span class="nav-item__count">{{ rowCount }}</span>
+              </div>
+            </li>
+            <li class="nav-item" [class.is-active]="activeFilter === 'favorites'" (click)="handleClickFavorites($event)">
+              <div class="nav-item__row">
+                <span class="material-icons nav-item__icon">star_outline</span>
+                <span class="nav-item__label">Favorites</span>
+                <span class="nav-item__count">{{ favoriteCount }}</span>
+              </div>
+            </li>
+            <li class="nav-item" [class.is-active]="activeFilter === 'system'" (click)="handleClickSystem($event)">
+              <div class="nav-item__row">
+                <span class="material-icons nav-item__icon">computer</span>
+                <span class="nav-item__label">System Fonts</span>
+                <span class="nav-item__count">{{ systemCount }}</span>
+              </div>
+            </li>
+            <li class="nav-item" [class.is-active]="activeFilter === 'activated'" (click)="handleClickActivated($event)">
+              <div class="nav-item__row">
+                <span class="material-icons nav-item__icon">check_circle_outline</span>
+                <span class="nav-item__label">Activated</span>
+                <span class="nav-item__count">{{ activatedCount }}</span>
+              </div>
             </li>
           </ul>
-          
-        </figure>
+        </div>
 
-        <ng-container *ngFor="let item of resultSet; let i = index;">
-          <figure class="border-top border-bottom" [attr.data-collection]="item.id" [class.isCollapsed]="item.collapsed">
+        <!-- Collections -->
+        <div class="nav-section">
+          <div class="nav-section__header">
+            <span class="nav-section__title text-uppercase">Collections</span>
+            <span class="nav-section__actions">
+              <span class="material-icons cursor" (click)="handleClickSystemScan($event)" title="Scan System Fonts">radar</span>
+              <span class="material-icons cursor" (click)="handleCreateCollection($event, 0)" title="New Collection">add</span>
+              <span class="material-icons cursor" (click)="toggleCollapseAll()" title="Collapse All">unfold_less</span>
+            </span>
+          </div>
 
-            <figcaption class="border-top border-bottom" title="{{item.title}}">
-              <span class="material-icons cursor" (click)="toggleCollapse($event)">
-                <ng-container *ngIf="item.collapsed; else elseif1">
-                  arrow_right
-                </ng-container>
-                <ng-template #elseif1>
-                  arrow_drop_down
-                </ng-template>
-              </span>
-              <span class="collection">
-                <input type="text" class="input--title" name="collection-title" [attr.value]="item.title" (keyup.enter)="handleTitleInput($event)" (change)="handleTitleInput($event)" [attr.data-id]="item.id" />
-              </span>
-              <span class="material-icons icon-hidden cursor" (click)="handleCreateCollection($event, item.id)" [attr.data-id]="item.id" title="Create Collection">add</span>
-              <span class="material-icons icon-hidden cursor" (click)="handleDeleteCollection($event)" [attr.data-id]="item.id" title="Delete Collection">remove</span>
-            </figcaption>
+          <ul class="nav-list">
+            <ng-container *ngFor="let item of resultSet">
 
-            <ng-container *ngIf="item.children.length;">
-              <ul>
-                <li *ngFor="let child of item.children">
-                  <a>
-                    <span class="radio" title="{{child.id}}">
-                      <input type="radio" name="enabled" [attr.id]="child.id" [attr.data-collection]="child.id" [attr.value]="child.id" [checked]="child.enabled" (change)="handleNavigate($event, child.id)" />
-                      <label [attr.for]="child.id"></label>
-                    </span>
-                    <span class="nav-text">
-                      <input type="text" class="input--title" name="font-title" [attr.value]="child.title" (keyup.enter)="handleTitleInput($event)" title="{{child.title}}" (change)="handleTitleInput($event)" [attr.data-id]="child.id" />
-                    </span>
-                    <span class="nav-actions">
-                      <span>{{child.count}}</span>
-                      <span class="material-icons cursor" (click)="handleAddFonts($event)" [attr.data-id]="child.id" title="Add Fonts">add</span>
-                      <span class="material-icons cursor" (click)="handleDeleteCollection($event)" [attr.data-id]="child.id" title="Delete Collection">remove</span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
+              <!-- Parent Collection -->
+              <li class="nav-item nav-item--parent"
+                  [class.is-active]="activeCollection === item.id && !activeChild"
+                  [class.is-expanded]="!item.collapsed">
+
+                <div class="nav-item__row" (click)="handleSelectCollection(item)">
+                  <span class="material-icons nav-item__toggle" (click)="toggleCollapse($event, item)">
+                    {{ item.collapsed ? 'chevron_right' : 'expand_more' }}
+                  </span>
+                  <span class="material-icons nav-item__icon">folder</span>
+                  <input type="text" class="nav-item__input" [value]="item.title"
+                         (keyup.enter)="handleTitleInput($event)" (change)="handleTitleInput($event)"
+                         [attr.data-id]="item.id" (click)="$event.stopPropagation()" />
+                  <span class="nav-item__hover-actions">
+                    <span class="material-icons" (click)="handleCreateCollection($event, item.id)" title="Add Sub-Collection">create_new_folder</span>
+                    <span class="material-icons" (click)="handleDeleteCollection($event, item.id)" title="Delete Collection">delete_outline</span>
+                  </span>
+                </div>
+
+                <!-- Children -->
+                <ul class="nav-list nav-list--children" *ngIf="item.children.length && !item.collapsed">
+                  <li class="nav-item nav-item--child"
+                      *ngFor="let child of item.children"
+                      [class.is-active]="activeChild === child.id">
+
+                    <div class="nav-item__row" (click)="handleSelectChild(child)">
+                      <span class="material-icons nav-item__icon">label_outline</span>
+                      <input type="text" class="nav-item__input" [value]="child.title"
+                             (keyup.enter)="handleTitleInput($event)" (change)="handleTitleInput($event)"
+                             [attr.data-id]="child.id" (click)="$event.stopPropagation()" />
+                      <span class="nav-item__count">{{ child.count }}</span>
+                      <span class="nav-item__hover-actions">
+                        <span class="material-icons" (click)="handleAddFonts($event, child.id)" title="Add Fonts">note_add</span>
+                        <span class="material-icons" (click)="handleDeleteCollection($event, child.id)" title="Delete">delete_outline</span>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+
             </ng-container>
-
-          </figure>
-        </ng-container>
+          </ul>
+        </div>
 
       </div>
     </div>
-
   </div>
 </nav>

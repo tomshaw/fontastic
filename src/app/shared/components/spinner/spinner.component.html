@@ -1,1 +1,4 @@
-<div [className]="isActivated ? 'app-spinner is-animating' : 'app-spinner'"></div>
+<div class="spinner-container" *ngIf="isActivated">
+  <div class="app-spinner is-animating"></div>
+  <span class="spinner-text" *ngIf="loadingMessage">{{ loadingMessage }}</span>
+</div>

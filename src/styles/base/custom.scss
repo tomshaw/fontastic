@@ -12,6 +12,7 @@ body.app-loaded {
 }
 
 body.app-loaded {
+  // Legacy support for any remaining figure/figcaption elements
   figure {
     figcaption i,
     figcaption h2,
@@ -25,6 +26,18 @@ body.app-loaded {
       opacity: 1 !important;
       visibility: visible !important;
     }
+  }
+
+  // New navigation structure
+  .nav-item__label,
+  .nav-item__input,
+  .nav-item__icon,
+  .nav-item__count,
+  .nav-item__toggle,
+  .nav-section__title,
+  .nav-section__actions .material-icons {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 

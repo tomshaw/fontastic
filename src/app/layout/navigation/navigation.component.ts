@@ -3,41 +3,6 @@ import { UtilsService, MessageService, PresentationService, DatabaseService, Bre
 import { Router } from '@angular/router';
 import { SystemStats } from '@app/core/interface';
 
-/**
- * Component Methods
- * 
- * - ngOnInit
- * 
- *   this.presentationService._statsCollapsed
- *   this.databaseService.watchCollectionId$
- *   this.databaseService.watchCollection$
- *   this.databaseService.watchSystemStats$
- * 
- * - handleAddFonts
- * - openFiles
- * - openFolders
- * 
- * - handleTitleInput
- * - handleNavigate
- * 
- * - handleCreateCollection
- * - handleDeleteCollection
- * 
- * - toggleCollapse
- * - toggleCollapseAll
- * 
- * - handleClickAll
- * - handleClickFavorites
- * - handleClickSystemScan
- * - handleClickSystem
- * - handleClickActivated
- * 
- * - clearChecked
- * - clearSelected
- * - toggleSelected
- * 
- */
-
 @Component({
   standalone: false,
   selector: 'app-navigation',
@@ -47,19 +12,20 @@ import { SystemStats } from '@app/core/interface';
 export class NavigationComponent implements OnInit {
 
   resultSet: any[] = [];
-
-  collectionId!: number;
   collectionResultSet: any[] = [];
 
-  navCollapsed: boolean = false; // open/close all
-  statsCollapsed: boolean = true;
+  // Selection tracking
+  activeFilter: string = '';
+  activeCollection: number = 0;
+  activeChild: number = 0;
 
-  // SYSTEM STATS
+  navCollapsed: boolean = false;
+
+  // System stats
   rowCount: number = 0;
   activatedCount: number = 0;
   favoriteCount: number = 0;
   systemCount: number = 0;
-  sharedCount: number = 45;
 
   constructor(
     private router: Router,
@@ -72,17 +38,11 @@ export class NavigationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    this.presentationService._statsCollapsed.subscribe((result) => {
-      console.log('this.presentationService._statsCollapsed', result);
-      this.statsCollapsed = result;
-    });
-
-    // Bootup fetch store.
+    // Restore collection selection on boot
     this.databaseService.watchCollectionId$.subscribe((id: number) => {
-      console.log('WATCH-COLLECTION-ID', id);
       if (id) {
-        this.collectionId = id;
+        this.activeChild = id;
+        this.activeFilter = '';
         this.databaseService.setWhere('collection_id', id).run();
         this.breadcrumbService.setNavigation(id, this.collectionResultSet);
       } else {
@@ -90,295 +50,254 @@ export class NavigationComponent implements OnInit {
       }
     });
 
-    // Reloads changes when collections are created/deleted.
+    // Reload tree when collections change
     this.databaseService.watchCollection$.subscribe((result) => {
-      console.log('WATCH-COLLECTION-RESULT-SET', result);
-      
       this.collectionResultSet = result;
-      if (this.collectionId) {
-        this.breadcrumbService.setNavigation(this.collectionId, result);
+      if (this.activeChild) {
+        this.breadcrumbService.setNavigation(this.activeChild, result);
       }
       this.resultSet = this.utils.expandEntities(result);
     });
 
+    // System stats
     this.databaseService.watchSystemStats$.subscribe((result: SystemStats | any) => {
-      this.rowCount = (result.rowCount && result.rowCount.total) ? result.rowCount.total : 0;
-      this.favoriteCount = (result.favoriteCount && result.favoriteCount.total) ? result.favoriteCount.total : 0;
-      this.systemCount = (result.systemCount && result.systemCount.total) ? result.systemCount.total : 0;
-      this.activatedCount = (result.activatedCount && result.activatedCount.total) ? result.activatedCount.total : 0;
+      this.rowCount = result.rowCount?.total ?? 0;
+      this.favoriteCount = result.favoriteCount?.total ?? 0;
+      this.systemCount = result.systemCount?.total ?? 0;
+      this.activatedCount = result.activatedCount?.total ?? 0;
     });
   }
 
-  handleAddFonts(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const collectionId = Number(target.dataset.id);
+  // ─── Library Filters ─────────────────────────────────────────
 
-    const options = {
-      type: 'question',
-      buttons: ['Cancel', 'Select files', 'Select folders'],
-      defaultId: 2,
-      title: 'Select Fonts',
-      message: 'Do you want to add files or folders?'
-    };
+  handleClickAll(event: Event) {
+    this.clearSelection();
+    this.activeFilter = 'all';
+    this.databaseService.resetWhere().run();
+    this.breadcrumbService.set([
+      { title: 'Library', link: '/main' },
+      { title: 'All Fonts', link: '' }
+    ]);
+    this.navigateToMain();
+  }
 
-    this.messageService.showMessageBox(options).then((response: object | any) => {
-      if (response && response.response) {
-        const isFiles = (response.response === 1) ? true : false;
-        const options = (isFiles) ? { properties: ['openFile', 'multiSelections'] } : { properties: ['openDirectory', 'multiSelections'] };
-        this.messageService.showOpenDialog(options).then((response: object | any) => {
-          if (!response || !response.filePaths) return;
-          if (isFiles) {
-            this.openFiles(collectionId, response);
-          } else {
-            this.openFolders(collectionId, response);
-          }
-        })
+  handleClickFavorites(event: Event) {
+    this.clearSelection();
+    this.activeFilter = 'favorites';
+    this.databaseService.setWhere('store.favorite', 1).run();
+    this.breadcrumbService.set([
+      { title: 'Library', link: '/main' },
+      { title: 'Favorites', link: '' }
+    ]);
+    this.navigateToMain();
+  }
+
+  handleClickSystem(event: Event) {
+    this.clearSelection();
+    this.activeFilter = 'system';
+    this.databaseService.setWhere('store.system', 1).run();
+    this.breadcrumbService.set([
+      { title: 'Library', link: '/main' },
+      { title: 'System Fonts', link: '' }
+    ]);
+    this.navigateToMain();
+  }
+
+  handleClickActivated(event: Event) {
+    this.clearSelection();
+    this.activeFilter = 'activated';
+    this.databaseService.setWhere('store.activated', 1).run();
+    this.breadcrumbService.set([
+      { title: 'Library', link: '/main' },
+      { title: 'Activated', link: '' }
+    ]);
+    this.navigateToMain();
+  }
+
+  handleClickSystemScan(event: Event) {
+    event.stopPropagation();
+    this.alertService.info('Scanning system fonts, please wait...', false);
+    this.presentationService.setLoadingSpinner(true);
+    this.presentationService.setLoadingMessage('Scanning system fonts...');
+
+    this.messageService.fetchSystemFonts().then((result: any) => {
+      this.presentationService.setLoadingSpinner(false);
+      this.presentationService.setLoadingMessage('');
+      this.alertService.success(`Found ${result.systemCount.total} system fonts.`, false, 5e3);
+      this.databaseService.setSystemStats(result);
+      this.messageService.log(`Fetched system fonts found #${result.systemCount.total} total.`, 1);
+    }).catch(() => {
+      this.presentationService.setLoadingSpinner(false);
+      this.presentationService.setLoadingMessage('');
+    });
+  }
+
+  // ─── Collection Selection ────────────────────────────────────
+
+  handleSelectCollection(item: any) {
+    this.clearSelection();
+    this.activeCollection = item.id;
+
+    this.messageService.resetEnabledCollection().then(() => {
+      this.messageService.updateCollection(item.id, { enabled: true }).then(() => {
+        this.databaseService.resetPage(1);
+        this.databaseService.setCollectionId(item.id);
+        this.navigateToMain();
+      });
+    });
+  }
+
+  handleSelectChild(child: any) {
+    this.clearSelection();
+    this.activeChild = child.id;
+
+    this.messageService.resetEnabledCollection().then(() => {
+      this.messageService.updateCollection(child.id, { enabled: true }).then(() => {
+        this.databaseService.resetPage(1);
+        this.databaseService.setCollectionId(child.id);
+        this.navigateToMain();
+      });
+    });
+  }
+
+  // ─── Collection Management ───────────────────────────────────
+
+  handleCreateCollection(event: Event, parentId: number): void {
+    event.stopPropagation();
+    this.presentationService.setLoadingSpinner(true);
+    this.presentationService.setLoadingMessage('Creating collection...');
+
+    this.messageService.createCollection(parentId).subscribe((result) => {
+      this.databaseService.setCollection(result);
+      this.presentationService.setLoadingSpinner(false);
+      this.presentationService.setLoadingMessage('');
+      this.messageService.log(`Created new collection under #${parentId}.`, 1);
+    });
+  }
+
+  handleDeleteCollection(event: Event, id: number): void {
+    event.stopPropagation();
+    this.presentationService.setLoadingSpinner(true);
+    this.presentationService.setLoadingMessage('Deleting collection...');
+
+    this.messageService.deleteCollection(id).subscribe((result) => {
+      this.databaseService.setCollection(result);
+      this.presentationService.setLoadingSpinner(false);
+      this.presentationService.setLoadingMessage('');
+
+      // If we deleted the active collection, reset
+      if (this.activeChild === id || this.activeCollection === id) {
+        this.clearSelection();
+        this.activeFilter = 'all';
+        this.databaseService.resetWhere().run();
       }
-    });
-  }
 
-  openFiles(collectionId: number, response: any): void {
-    this.presentationService.setLoadingSpinner(true);
-    this.messageService.scanFiles(response.filePaths, collectionId).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
-        this.resultSet = this.utils.expandEntities(result);
-      });
-      this.presentationService.setLoadingSpinner(false);
-      this.messageService.log(`Added files to collection id #${collectionId}.`, 1);
-    });
-  }
-
-  openFolders(collectionId: number, response: any): void {
-    this.presentationService.setLoadingSpinner(true);
-    this.messageService.scanFolders(response.filePaths, collectionId).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
-        this.resultSet = this.utils.expandEntities(result);
-      });
-      this.presentationService.setLoadingSpinner(false);
-      this.messageService.log(`Added folders to collection id #${collectionId}.`, 1);
+      this.messageService.log(`Deleted collection #${id}.`, 1);
     });
   }
 
   handleTitleInput(event: KeyboardEvent | Event | any): void {
+    event.stopPropagation();
     const target = event.target as HTMLInputElement;
     const id = Number(target.dataset.id);
 
     this.messageService.updateCollection(id, { title: target.value });
-
     this.messageService.log(`Updated collection name ${target.value}.`, 1);
 
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       target.blur();
     }
   }
 
-  handleNavigate(event: Event, collectionId: number): void {
-    const target = event.target as HTMLInputElement;
+  handleAddFonts(event: Event, collectionId: number): void {
+    event.stopPropagation();
 
-    this.messageService.resetEnabledCollection().then(() => {
+    const options = {
+      type: 'question',
+      buttons: ['Cancel', 'Select Files', 'Select Folders'],
+      defaultId: 2,
+      title: 'Add Fonts',
+      message: 'Do you want to add files or folders?'
+    };
 
-      this.messageService.updateCollection(collectionId, { enabled: target.checked }).then(() => {
+    this.messageService.showMessageBox(options).then((response: any) => {
+      if (response?.response) {
+        const isFiles = response.response === 1;
+        const dialogOptions = isFiles
+          ? { properties: ['openFile', 'multiSelections'] }
+          : { properties: ['openDirectory', 'multiSelections'] };
 
-        this.databaseService.resetPage(1);
-
-        this.databaseService.setCollectionId(collectionId);
-
-        if (this.router.url !== '/main') {
-          this.router.navigate(['/main']);
-        }
-      });
-    });
-  }
-
-  handleCreateCollection(event: Event, parentId: number): void {
-    this.presentationService.setLoadingSpinner(true);
-
-    this.messageService.createCollection(parentId).subscribe((result) => {
-
-      this.databaseService.setCollection(result);
-
-      this.presentationService.setLoadingSpinner(false);
-
-      this.messageService.log(`Created new sub collection in #${parentId}.`, 1);
-    });
-  }
-
-  handleDeleteCollection(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const id = Number(target.dataset.id);
-
-    this.presentationService.setLoadingSpinner(true);
-
-    this.messageService.deleteCollection(id).subscribe((result) => {
-
-      this.databaseService.setCollection(result);
-
-      this.presentationService.setLoadingSpinner(false);
-
-      this.messageService.log(`Deleted collection id #${id}.`, 1);
-    });
-  }
-
-  toggleCollapse(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    let item = target.parentElement!.parentElement!;
-
-    let collectionId: number = parseInt(item.getAttribute('data-collection')!);
-
-    let hasWidget: boolean = target.hasAttribute('data-widget');
-    let isCollapsed: boolean = item.classList.contains('isCollapsed');
-
-    if (isCollapsed) {
-      item.classList.remove('isCollapsed');
-      target.innerHTML = 'arrow_drop_down';
-    } else {
-      item.classList.add('isCollapsed');
-      target.innerHTML = 'arrow_right';
-    }
-
-    if (collectionId) {
-      this.messageService.updateCollection(collectionId, { collapsed: isCollapsed ? false : true });
-    }
-
-    if (hasWidget) {
-      this.presentationService.setStatsCollapsed(isCollapsed ? false : true);
-    }
-  }
-
-  toggleCollapseAll(): void {
-    this.navCollapsed = !this.navCollapsed;
-
-    const sections = document.querySelectorAll('figure[data-collection]');
-    sections.forEach((item) => {
-      let id: number = parseInt(item.getAttribute('data-collection')!);
-      let icon = <HTMLElement>item.firstChild!.firstChild;
-
-      if (this.navCollapsed) {
-        this.messageService.updateCollection(id, { collapsed: true });
-
-        if (!item.classList.contains('isCollapsed')) {
-          item.classList.add('isCollapsed');
-        }
-        icon.innerHTML = 'arrow_right';
-        this.presentationService.setStatsCollapsed(true);
-      } else {
-        this.messageService.updateCollection(id, { collapsed: false });
-
-        if (item.classList.contains('isCollapsed')) {
-          item.classList.remove('isCollapsed');
-        }
-        icon.innerHTML = 'arrow_drop_down';
-        this.presentationService.setStatsCollapsed(false);
+        this.messageService.showOpenDialog(dialogOptions).then((dialogResponse: any) => {
+          if (!dialogResponse?.filePaths) return;
+          if (isFiles) {
+            this.scanFiles(collectionId, dialogResponse);
+          } else {
+            this.scanFolders(collectionId, dialogResponse);
+          }
+        });
       }
     });
   }
 
-  /**
-   * System Stats
-   */
+  // ─── Collapse / Expand ───────────────────────────────────────
 
-  handleClickAll(event: Event) {
-    const target = event.target as HTMLInputElement;
-    let parent = target.parentNode;
-
-    this.databaseService.resetWhere().run();
-
-    this.clearChecked();
-    this.clearSelected();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'Font Collection',
-      link: '/main'
-    }, {
-      title: 'Font Count',
-      link: ''
-    }]);
+  toggleCollapse(event: Event, item: any): void {
+    event.stopPropagation();
+    item.collapsed = !item.collapsed;
+    this.messageService.updateCollection(item.id, { collapsed: item.collapsed });
   }
 
-  handleClickFavorites(event: Event) {
-    const target = event.target as HTMLInputElement;
-    let parent = target.parentNode;
-
-    this.databaseService.setWhere('store.favorite', 1).run();
-
-    this.clearChecked();
-    this.clearSelected();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'Font Collection',
-      link: '/main'
-    }, {
-      title: 'Favorites',
-      link: ''
-    }]);
-  }
-
-  handleClickSystemScan(event: Event) {
-    this.alertService.info('Searching system fonts please wait..', false);
-
-    this.presentationService.setLoadingSpinner(true);
-
-    this.messageService.fetchSystemFonts().then((result: any) => {
-      this.messageService.log(`Fetched system fonts found #${result.systemCount.total} total.`, 1);
-      this.presentationService.setLoadingSpinner(false);
-      this.alertService.success(`Found a total of ${result.systemCount.total} system fonts.`, false, 5e3);
-      this.databaseService.setSystemStats(result);
-    }).catch((err) => { });
-  }
-
-  handleClickSystem(event: Event) {
-    const target = event.target as HTMLInputElement;
-    let parent = target.parentNode;
-
-    this.databaseService.setWhere('store.system', 1).run();
-
-    this.clearChecked();
-    this.clearSelected();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'Font Collection',
-      link: '/main'
-    }, {
-      title: 'System Fonts',
-      link: ''
-    }]);
-  }
-
-  handleClickActivated(event: Event) {
-    const target = event.target as HTMLInputElement;
-    let parent = target.parentNode;
-
-    this.databaseService.setWhere('store.activated', 1).run();
-
-    this.clearChecked();
-    this.clearSelected();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'Font Collection',
-      link: '/main'
-    }, {
-      title: 'Activated',
-      link: ''
-    }]);
-  }
-
-  clearChecked() {
-    let inputs = document.querySelectorAll('input[data-collection]');
-    inputs.forEach((item: any) => item.checked = false);
-  }
-
-  clearSelected() {
-    let links = document.querySelectorAll('a.system');
-    links.forEach((item: any) => item.classList.remove('selected'));
-  }
-
-  toggleSelected(item: any) {
-    if (!item.classList.contains('selected')) {
-      item.classList.add('selected');
+  toggleCollapseAll(): void {
+    this.navCollapsed = !this.navCollapsed;
+    for (const item of this.resultSet) {
+      item.collapsed = this.navCollapsed;
+      this.messageService.updateCollection(item.id, { collapsed: this.navCollapsed });
     }
+  }
+
+  // ─── Private Helpers ─────────────────────────────────────────
+
+  private clearSelection(): void {
+    this.activeFilter = '';
+    this.activeCollection = 0;
+    this.activeChild = 0;
+  }
+
+  private navigateToMain(): void {
+    if (this.router.url !== '/main') {
+      this.router.navigate(['/main']);
+    }
+  }
+
+  private scanFiles(collectionId: number, response: any): void {
+    this.presentationService.setLoadingSpinner(true);
+    this.presentationService.setLoadingMessage('Importing fonts...');
+
+    this.messageService.scanFiles(response.filePaths, collectionId).then(() => {
+      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
+        this.resultSet = this.utils.expandEntities(result);
+      });
+      this.databaseService.run();
+      this.databaseService.fetchSystemStats();
+      this.presentationService.setLoadingSpinner(false);
+      this.presentationService.setLoadingMessage('');
+      this.messageService.log(`Added files to collection #${collectionId}.`, 1);
+    });
+  }
+
+  private scanFolders(collectionId: number, response: any): void {
+    this.presentationService.setLoadingSpinner(true);
+    this.presentationService.setLoadingMessage('Importing fonts...');
+
+    this.messageService.scanFolders(response.filePaths, collectionId).then(() => {
+      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
+        this.resultSet = this.utils.expandEntities(result);
+      });
+      this.databaseService.run();
+      this.databaseService.fetchSystemStats();
+      this.presentationService.setLoadingSpinner(false);
+      this.presentationService.setLoadingMessage('');
+      this.messageService.log(`Added folders to collection #${collectionId}.`, 1);
+    });
   }
 }

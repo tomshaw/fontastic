@@ -49,6 +49,7 @@ export class PresentationService {
   _systemLoading: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _loadingScreen: BehaviorSubject<boolean> = new BehaviorSubject(false);
   _loadingSpinner: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _loadingMessage: BehaviorSubject<string> = new BehaviorSubject('');
 
   _scrollToItem: BehaviorSubject<ScrollToOptions | null> = new BehaviorSubject<ScrollToOptions | null>(null);
 
@@ -227,6 +228,10 @@ export class PresentationService {
 
   setLoadingSpinner(value: boolean): void {
     this._loadingSpinner.next(value)
+  }
+
+  setLoadingMessage(value: string): void {
+    this._loadingMessage.next(value);
   }
 
   setFontSize(value: number): void {

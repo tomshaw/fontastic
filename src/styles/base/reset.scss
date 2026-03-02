@@ -775,19 +775,19 @@ Spinner
 ========================================================================== */
 
 .app-spinner {
-  border: 4px solid $color-text-enabled;
-  border-left: 4px solid $color-white;
+  border: 3px solid $color-text-enabled;
+  border-left: 3px solid $color-white;
   border-radius: 50%;
   position: relative;
-  width: 19px;
-  height: 19px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   margin: 0;
   padding: 0;
-  opacity: 0;
   text-indent: -9999em;
   &.is-animating {
-    opacity: 1;
-    animation: status-animation 1.2s infinite linear;
+    animation: status-animation 1s infinite linear;
   }
 }
 
