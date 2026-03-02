@@ -16,6 +16,8 @@ export class ToolbarComponent implements OnInit {
   quickTextIndex: number = 0;
   backgroundColor: string = "#ffffff";
 
+  waterfallEnabled: boolean = false;
+
   // text_format
   buttonType: number = 0;
   buttonTypes: any[] = [{
@@ -59,6 +61,10 @@ export class ToolbarComponent implements OnInit {
       if (values.length) {
         this.latestNews = values;
       }
+    });
+
+    this.presentationService._waterfallEnabled.subscribe((result) => {
+      this.waterfallEnabled = result;
     });
   }
 
@@ -151,6 +157,10 @@ export class ToolbarComponent implements OnInit {
 
   handleResetButton(event: any): void {
     this.presentationService.resetPreview();
+  }
+
+  handleWaterfallToggle(event: any): void {
+    this.presentationService.setWaterfallEnabled(!this.waterfallEnabled);
   }
 
 }

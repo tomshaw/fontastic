@@ -68,5 +68,9 @@
       <button (click)="handleResetButton($event);" [attr.data-type]="buttonType" title="Reset Preview"><span class="material-icons">cached</span></button>
     </div>
 
+    <div class="input-preview preview-waterfall">
+      <button (click)="handleWaterfallToggle($event);" [class.active]="waterfallEnabled" title="Toggle Type Scale"><span class="material-icons">waterfall_chart</span></button>
+    </div>
+
   </div>
 </div>

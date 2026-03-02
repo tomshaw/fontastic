@@ -13,6 +13,7 @@ export class MainComponent implements OnInit {
   toolbarEnabled: boolean = true;
   previewEnabled: boolean = true;
   inspectEnabled: boolean = true;
+  waterfallEnabled: boolean = false;
 
   constructor(
     private presentationService: PresentationService
@@ -30,6 +31,9 @@ export class MainComponent implements OnInit {
     });
     this.presentationService._inspectEnabled.subscribe((result) => {
       this.inspectEnabled = result;
+    });
+    this.presentationService._waterfallEnabled.subscribe((result) => {
+      this.waterfallEnabled = result;
     });
   }
 

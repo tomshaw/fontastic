@@ -141,7 +141,8 @@ app-inspect {
   visibility: hidden;
 }
 
-app-grid {
+app-grid,
+app-waterfall {
   visibility: hidden;
 }
 
@@ -150,7 +151,8 @@ app-toolbar {
 }
 
 .panel.grid {
-  app-grid {
+  app-grid,
+  app-waterfall {
     visibility: visible;
   }
 }
@@ -176,7 +178,8 @@ app-toolbar {
 app-preview,
 app-inspect,
 app-toolbar,
-app-grid {
+app-grid,
+app-waterfall {
   position: relative;
   height: 100%;
   width: 100%;

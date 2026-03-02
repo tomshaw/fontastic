@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fontMeta = exports.apiUrl = exports.systemFontsPaths = void 0;
+exports.fontMeta = exports.fontTypeScale = exports.apiUrl = exports.systemFontsPaths = void 0;
 exports.systemFontsPaths = new Map();
 exports.systemFontsPaths.set('win', 'C:\\Windows\\fonts');
 exports.systemFontsPaths.set('mac', '/Library/Fonts');
@@ -9,6 +9,16 @@ exports.apiUrl = {
     development: 'http://fontmanager.local/api/v1',
     production: 'https://fontmanager.tomshaw.us/api/v1'
 };
+exports.fontTypeScale = [
+    { label: 'Minor Second', size: 1.067 },
+    { label: 'Major Second', size: 1.125 },
+    { label: 'Minor Third', size: 1.200 },
+    { label: 'Major Third', size: 1.250 },
+    { label: 'Perfect Fourth', size: 1.333 },
+    { label: 'Augmented Fourth', size: 1.414 },
+    { label: 'Perfect Fifth', size: 1.500 },
+    { label: 'Golden Ratio', size: 1.618 }
+];
 exports.fontMeta = [{
         code: 0,
         name: 'Copyright Information',

@@ -1,0 +1,101 @@
+@import "../../../styles/tools/_variables";
+@import "../../../styles/tools/_functions";
+@import "../../../styles/tools/_mixins";
+@import "../../../styles/tools/_placeholders";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.component {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.component__panel {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.toolbar-item.waterfall-controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0 5px 0 0;
+
+  .waterfall-input,
+  .waterfall-select {
+    color: #333;
+    background-color: #fff;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    box-shadow: none;
+    outline: none;
+    height: 24px;
+    width: auto;
+    margin-right: 5px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.5;
+    text-align: center;
+    transition: all ease-in-out 0.15s;
+    &:active,
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .waterfall-input {
+    width: 40px;
+  }
+}
+
+/* ==========================================================================
+Typescale
+========================================================================== */
+
+.typescale {
+  @include loading-transition(0s, 1s);
+  padding: 4px 0;
+
+  &__label {
+    @apply bg-slate-100;
+    width: 90px;
+    min-width: 90px;
+    padding: 2px 8px;
+    text-align: right;
+  }
+
+  &__label-text {
+    @apply text-inherit;
+    font-size: 10px;
+  }
+
+  &__wrapper {
+    @apply bg-white;
+    padding-left: 8px;
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      font-weight: normal;
+      line-height: 1.2;
+    }
+
+    &.active {
+      @apply bg-slate-100;
+    }
+  }
+}

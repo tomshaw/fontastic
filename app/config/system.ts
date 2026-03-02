@@ -9,6 +9,17 @@ export const apiUrl = {
   production: 'https://fontmanager.tomshaw.us/api/v1'
 }
 
+export const fontTypeScale = [
+  { label: 'Minor Second', size: 1.067 },
+  { label: 'Major Second', size: 1.125 },
+  { label: 'Minor Third', size: 1.200 },
+  { label: 'Major Third', size: 1.250 },
+  { label: 'Perfect Fourth', size: 1.333 },
+  { label: 'Augmented Fourth', size: 1.414 },
+  { label: 'Perfect Fifth', size: 1.500 },
+  { label: 'Golden Ratio', size: 1.618 }
+];
+
 export const fontMeta = [{
   code: 0,
   name: 'Copyright Information',

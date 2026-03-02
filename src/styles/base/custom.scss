@@ -72,3 +72,10 @@ body.app-loaded {
     visibility: visible;
   }
 }
+
+body.app-loaded {
+  .typescale {
+    opacity: 1;
+    visibility: visible;
+  }
+}

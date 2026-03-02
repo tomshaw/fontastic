@@ -9,14 +9,16 @@ import { GridComponent } from './grid/grid.component';
 import { PreviewComponent } from './preview/preview.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { InspectComponent } from './inspect/inspect.component';
+import { WaterfallComponent } from '../waterfall/waterfall.component';
 
 @NgModule({
   declarations: [
-    MainComponent, 
-    GridComponent, 
-    PreviewComponent, 
-    ToolbarComponent, 
-    InspectComponent
+    MainComponent,
+    GridComponent,
+    PreviewComponent,
+    ToolbarComponent,
+    InspectComponent,
+    WaterfallComponent
   ],
   imports: [
     CommonModule,

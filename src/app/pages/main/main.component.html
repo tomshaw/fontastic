@@ -2,5 +2,6 @@
   <app-preview></app-preview>
   <app-inspect></app-inspect>
   <app-toolbar></app-toolbar>
-  <app-grid></app-grid>
+  <app-grid *ngIf="!waterfallEnabled"></app-grid>
+  <app-waterfall *ngIf="waterfallEnabled"></app-waterfall>
 </div>

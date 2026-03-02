@@ -45,6 +45,7 @@ export class PresentationService {
   _navigationEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _asideEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   _statsCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _waterfallEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   _systemLoading: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _loadingScreen: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -137,6 +138,10 @@ export class PresentationService {
   setStatsCollapsed(toggle: any): void {
     this._statsCollapsed.next(toggle);
     this.saveLayoutSettings();
+  }
+
+  setWaterfallEnabled(status: boolean): void {
+    this._waterfallEnabled.next(status);
   }
 
   saveLayoutSettings(): void {
