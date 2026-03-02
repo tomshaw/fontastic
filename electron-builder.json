@@ -11,61 +11,28 @@
     "!package-lock.json",
     {
       "from": "../dist",
-      "filter": [
-        "**/*"
-      ]
+      "filter": ["**/*"]
     }
   ],
-  "extraResources": [
-    {
-      "from": "src/bin",
-      "to": "bin"
-    }
-  ],
-  "productName": "Fontastic", 
   "win": {
-    "icon": "dist/assets/icons",
+    "icon": "dist/browser/assets/icons",
     "target": [
-      "portable",
-      "msi"
+      "portable"
     ]
   },
+  "portable": {
+    "splashImage": "dist/browser/assets/icons/electron.bmp"
+  },
   "mac": {
-    "icon": "dist/assets/icons",
+    "icon": "dist/browser/assets/icons",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist/assets/icons",
-    "category": "Utility",
-    "synopsis": "A gorgeous multi-platform font management application.",
+    "icon": "dist/browser/assets/icons",
     "target": [
-      "deb",
-      "rpm",
-      "AppImage",
-      "snap"
-    ],
-    "desktop": {
-      "Name": "Fontastic",
-      "Type": "Application",
-      "GenericName": "Font Manager"
-    }
-  },
-  "msi": {
-    "artifactName": "${productName}-installer-${version}.${ext}"
-  },
-  "portable": {
-    "splashImage": "dist/assets/images/electron.bmp",
-    "artifactName": "${productName}-portable-${version}.${ext}"
-  },
-  "deb": {
-    "artifactName": "${productName}-${version}-${arch}.${ext}"
-  },
-  "rpm": {
-    "artifactName": "${productName}-${version}-${arch}.${ext}"
-  },
-  "appImage": {
-    "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "AppImage"
+    ]
   }
 }

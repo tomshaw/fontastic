@@ -1,0 +1,61 @@
+/* ==========================================================================
+Page Loading Effects
+========================================================================== */
+
+body.app-loaded {
+  .header-block {
+    a {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+body.app-loaded {
+  figure {
+    figcaption i,
+    figcaption h2,
+    figcaption span:not(.icon-hidden) {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    a,
+    p,
+    ul li {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+body.app-loaded {
+  .controls {
+    &__item p,
+    &__item div,
+    &__item span {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+body.app-loaded {
+  .input-preview {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+body.app-loaded {
+  .paginator {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+body.app-loaded {
+  .table {
+    opacity: 1;
+    visibility: visible;
+  }
+}

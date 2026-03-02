@@ -1,24 +1,19 @@
+$euphoriaBackground: #23121c;
+$euphoriaTextColor: #deb431;
+$euphoriaBorderColor: #3a1f32;
+
 body[data-theme="euphoria"] {
-  background-color: var(--background-color);
-  color: var(--font-color);
+  background-color: $euphoriaBackground;
+  color: $euphoriaTextColor;
 }
 
 [data-theme="euphoria"] {
 
-  .hover-scrollbox-x,
-  .hover-scrollbox-y {
-    --scrollbar-color: #deb431;
-    --scrollbar-hover-color: #deb431;
-    --scrollbar-space: 0.1rem;
-    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
-    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
-  }
-
   a {
-    color: var(--font-color);
+    color: $euphoriaTextColor;
     &:hover,
     &:active {
-      color: var(--font-color);
+      color: $euphoriaTextColor;
     }
   }
 
@@ -36,62 +31,27 @@ body[data-theme="euphoria"] {
   }
 
   .enabled {
-    color: var(--font-color);
+    color: $euphoriaTextColor;
   }
 
   .selected {
-    background-color: var(--border-color);
+    background-color: $euphoriaBorderColor;
   }
 
   .material-icons {
-    color: #deb431;
+    color: $euphoriaTextColor;
   }
 
-  .material-icons-rounded {
-    .material-icons {
-      &:hover {
-        @apply text-[#943577] bg-[#3a1f32];
-      }
+  input.input--title {
+    color: $euphoriaTextColor !important;
+    &:focus {
+      color: $euphoriaTextColor !important;
     }
-  }
-
-  /* ==========================================================================
-  App Button
-  ========================================================================== */
-
-  .app-btn {
-    @apply bg-[#3a1f32];
-    span {
-      @apply text-[#deb431];
-    }
-    &:hover {
-      @apply bg-[#3a1f32b4];
-    }
-  }
-
-  input:not(.form-control-hidden):not([type="range"]),
-  select:not(.form-control-hidden) {
-    border: 1px solid #3c1f31 !important;
-  }
-
-  .radio label,
-  .checkbox label {
-    border: 2px solid var(--font-color);
-  }
-  
-  .radio :checked ~ label::before,
-  .checkbox :checked ~ label::before {
-    background-color: var(--font-color);
-  }
-  
-  .radio :checked ~ span,
-  .checkbox :checked ~ span {
-    color: var(--font-color);
   }
 
   // Toolbar text.
   .input-preview.preview-text button {
-    background-color: var(--border-color) !important;
+    background-color: $euphoriaBorderColor !important;
   }
 
   // Toolbar switch text.
@@ -99,185 +59,159 @@ body[data-theme="euphoria"] {
   .input-preview.latest-news button span.material-icons,
   .input-preview.preview-casing button span.material-icons,
   .input-preview.preview-reset button span.material-icons {
-    color: var(--font-color) !important;
+    color: $euphoriaTextColor !important;
   }
 
   .input-preview.preview-size {
+
     input {
       color: red !important;
     }
-  }
 
-  input[type="range"] {
-    @apply bg-euphoria;
-  }
-
-  input[type="range"]::-webkit-slider-runnable-track {
-    background: var(--font-color);
-  }
-  
-  input[type="range"]::-webkit-slider-thumb {
-    background: var(--font-color) !important;
-    border: 3px solid var(--border-color) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: $euphoriaTextColor;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      background: $euphoriaTextColor !important;
+      border: 3px solid $euphoriaBorderColor !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
   }
 
   .paginator {
-    a {
-      background-color: #3c1f31;
-      i.material-icons {
-        color: #fff;
-      }
+    input {
+      //color: #333;
+      //background-color: #fff;
+      border: 1px solid $euphoriaBorderColor;
     }
   }
 
   .border-top {
-    border-top: 1px solid var(--border-color) !important;
+    border-top: 1px solid $euphoriaBorderColor !important;
   }
 
   .border-right {
-    border-right: 1px solid var(--border-color) !important;
+    border-right: 1px solid $euphoriaBorderColor !important;
   }
 
   .border-bottom {
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid $euphoriaBorderColor !important;
   }
 
   .border-left {
-    border-left: 1px solid var(--border-color) !important;
+    border-left: 1px solid $euphoriaBorderColor !important;
   }
 
   .border-top-dashed {
-    border-top: 1px dashed var(--border-color) !important;
+    border-top: 1px dashed $euphoriaBorderColor !important;
   }
   
   .border-right-dashed {
-    border-right: 1px dashed var(--border-color) !important;
+    border-right: 1px dashed $euphoriaBorderColor !important;
   }
   
   .border-bottom-dashed {
-    border-bottom: 1px dashed var(--border-color) !important;
+    border-bottom: 1px dashed $euphoriaBorderColor !important;
   }
   
   .border-left-dashed {
-    border-left: 1px dashed var(--border-color) !important;
-  }
-
-  details {
-    >summary {
-      color: #deb431;
-    }
-    >details {
-      &::after {
-        background-color: #c80054;
-      }
-      &::before {
-        background-color: #c80054;
-      }
-    }
-    ul {
-      li {
-        &::after {
-          background-color: #c80054;
-        }
-        &::before {
-          background-color: #c80054;
-        }
-        span {
-          color: #deb431;
-        }
-        span:last-child {
-          color: #c80054;
-        }
-      }
-    }
+    border-left: 1px dashed $euphoriaBorderColor !important;
   }
 
   .table {
-    color: var(--font-color);
-    thead > tr {
-      background-color: var(--border-color);
+    color: $euphoriaTextColor !important;
+  }
+
+  .table td,
+  .table th {
+    border-top: none !important;
+  }
+  
+  .table tbody tr:nth-child(odd) {
+    //background-color: lighten($euphoriaBackground, 10%);
+    background-color: #25141e;
+  }
+  
+  .table > thead > tr > th {
+    background-color: $euphoriaBackground;
+    border-right: 1px solid $euphoriaBorderColor;
+  }
+  
+  .table > thead > tr > th,
+  .table > thead > tr > th > div,
+  .table > thead > tr > th > div > span {
+    color: $euphoriaTextColor;
+  }
+
+  .block {
+    background-color: #25141e;
+    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
+    .block__head {
+      border-bottom: 1px solid $euphoriaBorderColor;
     }
-    &.striped > tbody > tr:nth-child(odd) {
-      @apply bg-euphoria;
+    .block__foot {
+      border-top: 1px solid $euphoriaBorderColor;
     }
-    .material-icons {
-      color: var(--font-color);
+    .form-group {
+      .text-muted {
+        color: $euphoriaTextColor !important;
+      }
+      .text-error {
+        color: #e04646 !important;
+      }
     }
-    [class^="icon-"] {
-      color: var(--font-color);
+    .form-control {
+      color: #fff;
+      background-color: $euphoriaBackground;
+      border: 1px solid $euphoriaBorderColor;
+    }
+    .input-group-checkbox {
+      background-color: $euphoriaBorderColor;
     }
   }
 
-  .form-control {
-    color: var(--font-color);
-    background-color: var(--background-color);
-    border: 1px solid var(--border-color);
-    .input-group-checkbox {
-      background-color: var(--border-color);
+  .glyph-list {
+    .glyph-item {
+      background-color: $euphoriaBackground !important;
+      border: solid 1px #25141e !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #221723 !important;
+      }
+    }
+  }
+
+  .tabs {
+    li {
+      border-right: 1px solid $euphoriaBorderColor !important;
+      border-bottom: 1px solid $euphoriaBorderColor !important;
     }
   }
 
   fieldset {
-    border: 1px solid var(--border-color);
+    border: 1px solid $euphoriaBorderColor;
     legend {
-      color: var(--font-color);
+      color: $euphoriaTextColor;
     }
-    dt {
-      label {
-        color: var(--font-color);
+    .form-group {
+      span {
+        color: $euphoriaTextColor;
       }
     }
     dd {
-      border-left: 1px solid var(--font-color);
+      border-left: 1px solid $euphoriaTextColor;
     }
     dl:hover dt,
     dl:hover dd {
       border-color: #c10156;
     }
     dl:hover dt label {
-      color: var(--font-color);
+      color: $euphoriaTextColor;
     }
     dl dd label:hover {
-      color: var(--font-color);
-    }
-  }
-
-  .glyph-list {
-    &__wrapper-item {
-      @apply bg-[#23121c] border-2 border-[#25141e];
-      &:hover {
-        @apply bg-[#221723];
-      }
-    }
-  }
-
-  /* ==========================================================================
-  Typescale
-  ========================================================================== */
-
-  .typescale {
-    &__label {
-      @apply bg-[#301624];
-    }
-    &__label-text {
-      @apply text-[#deb431];
-    }
-    &__wrapper {
-      @apply bg-[#23121c];
-      &.active {
-        @apply bg-[#301624];
-      }
-    }
-  }
-
-  /* ==========================================================================
-  Modal
-  ========================================================================== */
-
-  .modal {
-    &__content {
-      @apply bg-euphoria;
+      color: $euphoriaTextColor;
     }
   }
 }

@@ -1,84 +1,120 @@
-import { DataSource, DataSourceOptions } from 'typeorm'
-import { Collection, Store, Logger } from '../database/entity';
-import { CollectionRepository, LoggerRepository, StoreRepository } from '../database/repository';
-import ConfigManager from './ConfigManager';
-import { StorageType } from '../enums/StorageType';
+import { DataSource } from "typeorm"
+import { Collection, Store, User, Logger } from "../database/entity";
+import { CollectionRepository, LoggerRepository, StoreRepository, UserRepository } from "../database/repository";
+import ConfigManager from "./ConfigManager";
 
 export default class ConnectionManager {
 
   configManager: ConfigManager;
-  options: DataSourceOptions[];
-  
-  dataSource: DataSource;
 
-  schemas: any[] = [Collection, Store, Logger];
+  schemas: any[] = [Collection, Store, User, Logger];
   subscribers: any[] = []
   migrations: any[] = [];
 
-  omitables: any[] = ['title', 'description', 'enabled'];
+  dataSource: DataSource;
 
-  constructor(configManager: ConfigManager) {
+  connections: any = {};
+
+  omitables: any[] = ["title", "description", "enabled"];
+
+  constructor(
+    configManager: ConfigManager
+  ) {
+
+    this.setConfigManager(configManager);
+
+    let config = this.getConfigManager().get("database");
+
+    this.setConnections(this.normalize(config.connections));
+
+    this.registerEntities(this.connections);
+
+    this.registerSubscribers(this.connections);
+
+    this.registerMigrations(this.connections);
+
+    this.createDataSource();
+  }
+
+  setConfigManager(configManager: ConfigManager) {
     this.configManager = configManager;
-
-    this.options = this.normalize(this.configManager.get(StorageType.DatabaseConnections));
-
-    this.registerEntities(this.options);
-    this.registerSubscribers(this.options);
-    this.registerMigrations(this.options);
-
-    this.dataSource = new DataSource(this.options[0]);
   }
 
-  async initialize() {
-    return await this.dataSource.initialize();
+  getConfigManager(): ConfigManager {
+    return this.configManager;
   }
 
-  async isInitialized() {
-    return this.dataSource.isInitialized;
+  normalize(connections: any) {
+    return connections.filter((item: any) => this.discardOmitables(item)).filter((item: any) => item.enabled)
   }
 
-  getDataSource(): DataSource {
+  setConnections(connections: any[]) {
+    this.connections = connections;
+  }
+
+  getConnections() {
+    return this.connections;
+  }
+
+  registerEntities(options: any[]) {
+    this.connections = options.map(obj => ({ ...obj, entities: this.schemas }))
+  }
+
+  registerSubscribers(options: any[]) {
+    this.connections = options.map(obj => ({ ...obj, subscribers: this.subscribers }))
+  }
+
+  registerMigrations(options: any[]) {
+    this.connections = options.map(obj => ({ ...obj, migrations: this.migrations }))
+  }
+
+  setDataSource() {
+    console.log('this.connections', this.connections);
+    this.dataSource = new DataSource(this.connections[0]);
+  }
+
+  getDataSource() {
     return this.dataSource;
   }
 
-  createDataSource(options: DataSourceOptions) {
-    return new DataSource(this.discardOmitables(options)).initialize()
+  createDataSource() {
+    this.setDataSource();
   }
 
-  registerEntities(options: DataSourceOptions[]) {
-    this.options = options.map(obj => ({ ...obj, entities: this.schemas }))
+  async initialize() {
+    return await this.getDataSource().initialize();
   }
 
-  registerSubscribers(options: DataSourceOptions[]) {
-    this.options = options.map(obj => ({ ...obj, subscribers: this.subscribers }))
-  }
-
-  registerMigrations(options: DataSourceOptions[]) {
-    this.options = options.map(obj => ({ ...obj, migrations: this.migrations }))
+  async isInitialized() {
+    return this.getDataSource().isInitialized;
   }
 
   discardOmitables(options: object | any): object | any {
     return Object.fromEntries(Object.entries(options).filter(([key]) => !this.omitables.includes(key)));
   }
 
-  normalize(options: DataSourceOptions[]) {
-    return options.filter((item: DataSourceOptions) => this.discardOmitables(item)).filter((item: any) => item.enabled)
+  createDataSourceWithOptions(options: any) {
+    return new DataSource(this.discardOmitables(options)).initialize()
   }
 
   /**
-   * Proxy methods 
+   * Repository methods. 
    */
 
   getCollection() {
-    return this.dataSource.getRepository(Collection)
+    return this.getDataSource().getRepository(Collection)
   }
 
   getLogger() {
-    return this.dataSource.getRepository(Logger)
+    return this.getDataSource().getRepository(Logger)
   }
 
   getStore() {
-    return this.dataSource.getRepository(Store)
+    return this.getDataSource().getRepository(Store)
+  }
+
+  getUser() {
+    return this.getDataSource().getRepository(User)
   }
 
   getCollectionRepository() {
@@ -91,5 +127,9 @@ export default class ConnectionManager {
 
   getStoreRepository() {
     return this.getStore().extend(StoreRepository);
+  }
+
+  getUserRepository() {
+    return this.getUser().extend(UserRepository);
   }
 }

@@ -1,0 +1,95 @@
+<div class="tabs-panel tabs-panel-open" id="panel-1">
+  <div class="panel-content" *ngIf="user">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="block">
+
+          <fieldset>
+            <legend>Quick actions</legend>
+
+            <form>
+              <dl>
+                <dt>
+                  <label for="action">Reset favorited fonts</label>
+                  <span>Resets fonts that have been favorited.</span>
+                </dt>
+                <dd>
+                  <app-button [type]="'submit'" [title]="'Submit'" [style]="'app-button__md'" (onClick)="onResetFavoritedFonts($event)">Submit</app-button>
+                </dd>
+              </dl>
+            </form>
+
+            <form>
+              <dl>
+                <dt>
+                  <label for="action">Reset activated fonts</label>
+                  <span>Resets permanently installed fonts.</span>
+                </dt>
+                <dd>
+                  <app-button [type]="'submit'" [title]="'Submit'" [style]="'app-button__md'" (onClick)="onResetActivatedFonts($event)">Submit</app-button>
+                </dd>
+              </dl>
+            </form>
+
+            <form>
+              <dl>
+                <dt>
+                  <label for="action">Truncate system logs</label>
+                  <span>Empties the system logs table.</span>
+                </dt>
+                <dd>
+                  <app-button [type]="'submit'" [title]="'Submit'" [style]="'app-button__md'" (onClick)="onTruncateLogsTable($event)">Submit</app-button>
+                </dd>
+              </dl>
+            </form>
+
+            <form>
+              <dl>
+                <dt>
+                  <label for="action">Fetch latest news</label>
+                  <span>Updates latest news from selected sources.</span>
+                </dt>
+                <dd>
+                  <app-button [type]="'submit'" [title]="'Submit'" [style]="'app-button__md'" (onClick)="onFetchLatestNews($event)">Submit</app-button>
+                </dd>
+              </dl>
+            </form>
+
+          </fieldset>
+
+          <fieldset>
+            <legend>Billing information</legend>
+
+            <form class="form" #generalForm="ngForm" (ngSubmit)="onSubmit(generalForm)">
+
+              <div class="mb-3">
+                <label form="name">Billing name</label>
+                <input type="text" class="form-control" name="name" id="name" [(ngModel)]="user.name" #selectedName="ngModel" required>
+                <span class="form-text text-muted">We'll never share your email with anyone else.</span>
+              </div>
+
+              <div class="mb-3">
+                <label for="email">Account email address</label>
+                <input type="email" class="form-control" name="email" id="email" [(ngModel)]="user.email" #selectedEmail="ngModel" required>
+                <span class="form-text text-muted">We'll never share your email with anyone else.</span>
+              </div>
+
+              <div class="mb-3">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" value="">
+              </div>
+
+              <div class="form__actions">
+                <app-button [type]="'submit'" [title]="'Submit'" [style]="'app-button__md'" (onClick)="onHandleClick($event)" [attr.disabled]="buttonDisabled(generalForm.form.valid)">Submit</app-button>
+                <app-button [type]="'reset'" [title]="'Reset'" [style]="'app-button__md app-button__success'">Reset</app-button>
+              </div>
+
+            </form>
+
+          </fieldset>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

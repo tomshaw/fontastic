@@ -1,0 +1,25 @@
+<div class="account-verification">
+  <div class="row flex-column justify-content-center align-items-center">
+    <div class="form-container">
+      <div class="form-container__block">
+        <div class="form-header">
+          <h1>Account Login</h1>
+        </div>
+        <form class="form-body" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <input type="email" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" id="email" placeholder="Email Address" required="required">
+            <label class="label" for="email">Email Address</label>
+            <div class="line"></div>
+          </div>
+          <div class="mb-3">
+            <input type="password" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" id="password" placeholder="Password" required="required">
+            <label class="label" for="password">Password</label>
+            <div class="line"></div>
+          </div>
+          <button class="button" [disabled]="loading"><span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span> Login</button>
+        </form>
+        <div class="form-footer"><a href="#" (click)="forgot($event)">Forgot your password?</a></div>
+      </div>
+    </div>
+  </div>
+</div>

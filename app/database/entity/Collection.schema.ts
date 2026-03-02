@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Store } from "./Store.schema"
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Collection {
@@ -40,7 +39,7 @@ export class Collection {
     type: "smallint",
     default: 0
   })
-  is_system: number;
+  type: number;
 
   @Column({
     type: "smallint",
@@ -62,7 +61,4 @@ export class Collection {
 
   @CreateDateColumn() public created: Date;
   @UpdateDateColumn() public updated: Date;
-
-  @OneToMany(() => Store, (store) => store.collection, { cascade: true })
-  stores: Store[]
 }

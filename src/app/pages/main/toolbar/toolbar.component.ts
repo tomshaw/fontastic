@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { PresentationService } from '@app/core/services';
+import { NewsService, PresentationService } from '@app/core/services';
 
 @Component({
+  standalone: false,
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit {
 
-  fontColor = '#ac1fad';
-  fontSize = 72;
-  displayText: string;
-
-  quickTextIndex = 0;
-  backgroundColor = '#ffffff';
+  fontColor: string = "#ac1fad";
+  fontSize: number = 48;
+  displayText!: string;
+  latestNews: any = [];
+  quickTextIndex: number = 0;
+  backgroundColor: string = "#ffffff";
 
   // text_format
-  buttonType = 0;
+  buttonType: number = 0;
   buttonTypes: any[] = [{
     type: 0,
     icon: 'format_size',
@@ -25,25 +26,40 @@ export class ToolbarComponent implements OnInit {
     type: 1,
     icon: 'format_textdirection_l_to_r',
     title: 'Word Spacing',
-  }, {
+  }, { 
     type: 2,
     icon: 'format_textdirection_r_to_l',
     title: 'Letter Spacing',
   }];
 
   constructor(
+    private newsService: NewsService,
     private presentationService: PresentationService,
   ) { }
 
   ngOnInit() {
 
-    this.presentationService.watchFontColor$.subscribe((value) => this.fontColor = value);
+    this.presentationService.watchFontColor$.subscribe((value) => {
+      this.fontColor = value;
+    });
 
-    this.presentationService.watchFontSize$.subscribe((value) => this.fontSize = value);
+    this.presentationService.watchFontSize$.subscribe((value) => {
+      this.fontSize = value;
+    });
 
-    this.presentationService.watchBackgroundColor$.subscribe((value) => this.backgroundColor = value);
+    this.presentationService.watchBackgroundColor$.subscribe((value) => {
+      this.backgroundColor = value;
+    });
 
-    this.presentationService.watchDisplayText$.subscribe((value) => this.displayText = value);
+    this.presentationService.watchDisplayText$.subscribe((value) => {
+      this.displayText = value;
+    });
+
+    this.newsService.watchLatestNews$.subscribe((values) => {
+      if (values.length) {
+        this.latestNews = values;
+      }
+    });
   }
 
   onFontColor(event: Event): void {
@@ -80,7 +96,7 @@ export class ToolbarComponent implements OnInit {
     const el = event.srcElement;
     const target = event.target;
     const value = target.value;
-    if (event.keyCode === 13) {
+    if (event.keyCode == 13) {
       this.toggleTextClass(target.parentNode);
       el.blur();
     }
@@ -88,20 +104,28 @@ export class ToolbarComponent implements OnInit {
     this.presentationService.savePreviewSettings();
   }
 
-  handleDisplayButton(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.toggleTextClass(target.parentNode.parentNode as HTMLElement);
+  handleDisplayButton(event: any): void {
+    const target = event.target;
+    this.toggleTextClass(target.parentNode.parentNode);
   }
 
-  handleQuickText(event: Event): void {
+  handleQuickText(event: any): void {
     const text = this.presentationService.getQuickText();
-    this.quickTextIndex = (this.quickTextIndex >= text.length - 1) ? 0 : this.quickTextIndex + 1;
-    this.presentationService.setDisplayText(text[this.quickTextIndex].text);
-    this.presentationService.setDisplayNews((text[this.quickTextIndex].title === 'Latest News') ? true : false);
+    this.quickTextIndex++;
+    if (this.quickTextIndex >= text.length) {
+      this.quickTextIndex = 0;
+    }
+    this.presentationService.setDisplayText(text[this.quickTextIndex]['quote']);
     this.presentationService.savePreviewSettings();
+    this.presentationService.setDisplayNews(false);
   }
 
-  toggleTextClass(el: HTMLElement): void {
+  handleLatestNews(event: any): void {
+    let toggle = this.presentationService.getDisplayNews();
+    this.presentationService.setDisplayNews(!toggle);
+  }
+
+  toggleTextClass(el: any) {
     if (el.classList.contains('open')) {
       el.classList.remove('open');
     } else {
@@ -109,24 +133,24 @@ export class ToolbarComponent implements OnInit {
     }
   }
 
-  handleSpacingButton(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
-    const buttonType = Number(parent.dataset.type);
-    
-    if (buttonType >= this.buttonTypes.length - 1) {
+  handleSpacingButton(event: any): void {
+    const target = event.target;
+    const parent = target.parentNode; // .innerHTML;
+    const buttonType = parent.dataset.type;
+
+    if (buttonType >= this.buttonTypes.length -1) {
       this.buttonType = 0;
     } else {
       this.buttonType++;
     }
 
     target.innerHTML = this.buttonTypes[this.buttonType].icon;
-
-    parent.setAttribute('type', String(this.buttonType));
-    parent.setAttribute('title', this.buttonTypes[this.buttonType].title);
+    parent.dataset.type = this.buttonType;
+    parent.title = this.buttonTypes[this.buttonType].title;
   }
 
-  handleResetButton(event: Event): void {
+  handleResetButton(event: any): void {
     this.presentationService.resetPreview();
   }
+
 }

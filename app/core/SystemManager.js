@@ -5,10 +5,15 @@ const os = require("os");
 const path = require("path");
 const system_1 = require("../config/system");
 const root = process.cwd();
-class ConfigManager {
-    constructor(machineId, isProduction) {
+class SystemManager {
+    constructor(machineId) {
         this.machineId = machineId;
-        this.isProduction = isProduction;
+    }
+    isDev() {
+        return !electron_1.app.isPackaged;
+    }
+    isProduction() {
+        return electron_1.app.isPackaged;
     }
     x86() {
         return process.arch === 'ia32';
@@ -31,17 +36,8 @@ class ConfigManager {
     getPath(name) {
         return electron_1.app.getPath(name);
     }
-    getPathDir(str) {
-        return path.dirname(str);
-    }
-    getPathBase(str) {
-        return path.basename(str);
-    }
-    getAppPath() {
-        return electron_1.app.getAppPath();
-    }
-    getCatalogPath() {
-        return path.join(this.getUserDataPath(), 'catalog');
+    getPathDir(loc) {
+        return path.dirname(loc);
     }
     getCachePath() {
         return electron_1.app.getPath('sessionData');
@@ -55,6 +51,10 @@ class ConfigManager {
     getDownloadsPath() {
         return electron_1.app.getPath('downloads');
     }
+    getErrorLogPath() {
+        const name = this.isDev() ? 'dev.dat' : 'pro.dat';
+        return path.resolve(this.getUserDataPath(), `./${name}`);
+    }
     getSessionPath() {
         return path.resolve(this.getUserDataPath(), './Session');
     }
@@ -67,8 +67,8 @@ class ConfigManager {
     getTempDirFile(file) {
         return path.join(os.tmpdir(), file);
     }
-    getPlatformFontPaths() {
-        return system_1.systemFontPaths.get(this.getPlatform());
+    getSystemFontsPath() {
+        return system_1.systemFontsPaths.get(this.getPlatform());
     }
     getUpTime() {
         let sec = os.uptime();
@@ -96,45 +96,36 @@ class ConfigManager {
                 return 'win';
         }
     }
-    getAppVersion() {
-        return electron_1.app.getVersion();
-    }
-    getElectronVersion() {
-        return process.versions.electron;
-    }
     getBinaryName() {
-        return (this.getPlatform() === 'win') ? 'activator.exe' : 'activator';
+        let platform = this.getPlatform();
+        return (platform === 'win') ? 'activator.exe' : 'activator';
     }
-    getBinaryPath() {
-        return this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
+    getBinaryPath(binaryName) {
+        const binariesPath = this.isProduction() ? path.join(root, 'resources', 'bin') : path.join(root, 'src', 'bin');
+        return path.resolve(path.join(binariesPath, binaryName));
     }
-    getExecutable() {
-        return path.resolve(path.join(this.getBinaryPath(), this.getBinaryName()));
+    normalizePath(path) {
+        return path.normalize(path);
     }
     toArray() {
         return {
-            'uptime': this.getUpTime(),
-            'locale': this.getLocale(),
-            'is_dev': !this.isProduction,
-            'is_production': this.isProduction,
+            'machine_id': this.machineId,
+            'is_dev': this.isDev(),
+            'is_production': this.isProduction(),
             'is_x86': this.x86(),
             'is_x64': this.x64(),
             'is_mac': this.macOS(),
             'is_windows': this.windows(),
             'is_linux': this.linux(),
+            'locale': this.getLocale(),
             'cache_path': this.getCachePath(),
-            'app_path': this.getAppPath(),
             'app_data_path': this.getAppDataPath(),
             'user_data_path': this.getUserDataPath(),
             'downloads_path': this.getDownloadsPath(),
-            'session_path': this.getSessionPath(),
-            'catalog_path': this.getCatalogPath(),
-            'version': {
-                'system': this.getAppVersion(),
-                'electron': this.getElectronVersion(),
-            }
+            'error_log_path': this.getErrorLogPath(),
+            'session_path': this.getSessionPath()
         };
     }
 }
-exports.default = ConfigManager;
+exports.default = SystemManager;
 //# sourceMappingURL=SystemManager.js.map

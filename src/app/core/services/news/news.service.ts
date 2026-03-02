@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { ConfigService } from '@app/core/services/config/config.service';
-import { MessageService } from '@app/core/services/message/message.service';
-import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
-import { StorageType } from '@main/enums';
-import { NewsType } from '@main/types';
+
+import { ConfigService } from '../config/config.service';
+import { MessageService } from '../message/message.service';
+import { AlertService } from '../alert/alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,33 +13,33 @@ import { NewsType } from '@main/types';
 export class NewsService {
 
   oneHour = 60 * 60 * 1000;
+  currentTime = new Date().getTime();
 
-  endpoints: any = {
-    sources: 'https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=',
-    articles: 'https://newsapi.org/v2/top-headlines?country=us&apiKey=',
-    business: 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey='
-  };
+  //endpoint: string = 'https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=';
+  endpoint: string = 'https://newsapi.org/v2/top-headlines?country=us&apiKey=';
 
-  _latestNews = new BehaviorSubject(new LatestNewsModel());
+  newsConfig: any = {};
+
+  private _latestNews = new BehaviorSubject<any[]>([]);
   watchLatestNews$ = this._latestNews.asObservable();
 
   constructor(
+    private http: HttpClient,
+    private alertService: AlertService,
     private configService: ConfigService,
     private messageService: MessageService
   ) {
-    if (this.configService.has(StorageType.News)) {
-      this.setLatestNews(this.configService.get(StorageType.News));
+    if (!this.configService.has('news')) {
+      return;
     }
 
-    this.fetchLatestNews();
+    this.newsConfig = this.configService.get('news');
+
+    this.handleLatestNews();
   }
 
-  get currentTime(): number {
-    return Date.now();
-  }
-
-  get timeUTCString(): string {
-    return new Date(this.currentTime).toUTCString();
+  getRequest(url: string) {
+    return this.http.get<any>(url);
   }
 
   getLatestNews() {
@@ -50,45 +51,55 @@ export class NewsService {
   }
 
   checkTime(timeStamp: number): boolean {
-    return (timeStamp + this.oneHour) < this.currentTime;
+    return (timeStamp + this.oneHour) > this.currentTime;
   }
 
-  getApiKey() {
-    return this.hasApiKey() ? this.getLatestNews().apiKey : false;
-  }
+  handleLatestNews(skipTimeCheck: boolean = false) {
+    const news = this.newsConfig;
+    console.log('NEWS CONFIG', news);
 
-  hasApiKey() {
-    return this.getLatestNews().apiKey ? true : false;
-  }
-
-  async fetchLatestNews(skipTimeCheck: boolean = false) {
-    if (!this.hasApiKey()) {
-      return;
-    }
-
-    const news = this.getLatestNews();
+    let ts = (news && news.ts) ? news.ts : false;
+    let articles = (news && news.articles && news.articles.length) ? news.articles : false;
 
     if (skipTimeCheck) {
-      return await this.sendRequest();
-    } else if (this.checkTime(news.ts)) {
-      return await this.sendRequest();
-    }
-  }
-
-  async sendRequest() {
-    const response: NewsType = await this.messageService.fetchLatestNews({
-      endpoint: this.endpoints.business + this.getApiKey()
-    });
-    
-    if (response?.status === 'ok') {
-      const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
-      this.setLatestNews(saved);
-      this.messageService.set(StorageType.News, saved);
-      this.messageService.log(`Updated news at: ${this.timeUTCString}`, 1);
+      this.fetchNews();
     } else {
-      this.messageService.log('Failed to fetch news articles.', 1);
+      if (ts && articles) {
+        if (this.checkTime(ts)) {
+          this.fetchNews()
+        } else {
+          this.setLatestNews(articles);
+        }
+      } else if (ts) {
+        if (this.checkTime(ts)) {
+          this.fetchNews()
+        }
+      }
     }
-
-    return response;
   }
+
+  fetchNews() {
+    this.getRequest(this.endpoint + this.newsConfig.apiKey).pipe(map((data: any) => {
+      if (data.status === 'ok') {
+        return data;
+      }
+    })).subscribe({
+      complete: () => {
+        this.messageService.log('Updating latest news articles.', 1);
+      },
+      error: (error) => {
+        let saved = { ts: this.currentTime, ...this.newsConfig }
+        this.messageService.set('news', saved);
+        this.alertService.warning(error.message, false);
+      },
+      next: (response) => {
+        this.alertService.success('Fetching news articles.', false);
+        console.log('fetch-news-response-refresh', response);
+        this.setLatestNews(response);
+        let saved = { ts: this.currentTime, articles: response.articles, ...this.newsConfig }
+        this.messageService.set('news', saved);
+      }
+    });
+  }
+
 }

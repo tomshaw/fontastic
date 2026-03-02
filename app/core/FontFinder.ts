@@ -1,13 +1,11 @@
-import ConnectionManager from "./ConnectionManager";
+import ConnectionManager from './ConnectionManager';
 import FontObject from "./FontObject";
-import * as fs from "fs";
-import * as path from "path";
-import { installable } from "../config/mimes";
+import * as fs from 'fs';
+import * as path from 'path';
+import { installable } from '../config/mimes';
 
-const prettyBytes = require("pretty-bytes");
-const mime = require("mime");
-
-// https://stackoverflow.com/questions/10049557/reading-all-files-in-a-directory-store-them-in-objects-and-send-the-object
+const prettyBytes = require('pretty-bytes');
+const mime = require('mime');
 
 export default class FileSystem {
 
@@ -15,21 +13,20 @@ export default class FileSystem {
 
   counter: number = 0;
   errors: any[] = [];
-  found: any[] = [];
 
   constructor(connectionManager: ConnectionManager) {
-    this.connectionManager = connectionManager;
+    this.setConnectionManager(connectionManager);
 
     this.counter = 0;
     this.errors = [];
   }
 
-  setCounter(count: number): void {
-    this.counter = count;
+  setConnectionManager(connectionManager: ConnectionManager) {
+    this.connectionManager = connectionManager;
   }
 
-  getCounter(): number {
-    return this.counter;
+  getConnectionManager(): ConnectionManager {
+    return this.connectionManager;
   }
 
   scanFolders(dir: any, options: any, done: any) {
@@ -44,7 +41,30 @@ export default class FileSystem {
           if (stat && stat.isDirectory()) {
             this.scanFolders(fp, options, (err: any, res: any) => next());
           } else {
-            this.fontInstall(fp, stat, options);
+
+            let font = new FontObject(fp);
+
+            if (font.hasError()) {
+              this.errors.push(font.getError())
+            } else {
+
+              let fileSize = stat.size;
+              let fileType = mime.getType(fp);
+
+              let data: any = {
+                file_path: fp,
+                file_name: file,
+                file_size: fileSize,
+                file_size_pretty: prettyBytes(fileSize),
+                file_type: fileType,
+                installable: installable.includes(fileType),
+                ...options,
+              }
+
+              this.getConnectionManager().getStoreRepository().create({ ...data, ...font.getNamesTable() });
+
+              this.counter++;
+            }
             next();
           }
         });
@@ -53,44 +73,37 @@ export default class FileSystem {
     });
   }
 
-  scanFiles(files: any, options: any, done: any) {
-    files.forEach(async (fp: any) => {
+  scanFiles(dir: any, options: any, done: any) {
+    dir.forEach(async (fp: any) => {
       let stat = fs.statSync(fp);
       if (stat.isFile()) {
-        this.fontInstall(fp, stat, options);
+
+        let font = new FontObject(fp);
+
+        if (font.hasError()) {
+          this.errors.push(font.getError())
+        } else {
+
+          let fileSize = stat.size;
+          let fileType = mime.getType(fp);
+
+          let data: any = {
+            file_path: fp,
+            file_name: path.basename(fp),
+            file_size: fileSize,
+            file_size_pretty: prettyBytes(fileSize),
+            file_type: fileType,
+            installable: installable.includes(fileType),
+            ...options
+          }
+
+          this.getConnectionManager().getStoreRepository().create({ ...data, ...font.getNamesTable() });
+
+          this.counter++;
+        }
       }
     });
 
     return done(null, this);
-  }
-
-  fontInstall(fp: any, stat: any, options: any) {
-    let font = new FontObject(fp);
-
-    if (font.hasError()) {
-      this.errors.push(font.getError());
-    } else {
-
-      let fileSize = stat.size;
-      let fileType = mime.getType(fp);
-
-      let data: any = {
-        file_path: fp,
-        file_name: path.basename(fp),
-        file_size: fileSize,
-        file_size_pretty: prettyBytes(fileSize),
-        file_type: fileType,
-        installable: installable.includes(fileType),
-        ...options
-      }
-
-      try {
-        this.connectionManager.getStoreRepository().create({ ...data, ...font.getNamesTable() });
-      } catch(err) {
-        this.errors.push(err.message);
-      }
-
-      this.counter++;
-    }
   }
 }

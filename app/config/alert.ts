@@ -1,15 +1,6 @@
-export const AlertTimeout = 5e3;
+export const alertTimeout = 5e3;
 
-export const AlertProps = {
-  type: '',
-  message: '',
-  icon: '',
-  class: '',
-  keep: false,
-  timeout: 10e3
-}
-
-export const AlertTypes: any[] = [{
+export const alertTypes: any[] = [{
   type: 'info',
   icon: 'check_circle',
   class: 'app-alert-info',

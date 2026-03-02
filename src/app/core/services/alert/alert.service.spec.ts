@@ -1,22 +1,16 @@
-import { waitForAsync, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { TestBed } from '@angular/core/testing';
+
 import { AlertService } from './alert.service';
 
 describe('AlertService', () => {
+  let service: AlertService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      providers: [{
-        provide: AlertService,
-      }]
-    });
-  }));
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(AlertService);
+  });
 
   it('should be created', () => {
-    const service: AlertService = TestBed.inject(AlertService);
     expect(service).toBeTruthy();
   });
 });

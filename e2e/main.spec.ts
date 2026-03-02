@@ -1,8 +1,8 @@
 import { BrowserContext, ElectronApplication, Page, _electron as electron } from 'playwright';
 import { test, expect } from '@playwright/test';
-import * as PATH from 'path';
+const PATH = require('path');
 
-test.describe('Check Home Page', () => {
+test.describe('Check Home Page', async () => {
   let app: ElectronApplication;
   let firstWindow: Page;
   let context: BrowserContext;
@@ -47,10 +47,11 @@ test.describe('Check Home Page', () => {
   // });
 
   test('Check title', async () => {
-    const title = await firstWindow.title();
-    expect(title).toBe('Fontastic');
+    const elem = await firstWindow.$('app-home h1');
+    const text = await elem.innerText();
+    expect(text).toBe('App works !');
   });
-  
+
   test.afterAll( async () => {
     await context.tracing.stop({ path: 'e2e/tracing/trace.zip' });
     await app.close();

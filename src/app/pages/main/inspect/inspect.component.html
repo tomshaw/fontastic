@@ -1,7 +1,44 @@
-<ng-container [ngSwitch]="componentName">
-  <div>
-    <app-glyph-list [fontObject]="fontObject" [fontColor]="fontColor" *ngSwitchCase="'glyph-list'"></app-glyph-list>
-    <app-typescale [fontObject]="fontObject" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'typescale'"></app-typescale>
-    <app-pairing [fontObject]="fontObject" [fontFamily]="fontFamily" [latestNews]="latestNews" *ngSwitchCase="'pairing'"></app-pairing>
+<div class="component" id="component">
+  <div class="component__panel">
+
+    <div class="controls d-flex justify-content-start align-items-start border-top border-bottom">
+      <div class="controls__item d-flex justify-content-start align-items-center">
+        <span class="material-icons">arrow_right</span>
+        <i class="text-uppercase" title="Glyph Information">Glyph Information</i>
+        <ng-container *ngIf="glyphName">
+          <span class="material-icons">arrow_right</span>
+          <i class="text-uppercase" title="{{glyphName}}">{{glyphName}}</i>
+        </ng-container>
+      </div>
+      <div class="controls__item d-flex justify-content-end align-items-center">
+
+        <div class="toolbar-item pagination">
+          <select (change)="onChangeSize($event)" [(ngModel)]="cellHeight">
+            <option *ngFor="let item of cellSizeOptions" [value]="item">{{item}}</option>
+          </select>
+          <select (change)="onChangeCount($event)" [(ngModel)]="cellCount">
+            <ng-container *ngFor="let item of cellCountOptions">
+              <option [value]="item" *ngIf="item < numGlyphs">{{item}}</option>
+            </ng-container>
+          </select>
+          <select (change)="onChangePage($event)">
+            <option *ngFor="let item of paginatorOptions" [value]="item.key">{{item.value}}</option>
+          </select>
+          <span class="pagination-stats">Page {{page + 1}} of {{numPages}} - {{ numGlyphs }} Total Glyphs</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="scrollbox">
+      <div class="scrollbox-content">
+        <div class="glyph-list">
+          <ng-container *ngFor="let item of createRange(cellCount); let i = index">
+            <canvas class="glyph-item" width="{{cellWidth}}" height="{{cellHeight}}" id="g{{i}}" (mouseenter)="onCellHover($event)"></canvas>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
   </div>
-</ng-container>
+</div>

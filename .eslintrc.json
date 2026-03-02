@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": [
-    "app/**/*", // ignore nodeJs files
+    "app/**/*",
     "dist/**/*",
     "release/**/*"
   ],
@@ -27,19 +27,22 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "@typescript-eslint/no-explicit-any": 0,
-        "@typescript-eslint/no-unsafe-argument": 0,
-        "@typescript-eslint/no-unsafe-member-access": 0,
-        "@typescript-eslint/no-unsafe-assignment": 0,
-        "@typescript-eslint/no-unsafe-return": 0,
-        "@typescript-eslint/no-unused-vars": 0,
         "@typescript-eslint/no-empty-function": 0,
-        "@typescript-eslint/restrict-plus-operands": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-unsafe-assignment": 0,
         "@typescript-eslint/no-unsafe-call": 0,
-        "@typescript-eslint/restrict-template-expressions": 0,
-        "@typescript-eslint/no-floating-promises": 0,
-        "@typescript-eslint/no-unnecessary-type-assertion": 0,
-        "@typescript-eslint/no-inferrable-types": 0
+        "@typescript-eslint/no-unsafe-member-access": 0,
+        "prefer-arrow/prefer-arrow-functions": 0,
+        "@angular-eslint/directive-selector": 0,
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
+          }
+        ],
+        "jsdoc/newline-after-description": 0
       }
     },
     {
@@ -48,7 +51,9 @@
       ],
       "extends": [
         "plugin:@angular-eslint/template/recommended"
-      ]
+      ],
+      "rules": {
+      }
     }
   ]
 }

@@ -1,9 +1,9 @@
-<div class="controls app-alert flex justify-start items-start border-bottom" [class]="alert.class" [class.app-alert-enabled]="alertEnabled">
-  <div class="controls__item flex justify-start items-center">
+<div class="controls app-alert d-flex justify-content-start align-items-start border-bottom" [class]="alert.class" [class.app-alert-enabled]="alertEnabled">
+  <div class="controls__item d-flex justify-content-start align-items-center">
     <span class="material-icons">arrow_right</span>
-    <p class="whitespace-nowrap">{{alert.message}}</p>
+    <p>{{alert.message}}</p>
   </div>
-  <div class="controls__item flex justify-end items-center mr-2">
-    <i class="material-icons cursor-pointer" (click)="handleIconClick($event)" title="Close Message">{{alert.icon}}</i>
+  <div class="controls__item d-flex justify-content-end align-items-center">
+    <i class="material-icons cursor" (click)="handleIconClick($event)" title="Close Message">{{alert.icon}}</i>
   </div>
 </div>

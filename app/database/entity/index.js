@@ -17,4 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Collection.schema"), exports);
 __exportStar(require("./Logger.schema"), exports);
 __exportStar(require("./Store.schema"), exports);
+__exportStar(require("./User.schema"), exports);
 //# sourceMappingURL=index.js.map

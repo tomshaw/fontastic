@@ -11,9 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Store = void 0;
 const typeorm_1 = require("typeorm");
-const Collection_schema_1 = require("./Collection.schema");
 let Store = class Store {
 };
+exports.Store = Store;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -151,15 +151,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Store.prototype, "updated", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Collection_schema_1.Collection, (model) => model.stores, {
-        onDelete: 'CASCADE'
-    }),
-    (0, typeorm_1.JoinColumn)({ name: "collection_id" }),
-    __metadata("design:type", Collection_schema_1.Collection)
-], Store.prototype, "collection", void 0);
-Store = __decorate([
+exports.Store = Store = __decorate([
     (0, typeorm_1.Entity)()
 ], Store);
-exports.Store = Store;
 //# sourceMappingURL=Store.schema.js.map

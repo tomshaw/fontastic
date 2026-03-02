@@ -1,0 +1,87 @@
+@import "../../../../styles/tools/_variables";
+@import "../../../../styles/tools/_functions";
+@import "../../../../styles/tools/_mixins";
+@import "../../../../styles/tools/_placeholders";
+
+.modal-settings {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s;
+  &.active {
+    visibility: visible;
+    opacity: 1;
+  }
+  &__window {
+    background: $color-white;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  button.close {
+    font-size: 18px;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+  }
+  header,
+  footer {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 15px;
+    height: 60px;
+    width: 100%;
+  }
+  header {
+    border-bottom: 1px solid $color-border;
+    h1 {
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+  footer {
+    border-top: 1px solid $color-border;
+    justify-content: flex-end;
+  }
+  article {
+    background: #fff;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 20px;
+    .form-group {
+      width: 100%;
+    }
+  }
+  button.app-button {
+    border: none;
+    background-color: #fff;
+    font-size: 14px;
+    outline: none;
+    text-transform: uppercase;
+  }
+}

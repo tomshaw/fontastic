@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { PresentationService } from '@app/core/services';
 
 @Component({
+  standalone: false,
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
 
-  gridEnabled = true;
-  toolbarEnabled = true;
-  previewEnabled = true;
-  inspectEnabled = true;
+  gridEnabled: boolean = true;
+  toolbarEnabled: boolean = true;
+  previewEnabled: boolean = true;
+  inspectEnabled: boolean = true;
 
   constructor(
     private presentationService: PresentationService

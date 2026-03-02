@@ -3,36 +3,35 @@ import ConfigManager from "./core/ConfigManager";
 import ConnectionManager from "./core/ConnectionManager";
 import FontManager from "./core/FontManager";
 import MessageHandler from "./core/MessageHandler";
-import MenuBuilder from "./core/menu/MenuBuilder";
-import { BrowserWindow } from "electron";
 
 export default class Application {
 
   machineId: string;
   isProduction: boolean;
-  mainWindow: BrowserWindow;
 
-  constructor(machineId: string, isProduction: boolean, mainWindow: BrowserWindow) {
+  constructor(machineId: string, isProduction: boolean) {
     this.machineId = machineId;
     this.isProduction = isProduction;
-    this.mainWindow = mainWindow;
+    this.init();
   }
 
-  async initialize() {
-    const systemManager = new SystemManager(this.machineId, this.isProduction);
+  async init() {
 
-    const configManager = new ConfigManager(systemManager);
-    configManager.initialize();
+    let systemManager = new SystemManager(this.machineId);
+    console.log("System Manager - toArray", systemManager.toArray());
 
-    const connectionManager = new ConnectionManager(configManager);
+    let configManager = new ConfigManager(systemManager);
+    configManager.initUserConfig();
+    configManager.initDatabaseConfig();
+    // console.log(configManager.get("database"));
+    // console.log(configManager.get("news"));
+
+    let connectionManager = new ConnectionManager(configManager);
     await connectionManager.initialize()
 
-    const fontManager = new FontManager(systemManager, configManager, connectionManager);
+    let fontManager = new FontManager(systemManager, configManager, connectionManager);
 
-    const menuBuilder = new MenuBuilder(this.mainWindow, this.isProduction);
-    menuBuilder.initialize();
-
-    const messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager);
+    let messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager);
     messageHandler.initialize();
   }
 }

@@ -1,21 +1,13 @@
-import { app, dialog, BrowserWindow, shell } from 'electron';
+import { dialog, BrowserWindow, shell } from 'electron';
 
-import SystemManager from './SystemManager';
-import ConfigManager from './ConfigManager';
+import SystemManager from "./SystemManager";
+import ConfigManager from "./ConfigManager";
 import ConnectionManager from './ConnectionManager';
-
-import FontCatalog from './FontCatalog';
 import FontFinder from './FontFinder';
-import FontInstaller from './FontInstaller';
 
-import { execute } from '../helpers/command';
-import { randNumber } from '../helpers/random';
+import { exec } from 'child_process';
 
-import { StorageType } from '../enums/StorageType';
-
-import * as path from 'path';
-
-const fetch = require('node-fetch');
+const sudo = require('sudo-prompt');
 
 export default class FontManager {
 
@@ -24,107 +16,144 @@ export default class FontManager {
   connectionManager: ConnectionManager;
 
   constructor(systemManager: SystemManager, configManager: ConfigManager, connectionManager: ConnectionManager) {
+    this.setSystemManager(systemManager);
+    this.setConfigManager(configManager);
+    this.setConnectionManager(connectionManager);
+  }
+
+  setSystemManager(systemManager: SystemManager) {
     this.systemManager = systemManager;
+  }
+
+  getSystemManager(): SystemManager {
+    return this.systemManager;
+  }
+
+  setConfigManager(configManager: ConfigManager) {
     this.configManager = configManager;
+  }
+
+  getConfigManager(): ConfigManager {
+    return this.configManager;
+  }
+
+  setConnectionManager(connectionManager: ConnectionManager) {
     this.connectionManager = connectionManager;
   }
 
-  async fetchLatestNews(args: any) {
-    const response = await fetch(args.endpoint);
-    return await response.json();
+  getConnectionManager(): ConnectionManager {
+    return this.connectionManager;
   }
 
-  async systemAuthenticate(args: any) {
-    args.status = 'ok';
-    this.configManager.set(StorageType.User, args);
-    return this.configManager.get(StorageType.User);
+  scanFiles(dir: any, options: any, done: any) {
+    let finder = new FontFinder(this.getConnectionManager());
+    return finder.scanFiles(dir, options, done);
+  }
+
+  scanFolders(dir: any, options: any, done: any) {
+    let finder = new FontFinder(this.getConnectionManager());
+    return finder.scanFolders(dir, options, done);
+  }
+
+  async exec(cmd: string, options = {}) {
+    return new Promise((resolve, reject) => {
+      exec(cmd, options, (err: any, stdout: any, stderr: any) => {
+        if (err) { return reject(err); }
+        return resolve({ stdout, stderr });
+      });
+    });
+  }
+
+  async sudo(cmd: string, options = {}) {
+    return new Promise((resolve, reject) => {
+      sudo.exec(cmd, options, (err: any, stdout: any, stderr: any) => {
+        if (err) { return reject(err); }
+        return resolve({ stdout, stderr });
+      });
+    });
   }
 
   async executeCommand(args: any) {
     try {
-      return await execute(args.cmd, args.options);
+      return await this.exec(args.cmd, args.options);
     } catch (err) {
       return err;
     }
   }
 
-  scanFiles(files: string[], options: any) {
-    return new Promise((resolve, reject) => {
-      let finder = new FontFinder(this.connectionManager);
-      finder.scanFiles(files, options, (err: any) => {
-        if (err) { return reject(err); }
-        return resolve({});
-      });
-    });
+  fontInstallation() {
+    // const collectionId = (args.collectionId) ? parseInt(args.collectionId) : false;
+    // const temporary = (args.temporary && args.temporary === true) ? true : false;
+    // const activate = (args.activate && args.activate === true) ? 1 : 0;
+    // const connection = this.getConnection();
+    // const fonts = (args.files && args.files.length) ? args.files : [];
+
+    // if (collectionId) {
+    //   connection.getRepository(Store).find({ collection_id: collectionId }).then(async (result: any[] = []) => {
+    //     await fontManager.activationCommand({ files: result, activate, temporary }).then((result) => {
+    //       if (result.stderr) {
+    //         event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { errors: result.stderr });
+    //       } else if (result.stdout) {
+    //         if (temporary) {
+    //           connection.getCustomRepository(StoreRepository).temporaryCollection(collectionId, activate);
+    //         } else {
+    //           connection.getCustomRepository(StoreRepository).activateCollection(collectionId, activate);
+    //         }
+    //         event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { success: true });
+    //       } else {
+    //         event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { errors: 'Request was not processed.' });
+    //       }
+    //     }).catch((err) => {
+    //       event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { errors: err.message });
+    //     });
+    //   })
+    // } else {
+    //   await fontManager.activationCommand(args).then((result) => {
+    //     if (result.stderr) {
+    //       event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { errors: result.stderr });
+    //     } else if (result.stdout) {
+    //       let ids = [];
+    //       fonts.forEach((item: any) => {
+    //         ids.push(item.id)
+    //       });
+    //       if (temporary) {
+    //         connection.getCustomRepository(StoreRepository).temporaryByIds(ids, activate);
+    //       } else {
+    //         connection.getCustomRepository(StoreRepository).activateByIds(ids, activate);
+    //       }
+    //       event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { success: true });
+    //     } else {
+    //       event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { errors: 'Request was not processed.' });
+    //     }
+    //   }).catch((err) => {
+    //     event.sender.send(channel.IPCMAIN_RESPONSE_FONT_ACTIVATION, { errors: err.message });
+    //   });
+    // }
   }
 
-  scanFolders(dir: any, options: any) {
-    return new Promise((resolve, reject) => {
-      let finder = new FontFinder(this.connectionManager);
-      finder.scanFolders(dir, options, (err: any) => {
-        if (err) { return reject(err); }
-        return resolve({});
-      });
-    });
+  async activationCommand(args: any) {
+    let executable = this.getSystemManager().getBinaryName()
+    let cmdPath = this.getSystemManager().getBinaryPath(executable);
+
+    let temp = (this.systemManager.getPlatform() === 'win' && args.temporary && args.temporary === true) ? true : false;
+
+    let files = [];
+    for (let i = 0, total = args.files.length; i < total; i++) {
+      let normalized = this.systemManager.normalizePath(args.files[i].file_path);
+      files.push(`"${normalized}"`);
+    }
+    files.join(' ');
+
+    let command = `${cmdPath} -activate=${args.activate} -temp=${temp} ${files}`;
+
+    try {
+      return await this.sudo(command, { name: 'Font Activation' });
+    } catch (err) {
+      return err;
+    }
   }
 
-  fontInstaller(options: any) {
-    let installer = new FontInstaller(this.systemManager, this.connectionManager);
-    return installer.activate(options);
-  }
-
-  /**
-   * @todo
-   */
-  folderInstaller(options: any) {
-    let installer = new FontInstaller(this.systemManager, this.connectionManager);
-    return installer.activate(options);
-  }
-
-  getMapFilePaths(files: string[], dest: string) {
-    return files.map((file: string) => dest + path.sep + path.basename(file));
-  }
-
-  getSourceFolder(sourceFolder: string) {
-    return path.normalize(sourceFolder);
-  }
-
-  getDestinationFolder() {
-    return path.normalize(this.systemManager.getCatalogPath() + path.sep + Date.now() + randNumber(7));
-  }
-
-  getSourceDestinationFolders(sourceFolder: string) {
-    const src = this.getSourceFolder(sourceFolder);
-    const dest = this.getDestinationFolder();
-    return { src, dest }
-  }
-
-  createCatalog(folder: string) {
-    const catalog = new FontCatalog(this.systemManager);
-    return catalog.createCatalog(folder);
-  }
-
-  async copyFiles(files: string[], dest: string) {
-    return new Promise((resolve, reject) => {
-      const catalog = new FontCatalog(this.systemManager);
-      catalog.copyFiles(files, dest, (err: any, stdout: any) => {
-        if (err) { return reject(err); }
-        return resolve({});
-      });
-    });
-  }
-
-  async copyFolders(src: string, dest: string) {
-    return new Promise((resolve, reject) => {
-      const catalog = new FontCatalog(this.systemManager);
-      catalog.copyFolders(src, dest, (err: any, stdout: any) => {
-        if (err) { return reject(err); }
-        return resolve({});
-      });
-    });
-  }
-
-  showMessageBox(options: any) {
+  showDialogBox(options: any) {
     return dialog.showMessageBox(null, options);
   }
 
@@ -146,19 +175,6 @@ export default class FontManager {
 
   showItemInFolder(fullPath: string) {
     shell.showItemInFolder(fullPath);
-  }
-
-  reLaunch() {
-    app.relaunch();
-    app.quit();
-  }
-
-  exit() {
-    app.exit();
-  }
-
-  quit() {
-    app.quit();
   }
 
   reloadWindow() {

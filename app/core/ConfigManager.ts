@@ -1,6 +1,5 @@
-import SystemManager from './SystemManager';
-import { database } from '../config/database';
-import { StorageType } from '../enums/StorageType';
+import SystemManager from "./SystemManager";
+import * as channel from '../config';
 
 const Store = require('electron-store');
 const store = new Store();
@@ -10,10 +9,18 @@ export default class ConfigManager {
   systemManager: SystemManager;
 
   constructor(systemManager: SystemManager) {
+    this.setSystemManager(systemManager);
+  }
+
+  setSystemManager(systemManager: SystemManager) {
     this.systemManager = systemManager;
   }
 
-  set(key: string, value: any): void {
+  getSystemManager(): SystemManager {
+    return this.systemManager;
+  }
+
+  set(key: string, value: any) {
     store.set(key, value);
   }
 
@@ -24,114 +31,51 @@ export default class ConfigManager {
     return store.store;
   }
 
-  has(key: string): boolean {
+  has(key: string): any {
     return store.has(key);
   }
 
-  delete(key: string): any {
-    return store.delete(key);
+  const(name: any | string): any {
+    return channel[name];
   }
 
-  clear(): any {
-    return store.clear();
-  }
-
-  toArray(): any {
-    return store.store;
-  }
-
-  initialize(): void {
-    this.initDatabaseConfig();
-    this.initSettingsConfig();
-  }
-
-  initSettingsConfig(): void {
-    const settings = {
-      import: {
-        type: 'ask'
-      }
-    };
-    if (this.has(StorageType.Options)) {
-      const saved = this.get(StorageType.Options);
-      this.set(StorageType.Options, { ...settings, ...saved });
-    } else {
-      this.set(StorageType.Options, settings);
-    }
+  initUserConfig(): void {
+    this.set('user', {
+      uptime: this.getSystemManager().getUpTime(),
+      locale: this.getSystemManager().getLocale()
+    });
   }
 
   initDatabaseConfig(): void {
-    let store = this.get(StorageType.Database);
+    let config = this.const('database');
+    let store = this.get('database');
 
-    // @TODO Remove MySQL connection if not in production.
-    // Problematic when switching between production and development. Problem arises when connection is not enabled.
-    // database.connections = this.systemManager.isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
+    // Remove MySQL connection if not in production.
+    config.connections = this.getSystemManager().isProduction() ? config.connections.filter((item: any) => item.name === "default") : config.connections;
 
     // Assign user data path to default database.
-    database.connections = database.connections.filter((item: any) => {
-      if (item.name === 'default' && item.type === 'sqlite') {
-        item.database = this.systemManager.getDatabasePath(item.database);
+    config.connections = config.connections.filter((item: any) => {
+      if (item.name === "default" && item.type === "sqlite") {
+        item.database = this.getSystemManager().getDatabasePath(item.database);
       }
       return item;
     })
 
     if (!store) {
-      this.set(StorageType.Database, database);
+      this.set('database', config);
     } else {
-      // Resets database.
-      //this.set(StorageType.Database, database);
+      this.set('database', config);
     }
   }
 
-  createDbConnection(options: any): void {
-    if (options.name === 'default') {
-      return;
-    }
-
-    let connections = this.get(StorageType.Database).connections;
-
-    const found = connections.find((item: any) => item.name === options.name);
-
-    if (found) {
-      for (const i in connections) {
-        if (connections[i].name == options.name) {
-          connections[i] = options;
-        }
-      }
-      this.set(StorageType.DatabaseConnections, connections);
-    } else {
-      this.set(StorageType.DatabaseConnections, connections.push(options));
-    }
-  }
-
-  enableDbConnection(options: any): void {
-    let config = this.get(StorageType.Database);
+  enableDbConnection(connection: any): void {
+    let config = this.get('database');
 
     config.connections = config.connections.filter((item: any) => {
-      item.enabled = (item.name === options.name) ? true : false;
+      item.enabled = (item.name === connection.name) ?  true : false;
       return item;
     })
 
-    this.set(StorageType.Database, config);
-
-    return config;
-  }
-
-  deleteDbConnection(options: any): void {
-    if (options.name === 'default') {
-      return;
-    }
-
-    let connections = this.get(StorageType.Database).connections;
-
-    const found = connections.find((item: any) => item.name === options.name);
-
-    if (found) {
-      for (const i in connections) {
-        if (connections[i].name == options.name) {
-          connections.splice(i, 1);
-        }
-      }
-      this.set(StorageType.DatabaseConnections, connections);
-    }
+    this.set('database', config);
   }
 }

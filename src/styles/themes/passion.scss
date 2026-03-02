@@ -1,24 +1,19 @@
+$passionBackground: #620f72;
+$passionTextColor: #fff; // #cab189;
+$passionBorderColor: #fe1963;
+
 body[data-theme="passion"] {
-  background-color: var(--background-color);
-  color: var(--font-color);
+  background-color: $passionBackground;
+  color: $passionTextColor;
 }
 
 [data-theme="passion"] {
 
-  .hover-scrollbox-x,
-  .hover-scrollbox-y {
-    --scrollbar-color: #fe1963;
-    --scrollbar-hover-color: #fe1961cb;
-    --scrollbar-space: 0.1rem;
-    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
-    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
-  }
-
   a {
-    color: var(--font-color);
+    color: $passionTextColor;
     &:hover,
     &:active {
-      color: var(--font-color);
+      color: $passionTextColor;
     }
   }
 
@@ -32,11 +27,11 @@ body[data-theme="passion"] {
 
   .disabled,
   .disabled i {
-    color: var(--border-color);
+    color: $passionBorderColor;
   }
 
   .enabled {
-    color: var(--font-color);
+    color: $passionTextColor;
   }
 
   .selected {
@@ -44,54 +39,27 @@ body[data-theme="passion"] {
   }
 
   .material-icons {
-    color: var(--font-color);
+    color: $passionTextColor;
   }
 
-  .material-icons-rounded {
-    .material-icons {
-      &:hover {
-        @apply text-[#e94049] bg-[#69147a];
-      }
-    }
-  }
-
-  /* ==========================================================================
-  App Button
-  ========================================================================== */
-
-  .app-btn {
-    @apply bg-[#fe1963];
-    span {
-      @apply text-white;
-    }
-    &:hover {
-      @apply bg-[#fe1961d7];
-    }
-  }
-
-  input:not(.form-control-hidden):not([type="range"]),
-  select:not(.form-control-hidden) {
-    border: 1px solid var(--border-color) !important;
-  }
-
-  .radio label,
-  .checkbox label {
-    border: 2px solid var(--font-color);
+  .text-muted {
+    color: #fff !important;
   }
   
-  .radio :checked ~ label::before,
-  .checkbox :checked ~ label::before {
-    background-color: var(--font-color);
+  .text-error {
+    color: #cc0000 !important;
   }
-  
-  .radio :checked ~ span,
-  .checkbox :checked ~ span {
-    color: var(--font-color);
+
+  input.input--title {
+    color: $passionTextColor !important;
+    &:focus {
+      color: $passionTextColor !important;
+    }
   }
 
   // Toolbar text.
   .input-preview.preview-text button {
-    background-color: var(--border-color) !important;
+    background-color: $passionBorderColor !important;
   }
 
   // Toolbar switch text.
@@ -99,182 +67,158 @@ body[data-theme="passion"] {
   .input-preview.latest-news button span.material-icons,
   .input-preview.preview-casing button span.material-icons,
   .input-preview.preview-reset button span.material-icons {
-    color: var(--font-color) !important;
+    color: $passionTextColor !important;
   }
 
   .input-preview.preview-size {
+
     input {
       color: red !important;
     }
-  }
 
-  input[type="range"] {
-    @apply bg-passion;
-  }
-
-  input[type="range"]::-webkit-slider-runnable-track {
-    background: var(--font-color);
-  }
-  
-  input[type="range"]::-webkit-slider-thumb {
-    background: var(--font-color) !important;
-    border: 3px solid var(--border-color) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: $passionTextColor;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      background: $passionTextColor !important;
+      border: 3px solid $passionBorderColor !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
   }
 
   .paginator {
-    a {
-      background-color: #7d0080;
-      i.material-icons {
-        color: #fff;
-      }
+    input {
+      //color: #333;
+      //background-color: #fff;
+      border: 1px solid $passionBorderColor;
     }
   }
 
   .border-top {
-    border-top: 1px solid var(--border-color) !important;
+    border-top: 1px solid $passionBorderColor !important;
   }
 
   .border-right {
-    border-right: 1px solid var(--border-color) !important;
+    border-right: 1px solid $passionBorderColor !important;
   }
 
   .border-bottom {
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid $passionBorderColor !important;
   }
 
   .border-left {
-    border-left: 1px solid var(--border-color) !important;
+    border-left: 1px solid $passionBorderColor !important;
   }
 
   .border-top-dashed {
-    border-top: 1px dashed var(--border-color) !important;
+    border-top: 1px dashed $passionBorderColor !important;
   }
   
   .border-right-dashed {
-    border-right: 1px dashed var(--border-color) !important;
+    border-right: 1px dashed $passionBorderColor !important;
   }
   
   .border-bottom-dashed {
-    border-bottom: 1px dashed var(--border-color) !important;
+    border-bottom: 1px dashed $passionBorderColor !important;
   }
   
   .border-left-dashed {
-    border-left: 1px dashed var(--border-color) !important;
-  }
-
-  details {
-    >summary {
-      @apply text-white;
-    }
-    >details {
-      &::after {
-        background-color: #fe1963;
-      }
-      &::before {
-        background-color: #fe1963;
-      }
-    }
-    ul {
-      li {
-        &::after {
-          background-color: #fe1963;
-        }
-        &::before {
-          background-color: #fe1963;
-        }
-        span {
-          color: #fff;
-        }
-        span:last-child {
-          color: #fe1963;
-        }
-      }
-    }
+    border-left: 1px dashed $passionBorderColor !important;
   }
 
   .table {
-    color: var(--font-color);
-    thead > tr {
-      @apply bg-[#69147a];
-    }
-    &.striped > tbody > tr:nth-child(odd) {
-      @apply bg-passion;
-    }
-    .material-icons {
-      color: var(--font-color);
-    }
-    [class^="icon-"] {
-      color: var(--font-color);
-    }
+    color: $passionTextColor !important;
   }
 
-  .form-control {
-    color: #fff;
-    background-color: var(--background-color);
-    //border: 1px solid #fff;
-    .input-group-checkbox {
-      background-color: var(--border-color);
-    }
+  .table td,
+  .table th {
+    border-top: none !important;
+  }
+  
+  .table tbody tr:nth-child(odd) {
+    background-color: #69147a;
+  }
+  
+  .table > thead > tr > th {
+    background-color: $passionBackground;
+    border-right: 1px solid $passionBorderColor;
+  }
+  
+  .table > thead > tr > th,
+  .table > thead > tr > th > div,
+  .table > thead > tr > th > div > span {
+    color: $passionTextColor;
   }
 
-  fieldset {
-    border: 1px solid var(--border-color);
-    legend {
-      color: var(--font-color);
+  .block {
+    background-color: #6c0b7f;
+    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
+    .block__head {
+      border-bottom: 1px solid $passionBorderColor;
     }
-    dt {
-      label {
-        color: var(--font-color);
+    .block__foot {
+      border-top: 1px solid $passionBorderColor;
+    }
+    .form-group {
+      .text-muted {
+        color: #fff !important;
+      }
+      .text-error {
+        color: #db1818 !important;
       }
     }
-    dd {
-      border-left: 1px solid var(--font-color);
+    .form-control {
+      color: #fff;
+      background-color: $passionBackground;
+      border: 1px solid $passionBorderColor;
     }
-    dl:hover dt,
-    dl:hover dd {
-      border-color: #c10156;
-    }
-    dl:hover dt label {
-      color: var(--font-color);
-    }
-    dl dd label:hover {
-      color: var(--font-color);
+    .input-group-checkbox {
+      background-color: $passionBorderColor;
     }
   }
 
   .glyph-list {
-    &__wrapper-item {
-      @apply bg-[#620f72] border-2 border-[#69147a];
-    }
-  }
-
-  /* ==========================================================================
-  Typescale
-  ========================================================================== */
-
-  .typescale {
-    &__label {
-      @apply bg-[#69147a];
-    }
-    &__label-text {
-      @apply text-white;
-    }
-    &__wrapper {
-      @apply bg-[#620f72];
-      &.active {
-        @apply bg-[#fe1963];
+    .glyph-item {
+      background-color: $passionBackground !important;
+      border: solid 1px #69147a !important;
+      margin: 0 !important;
+      //margin-bottom: 0 !important;
+      &:hover {
+        background-color: #6c0b7f !important;
       }
     }
   }
 
-  /* ==========================================================================
-  Modal
-  ========================================================================== */
+  .tabs {
+    li {
+      border-right: 1px solid $passionBorderColor !important;
+      border-bottom: 1px solid $passionBorderColor !important;
+    }
+  }
 
-  .modal {
-    &__content {
-      @apply bg-passion;
+  fieldset {
+    border: 1px solid $passionBorderColor;
+    legend {
+      color: $passionTextColor;
+    }
+    .form-group {
+      span {
+        color: $passionTextColor;
+      }
+    }
+    dd {
+      border-left: 1px solid #fff;
+    }
+    dl:hover dt,
+    dl:hover dd {
+      border-color: $passionBorderColor;
+    }
+    dl:hover dt label {
+      color: $passionTextColor;
+    }
+    dl dd label:hover {
+      color: $passionTextColor;
     }
   }
 }

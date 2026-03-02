@@ -1,7 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index, ManyToOne, JoinColumn } from "typeorm";
-import { Collection } from "./Collection.schema"
-
-export type StoreManyAndCountType = Array<Store[] | number>;
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from "typeorm";
 
 @Entity()
 export class Store {
@@ -46,15 +43,15 @@ export class Store {
   @Column({ type: "smallint", default: 0, nullable: true })
   @Index()
   system: number;
-
+  
   @Column({ type: "text", nullable: true })
   compatible_full_name: string;
+  
+  @Column({ type: "text", nullable: true })
+  copyright: string; 
 
   @Column({ type: "text", nullable: true })
-  copyright: string;
-
-  @Column({ type: "text", nullable: true })
-  description: string;
+  description: string; 
 
   @Column({ type: "text", nullable: true })
   designer: string;
@@ -82,7 +79,7 @@ export class Store {
 
   @Column({ type: "text", nullable: true })
   manufacturer_url: string;
-
+  
   @Column({ type: "text", nullable: true })
   post_script_name: string;
 
@@ -106,11 +103,4 @@ export class Store {
 
   @CreateDateColumn() public created: Date;
   @UpdateDateColumn() public updated: Date;
-
-  @ManyToOne(() => Collection, (model) => model.stores, { 
-    onDelete: 'CASCADE' 
-  })
-
-  @JoinColumn({ name: "collection_id" })
-  collection: Collection;
 }

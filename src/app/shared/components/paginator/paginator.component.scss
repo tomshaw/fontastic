@@ -1,3 +1,125 @@
+@import "../../../../styles/tools/_variables";
+@import "../../../../styles/tools/_functions";
+@import "../../../../styles/tools/_mixins";
+@import "../../../../styles/tools/_placeholders";
+
 :host {
   flex-grow: 1;
+}
+
+.paginator {
+  padding: 0;
+  margin: 0;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s, opacity 0.5s ease-in-out;
+
+  .paginator-block {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  a,
+  input,
+  .paginator-panel,
+  .paginator-counts,
+  .paginator-results {
+    display: inline-block;
+  }
+
+  .paginator-block,
+  .paginator-counts,
+  .paginator-results {
+    padding-left: 15px;
+  }
+
+  .paginator-results {
+    margin: 0;
+    label {
+      margin: 0;
+    }
+  }
+
+  .paginator-counts {
+    font-size: 13px;
+    @include font-family-medium();
+    line-height: 1;
+    vertical-align: middle;
+    margin-top: 3px;
+  }
+
+  a {
+    cursor: pointer;
+    background-color: #e5e5e5;
+    border: 1px solid transparent;
+    border-radius: 0;
+    border-width: 0;
+    height: 24px;
+    width: 24px;
+    outline: none;
+    filter: none;
+    box-shadow: none;
+    text-shadow: none;
+    user-select: none;
+    padding: 0px 0px 5px 0px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    i.material-icons {
+      display: block;
+      color: #61bf6c;
+      font-size: 24px;
+    }
+  }
+
+  a.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.95;
+  }
+
+  *:focus {
+    outline: none;
+  }
+
+  input {
+    color: #333;
+    background-color: #fff;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    box-shadow: none;
+    height: 24px;
+    width: 45px;
+    margin: 0 5px;
+    padding: 5px 10px;
+    outline: none;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.5;
+    text-align: center;
+    transition: all ease-in-out 0.15s;
+  }
+
+  select {
+    color: #333;
+    background-color: #fff;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    box-shadow: none;
+    height: 24px;
+    width: 50px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.5;
+    text-align: center;
+    transition: all ease-in-out 0.15s;
+  }
 }

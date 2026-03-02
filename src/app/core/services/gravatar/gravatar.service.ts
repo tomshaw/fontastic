@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Md5 } from 'ts-md5';
+
+import { Md5 } from './md5';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GravatarService {
 
-  public gravatarSize = 16;
-  public gravatarFallback = 'mm';
+  public DefaultGravatarSize:number = 16;
+  public DefaultGravatarFallback:string = 'mm';
 
   constructor() { }
 
-  url(email: string, size: number = this.gravatarSize, fallback: string = this.gravatarFallback): string {
-    const emailHash = Md5.hashStr(email.trim().toLowerCase());
+  public url(email: string, size: number = this.DefaultGravatarSize, fallback: string = this.DefaultGravatarFallback): string {
+    const emailHash = Md5.hashStr(email.toLowerCase());
     return `https://www.gravatar.com/avatar/${emailHash}?s=${size}&d=${fallback}`;
   }
 }

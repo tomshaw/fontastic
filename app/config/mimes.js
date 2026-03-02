@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.installable = exports.mimeTypes = exports.fontMimeTypes = void 0;
-exports.fontMimeTypes = [
+exports.installable = exports.mimeTypes = exports.fontTypes = void 0;
+exports.fontTypes = [
     {
         type: "font/ttf",
         name: "TrueType",
@@ -39,8 +39,8 @@ exports.fontMimeTypes = [
         installable: false
     }
 ];
-exports.mimeTypes = exports.fontMimeTypes.map((item) => item.type);
-exports.installable = exports.fontMimeTypes.reduce((prev, curr) => {
+exports.mimeTypes = exports.fontTypes.map((item) => item.type);
+exports.installable = exports.fontTypes.reduce((prev, curr) => {
     if (curr.installable) {
         prev.push(curr.type);
     }

@@ -14,24 +14,25 @@ const ConfigManager_1 = require("./core/ConfigManager");
 const ConnectionManager_1 = require("./core/ConnectionManager");
 const FontManager_1 = require("./core/FontManager");
 const MessageHandler_1 = require("./core/MessageHandler");
-const MenuBuilder_1 = require("./core/menu/MenuBuilder");
 class Application {
-    constructor(machineId, isProduction, mainWindow) {
+    constructor(machineId, isProduction) {
         this.machineId = machineId;
         this.isProduction = isProduction;
-        this.mainWindow = mainWindow;
+        this.init();
     }
-    initialize() {
+    init() {
         return __awaiter(this, void 0, void 0, function* () {
-            const systemManager = new SystemManager_1.default(this.machineId, this.isProduction);
-            const configManager = new ConfigManager_1.default(systemManager);
-            configManager.initialize();
-            const connectionManager = new ConnectionManager_1.default(configManager);
+            let systemManager = new SystemManager_1.default(this.machineId);
+            console.log("System Manager - toArray", systemManager.toArray());
+            let configManager = new ConfigManager_1.default(systemManager);
+            configManager.initUserConfig();
+            configManager.initDatabaseConfig();
+            // console.log(configManager.get("database"));
+            // console.log(configManager.get("news"));
+            let connectionManager = new ConnectionManager_1.default(configManager);
             yield connectionManager.initialize();
-            const fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);
-            const menuBuilder = new MenuBuilder_1.default(this.mainWindow, this.isProduction);
-            menuBuilder.initialize();
-            const messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager);
+            let fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);
+            let messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager);
             messageHandler.initialize();
         });
     }

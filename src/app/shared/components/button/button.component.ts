@@ -1,22 +1,25 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-button',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss']
 })
-export class ButtonComponent {
+export class ButtonComponent implements OnInit {
 
-  @Input() type: string;
-  @Input() text: string;
-  @Input() ngClass: string;
-  @Input() disabled: null;
+  @Input('type') type!: string;
+  @Input('title') text: string = '';
+  @Input('style') style!: string;
+  @Input('disabled') disabled!: null;
 
-  @Output() handleButtonClick = new EventEmitter<any>();
+  @Output() onClick = new EventEmitter<any>();
 
   constructor() { }
 
-  onButtonClick(event: MouseEvent): void {
-    this.handleButtonClick.emit(event);
+  ngOnInit(): void { }
+
+  onClickButton(event: MouseEvent): void {
+    this.onClick.emit(event);
   }
 }
