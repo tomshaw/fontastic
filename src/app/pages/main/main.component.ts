@@ -2,18 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { PresentationService } from '@app/core/services';
 
 @Component({
-  standalone: false,
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
 
-  gridEnabled: boolean = true;
-  toolbarEnabled: boolean = true;
-  previewEnabled: boolean = true;
-  inspectEnabled: boolean = true;
-  waterfallEnabled: boolean = false;
+  gridEnabled = true;
+  toolbarEnabled = true;
+  previewEnabled = true;
+  inspectEnabled = true;
 
   constructor(
     private presentationService: PresentationService
@@ -31,9 +29,6 @@ export class MainComponent implements OnInit {
     });
     this.presentationService._inspectEnabled.subscribe((result) => {
       this.inspectEnabled = result;
-    });
-    this.presentationService._waterfallEnabled.subscribe((result) => {
-      this.waterfallEnabled = result;
     });
   }
 

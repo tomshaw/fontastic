@@ -1,0 +1,113 @@
+
+/* ==========================================================================
+Inputs
+========================================================================== */
+
+input,
+select {
+  @apply text-gray-700;
+  &:focus {
+    @apply text-gray-700;
+  }
+}
+
+input:not([type='range']):not([type='color']):not(.form-control-hidden),
+select:not([type='range']):not(.form-control-hidden) {
+  @apply border border-solid border-default;
+}
+
+input[type='color'] {
+  @apply border-none;
+}
+
+/* ==========================================================================
+Checkbox/Radio
+========================================================================== */
+
+.radio,
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox {
+  --border-radius: 0;
+}
+
+.radio input[type="radio"],
+.checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.radio label,
+.checkbox label {
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #00a0be;
+  border-radius: var(--border-radius);
+  pointer-events: none;
+}
+
+.radio label::before,
+.checkbox label::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--border-radius);
+  background-color: transparent;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.25s;
+}
+
+.radio :checked ~ label::before,
+.checkbox :checked ~ label::before {
+  background-color: #00a0be;
+}
+
+.radio :checked ~ span,
+.checkbox :checked ~ span {
+  color: #00a0be;
+}
+
+.radio.radio-large {
+  label {
+    width: 16px;
+    height: 16px;
+    border-width: 1px;
+  }
+  label::before {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* ==========================================================================
+Range Slider
+========================================================================== */
+
+input[type="range"] {
+  @apply cursor-pointer appearance-none;
+}
+
+input[type="range"]:focus {
+  @apply outline-none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply bg-[#00a0be] h-1.5 rounded;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none h-[15px] w-[15px] -mt-[5px] rounded-full bg-[#00a0be] border-3 border-solid border-white shadow-md;
+}

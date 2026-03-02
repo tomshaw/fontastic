@@ -1,74 +1,71 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-
-import { AppAlert } from '@app/core/interface';
-
-import { alertTypes, alertTimeout } from '../../../../../app/config/alert';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AppAlert } from '@main/types';
+import { AlertTypes, AlertTimeout, AlertProps } from '@main/config/alert';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertService {
 
-  private _alert$ = new Subject<AppAlert>();
+  _alert = new BehaviorSubject<AppAlert>(null);
+  watchAlert$ = this._alert.asObservable();
 
-  private keep: boolean = false;
-
-  constructor(private router: Router) {
+  constructor(
+    private router: Router
+  ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        if (this.keep) {
-          this.keep = false;
-        } else {
-          this.clear();
-        }
-      }
-    });
-    this._alert$.subscribe((x: any) => {
-      if (x && !x.keep) {
-        setTimeout(() => {
-          this.clear();
-        }, x.timeout)
+        this.clear();
       }
     });
   }
 
   getObservable(): Observable<AppAlert> {
-    return this._alert$.asObservable();
+    return this._alert.asObservable();
   }
 
-  send(type: string, message: string, keep: boolean = false, timeout: number = alertTimeout) {
-    this.keep = keep;
-    let alert = alertTypes.find((item: any) => item.type === type);
+  getAlert(): AppAlert {
+    return this._alert.getValue();
+  }
+
+  setAlert(values: AppAlert): void {
+    this._alert.next(values);
+  }
+
+  send(type: string, message: string, timeout: number = AlertTimeout, keep: boolean = false): void {
+    const alert = AlertTypes.find((item: any) => item.type === type);
     if (alert) {
-      this._alert$.next({ type: type, message: message, keep: keep, timeout: timeout, ...alert });
+      this.setAlert({ type, message, timeout, keep, ...alert });
     }
   }
 
-  info(message: string, keep: boolean = false, timeout: number = alertTimeout) {
-    this.send('info', message, keep, timeout);
+  info(message: string, timeout: number = AlertTimeout, keep: boolean = false): void {
+    this.send('info', message, timeout, keep);
   }
 
-  success(message: string, keep: boolean = false, timeout: number = alertTimeout) {
-    this.send('success', message, keep, timeout);
+  success(message: string, timeout: number = AlertTimeout, keep: boolean = false): void {
+    this.send('success', message, timeout, keep);
   }
 
-  error(message: string, keep: boolean = false, timeout: number = alertTimeout) {
-    this.send('error', message, keep, timeout);
+  error(message: string, timeout: number = AlertTimeout, keep: boolean = false): void {
+    this.send('error', message, timeout, keep);
   }
 
-  warning(message: string, keep: boolean = false, timeout: number = alertTimeout) {
-    this.send('warning', message, keep, timeout);
+  warning(message: string, timeout: number = AlertTimeout, keep: boolean = false): void {
+    this.send('warning', message, timeout, keep);
   }
 
-  danger(message: string, keep: boolean = false, timeout: number = alertTimeout) {
-    this.send('danger', message, keep, timeout);
+  danger(message: string, timeout: number = AlertTimeout, keep: boolean = false): void {
+    this.send('danger', message, timeout, keep);
   }
 
-  clear() {
-    //this._alert$.next();
-    this.keep = false;
+  clear(): void {
+    this._alert.next(AlertProps);
   }
 
+  dismiss() {
+    setTimeout(() => this.clear(), this.getAlert().timeout);
+  }
 }

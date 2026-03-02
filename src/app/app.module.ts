@@ -1,11 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
+import 'reflect-metadata';
+import '../polyfills';
 
-import { TranslateModule } from '@ngx-translate/core';
-import { provideTranslateService } from '@ngx-translate/core';
-import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+
+// NG Translate
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 
@@ -13,13 +16,14 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { LayoutModule } from './layout/layout.module';
 import { MainModule } from './pages/main/main.module';
-import { SettingsModule } from './pages/settings/settings.module';
 import { AppRoutingModule } from './app-routing.module';
 
-import { ConfigService, ElectronService, MessageService } from '@app/core/services';
+import { BootService } from '@app/core/services';
 
-import { JwtInterceptor } from './core/interceptor/jwt.interceptor';
-import { ErrorInterceptor } from './core/interceptor/error.interceptor';
+// AoT requires an exported function for factories
+export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -29,41 +33,31 @@ import { ErrorInterceptor } from './core/interceptor/error.interceptor';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule.forRoot(),
+    HttpClientModule,
     CoreModule,
     SharedModule,
     LayoutModule,
     MainModule,
-    SettingsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
-    provideHttpClient(withInterceptorsFromDi()),
-    provideTranslateService({
-      loader: provideTranslateHttpLoader({
-        prefix: './assets/i18n/',
-        suffix: '.json'
-      }),
-      fallbackLang: 'en',
-      defaultLanguage: 'en'
-    }),
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    BootService,
+    { 
+      provide: APP_INITIALIZER, 
+      useFactory: (bootService: BootService) => () => bootService.init(), 
+      deps: [BootService], 
+      multi: true 
+    }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 
-  constructor(
-    private configService: ConfigService,
-    private messageService: MessageService,
-    private electronService: ElectronService
-  ) {
-    if (this.electronService.isElectron) {
-      this.messageService.systemBoot().subscribe((result) => {
-        console.log('SYSTEM-BOOT', result);
-        this.configService.setConfig(result);
-      });
-    }
-  }
 }

@@ -1,0 +1,33 @@
+import { TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppComponent } from './app.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { ElectronService, PresentationService } from './core/services';
+
+describe('AppComponent', () => {
+  let originalTimeout: number;
+
+  beforeEach(() => {
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000;
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      providers: [ElectronService, PresentationService],
+      imports: [RouterTestingModule, TranslateModule.forRoot()]
+    }).compileComponents();
+  }));
+
+  it('should create the app', waitForAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app).toBeTruthy();
+  }));
+
+});

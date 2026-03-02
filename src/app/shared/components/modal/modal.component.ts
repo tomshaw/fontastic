@@ -1,24 +1,51 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ModalService } from '@app/core/services';
 
 @Component({
-  standalone: false,
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnDestroy {
+  @Input() id?: string;
+  @Input() title = 'Modal';
+  @Input() size = 'sm';
+  @Input() rounded = 'rounded-none';
+  @Input() shadow = 'shadow-none';
 
-  @Input() modalTitle: string = "Settings";
-  @Output() goSubmit = new EventEmitter<boolean>();
+  @Input() showHeader = true;
+  @Input() showFooter = true;
 
-  constructor() { }
+  enabled = false;
+
+  private element: any;
+
+  constructor(
+    private modalService: ModalService,
+    private el: ElementRef
+  ) {
+    this.element = el.nativeElement;
+  }
 
   ngOnInit() {
+    this.modalService.add(this);
+    document.body.appendChild(this.element);
   }
 
-  onClickSubmit(data: any): void {
-    //e.preventDefault();
-    this.goSubmit.emit(data);
+  ngOnDestroy() {
+    this.modalService.remove(this);
+    this.element.remove();
   }
 
+  addContentStyles() {
+    return [this.rounded, this.shadow];
+  }
+
+  open() {
+    this.enabled = true;
+  }
+
+  close() {
+    this.enabled = false;
+  }
 }

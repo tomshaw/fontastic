@@ -12,11 +12,84 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StoreRepository = void 0;
 const typeorm_1 = require("typeorm");
 const entity_1 = require("../entity");
+const config_1 = require("../../config");
 exports.StoreRepository = {
-    fetchStore(options) {
+    search(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const db = this.createQueryBuilder();
             if (options.where && options.where.length) {
+                const where = options.where;
+                const builder = [];
+                let isAndWhere = false;
+                const hasSearchTerm = where.some((item) => item.key === 'term');
+                if (hasSearchTerm) {
+                    const searchTerm = where.find((item) => item.key === 'term');
+                    config_1.searchDbColumns.forEach((item) => {
+                        builder.push({
+                            key: item,
+                            type: 'like',
+                            value: searchTerm.value.toLowerCase()
+                        });
+                    });
+                }
+                const hasFileTypes = where.some((item) => item.key === 'file_type');
+                if (hasFileTypes) {
+                    const fileTypes = where.find((item) => item.key === 'file_type');
+                    if (fileTypes && fileTypes.value.length) {
+                        isAndWhere = true;
+                        db.where(`${fileTypes.key} IN (:...mimes)`, { mimes: fileTypes.value });
+                    }
+                }
+                if (isAndWhere) {
+                    db.andWhere(new typeorm_1.Brackets((qb) => {
+                        builder.forEach((item, i) => {
+                            const column = item.key;
+                            const value = item.value;
+                            if (i === 0) {
+                                qb.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                            }
+                            else {
+                                qb.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                            }
+                        });
+                    }));
+                }
+                else {
+                    builder.forEach((item, i) => {
+                        const column = item.key;
+                        const value = item.value;
+                        if (i === 0) {
+                            db.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                        }
+                        else {
+                            db.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
+                        }
+                    });
+                }
+            }
+            if (options.take) {
+                db.limit(options.take);
+            }
+            if (options.skip) {
+                db.offset(options.skip);
+            }
+            if (options.order && options.order.column) {
+                const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
+                db.orderBy(`store.${options.order.column}`, direction);
+            }
+            // console.log(db.printSql());
+            // console.log(db.getSql());
+            // console.log(db.getQuery());
+            return yield db.getManyAndCount();
+        });
+    },
+    fetch(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const db = this.createQueryBuilder();
+            if (options.ids && options.ids.length) {
+                db.where("store.collection_id IN (:...ids)", { ids: options.ids });
+            }
+            else if (options.where && options.where.length) {
                 options.where.forEach((item, i) => {
                     let column = item.key;
                     let value = item.value;
@@ -38,13 +111,16 @@ exports.StoreRepository = {
                 const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
                 db.orderBy(`store.${options.order.column}`, direction);
             }
+            // console.log(db.printSql());
+            // console.log(db.getSql());
+            // console.log(db.getQuery());
             return yield db.getManyAndCount();
         });
     },
-    updateStore(_data) {
+    update(id, data) {
         return this.createQueryBuilder().update(entity_1.Store)
-            .set(_data.data)
-            .where("id = :id", { id: _data.id })
+            .set(data)
+            .where("id = :id", { id: id })
             .execute();
     },
     activateByIds(ids, activated) {
@@ -73,8 +149,8 @@ exports.StoreRepository = {
     },
     resetTemporaryFonts(uptime) {
         return __awaiter(this, void 0, void 0, function* () {
-            let rows = yield this.createQueryBuilder().where("store.temporary = 1").getMany();
-            let now = new Date().getTime();
+            const rows = yield this.createQueryBuilder().where("store.temporary = 1").getMany();
+            const now = new Date().getTime();
             rows.forEach((row) => {
                 let updated = new Date(row.updated).getTime() + (1000 * uptime);
                 if (updated < now) {
@@ -89,7 +165,7 @@ exports.StoreRepository = {
             return yield this.createQueryBuilder().delete().where("collection_id = :id", { id: collectionId }).execute();
         });
     },
-    resetSystemFonts() {
+    resetSystem() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.createQueryBuilder().delete().where("store.system = 1").execute();
         });
@@ -102,6 +178,19 @@ exports.StoreRepository = {
     resetActivated() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.createQueryBuilder().update(entity_1.Store).set({ activated: 0 }).where("store.activated = 1").execute();
+        });
+    },
+    syncActivated() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const results = yield this.createQueryBuilder("store").select(['store.file_name']).where("store.system = 1").getMany();
+            const fileNames = results.map((item) => item.file_name);
+            return yield this.createQueryBuilder()
+                .update(entity_1.Store)
+                .set({ activated: 1 })
+                .where("store.system = 0")
+                .andWhere("store.file_name IN (:...names)", { names: fileNames })
+                //.getQuery();
+                .execute();
         });
     },
     fetchCollectionItems(collectionId) {
@@ -200,32 +289,38 @@ exports.StoreRepository = {
             if (item.version && item.version !== '') {
                 data.version = item.version;
             }
-            return yield this.createQueryBuilder().insert().into(entity_1.Store).values(data).execute();
+            //@todo Log errors in log table.
+            return yield this.createQueryBuilder().insert().into(entity_1.Store).values(data).execute().catch((err) => console.log('insert-error', err));
         });
     },
     fetchSystemStats() {
         return __awaiter(this, void 0, void 0, function* () {
-            let rowCount = yield this.createQueryBuilder()
+            const rowCount = yield this.createQueryBuilder()
                 .select("COUNT(*)", "total")
                 .getRawOne();
-            let activatedCount = yield this.createQueryBuilder()
+            const activatedCount = yield this.createQueryBuilder()
                 .select("COUNT(*)", "total")
                 .where("store.activated = 1")
+                .andWhere("store.system = 0")
                 .getRawOne();
-            let favoriteCount = yield this.createQueryBuilder()
+            const favoriteCount = yield this.createQueryBuilder()
                 .select("COUNT(*)", "total")
                 .where("store.favorite = 1")
                 .getRawOne();
-            let systemCount = yield this.createQueryBuilder()
+            const systemCount = yield this.createQueryBuilder()
                 .select("COUNT(*)", "total")
                 .where("store.system = 1")
                 .getRawOne();
-            let temporaryCount = yield this.createQueryBuilder()
+            const temporaryCount = yield this.createQueryBuilder()
                 .select("COUNT(*)", "total")
                 .where("store.temporary = 1")
                 .getRawOne();
             return {
-                rowCount, activatedCount, favoriteCount, systemCount, temporaryCount
+                rowCount: rowCount.total,
+                activatedCount: activatedCount.total,
+                favoriteCount: favoriteCount.total,
+                systemCount: systemCount.total,
+                temporaryCount: temporaryCount.total
             };
         });
     }

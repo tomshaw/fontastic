@@ -1,0 +1,41 @@
+<app-modal id="collection-create" title="Create Collection" size="sm" rounded="rounded-md" [showHeader]="false" [showFooter]="false">
+
+  <div class="page">
+
+    <div class="page__header border-bottom">
+      <div class="page__header-title">
+        <h1>Create Collection</h1>
+      </div>
+    </div>
+
+    <form class="form" (ngSubmit)="onSubmit(collectionForm)" #collectionForm="ngForm">
+
+      <div class="page__body">
+        <div class="form-group">
+          <label for="title">Collection title</label>
+          <input type="text" class="form-control" name="title" id="title" [(ngModel)]="result.title" #title="ngModel" placeholder="Folder Title" required>
+          <span class="form-text text-muted" [hidden]="title.errors && (title.dirty || title.touched)">A unique title to identify the folder.</span>
+          <span class="form-text errors" *ngIf="title.invalid && (title.dirty || title.touched)">A folder is required.</span>
+        </div>
+        <div class="form-group" *ngIf="options.length">
+          <label for="parentId">Parent collection</label>
+          <select class="form-control" name="parentId" id="parentId" [(ngModel)]="result.parentId" #parentId="ngModel" required>
+            <option *ngFor="let option of options;" [value]="option.parentId">{{option.name}}</option>
+          </select>
+          <span class="form-text text-muted" [hidden]="parentId.errors && (parentId.dirty || parentId.touched)">A unique title to identify the folder.</span>
+          <span class="form-text errors" *ngIf="parentId.invalid && (parentId.dirty || parentId.touched)">A folder is required.</span>
+        </div>
+      </div>
+
+      <div class="page__footer border-top">
+        <div class="flex items-center justify-end w-full">
+          <button type="button" class="app-button app-button__info app-button__lg mr-2" (click)="modalService.close();">Close</button>
+          <button type="submit" class="app-button app-button__success app-button__xl" [attr.disabled]="collectionForm.valid ? null : true">Submit</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+</app-modal>

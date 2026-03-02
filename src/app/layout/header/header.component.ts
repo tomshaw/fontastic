@@ -1,41 +1,55 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService, PresentationService, DatabaseService } from '@app/core/services';
-
-import { AuthService, GravatarService } from '@app/core/services';
-
-import { AuthUser } from '@app/core/interface';
+import { AlertService, AuthService, ConfigService, DatabaseService, GravatarService, MessageService, ModalService, PresentationService, UtilsService } from '@app/core/services';
+import { AuthUser } from '@main/types';
+import { StorageType } from '@main/enums';
+import { Collection } from '@main/database/entity';
 
 @Component({
-  standalone: false,
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
 
-  currentUser!: AuthUser;
-  gravatarUrl!: String;
+  collectionId: number;
+  currentUser: AuthUser;
+  gravatarUrl: string;
 
-  gridEnabled: boolean = true;
-  toolbarEnabled: boolean = true;
-  previewEnabled: boolean = true;
-  inspectEnabled: boolean = true;
-  navigationEnabled: boolean = true;
-  asideEnabled: boolean = true;
+  gridEnabled = true;
+  toolbarEnabled = true;
+  previewEnabled = true;
+  inspectEnabled = true;
+  navigationEnabled = true;
+  asideEnabled = true;
 
   constructor(
     private router: Router,
+    private utils: UtilsService,
+    private alertService: AlertService,
     private authService: AuthService,
+    private configService: ConfigService,
     private messageService: MessageService,
+    private modalService: ModalService,
     private databaseService: DatabaseService,
     private presentationService: PresentationService,
     private gravatar: GravatarService
-  ) {
-    this.authService.watchAuthUser$.subscribe((x: AuthUser | null) => {
-      if (x && x.email) {
-        this.currentUser = x;
-        this.gravatarUrl = this.gravatar.url(x.email, 128, 'mm');
+  ) { }
+
+  ngOnInit() {
+    this.databaseService.watchCollectionResultSet$.subscribe((results: Collection[]) => {
+      if (results) {
+        const collectionId = this.databaseService.getCollectionId();
+        if (collectionId) {
+          const hasChildren = results.some(x => x.parent_id === collectionId);
+          this.collectionId = (hasChildren) ? 0 : collectionId;
+        }
+      }
+    });
+    this.authService.watchAuthUser$.subscribe((result: AuthUser) => {
+      if (result?.email) {
+        this.currentUser = result;
+        this.gravatarUrl = this.gravatar.url(result.email, 128, 'mm');
       }
     });
     this.presentationService._asideEnabled.subscribe((result) => {
@@ -59,61 +73,136 @@ export class HeaderComponent implements OnInit {
     this.presentationService._defaultTheme.subscribe((result) => this.enableTheme(result));
   }
 
-  ngOnInit() { }
+  handleAddFonts(event: Event, collectionId: number): void {
+    event.stopPropagation();
 
-  handleCreateCollection(e: any): void {
-    this.messageService.createCollection(0).subscribe(result => {
-      this.databaseService.setCollection(result);
+    const config = this.configService.get(StorageType.Options);
+    const importType = (config?.import?.type) ? config.import.type : 'ask';
+
+    let settings = {
+      type: 'question',
+      buttons: ['Cancel', 'Select files', 'Select folders'],
+      defaultId: 2,
+      title: 'Select Fonts',
+      message: 'Do you want to select files or folders?'
+    };
+
+    if (importType === 'ask') {
+      settings = {
+        ...settings,
+        ...{
+          checkboxLabel: 'Add fonts to catalog.',
+          checkboxChecked: true
+        }
+      };
+    }
+
+    this.messageService.showMessageBox(settings).then((response: object | any) => {
+      if (response?.response > 0) {
+        const isFiles = (response.response === 1) ? true : false;
+        const options = (isFiles) ? { properties: ['openFile', 'multiSelections'] } : { properties: ['openDirectory', 'multiSelections'] };
+        this.messageService.showOpenDialog(options).then((dialog: object | any) => {
+          if (dialog.filePaths.length) {
+            const addToCatalog = (importType === 'ask') ? response.checkboxChecked : (importType === 'catalog') ? true : false;
+            if (isFiles) {
+              this.openFiles(collectionId, { files: dialog.filePaths, addToCatalog });
+            } else {
+              this.openFolders(collectionId, { folders: dialog.filePaths, addToCatalog });
+            }
+          }
+        });
+      }
     });
   }
 
-  handleLogout(e: any) {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  openFiles(collectionId: number, options: any): void {
+    this.presentationService.setLoadingSpinner(true);
+    this.alertService.info('Adding fonts please wait..', 1e3, true);
+    this.messageService.scanFiles({ ...options, collectionId }).then(this.utils.delay(1e3)).then(() => {
+      this.messageService.collectionUpdateCount(collectionId).then((result: Collection[]) => this.databaseService.setCollectionResultSet(result));
+      this.presentationService.setLoadingSpinner(false);
+      this.alertService.dismiss();
+      this.messageService.log(`Added fonts to collection id #${collectionId}.`, 1);
+
+      this.messageService.collectionEnable(collectionId, { enabled: true }).then((results: Collection[]) => {
+        this.databaseService.resetPage(1);
+        this.databaseService.setCollectionId(collectionId);
+        this.databaseService.setCollectionResultSet(results);
+      });
+
+    });
   }
 
-  handleToggleAside(e: any) {
+  openFolders(collectionId: number, options: any): void {
+    this.presentationService.setLoadingSpinner(true);
+    this.alertService.info('Adding fonts please wait..', 1e3, true);
+    this.messageService.scanFolders({ ...options, collectionId }).then(this.utils.delay(1e3)).then(() => {
+      this.messageService.collectionUpdateCount(collectionId).then((result: Collection[]) => this.databaseService.setCollectionResultSet(result));
+      this.presentationService.setLoadingSpinner(false);
+      this.alertService.dismiss();
+      this.messageService.log(`Added folders to collection id #${collectionId}.`, 1);
+
+      this.messageService.collectionEnable(collectionId, { enabled: true }).then((results: Collection[]) => {
+        this.databaseService.resetPage(1);
+        this.databaseService.setCollectionId(collectionId);
+        this.databaseService.setCollectionResultSet(results);
+      });
+
+    });
+  }
+
+  handleCreateCollection(_event: Event): void {
+    this.modalService.open('collection-create');
+  }
+
+  handleLogout(_event: Event): void {
+    this.authService.logout();
+    this.router.navigate(['/settings']);
+  }
+
+  handleToggleAside(_event: Event): void {
     this.presentationService.setAsideEnabled(!this.asideEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleNavigation(e: any) {
+  handleToggleNavigation(_event: Event): void {
     this.presentationService.setNavigationEnabled(!this.navigationEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleTogglePreview(e: any) {
+  handleTogglePreview(_event: Event): void {
     this.presentationService.setPreviewEnabled(!this.previewEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleInspect(e: any) {
+  handleToggleInspect(_event: Event): void {
     this.presentationService.setInspectEnabled(!this.inspectEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleToolbar(e: any) {
+  handleToggleToolbar(_event: Event): void {
     this.presentationService.setToolbarEnabled(!this.toolbarEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  handleToggleGrid(e: any) {
+  handleToggleGrid(_event: Event): void {
     this.presentationService.setGridEnabled(!this.gridEnabled);
     this.presentationService.saveLayoutSettings();
   }
 
-  enableTheme(theme: string) {
-    const body = document.querySelector('body')!;
-    let themes = this.presentationService.getThemes();
+  enableTheme(theme: string): void {
+    const body = document.querySelector('body');
+    const themes = this.presentationService.getThemes();
     if (themes.map(item => item.key).includes(theme)) {
       body.setAttribute('data-theme', theme);
     }
   }
 
-  handleSwitchTheme(e: any) {
-    const body = document.querySelector('body')!;
-    let attr = body.getAttribute('data-theme') as string;
-    let themes = this.presentationService.getThemes();
+  handleSwitchTheme(_event: Event): void {
+    const body = document.querySelector('body') as HTMLBodyElement;
+    const attr = body.getAttribute('data-theme');
+    const themes = this.presentationService.getThemes();
+
     let idx = themes.map(item => item.key).indexOf(attr);
 
     if (idx < themes.length - 1) {
@@ -123,13 +212,18 @@ export class HeaderComponent implements OnInit {
     }
 
     if (themes[idx]) {
-      const theme = themes[idx].key;
+      const theme: string = themes[idx].key;
       body.setAttribute('data-theme', theme);
       this.presentationService.setTheme(theme);
-      this.presentationService.setThemeDefaults(theme);
-      this.messageService.log(`Switched theme to ${theme}.`, 1);
+      this.presentationService.setThemeVars(theme);
     }
   }
 
-  onSubmit(data: any) { }
+  handleToggleSearch(_event: Event): void {
+    this.presentationService._asideComponent.next('search');
+  }
+
+  handleLoadSettings(): void {
+    this.modalService.open('system-settings');
+  }
 }

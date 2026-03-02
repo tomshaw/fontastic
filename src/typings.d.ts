@@ -7,5 +7,3 @@ interface Window {
   process: any;
   require: any;
 }
-
-declare module 'opentype.js';

@@ -1,32 +1,24 @@
-$midnightBackground: #000000;
-$midnightTextColor: #dddddd; // 999999/dddddd
-$midnightBorderColor: #1a1a1a;
-
 body[data-theme="midnight"] {
-  background-color: $midnightBackground;
-  color: $midnightTextColor;
+  background-color: var(--background-color);
+  color: var(--font-color);
 }
 
 [data-theme="midnight"] {
 
-  a {
-    color: $midnightTextColor;
-    &:hover,
-    &:active {
-      color: $midnightTextColor;
-    }
+  .hover-scrollbox-x,
+  .hover-scrollbox-y {
+    --scrollbar-color: #fff;
+    --scrollbar-hover-color: rgba(255, 255, 255, 0.507);
+    --scrollbar-space: 0.1rem;
+    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
+    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
   }
 
-  .radio,
-  .checkbox {
-    label {
-      border: 1px solid #FFF !important;
-    }
-    input:checked ~ label::before {
-      background-color: #777 !important;
-    }  
-    input:checked ~ span {
-      color: #777 !important;
+  a {
+    color: var(--font-color);
+    &:hover,
+    &:active {
+      color: var(--font-color);
     }
   }
 
@@ -44,7 +36,7 @@ body[data-theme="midnight"] {
   }
 
   .enabled {
-    color: $midnightTextColor;
+    color: var(--font-color);
   }
 
   .selected {
@@ -52,14 +44,49 @@ body[data-theme="midnight"] {
   }
 
   .material-icons {
-    color: $midnightTextColor;
+    color: var(--font-color);
   }
 
-  input.input--title {
-    color: $midnightTextColor !important;
-    &:focus {
-      color: $midnightTextColor !important;
+  .material-icons-rounded {
+    .material-icons {
+      &:hover {
+        @apply text-[#bdbdbd] bg-[#111111];
+      }
     }
+  }
+
+  /* ==========================================================================
+  App Button
+  ========================================================================== */
+
+  .app-btn {
+    @apply bg-[#121212];
+    span {
+      @apply text-[#fff];
+    }
+    &:hover {
+      @apply bg-[#1a1a1a];
+    }
+  }
+
+  input:not(.form-control-hidden):not([type="range"]),
+  select:not(.form-control-hidden) {
+    border: 1px solid #ffffff;
+  }
+
+  .radio label,
+  .checkbox label {
+    border: 2px solid var(--font-color);
+  }
+  
+  .radio :checked ~ label::before,
+  .checkbox :checked ~ label::before {
+    background-color: var(--font-color);
+  }
+  
+  .radio :checked ~ span,
+  .checkbox :checked ~ span {
+    color: var(--font-color);
   }
 
   // Toolbar text.
@@ -71,159 +98,186 @@ body[data-theme="midnight"] {
   .input-preview.quick-text button span.material-icons,
   .input-preview.latest-news button span.material-icons,
   .input-preview.preview-casing button span.material-icons,
-  .input-preview.preview-reset button span.material-icons,
-  .input-preview.preview-waterfall button span.material-icons {
-    color: $midnightTextColor !important;
+  .input-preview.preview-reset button span.material-icons {
+    color: var(--font-color) !important;
   }
 
   .input-preview.preview-size {
     input {
       color: red !important;
     }
+  }
 
-    input[type="range"]::-webkit-slider-runnable-track {
-      background: $midnightTextColor;
-    }
+  input[type="range"] {
+    background: #000;
+  }
 
-    input[type="range"]::-webkit-slider-thumb {
-      background: $midnightTextColor !important;
-      border: 3px solid #1a1a1a !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: #474747;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    background: #fff;
+    border: 3px solid #2e2e2e;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   .paginator {
-    input {
-      //color: #333;
-      //background-color: #fff;
-      border: 1px solid $midnightBorderColor;
+    a {
+      background-color: #0a0a0a;
+      i.material-icons {
+        @apply text-white;
+      }
     }
   }
 
   .border-top {
-    border-top: 1px solid $midnightBorderColor !important;
+    border-top: 1px solid var(--border-color) !important;
   }
 
   .border-right {
-    border-right: 1px solid $midnightBorderColor !important;
+    border-right: 1px solid var(--border-color) !important;
   }
 
   .border-bottom {
-    border-bottom: 1px solid $midnightBorderColor !important;
+    border-bottom: 1px solid var(--border-color) !important;
   }
 
   .border-left {
-    border-left: 1px solid $midnightBorderColor !important;
+    border-left: 1px solid var(--border-color) !important;
   }
 
   .border-top-dashed {
-    border-top: 1px dashed $midnightBorderColor !important;
+    border-top: 1px dashed var(--border-color) !important;
   }
 
   .border-right-dashed {
-    border-right: 1px dashed $midnightBorderColor !important;
+    border-right: 1px dashed var(--border-color) !important;
   }
 
   .border-bottom-dashed {
-    border-bottom: 1px dashed $midnightBorderColor !important;
+    border-bottom: 1px dashed var(--border-color) !important;
   }
 
   .border-left-dashed {
-    border-left: 1px dashed $midnightBorderColor !important;
+    border-left: 1px dashed var(--border-color) !important;
+  }
+
+  details {
+    >summary {
+      color: #fff;
+    }
+    >details {
+      &::after {
+        background-color: #fff;
+      }
+      &::before {
+        background-color: #fff;
+      }
+    }
+    ul {
+      li {
+        &::after {
+          background-color: #fff;
+        }
+        &::before {
+          background-color: #fff;
+        }
+        span {
+          color: #fff;
+        }
+        span:last-child {
+          color: #8b8b8b;
+        }
+      }
+    }
   }
 
   .table {
-    color: $midnightTextColor !important;
-  }
-
-  .table td,
-  .table th {
-    border-top: none !important;
-  }
-
-  .table tbody tr:nth-child(odd) {
-    background-color: #080808;
-  }
-
-  .table > thead > tr > th {
-    background-color: $midnightBackground;
-    border-right: 1px solid $midnightBorderColor;
-  }
-
-  .table > thead > tr > th,
-  .table > thead > tr > th > div,
-  .table > thead > tr > th > div > span {
-    color: $midnightTextColor;
-  }
-
-  .block {
-    background-color: rgb(10, 10, 10);
-    box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.06);
-    .block__head {
-      border-bottom: 1px solid $midnightBorderColor;
+    color: var(--font-color);
+    thead > tr {
+      background-color: var(--background-color);
     }
-    .block__foot {
-      border-top: 1px solid $midnightBorderColor;
+    &.striped > tbody > tr:nth-child(odd) {
+      @apply bg-midnight;
     }
-    .form-group {
-      .text-muted {
-        color: $color-text-disabled !important;
-      }
-      .text-error {
-        color: #e04646 !important;
-      }
+    .material-icons {
+      color: var(--font-color);
     }
-    .form-control {
-      color: #fff;
-      background-color: $midnightBackground;
-      border: 1px solid $midnightBorderColor;
+    [class^="icon-"] {
+      color: var(--font-color);
     }
+  }
+
+  .form-control {
+    color: #fff;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
     .input-group-checkbox {
       background-color: #151515;
     }
   }
 
-  .glyph-list {
-    .glyph-item {
-      background-color: $midnightBackground !important;
-      border: solid 1px $midnightBorderColor !important;
-      margin: 0 !important;
-      //margin-bottom: 0 !important;
-      &:hover {
-        background-color: #111111 !important;
-      }
-    }
-  }
-
-  .tabs {
-    li {
-      border-right: 1px solid $midnightBorderColor !important;
-      border-bottom: 1px solid $midnightBorderColor !important;
-    }
-  }
-
   fieldset {
-    border: 1px solid $midnightBorderColor;
+    border: 1px solid var(--border-color);
     legend {
-      color: $midnightTextColor;
+      color: var(--font-color);
     }
-    .form-group {
-      span {
-        color: $midnightTextColor;
+    dt {
+      label {
+        color: var(--font-color);
       }
     }
     dd {
-      border-left: 1px solid #fff;
+      border-left: 1px solid var(--font-color);
     }
     dl:hover dt,
     dl:hover dd {
-      border-color: #777;
+      border-color: #c10156;
     }
     dl:hover dt label {
-      color: $midnightTextColor;
+      color: var(--font-color);
     }
     dl dd label:hover {
-      color: $midnightTextColor;
+      color: var(--font-color);
+    }
+  }
+
+  .glyph-list {
+    &__wrapper-item {
+      @apply bg-black border-2 border-[#0a0a0a];
+      &:hover {
+        @apply bg-[#111111];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  Typescale
+  ========================================================================== */
+
+  .typescale {
+    &__label {
+      @apply bg-[#0a0a0a];
+    }
+    &__label-text {
+      @apply text-white;
+    }
+    &__wrapper {
+      @apply bg-black;
+      &.active {
+        @apply bg-[#0a0a0a];
+      }
+    }
+  }
+
+  /* ==========================================================================
+  Modal
+  ========================================================================== */
+
+  .modal {
+    &__content {
+      @apply bg-midnight;
     }
   }
 }

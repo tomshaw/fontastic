@@ -1,0 +1,52 @@
+.modal {
+    @apply flex items-center justify-center fixed inset-0 z-20 overflow-hidden outline-none;
+
+    &__dialog {
+        @apply relative w-full h-full p-4;
+        width: 600px;
+        margin: 0px auto;
+        &.sm {
+            width: 600px;
+            height: auto;
+        }
+        &.md {
+            width: 900px;
+            height: auto;
+        }
+        &.lg {
+            width: 1440px;
+        }
+        &.xl {
+            width: 1680px;
+        }
+        &.full {
+            width: 100vw;
+        }
+    }
+
+    &__content {
+        @apply flex flex-col relative bg-white h-full;
+        &.rounded-md {
+            border-radius: 0.475rem;
+        }
+    }
+
+    &__header {
+        @apply flex items-center justify-between p-4;
+        &-title {
+            @apply text-lg font-semibold tracking-wide leading-4;
+        }
+    }
+
+    &__body {
+        @apply relative h-full overflow-hidden;
+    }
+
+    &__footer {
+        @apply text-right p-4;
+    }
+}
+
+.modal-bg {
+    @apply fixed inset-0 z-10 bg-black opacity-30;
+}

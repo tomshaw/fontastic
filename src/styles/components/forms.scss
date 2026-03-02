@@ -1,0 +1,96 @@
+/* ==========================================================================
+Form Control
+========================================================================== */
+
+.form-control {
+    @apply select-none outline-0 focus:outline-none focus:ring-0;
+
+    &.form-control-reset {
+        height: 26px;
+        line-height: 1;
+        font-size: 14px;
+    }
+
+    &.form-control-hidden {
+        //@apply text-default;
+        border: none !important;
+        background-color: inherit;
+        padding: 2px 0px;
+        width: 100%;
+        // &:focus {
+        //     @apply text-default;
+        // }
+    }
+}
+
+/* ==========================================================================
+Form Group
+========================================================================== */
+
+.form-group {
+    @apply flex flex-col justify-start w-full mt-1 mb-7;
+
+    label {
+        @apply text-base font-medium inline-block mb-2;
+    }
+
+    .form-text {
+        @apply block text-base mt-2;
+    }
+}
+
+.form__actions {
+    @apply p-5;
+}
+
+/* ==========================================================================
+Fieldset
+========================================================================== */
+
+fieldset {
+    @apply relative normal-case m-7 p-7 rounded border border-[#eaeaea];
+
+    legend {
+        @apply relative text-lg text-[#00a0be] font-semibold leading-none tracking-wider inline-block align-middle py-[2px] px-0 w-auto top-0;
+        span {
+            @apply px-1.5;
+        }
+    }
+
+    dl {
+        @apply overflow-hidden font-semibold mx-5 mb-3;
+    }
+
+    dt {
+        @apply text-left float-left border-none w-[45%] pt-1;
+
+        label {
+            @apply text-base text-[#00a0be];
+        }
+
+        span {
+            @apply block font-normal;
+        }
+    }
+
+    dd {
+        @apply border-l border-[#cccccc] align-top mt-0 mr-0 mb-0 ml-[45%] pt-0 pr-0 pb-0 pl-2;
+    }
+
+    dl:hover dt,
+    dl:hover dd {
+        @apply border-[#666666];
+    }
+
+    dl:hover dt label {
+        @apply text-[#00a0be];
+    }
+
+    dl dd label:hover {
+        @apply text-[#bc2a4d];
+    }
+
+    +fieldset {
+        @apply mt-14;
+    }
+}

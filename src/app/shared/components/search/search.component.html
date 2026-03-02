@@ -1,0 +1,54 @@
+<figure class="border-bottom">
+  <figcaption>
+    <span class="material-icons">arrow_drop_down</span>
+    <span class="grow whitespace-nowrap">Font Search</span>
+    <span class="flex items-center justify-end material-icons-rounded">
+      <span title="Collapse" class="material-icons" (click)="onComponentSwitch();">more_horiz</span>
+    </span>
+  </figcaption>
+</figure>
+
+<div class="hover-scrollbox-y overflow-x-hidden">
+
+  <form class="p-5" (ngSubmit)="onSubmit()" #form="ngForm">
+
+    <div class="form-group">
+      <label form="term">Search term</label>
+      <input type="text" class="form-control" [(ngModel)]="model.term" #term="ngModel" name="term" id="term" />
+      <span class="form-text text-muted">Please enter a search term.</span>
+    </div>
+
+    <div class="form-group">
+      <label for="mimes">Mime types</label>
+      <select class="form-control" [(ngModel)]="model.mimes" #mimes="ngModel" name="mimes" id="mimes" multiple>
+        <option *ngFor="let item of fontTypes;" [value]="item.type">{{item.name}}</option>
+      </select>
+      <span class="form-text text-muted">Please select mime type.</span>
+    </div>
+
+    <div class="form-group">
+      <label for="sort">Sort by</label>
+      <select class="form-control" [(ngModel)]="model.sort" #sort="ngModel" name="sort" id="sort">
+        <option *ngFor="let item of dbColumns; let i = index;" [value]="item.name">{{item.name}}</option>
+      </select>
+      <span class="form-text text-muted">Select column sort.</span>
+    </div>
+
+    <div class="form-group">
+      <label for="order">Order by</label>
+      <select class="form-control" [(ngModel)]="model.order" #order="ngModel" name="order" id="order">
+        <option *ngFor="let item of orderBy; let i = index;" [value]="item">{{item}}</option>
+      </select>
+      <span class="form-text text-muted">Select orer by.</span>
+    </div>
+
+    <div class="form__actions">
+      <app-button [type]="'submit'" [title]="'Submit'"
+        [ngClass]="'app-button__xl app-button__rounded'">Submit</app-button>
+      <app-button [type]="'reset'" [title]="'Submit'" [ngClass]="'app-button__xl app-button__rounded'"
+        (click)="onReset();">Reset</app-button>
+    </div>
+
+  </form>
+
+</div>

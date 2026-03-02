@@ -1,0 +1,53 @@
+<div class="component">
+  <div class="component__panel">
+
+    <div class="controls flex justify-between items-center border-top border-bottom">
+      <div class="controls__item flex justify-start items-center">
+        <div class="flex justify-start items-center">
+          <input type="text" class="form-control form-control-reset w-[40px] mr-2" [(ngModel)]="fontSize"
+            (change)="onUpdateFontSize($event)">
+          <select class="form-control form-control-reset mr-1" [(ngModel)]="fontScaleSelected"
+            (change)="onfontScaleSelect($event)">
+            <option *ngFor="let item of fontScaleOptions;" [value]="item.size">{{item.label}}</option>
+          </select>
+        </div>
+        
+        <span class="flex items-center justify-end ml-1 material-icons-rounded">
+          <span class="material-icons cursor-pointer" (click)="onHandleScaleSize(true)" title="Add high scale.">arrow_drop_up</span>
+        </span>
+
+        <span class="flex items-center justify-end ml-1 material-icons-rounded">
+          <span class="material-icons cursor-pointer" (click)="onHandleScaleSize(false)" title="Add low scale.">arrow_drop_down</span>
+        </span>
+
+        <span class="flex items-center justify-end ml-1 material-icons-rounded">
+          <span class="material-icons cursor-pointer" (click)="onHandleScaleReset()" title="Reset scale.">settings_backup_restore</span>
+        </span>
+        
+        <ng-container *ngIf="latestNews.length">
+          <span class="flex items-center justify-end ml-1 material-icons-rounded">
+            <span class="material-icons cursor-pointer" (click)="onRandomNewsArticle()" title="Refresh news article.">refresh</span>
+          </span>
+        </ng-container>
+
+      </div>
+      <div class="controls__item flex justify-end items-center material-icons-rounded">
+        <i class="material-icons" (click)="onComponentSwitch();">more_horiz</i>
+      </div>
+    </div>
+
+    <div class="hover-scrollbox-y hover-scrollbox-x h-full w-full">
+      <ng-container *ngFor="let item of typeScale; let i = index">
+        <div class="typescale flex items-stretch w-full" [class.active]="item.active">
+          <div class="typescale__label flex items-end min-w-[140px] px-5 py-5 whitespace-nowrap">
+            <span class="typescale__label-text">{{item.label}}</span>
+          </div>
+          <div class="typescale__wrapper relative flex items-center w-full px-5 whitespace-nowrap"
+            [class.active]="item.active">
+            <h1 class="leading-tight" [style.color]="fontColor" [style.font-family]="fontFamily"
+              [style.font-size]="item.size" [innerHtml]="displayText"></h1>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>

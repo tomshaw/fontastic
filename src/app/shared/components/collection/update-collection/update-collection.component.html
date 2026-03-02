@@ -1,0 +1,40 @@
+<app-modal id="collection-update" title="Update Collection" size="sm" rounded="rounded-md" [showHeader]="false" [showFooter]="false">
+  <div class="page">
+
+    <div class="page__header border-bottom">
+      <div class="page__header-title">
+        <h1>Update Collection</h1>
+      </div>
+      <div class="page__header-tools"></div>
+    </div>
+
+    <form class="form" (ngSubmit)="onSubmit(collectionForm)" #collectionForm="ngForm">
+
+      <div class="page__body">
+        <input type="hidden" name="id" id="id" [(ngModel)]="result.id" #id="ngModel" readonly>
+        <div class="form-group">
+          <label for="title">Collection title</label>
+          <input type="text" class="form-control" name="title" id="title" [(ngModel)]="result.title" #title="ngModel" placeholder="Folder Title" required>
+          <span class="form-text text-muted" [hidden]="title.errors && (title.dirty || title.touched)">A unique title to identify the folder.</span>
+          <span class="form-text errors" *ngIf="title.invalid && (title.dirty || title.touched)">A folder is required.</span>
+        </div>
+      </div>
+
+      <div class="page__footer border-top">
+        <div class="flex items-center justify-between w-full">
+          <div>
+            <ng-container *ngIf="!hasChildren">
+              <button type="button" class="app-button app-button__danger app-button__lg" (click)="handleDelete($event, result.id)">Delete</button>
+            </ng-container>
+          </div>
+          <div>
+            <button type="button" class="app-button app-button__info app-button__lg mr-2" (click)="modalService.close();">Close</button>
+            <button type="submit" class="app-button app-button__success app-button__xl" [attr.disabled]="collectionForm.valid ? null : true">Submit</button>  
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</app-modal>

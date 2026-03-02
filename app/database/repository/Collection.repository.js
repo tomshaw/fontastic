@@ -13,6 +13,29 @@ exports.CollectionRepository = void 0;
 const typeorm_1 = require("typeorm");
 const entity_1 = require("../entity");
 exports.CollectionRepository = {
+    fetchCollectionsWithCounts(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const db = this.createQueryBuilder("collection");
+            db.where("collection.is_system = 0");
+            db.leftJoinAndSelect("collection.stores", "store");
+            // db.leftJoin("collection.stores", "store")
+            db.loadRelationCountAndMap('store.storeCount', 'collection.stores'); // correct
+            db.loadRelationCountAndMap('store.installableCount', 'collection.stores', "store", (qb) => qb.andWhere("store.installable = :placeholder", {
+                placeholder: true,
+            }));
+            db.loadRelationCountAndMap('store.activatedCount', 'collection.stores', "store", (qb) => qb.andWhere("store.activated = :placeholder", {
+                placeholder: true,
+            }));
+            db.loadRelationCountAndMap('store.temporaryCount', 'collection.stores', "store", (qb) => qb.andWhere("store.temporary = :placeholder", {
+                placeholder: true,
+            }));
+            db.loadRelationCountAndMap('store.favoriteCount', 'collection.stores', "store", (qb) => qb.andWhere("store.favorite = :placeholder", {
+                placeholder: true,
+            }));
+            db.orderBy(`LOWER(collection.title)`, 'ASC');
+            return yield db.getMany();
+        });
+    },
     deleteCollection(collectionId) {
         return __awaiter(this, void 0, void 0, function* () {
             const row = yield this.findOne({ where: { id: collectionId } });
@@ -58,11 +81,20 @@ exports.CollectionRepository = {
             }));
         });
     },
-    updateCollection(options) {
+    updateCollection(collectionId, data) {
         return this.createQueryBuilder().update(entity_1.Collection)
-            .set(options)
-            .where("id = :id", { id: options.id })
+            .set(data)
+            .where("id = :id", { id: collectionId })
             .execute();
+    },
+    updateCollectionIds(ids, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.createQueryBuilder()
+                .update(entity_1.Collection)
+                .set(options)
+                .where("collection.id IN (:...ids)", { ids })
+                .execute();
+        });
     },
     resetEnabled() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -71,37 +103,37 @@ exports.CollectionRepository = {
                 .execute();
         });
     },
-    createCollection(parentId) {
+    createCollection(args) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (parentId) ? yield this.createChild(parentId) : yield this.createParent();
+            return (args === null || args === void 0 ? void 0 : args.parentId) ? yield this.createChild(args.parentId, args.title) : yield this.createParent(args.title);
         });
     },
-    fetchParents(range, target, entities) {
-        let conditionA = (target) ? (0, typeorm_1.MoreThanOrEqual)(range.right_id) : (0, typeorm_1.MoreThan)(range.right_id);
-        let conditionB = (target) ? (0, typeorm_1.LessThanOrEqual)(range.left_id) : (0, typeorm_1.LessThan)(range.left_id);
+    fetchParents(row, target, entities) {
+        let conditionA = (target) ? (0, typeorm_1.MoreThanOrEqual)(row.right_id) : (0, typeorm_1.MoreThan)(row.right_id);
+        let conditionB = (target) ? (0, typeorm_1.LessThanOrEqual)(row.left_id) : (0, typeorm_1.LessThan)(row.left_id);
         let columns = (entities) ? ["collection.*"] : ["collection.id", "id"];
         return this.createQueryBuilder()
             .select(columns)
             .where({ right_id: conditionA, left_id: conditionB })
             .getRawMany();
     },
-    fetchChildren(range, target, entities) {
-        let conditionA = (target) ? (0, typeorm_1.LessThanOrEqual)(range.right_id) : (0, typeorm_1.LessThan)(range.right_id);
-        let conditionB = (target) ? (0, typeorm_1.MoreThanOrEqual)(range.left_id) : (0, typeorm_1.MoreThan)(range.left_id);
+    fetchChildren(row, target, entities) {
+        let conditionA = (target) ? (0, typeorm_1.LessThanOrEqual)(row.right_id) : (0, typeorm_1.LessThan)(row.right_id);
+        let conditionB = (target) ? (0, typeorm_1.MoreThanOrEqual)(row.left_id) : (0, typeorm_1.MoreThan)(row.left_id);
         let columns = (entities) ? ["collection.*"] : ["collection.id", "id"];
         return this.createQueryBuilder()
             .select(columns)
             .where({ right_id: conditionA, left_id: conditionB })
             .getRawMany();
     },
-    createParent() {
+    createParent(title) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield this.createQueryBuilder()
                 .select("MAX(collection.right_id)", "right_id")
                 .addSelect("MAX(collection.orderby)", "orderby")
                 .getRawOne();
             return yield this.createQueryBuilder().insert().into(entity_1.Collection).values({
-                title: 'New Collection',
+                title: title,
                 parent_id: 0,
                 left_id: data.right_id + 1,
                 right_id: data.right_id + 2,
@@ -109,10 +141,9 @@ exports.CollectionRepository = {
             }).execute();
         });
     },
-    createChild(id) {
+    createChild(parentId, title) {
         return __awaiter(this, void 0, void 0, function* () {
-            //const row = await this.findOne({ id: id });
-            const row = yield this.findOne({ where: { id: id } });
+            const row = yield this.findOne({ where: { id: parentId } });
             this.createQueryBuilder().update(entity_1.Collection)
                 .set({ left_id: () => "left_id + 2", right_id: () => "right_id + 2" })
                 .where({ left_id: (0, typeorm_1.MoreThan)(row.right_id) })
@@ -122,11 +153,27 @@ exports.CollectionRepository = {
                 .where({ left_id: (0, typeorm_1.LessThanOrEqual)(row.left_id), right_id: (0, typeorm_1.MoreThanOrEqual)(row.left_id) })
                 .execute();
             return yield this.createQueryBuilder().insert().into(entity_1.Collection).values({
-                title: 'New Collection',
-                parent_id: id,
+                title: title,
+                parent_id: parentId,
                 left_id: row.right_id,
                 right_id: row.right_id + 1,
                 orderby: row.orderby + 1
+            }).execute();
+        });
+    },
+    createSystemCollection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.createQueryBuilder()
+                .select("MAX(collection.right_id)", "right_id")
+                .addSelect("MAX(collection.orderby)", "orderby")
+                .getRawOne();
+            return yield this.createQueryBuilder().insert().into(entity_1.Collection).values({
+                title: 'System Fonts',
+                parent_id: 0,
+                is_system: 1,
+                left_id: data.right_id + 1,
+                right_id: data.right_id + 2,
+                orderby: data.orderby + 1
             }).execute();
         });
     }

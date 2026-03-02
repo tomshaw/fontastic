@@ -13,7 +13,6 @@ exports.Logger = void 0;
 const typeorm_1 = require("typeorm");
 let Logger = class Logger {
 };
-exports.Logger = Logger;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -44,7 +43,8 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Logger.prototype, "updated", void 0);
-exports.Logger = Logger = __decorate([
+Logger = __decorate([
     (0, typeorm_1.Entity)()
 ], Logger);
+exports.Logger = Logger;
 //# sourceMappingURL=Logger.schema.js.map

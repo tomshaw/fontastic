@@ -13,21 +13,23 @@ const FontObject_1 = require("./FontObject");
 const fs = require("fs");
 const path = require("path");
 const mimes_1 = require("../config/mimes");
-const prettyBytes = require('pretty-bytes');
-const mime = require('mime');
+const prettyBytes = require("pretty-bytes");
+const mime = require("mime");
+// https://stackoverflow.com/questions/10049557/reading-all-files-in-a-directory-store-them-in-objects-and-send-the-object
 class FileSystem {
     constructor(connectionManager) {
         this.counter = 0;
         this.errors = [];
-        this.setConnectionManager(connectionManager);
+        this.found = [];
+        this.connectionManager = connectionManager;
         this.counter = 0;
         this.errors = [];
     }
-    setConnectionManager(connectionManager) {
-        this.connectionManager = connectionManager;
+    setCounter(count) {
+        this.counter = count;
     }
-    getConnectionManager() {
-        return this.connectionManager;
+    getCounter() {
+        return this.counter;
     }
     scanFolders(dir, options, done) {
         fs.readdir(dir, (err, list) => {
@@ -44,17 +46,7 @@ class FileSystem {
                         this.scanFolders(fp, options, (err, res) => next());
                     }
                     else {
-                        let font = new FontObject_1.default(fp);
-                        if (font.hasError()) {
-                            this.errors.push(font.getError());
-                        }
-                        else {
-                            let fileSize = stat.size;
-                            let fileType = mime.getType(fp);
-                            let data = Object.assign({ file_path: fp, file_name: file, file_size: fileSize, file_size_pretty: prettyBytes(fileSize), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options);
-                            this.getConnectionManager().getStoreRepository().create(Object.assign(Object.assign({}, data), font.getNamesTable()));
-                            this.counter++;
-                        }
+                        this.fontInstall(fp, stat, options);
                         next();
                     }
                 }));
@@ -62,24 +54,32 @@ class FileSystem {
             next();
         });
     }
-    scanFiles(dir, options, done) {
-        dir.forEach((fp) => __awaiter(this, void 0, void 0, function* () {
+    scanFiles(files, options, done) {
+        files.forEach((fp) => __awaiter(this, void 0, void 0, function* () {
             let stat = fs.statSync(fp);
             if (stat.isFile()) {
-                let font = new FontObject_1.default(fp);
-                if (font.hasError()) {
-                    this.errors.push(font.getError());
-                }
-                else {
-                    let fileSize = stat.size;
-                    let fileType = mime.getType(fp);
-                    let data = Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: fileSize, file_size_pretty: prettyBytes(fileSize), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options);
-                    this.getConnectionManager().getStoreRepository().create(Object.assign(Object.assign({}, data), font.getNamesTable()));
-                    this.counter++;
-                }
+                this.fontInstall(fp, stat, options);
             }
         }));
         return done(null, this);
+    }
+    fontInstall(fp, stat, options) {
+        let font = new FontObject_1.default(fp);
+        if (font.hasError()) {
+            this.errors.push(font.getError());
+        }
+        else {
+            let fileSize = stat.size;
+            let fileType = mime.getType(fp);
+            let data = Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: fileSize, file_size_pretty: prettyBytes(fileSize), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options);
+            try {
+                this.connectionManager.getStoreRepository().create(Object.assign(Object.assign({}, data), font.getNamesTable()));
+            }
+            catch (err) {
+                this.errors.push(err.message);
+            }
+            this.counter++;
+        }
     }
 }
 exports.default = FileSystem;

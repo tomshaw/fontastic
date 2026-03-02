@@ -8,8 +8,7 @@
 /release
 main.js
 src/**/*.js
-app/**/*.js
-app/**/*.js.map
+!src/karma.conf.js
 *.js.map
 
 # dependencies
@@ -41,11 +40,12 @@ npm-debug.log
 testem.log
 /typings
 
-# test results
-/test-results
+# catalog
+src/catalog/*
 
 # e2e
 /e2e/*.js
+!/e2e/protractor.conf.js
 /e2e/*.map
 /e2e/tracing
 /e2e/screenshots
@@ -53,3 +53,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Developer Notes
+developer.md

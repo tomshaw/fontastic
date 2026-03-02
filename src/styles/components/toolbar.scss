@@ -1,0 +1,130 @@
+/* ==========================================================================
+Toolbar
+========================================================================== */
+
+.input-preview {
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+
+    &:not(:last-of-type) {
+        margin: 0 10px 0 0;
+    }
+
+    white-space: nowrap;
+
+    @include loading-transition(0s, 1s);
+
+    label {
+        font-size: 12px;
+        margin: 0 10px;
+        display: none;
+    }
+}
+
+.input-preview.quick-text,
+.input-preview.preview-size,
+.input-preview.preview-range,
+.input-preview.preview-color,
+.input-preview.preview-reset,
+.input-preview.preview-casing,
+.input-preview.preview-spacing {
+
+    button {
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        outline: none;
+        margin: 0;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+
+        span {
+            color: #9b9af1;
+            vertical-align: middle;
+            line-height: 1;
+            width: 24px;
+            height: 24px;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+$inputColorWidth: 90px;
+
+.input-preview.preview-color {
+    input {
+        width: $inputColorWidth;
+        min-width: $inputColorWidth;
+        max-width: $inputColorWidth;
+    }
+}
+
+.input-preview.preview-text {
+    height: 24px;
+    width: 350px;
+
+    &.open {
+        transform: scale(1);
+        transition: all 0.5s cubic-bezier(0.87, -0.41, 0.19, 1.44);
+    }
+
+    select,
+    input {
+        background-color: #fff;
+        border: 1px solid $color-border;
+        border-radius: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 24px;
+        width: 0%;
+        margin: 0;
+        padding: 5px 10px 5px 6px;
+        outline: none;
+        box-shadow: none;
+        vertical-align: middle;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.5;
+        text-align: left;
+        transition: width 0.5s cubic-bezier(0.87, -0.41, 0.19, 1.44);
+    }
+
+    &.open select,
+    &.open input {
+        width: 100%;
+    }
+
+    button {
+        background-color: $color-blue;
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: none;
+        border-radius: 0;
+        outline: none;
+        height: 24px;
+
+        span {
+            color: $color-white;
+            vertical-align: middle;
+            position: relative;
+            top: 0px;
+            width: 26px;
+            height: 26px;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

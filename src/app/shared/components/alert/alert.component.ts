@@ -1,39 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '@app/core/services';
-import { AppAlert } from '@app/core/interface';
-
-const AlertProps = {
-  type: '',
-  message: '',
-  icon: '',
-  class: '',
-  keep: false,
-  timeout: 10e3 * 3
-}
+import { AppAlert } from '@main/types';
+import { AlertProps } from '@main/config/alert';
 
 @Component({
-  standalone: false,
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit {
 
-  public alert: AppAlert = AlertProps;
-  public alertEnabled: boolean = false;
+  alert: AppAlert = AlertProps;
+  alertEnabled = false;
 
   constructor(
     private alertService: AlertService,
   ) { }
 
   ngOnInit(): void {
-    this.alertService.getObservable().subscribe((x: AppAlert) => {
-      if (x && x.message) {
-        this.alert = x;
+    this.alertService.getObservable().subscribe((result: AppAlert) => {
+      if (result?.message) {
+        this.alert = result;
         this.alertEnabled = true;
-      } else {
+      } else if (this.alertEnabled) {
         this.alertEnabled = false;
         this.alert = AlertProps;
+        this.alertService.clear();
       }
     });
   }
@@ -42,5 +34,4 @@ export class AlertComponent implements OnInit {
     this.alertService.clear();
     this.alertEnabled = false;
   }
-
 }

@@ -19,7 +19,7 @@ jobs:
   build:
     strategy:
       matrix:
-        node-version: [16]
+        node-version: [18]
 
     # The type of runner that the job will run on
     runs-on: ubuntu-18.04
@@ -41,7 +41,7 @@ jobs:
           ${{ runner.os }}-
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
 

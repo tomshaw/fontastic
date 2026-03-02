@@ -1,21 +1,19 @@
-import { Directive, ElementRef, Input } from '@angular/core';
-
+import { Directive, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { GravatarService } from '@app/core/services';
 
 @Directive({
-  standalone: false,
   selector: '[gravatar]'
 })
-export class GravatarDirective {
+export class GravatarDirective implements OnInit, OnChanges {
+
+  @Input() email: string;
+  @Input() size: number;
+  @Input() fallback: string;
 
   constructor(
-    public elementRef: ElementRef, 
-    public _gravatar: GravatarService
-  ) {}
-
-  @Input('email') email!: string;
-  @Input('size') size!: number;
-  @Input('fallback') fallback!: string;
+    public elementRef: ElementRef,
+    public gravatarService: GravatarService
+  ) { }
 
   ngOnInit() {
     this.setSrcUrl();
@@ -26,6 +24,6 @@ export class GravatarDirective {
   }
 
   setSrcUrl() {
-    this.elementRef.nativeElement.src = this._gravatar.url(this.email, this.size, this.fallback);
+    this.elementRef.nativeElement.src = this.gravatarService.url(this.email, this.size, this.fallback);
   }
 }

@@ -5,7 +5,7 @@ interface Mime {
   installable: boolean
 }
 
-export const fontTypes: Mime[] = [
+export const fontMimeTypes: Mime[] = [
   {
     type: "font/ttf",
     name: "TrueType",
@@ -44,9 +44,9 @@ export const fontTypes: Mime[] = [
   }
 ];
 
-export const mimeTypes: string[] = fontTypes.map((item) => item.type);
+export const mimeTypes: string[] = fontMimeTypes.map((item) => item.type);
 
-export const installable: string[] = fontTypes.reduce((prev: string[], curr) => {
+export const installable: Mime[] = fontMimeTypes.reduce((prev, curr) => {
   if (curr.installable) {
     prev.push(curr.type);
   }

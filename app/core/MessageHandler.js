@@ -10,231 +10,262 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-const channel = require("../config/channel");
+const AppLogger_1 = require("./AppLogger");
+// import { Logger } from '../database/entity/Logger.schema';
+// import { Store, StoreManyAndCountType } from '../database/entity/Store.schema';
+const ChannelType_1 = require("../enums/ChannelType");
 class MessageHandler {
     constructor(systemManager, configManager, connectionManager, fontManager) {
-        this.setSystemManager(systemManager);
-        this.setConfigManager(configManager);
-        this.setConnectionManager(connectionManager);
-        this.setFontManager(fontManager);
-    }
-    setSystemManager(systemManager) {
         this.systemManager = systemManager;
-    }
-    getSystemManager() {
-        return this.systemManager;
-    }
-    setConfigManager(configManager) {
         this.configManager = configManager;
-    }
-    getConfigManager() {
-        return this.configManager;
-    }
-    setConnectionManager(connectionManager) {
         this.connectionManager = connectionManager;
-    }
-    getConnectionManager() {
-        return this.connectionManager;
-    }
-    setFontManager(fontManager) {
         this.fontManager = fontManager;
-    }
-    getFontManager() {
-        return this.fontManager;
     }
     on(channel, done) {
         return electron_1.ipcMain.on(channel, done);
     }
+    send(event, channel, data) {
+        return event.sender.send(channel, data);
+    }
+    handle(channel, done) {
+        return electron_1.ipcMain.handle(channel, done);
+    }
     initialize() {
-        // SYSTEM BOOT/RESET
-        this.on(channel.IPCMAIN_SYSTEM_BOOT, (event) => __awaiter(this, void 0, void 0, function* () {
-            let config = this.getConfigManager().get();
-            let system = this.getSystemManager().toArray();
-            event.returnValue = Object.assign(Object.assign({}, config), { system: system });
+        this.initSystemCollection();
+        this.on(ChannelType_1.ChannelType.IPC_REQUEST_SYSTEM_BOOT, (event, _args) => __awaiter(this, void 0, void 0, function* () {
+            let config = this.configManager.toArray();
+            let system = this.systemManager.toArray();
+            const response = Object.assign(Object.assign({}, config), { system: system });
+            this.send(event, ChannelType_1.ChannelType.IPC_RESPONSE_SYSTEM_BOOT, response);
         }));
-        this.on(channel.IPCMAIN_SYSTEM_RESET, (event) => __awaiter(this, void 0, void 0, function* () {
-            event.returnValue = true; // @todo
-        }));
-        // CONFIG MANAGER
-        this.on(channel.IPCMAIN_REQUEST_SET_CONFIG, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            this.getConfigManager().set(args.key, args.values);
-            event.sender.send(channel.IPCMAIN_RESPONSE_SET_CONFIG, args);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_GET_CONFIG, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            const saved = this.getConfigManager().get(args.key);
-            event.sender.send(channel.IPCMAIN_RESPONSE_SET_CONFIG, saved);
-        }));
-        // CONNECTION MANAGER
-        this.on(channel.IPCMAIN_REQUEST_SAVE_DBCONNECTION, (event, options) => __awaiter(this, void 0, void 0, function* () {
-            const connections = this.getConfigManager().get("database.connections");
-            if (options.name === "default") {
-                event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, connections);
+        this.on(ChannelType_1.ChannelType.IPC_SYSTEM_REBOOT, (_event, _args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.reLaunch(); }));
+        // Config Manager
+        this.handle(ChannelType_1.ChannelType.IPC_SET_CONFIG, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.configManager.set(args.key, args.values); }));
+        this.handle(ChannelType_1.ChannelType.IPC_GET_CONFIG, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.configManager.get(args.key); }));
+        this.handle(ChannelType_1.ChannelType.IPC_ZAP_CONFIG, (_event) => __awaiter(this, void 0, void 0, function* () { return this.configManager.clear(); }));
+        // Connection Manager
+        this.handle(ChannelType_1.ChannelType.IPC_DBCONNECTION_CREATE, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.configManager.createDbConnection(args); }));
+        this.handle(ChannelType_1.ChannelType.IPC_DBCONNECTION_ENABLE, (_event, args) => this.configManager.enableDbConnection(args));
+        this.handle(ChannelType_1.ChannelType.IPC_DBCONNECTION_DELETE, (_event, name) => __awaiter(this, void 0, void 0, function* () { return this.configManager.deleteDbConnection(name); }));
+        this.handle(ChannelType_1.ChannelType.IPC_DBCONNECTION_TEST, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            const options = this.connectionManager.dataSource.options;
+            if (options.database === args.database) {
+                return this.connectionManager.isInitialized()
+                    .then(() => this.sendMessage('success', 'Connection tested successfully'))
+                    .catch((err) => this.sendMessage('error', err.message));
             }
             else {
-                connections.push(options);
-                this.getConfigManager().set("database.connections", connections);
-                event.sender.send(channel.IPCMAIN_RESPONSE_SAVE_DBCONNECTION, this.getConfigManager().get("database.connections"));
+                return this.connectionManager.createDataSource(args)
+                    .then(() => this.sendMessage('success', 'Connection tested successfully'))
+                    .catch((err) => this.sendMessage('error', err.message));
             }
         }));
-        this.on(channel.IPCMAIN_REQUEST_DELETE_DBCONNECTION, (event, name) => __awaiter(this, void 0, void 0, function* () {
-            const connections = this.getConfigManager().get("database.connections");
-            if (name === "default") {
-                event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, connections);
+        this.handle(ChannelType_1.ChannelType.IPC_DATABASE_DROP, (_event) => __awaiter(this, void 0, void 0, function* () { return this.connectionManager.getDataSource().dropDatabase(); }));
+        // Font Manager
+        this.handle(ChannelType_1.ChannelType.IPC_EXEC_CMD, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.executeCommand(args).catch((err) => this.sendMessage('error', err.message)); }));
+        this.handle(ChannelType_1.ChannelType.IPC_AUTH_USER, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.systemAuthenticate(args); }));
+        this.handle(ChannelType_1.ChannelType.IPC_SCAN_FILES, (event, args) => __awaiter(this, void 0, void 0, function* () {
+            const promises = [];
+            const addToCatalog = () => __awaiter(this, void 0, void 0, function* () {
+                const dest = this.fontManager.getDestinationFolder();
+                yield this.fontManager.createCatalog(dest);
+                yield this.fontManager.copyFiles(args.files, dest);
+                const files = this.fontManager.getMapFilePaths(args.files, dest);
+                yield this.fontManager.scanFiles(files, { collection_id: args.collectionId });
+            });
+            const addInPlace = () => __awaiter(this, void 0, void 0, function* () {
+                yield this.fontManager.scanFiles(args.files, { collection_id: args.collectionId });
+            });
+            if (args.addToCatalog) {
+                promises.push(addToCatalog());
             }
             else {
-                for (var i in connections) {
-                    if (connections[i]["name"] == name) {
-                        connections.splice(i, 1);
+                promises.push(addInPlace());
+            }
+            return Promise.allSettled(promises);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_SCAN_FOLDERS, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            const promises = [];
+            args.folders.forEach((sourceFolder) => __awaiter(this, void 0, void 0, function* () {
+                const addToCatalog = () => __awaiter(this, void 0, void 0, function* () {
+                    const folders = this.fontManager.getSourceDestinationFolders(sourceFolder);
+                    yield this.fontManager.createCatalog(folders.dest);
+                    yield this.fontManager.copyFolders(folders.src, folders.dest);
+                    yield this.fontManager.scanFolders(folders.dest, { collection_id: args.collectionId });
+                });
+                const addInPlace = () => __awaiter(this, void 0, void 0, function* () {
+                    yield this.fontManager.scanFolders(sourceFolder, { collection_id: args.collectionId });
+                });
+                if (args.addToCatalog) {
+                    promises.push(addToCatalog());
+                }
+                else {
+                    promises.push(addInPlace());
+                }
+            }));
+            return Promise.allSettled(promises);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_ACTIVATE_FONT, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            this.fontManager.fontInstaller(args).catch((err) => this.sendMessage('error', err.message));
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_ACTIVATE_FOLDER, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            this.fontManager.folderInstaller(args).catch((err) => this.sendMessage('error', err.message));
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_FETCH_NEWS, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.fetchLatestNews(args); }));
+        this.handle(ChannelType_1.ChannelType.IPC_SHOW_MESSAGE_BOX, (_event, options) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.showMessageBox(options); }));
+        this.handle(ChannelType_1.ChannelType.IPC_SHOW_OPEN_DIALOG, (_event, options) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.showOpenDialog(options); }));
+        this.handle(ChannelType_1.ChannelType.IPC_OPEN_PATH, (_event, path) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.openPath(path); }));
+        this.handle(ChannelType_1.ChannelType.IPC_OPEN_FOLDER, (_event, fullPath) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.showItemInFolder(fullPath); }));
+        this.handle(ChannelType_1.ChannelType.IPC_OPEN_EXTERNAL, (_event, url) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.openExternal(url); }));
+        this.on(ChannelType_1.ChannelType.IPC_RELOAD_WINDOW, (_event) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.reLaunch(); }));
+        this.on(ChannelType_1.ChannelType.IPC_EXIT, (_event) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.exit(); }));
+        this.on(ChannelType_1.ChannelType.IPC_QUIT, (_event) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.quit(); }));
+        this.on(ChannelType_1.ChannelType.IPC_BEEP, (_event) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.beep(); }));
+        // Collection
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_FIND, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getCollection().find(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_FIND_ONE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getCollectionRepository().findOne(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_FIND_ONE_BY, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getCollectionRepository().findOneBy(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_FETCH, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.fetchCollectionsWithCounts(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_CREATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getCollectionRepository().createCollection(args);
+            return yield this.fetchCollectionsWithCounts(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_UPDATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getCollectionRepository().updateCollection(args.collectionId, args.data);
+            return yield this.fetchCollectionsWithCounts(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_DELETE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getCollectionRepository().deleteCollection(args.collectionId);
+            return yield this.fetchCollectionsWithCounts(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_UPDATE_IDS, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getCollectionRepository().updateCollectionIds(args.ids, args.data);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_ENABLE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getCollectionRepository().resetEnabled();
+            yield this.connectionManager.getCollectionRepository().updateCollection(args.collectionId, args.data);
+            return yield this.fetchCollectionsWithCounts(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_UPDATE_COUNT, (_event, collectionId) => __awaiter(this, void 0, void 0, function* () {
+            const { total } = yield this.connectionManager.getStoreRepository().fetchCollectionCount(collectionId);
+            yield this.connectionManager.getCollectionRepository().updateCollectionCount(collectionId, total);
+            return yield this.fetchCollectionsWithCounts({});
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_COLLECTION_UPDATE_COUNTS, (_event) => __awaiter(this, void 0, void 0, function* () {
+            const items = yield this.connectionManager.getStoreRepository().fetchCollectionsCount();
+            yield this.connectionManager.getCollectionRepository().updateCollectionCounts(items);
+            return yield this.fetchCollectionsWithCounts({});
+        }));
+        // Store
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_FIND, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getStore().find(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_FIND_ONE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getStoreRepository().findOne(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_FIND_ONE_BY, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getStoreRepository().findOneBy(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_FETCH, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            args.ids = [];
+            if (args.collectionId) {
+                const row = yield this.connectionManager.getCollectionRepository().findOneBy({ id: args.collectionId });
+                if (row) {
+                    const children = yield this.connectionManager.getCollectionRepository().fetchChildren(row, true, false);
+                    if (Array.isArray(children)) {
+                        args.ids = Object.keys(children).map(val => children[val].id);
                     }
                 }
-                this.getConfigManager().set("database.connections", connections);
-                event.sender.send(channel.IPCMAIN_RESPONSE_DELETE_DBCONNECTION, connections);
+            }
+            return yield this.connectionManager.getStoreRepository().fetch(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_SEARCH, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getStoreRepository().search(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_UPDATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getStoreRepository().update(args.id, args.data);
+            return yield this.connectionManager.getStoreRepository().findOne({ where: { id: args.id } });
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_SYNC_SYSTEM, (_event) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getStoreRepository().resetSystem();
+            const row = yield this.connectionManager.getCollectionRepository().findOneBy({ is_system: 1 });
+            if (row) {
+                const paths = this.systemManager.getPlatformFontPaths();
+                const promises = [];
+                paths.forEach((folder) => __awaiter(this, void 0, void 0, function* () {
+                    promises.push(this.fontManager.scanFolders(folder, { collection_id: row.id, system: 1 }).catch((err) => AppLogger_1.default.getInstance().error(err)));
+                }));
+                Promise.allSettled(promises).then(() => __awaiter(this, void 0, void 0, function* () {
+                    return yield this.connectionManager.getStoreRepository().fetchSystemStats();
+                }));
             }
         }));
-        this.on(channel.IPCMAIN_REQUEST_ENABLE_DBCONNECTION, (event, item) => {
-            this.getConfigManager().enableDbConnection(item);
-            event.returnValue = item;
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_SYNC_ACTIVATED, (_event) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getStoreRepository().resetActivated();
+            yield this.connectionManager.getStoreRepository().syncActivated();
+            return yield this.connectionManager.getStoreRepository().fetchSystemStats();
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_RESET_FAVORITES, (_event) => __awaiter(this, void 0, void 0, function* () {
+            yield this.connectionManager.getStoreRepository().resetFavorites();
+            return yield this.connectionManager.getStoreRepository().fetchSystemStats();
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_STORE_SYSTEM_STATS, (_event) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getStoreRepository().fetchSystemStats();
+        }));
+        // Logger
+        this.handle(ChannelType_1.ChannelType.IPC_LOGGER_FIND, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getLogger().find(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_LOGGER_FIND_ONE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getLoggerRepository().findOne(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_LOGGER_FIND_ONE_BY, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getLoggerRepository().findOneBy(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_LOGGER_CREATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getLoggerRepository().saveData(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_LOGGER_DELETE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getLogger().delete(args.id);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_LOGGER_TRUNCATE, (_event) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getLogger().clear();
+        }));
+    }
+    // Misc
+    sendMessage(type, message) {
+        return { type, message };
+    }
+    initSystemCollection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const row = yield this.connectionManager.getCollectionRepository().findOneBy({ is_system: 1 });
+            if (!row) {
+                return yield this.connectionManager.getCollectionRepository().createSystemCollection();
+            }
+            return true;
         });
-        this.on(channel.IPCMAIN_REQUEST_TEST_CONNECTION, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            let activeConnectionOptions = this.getConnectionManager().dataSource.options;
-            if (activeConnectionOptions.database === args.database) {
-                this.getConnectionManager().isInitialized().then(() => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "success", message: "Connection tested successfully" });
-                }).catch((err) => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
-                });
-            }
-            else {
-                this.getConnectionManager().createDataSourceWithOptions(args).then(() => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "success", message: "Connection tested successfully" });
-                }).catch((err) => {
-                    event.sender.send(channel.IPCMAIN_RESPONSE_TEST_CONNECTION, { type: "error", message: err.message });
-                });
-            }
-        }));
-        // FONT MANAGER
-        this.on(channel.IPCMAIN_REQUEST_EXECUTE_COMMAND, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getFontManager().executeCommand(args).then((response) => {
-                event.sender.send(channel.IPCMAIN_RESPONSE_EXECUTE_COMMAND, response);
-            }).catch((err) => event.sender.send(channel.IPCMAIN_RESPONSE_EXECUTE_COMMAND, err.message));
-        }));
-        this.on(channel.IPCMAIN_REQUEST_FILES_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().scanFiles(args.paths, { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-                event.sender.send(channel.IPCMAIN_RESPONSE_FILES_SCAN, find);
-            }));
-        }));
-        this.on(channel.IPCMAIN_REQUEST_FOLDERS_SCAN, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().scanFolders(args.paths[0], { collection_id: args.collectionId }, () => __awaiter(this, void 0, void 0, function* () {
-                let find = yield this.getConnectionManager().getStore().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-                event.sender.send(channel.IPCMAIN_RESPONSE_FOLDERS_SCAN, find);
-            }));
-        }));
-        this.on(channel.IPCMAIN_REQUEST_FONT_ACTIVATION, (event, args) => __awaiter(this, void 0, void 0, function* () { }));
-        this.on(channel.IPCMAIN_REQUEST_SHOW_MESSAGE_BOX, (event, options) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().showDialogBox(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_MESSAGE_BOX, response));
-        }));
-        this.on(channel.IPCMAIN_REQUEST_SHOW_OPEN_DIALOG, (event, options) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().showOpenDialog(options).then((response) => event.sender.send(channel.IPCMAIN_RESPONSE_SHOW_OPEN_DIALOG, response));
-        }));
-        this.on(channel.IPCMAIN_REQUEST_OPEN_PATH, (event, path) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().openPath(path);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_SHOW_ITEM_FOLDER, (event, fullPath) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().showItemInFolder(fullPath);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_OPEN_EXTERNAL, (event, url) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().openExternal(url);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_RELOAD_WINDOW, (event) => __awaiter(this, void 0, void 0, function* () {
-            this.getFontManager().reloadWindow();
-        }));
-        // COLLECTION
-        this.on(channel.IPCMAIN_REQUEST_FETCH_COLLECTIONS, (event, ...args) => __awaiter(this, void 0, void 0, function* () {
-            event.returnValue = yield this.getConnectionManager().getCollection().find(...args);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_CREATE_COLLECTION, (event, parentId) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getCollectionRepository().createCollection(parentId);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
-        }));
-        this.on(channel.IPCMAIN_REQUEST_DELETE_COLLECTION, (event, collectionId) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getCollectionRepository().deleteCollection(collectionId);
-            yield this.getConnectionManager().getStoreRepository().deleteCollection(collectionId);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
-        }));
-        this.on(channel.IPCMAIN_REQUEST_UPDATE_COLLECTION, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getCollectionRepository().updateCollection(args);
-            let find = yield this.getConnectionManager().getCollection().find();
-            event.sender.send(channel.IPCMAIN_RESPONSE_UPDATE_COLLECTION, find);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_RESET_ENABLED, (event) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getCollectionRepository().resetEnabled();
-            let find = yield this.getConnectionManager().getCollection().find();
-            event.sender.send(channel.IPCMAIN_RESPONSE_RESET_ENABLED, find);
-        }));
-        // STORE
-        this.on(channel.IPCMAIN_REQUEST_STORE_QUERY, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            let [results, total] = yield this.getConnectionManager().getStoreRepository().fetchStore(args);
-            event.sender.send(channel.IPCMAIN_RESPONSE_STORE_QUERY, [total, results]);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_FONT_INFORMATION, (event, storeId) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.getConnectionManager().getStoreRepository().findOne({ where: { id: storeId } });
-            event.sender.send(channel.IPCMAIN_RESPONSE_FONT_INFORMATION, result);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_UPDATE_STORE, (event, data) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getStoreRepository().updateStore(data);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
-        }));
-        this.on(channel.IPCMAIN_REQUEST_UPDATE_COUNT, (event, collectionId) => __awaiter(this, void 0, void 0, function* () {
-            const { total } = yield this.getConnectionManager().getStoreRepository().fetchCollectionCount(collectionId);
-            yield this.getConnectionManager().getCollectionRepository().updateCollectionCount(collectionId, total);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
-        }));
-        this.on(channel.IPCMAIN_REQUEST_UPDATE_COUNTS, (event) => __awaiter(this, void 0, void 0, function* () {
-            const items = yield this.getConnectionManager().getStoreRepository().fetchCollectionsCount();
-            yield this.getConnectionManager().getCollectionRepository().updateCollectionCounts(items);
-            event.returnValue = yield this.getConnectionManager().getCollection().find();
-        }));
-        this.on(channel.IPCMAIN_REQUEST_SYSTEM_FONTS, (event) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getStoreRepository().resetSystemFonts();
-            const path = this.getSystemManager().getSystemFontsPath();
-            this.getFontManager().scanFolders(path, { collection_id: 0, system: 1 }, () => __awaiter(this, void 0, void 0, function* () {
-                const results = yield this.getConnectionManager().getStoreRepository().fetchSystemStats();
-                event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_FONTS, results);
-            }));
-        }));
-        this.on(channel.IPCMAIN_REQUEST_ACTIVATED_FONTS, (event) => __awaiter(this, void 0, void 0, function* () {
-            let results = yield this.getConnectionManager().getStore().createQueryBuilder().where("store.activated = 1").getMany();
-            event.sender.send(channel.IPCMAIN_RESPONSE_ACTIVATED_FONTS, results);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_RESET_FAVORITES, (event) => __awaiter(this, void 0, void 0, function* () {
-            const results = yield this.getConnectionManager().getStoreRepository().resetFavorites();
-            event.sender.send(channel.IPCMAIN_RESPONSE_RESET_FAVORITES, results);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_RESET_ACTIVATED, (event) => __awaiter(this, void 0, void 0, function* () {
-            const results = yield this.getConnectionManager().getStoreRepository().resetActivated();
-            event.sender.send(channel.IPCMAIN_REQUEST_RESET_ACTIVATED, results);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_SYSTEM_STATS, (event) => __awaiter(this, void 0, void 0, function* () {
-            const results = yield this.getConnectionManager().getStoreRepository().fetchSystemStats();
-            event.sender.send(channel.IPCMAIN_RESPONSE_SYSTEM_STATS, results);
-        }));
-        // LOGGER 
-        this.on(channel.IPCMAIN_REQUEST_LOGGER_CREATE, (event, data) => __awaiter(this, void 0, void 0, function* () {
-            event.returnValue = yield this.getConnectionManager().getLoggerRepository().log(data);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_LOGGER_QUERY, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            let find = yield this.getConnectionManager().getLogger().find({ order: { id: "DESC" }, skip: 0, take: 100 });
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_QUERY, find);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_LOGGER_DELETE_ITEM, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getLogger().delete(args.id);
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_DELETE_ITEM, args);
-        }));
-        this.on(channel.IPCMAIN_REQUEST_LOGGER_TRUNCATE, (event, args) => __awaiter(this, void 0, void 0, function* () {
-            yield this.getConnectionManager().getLogger().clear();
-            event.sender.send(channel.IPCMAIN_RESPONSE_LOGGER_TRUNCATE, args);
-        }));
+    }
+    fetchCollectionsWithRelations() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getCollection().find({
+                relations: {
+                    stores: true,
+                },
+            }).catch((err) => AppLogger_1.default.getInstance().info(err.message));
+        });
+    }
+    fetchCollectionsWithCounts(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getCollectionRepository().fetchCollectionsWithCounts(args);
+        });
     }
 }
 exports.default = MessageHandler;

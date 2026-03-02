@@ -8,17 +8,13 @@
     ]
   },
   "files": [
-    "main.ts"
+    "main.ts",
+    "polyfills.ts"
   ],
   "include": [
-    "**/*.ts",
     "**/*.d.ts"
   ],
   "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "**/vitest.d.ts",
-    "**/vitest.config.*",
-    "**/test-setup.ts"
+    "**/*.spec.ts"
   ]
 }

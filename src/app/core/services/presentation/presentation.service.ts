@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
 import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
-
-import { AppThemes } from '@main/config/themes';
-import { SystemTheme } from '@app/core/interface';
+import { AppThemes, ThemeColors } from '@main/config/themes';
+import { SystemTheme, LayoutPanelType, LayoutPreviewType, LayoutThemeType } from '@main/types';
+import { StorageType } from '@main/enums';
 
 export class ScrollToOptions {
-  id!: string;
-  type!: string;
+  id: string;
+  type: string;
 }
 
 @Injectable({
@@ -19,62 +18,72 @@ export class ScrollToOptions {
 export class PresentationService {
 
   quickText: any[] = [{
-    author: "Letters",
-    quote: "The quick brown fox jumped over the lazy dog."
+    title: 'default',
+    text: 'The quick brown fox jumped over the lazy dog.'
   }, {
-    author: "Alphabet",
-    quote: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    title: 'All Caps',
+    text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   }, {
-    author: "Alphabet",
-    quote: "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+    title: 'Alternating Caps',
+    text: 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'
   }];
 
   // Defaults.
-  defaultText: string = "The quick brown fox jumped over the lazy dog.";
-  defaultFontSize: number = 48;
-  defaultFontColor: string = "#3e4245";
-  defaultBackgroundColor: string = "#ffffff";
+  defaultText = 'The quick brown fox jumped over the lazy dog.';
+  defaultFontSize = 48;
+  defaultFontColor = '#3e4245';
+  defaultBackgroundColor = '#ffffff';
 
-  defaultWordSpacing: number = 0;
-  defaultLetterSpacing: number = 0;
+  defaultFillColor = '#808080';
+  defaultStrokeColor = '#000000';
+  defaultLineColor = '#00a0be';
+
+  defaultWordSpacing = 0;
+  defaultLetterSpacing = 0;
 
   _gridEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _toolbarEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _previewEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _inspectEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _inspectComponent: BehaviorSubject<string> = new BehaviorSubject('glyph-list');
   _navigationEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _asideEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _asideComponent = new BehaviorSubject<string>('names');
+  _asideTableTabs = new BehaviorSubject<any[]>([]);
+
   _statsCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _waterfallEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _foldersCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  _optionsCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   _systemLoading: BehaviorSubject<boolean> = new BehaviorSubject(true);
   _loadingScreen: BehaviorSubject<boolean> = new BehaviorSubject(false);
   _loadingSpinner: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _loadingMessage: BehaviorSubject<string> = new BehaviorSubject('');
 
-  _scrollToItem: BehaviorSubject<ScrollToOptions | null> = new BehaviorSubject<ScrollToOptions | null>(null);
+  _scrollToItem: BehaviorSubject<ScrollToOptions> = new BehaviorSubject(null);
 
-  private _fontSize = new BehaviorSubject<number>(this.defaultFontSize);
+  _glyphIndex: BehaviorSubject<number> = new BehaviorSubject(0);
+  watchGlyphIndex$ = this._glyphIndex.asObservable();
+
+  _fontSize = new BehaviorSubject<number>(this.defaultFontSize);
   watchFontSize$ = this._fontSize.asObservable();
 
-  private _fontColor = new BehaviorSubject<string>(this.defaultFontColor);
+  _fontColor = new BehaviorSubject<string>(this.defaultFontColor);
   watchFontColor$ = this._fontColor.asObservable();
 
-  private _displayText = new BehaviorSubject<string>(this.defaultText);
+  _displayText = new BehaviorSubject<string>(this.defaultText);
   watchDisplayText$ = this._displayText.asObservable();
 
-  private _backgroundColor = new BehaviorSubject<string>(this.defaultBackgroundColor);
+  _backgroundColor = new BehaviorSubject<string>(this.defaultBackgroundColor);
   watchBackgroundColor$ = this._backgroundColor.asObservable();
 
-  private _wordSpacing = new BehaviorSubject<number>(this.defaultWordSpacing);
+  _wordSpacing = new BehaviorSubject<number>(this.defaultWordSpacing);
   watchWordSpacing$ = this._wordSpacing.asObservable();
 
-  private _letterSpacing = new BehaviorSubject<number>(this.defaultLetterSpacing);
+  _letterSpacing = new BehaviorSubject<number>(this.defaultLetterSpacing);
   watchLetterSpacing$ = this._letterSpacing.asObservable();
 
   _defaultTheme: BehaviorSubject<string> = new BehaviorSubject('default');
-
-  _gridRowsExpanded: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  watchDefaultTheme$ = this._defaultTheme.asObservable();
 
   _displayNews: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -83,21 +92,17 @@ export class PresentationService {
     private messageService: MessageService,
     private electronService: ElectronService
   ) {
-
     if (this.electronService.isElectron) {
-
-      if (this.configService.has('PANEL_SETTINGS')) {
+      if (this.configService.has(StorageType.LayoutPanel)) {
         this.loadLayoutSettings();
       }
-
-      if (this.configService.has('PREVIEW_SETTINGS')) {
+      if (this.configService.has(StorageType.LayoutPreview)) {
         this.loadPreviewSettings();
       }
-
-      if (this.configService.has('THEME_SETTINGS')) {
+      if (this.configService.has(StorageType.LayoutTheme)) {
         this.loadThemeSettings();
       }
-
+      this.setThemeVars(this._defaultTheme.getValue());
     }
   }
 
@@ -112,6 +117,16 @@ export class PresentationService {
 
   setAsideEnabled(status: any): void {
     this._asideEnabled.next(status);
+    this.saveLayoutSettings();
+  }
+
+  setAsideComponent(name: any): void {
+    this._asideComponent.next(name);
+    this.saveLayoutSettings();
+  }
+
+  setAsideTableTabs(tabs: any[]): void {
+    this._asideTableTabs.next(tabs);
     this.saveLayoutSettings();
   }
 
@@ -135,108 +150,111 @@ export class PresentationService {
     this.saveLayoutSettings();
   }
 
+  setInspectComponent(name: any): void {
+    this._inspectComponent.next(name);
+    this.saveLayoutSettings();
+  }
+
   setStatsCollapsed(toggle: any): void {
     this._statsCollapsed.next(toggle);
     this.saveLayoutSettings();
   }
 
-  setWaterfallEnabled(status: boolean): void {
-    this._waterfallEnabled.next(status);
+  setFoldersCollapsed(toggle: any): void {
+    this._foldersCollapsed.next(toggle);
+    this.saveLayoutSettings();
+  }
+
+  setOptionsCollapsed(toggle: any): void {
+    this._optionsCollapsed.next(toggle);
+    this.saveLayoutSettings();
   }
 
   saveLayoutSettings(): void {
-    const settings = {
+    const settings: LayoutPanelType = {
       _gridEnabled: this._gridEnabled.getValue(),
       _asideEnabled: this._asideEnabled.getValue(),
+      _asideComponent: this._asideComponent.getValue(),
+      _asideTableTabs: this._asideTableTabs.getValue(),
       _navigationEnabled: this._navigationEnabled.getValue(),
       _toolbarEnabled: this._toolbarEnabled.getValue(),
       _previewEnabled: this._previewEnabled.getValue(),
       _inspectEnabled: this._inspectEnabled.getValue(),
-      _statsCollapsed: this._statsCollapsed.getValue()
-    }
-    this.messageService.set('PANEL_SETTINGS', settings);
+      _inspectComponent: this._inspectComponent.getValue(),
+      _statsCollapsed: this._statsCollapsed.getValue(),
+      _foldersCollapsed: this._foldersCollapsed.getValue(),
+      _optionsCollapsed: this._optionsCollapsed.getValue()
+    };
+    this.messageService.set(StorageType.LayoutPanel, settings);
   }
 
   loadLayoutSettings(): void {
-    const settings = this.configService.get('PANEL_SETTINGS');
+    const settings: LayoutPanelType = this.configService.get(StorageType.LayoutPanel);
     if (Object.keys(settings).length) {
-      const map: Record<string, BehaviorSubject<any>> = {
-        _gridEnabled: this._gridEnabled,
-        _asideEnabled: this._asideEnabled,
-        _navigationEnabled: this._navigationEnabled,
-        _toolbarEnabled: this._toolbarEnabled,
-        _previewEnabled: this._previewEnabled,
-        _inspectEnabled: this._inspectEnabled,
-        _statsCollapsed: this._statsCollapsed
-      };
       for (const [key, value] of Object.entries(settings)) {
-        if (map[key]) { map[key].next(value); }
+        if (this[key]) {
+          this[key].next(value);
+        }
       }
     }
   }
 
   savePreviewSettings(): void {
-    const settings = {
+    const settings: LayoutPreviewType = {
       _fontSize: this._fontSize.getValue(),
       _fontColor: this._fontColor.getValue(),
       _displayText: this._displayText.getValue(),
       _backgroundColor: this._backgroundColor.getValue(),
       _wordSpacing: this._wordSpacing.getValue(),
-      _letterSpacing: this._letterSpacing.getValue()
-    }
-    this.messageService.set('PREVIEW_SETTINGS', settings);
+      _letterSpacing: this._letterSpacing.getValue(),
+      _displayNews: this._displayNews.getValue()
+    };
+    this.messageService.set(StorageType.LayoutPreview, settings);
   }
 
   loadPreviewSettings(): void {
-    const settings = this.configService.get('PREVIEW_SETTINGS');
+    const settings: LayoutPreviewType = this.configService.get(StorageType.LayoutPreview);
     if (Object.keys(settings).length) {
-      const map: Record<string, BehaviorSubject<any>> = {
-        _fontSize: this._fontSize,
-        _fontColor: this._fontColor,
-        _displayText: this._displayText,
-        _backgroundColor: this._backgroundColor,
-        _wordSpacing: this._wordSpacing,
-        _letterSpacing: this._letterSpacing
-      };
       for (const [key, value] of Object.entries(settings)) {
-        if (map[key]) { map[key].next(value); }
+        if (this[key]) {
+          this[key].next(value);
+        }
       }
     }
   }
 
   saveThemeSettings(): void {
-    const settings = {
+    const settings: LayoutThemeType = {
       _defaultTheme: this._defaultTheme.getValue()
-    }
-    this.messageService.set('THEME_SETTINGS', settings);
+    };
+    this.messageService.set(StorageType.LayoutTheme, settings);
   }
 
   loadThemeSettings(): void {
-    const settings = this.configService.get('THEME_SETTINGS');
+    const settings: LayoutThemeType = this.configService.get(StorageType.LayoutTheme);
     if (Object.keys(settings).length) {
-      const map: Record<string, BehaviorSubject<any>> = {
-        _defaultTheme: this._defaultTheme
-      };
       for (const [key, value] of Object.entries(settings)) {
-        if (map[key]) { map[key].next(value); }
+        if (this[key]) {
+          this[key].next(value);
+        }
       }
     }
   }
 
   setSystemLoading(value: boolean): void {
-    this._systemLoading.next(value)
+    this._systemLoading.next(value);
   }
 
   setLoadingScreen(value: boolean): void {
-    this._loadingScreen.next(value)
+    this._loadingScreen.next(value);
   }
 
   setLoadingSpinner(value: boolean): void {
-    this._loadingSpinner.next(value)
+    this._loadingSpinner.next(value);
   }
 
-  setLoadingMessage(value: string): void {
-    this._loadingMessage.next(value);
+  setGlyphIndex(value: number): void {
+    this._glyphIndex.next(value);
   }
 
   setFontSize(value: number): void {
@@ -283,77 +301,41 @@ export class PresentationService {
   }
 
   resetPreview() {
-    const settings = {
+    const settings: LayoutPreviewType = {
       _fontSize: this.defaultFontSize,
       _fontColor: this.defaultFontColor,
       _displayText: this._displayText.getValue(),
       _backgroundColor: this.defaultBackgroundColor,
       _wordSpacing: this.defaultWordSpacing,
       _letterSpacing: this.defaultLetterSpacing
-    }
-
-    const map: Record<string, BehaviorSubject<any>> = {
-      _fontSize: this._fontSize,
-      _fontColor: this._fontColor,
-      _displayText: this._displayText,
-      _backgroundColor: this._backgroundColor,
-      _wordSpacing: this._wordSpacing,
-      _letterSpacing: this._letterSpacing
     };
     for (const [key, value] of Object.entries(settings)) {
-      if (map[key]) { map[key].next(value); }
+      if (this[key]) {
+        this[key].next(value);
+      }
     }
-
-    this.messageService.set('PREVIEW_SETTINGS', settings);
+    this.messageService.set(StorageType.LayoutPreview, settings);
   }
 
-  setThemeDefaults(theme: string): void {
-    if (theme == 'midnight') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#000000');
-    } else if (theme == 'euphoria') {
-      this.setFontColor('#f4b903');
-      this.setBackgroundColor('#23121c');
-    } else if (theme == 'dashboard') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#14202a');
-    } else if (theme == 'modern') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#ea7196');
-    } else if (theme == 'swiss') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#ed1b24');
-    } else if (theme == 'passion') {
-      this.setFontColor('#ffffff');
-      this.setBackgroundColor('#620f72');
-    } else {
-      this.setFontColor('#3e4245');
-      this.setBackgroundColor('#ffffff');
-    }
+  setThemeVars(name: string): void {
+    const config = ThemeColors.has(name) ? ThemeColors.get(name) : ThemeColors.get('default');
+
+    const root = document.documentElement;
+    root.style.setProperty('--font-color', config.color);
+    root.style.setProperty('--background-color', config.background);
+    root.style.setProperty('--border-color', config.border);
+    root.style.setProperty('--fill-color', config.fill);
+    root.style.setProperty('--stroke-color', config.stroke);
+
+    this.setFontColor(config.color);
+    this.setBackgroundColor(config.background);
   }
 
-  /**
-   * Toggle grid rows expanded.
-   */
-
-  getGridRowsExpanded() {
-    return this._gridRowsExpanded.getValue();
-  }
-
-  setGridRowsExpanded(toggle: boolean) {
-    this._gridRowsExpanded.next(toggle);
-  }
-
-  /**
-   * Toggle display news articles.
-   */
-
-  getDisplayNews() {
+  getDisplayNews(): boolean {
     return this._displayNews.getValue();
   }
 
-  setDisplayNews(toggle: boolean) {
+  setDisplayNews(toggle: boolean): void {
     this._displayNews.next(toggle);
   }
-
 }

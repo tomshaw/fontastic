@@ -1,16 +1,22 @@
-import { TestBed } from '@angular/core/testing';
-
+import { waitForAsync, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BreadcrumbService } from './breadcrumb.service';
 
 describe('BreadcrumbService', () => {
-  let service: BreadcrumbService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(BreadcrumbService);
-  });
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule
+      ],
+      providers: [{
+        provide: BreadcrumbService,
+      }]
+    });
+  }));
 
   it('should be created', () => {
+    const service: BreadcrumbService = TestBed.inject(BreadcrumbService);
     expect(service).toBeTruthy();
   });
 });

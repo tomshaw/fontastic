@@ -1,0 +1,41 @@
+<div class="page">
+
+  <div class="page__header border-bottom">
+    <div class="page__header-title">
+      <h1>Latest News Articles</h1>
+    </div>
+    <ng-container *ngIf="apiKey">
+      <div class="text-right">
+        <app-button [type]="'button'" [title]="'Submit'" [ngClass]="'app-button__2xl app-button__rounded'"
+          (handleButtonClick)="onRefreshLatestNews($event)">Fetch Articles</app-button>
+      </div>
+    </ng-container>
+  </div>
+
+  <form class="form" #newsApiForm="ngForm" (ngSubmit)="onSubmit(newsApiForm)">
+
+    <div class="page__body">
+      <div class="form-group">
+        <label for="apiKey">Api Key</label>
+        <input type="text" class="form-control" name="apiKey" id="apiKey" [(ngModel)]="apiKey"
+          #selectedApiKey="ngModel">
+        <span class="form-text text-muted">Please visit <a href="https://newsapi.org">newsapi.org</a> to
+          obtain
+          your free key.</span>
+      </div>
+    </div>
+
+    <div class="page__footer border-top">
+      <div>
+        <app-button [type]="'submit'" [title]="'Submit'" [ngClass]="'app-button__md app-button__rounded'"
+          [attr.disabled]="!newsApiForm.form.valid">Submit</app-button>
+        <app-button [type]="'reset'" [title]="'Reset'"
+          [ngClass]="'app-button__md app-button__rounded app-button__success'" (click)="newsApiForm.reset();">
+          Reset
+        </app-button>
+      </div>
+    </div>
+
+  </form>
+
+</div>

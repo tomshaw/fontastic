@@ -12,85 +12,62 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const entity_1 = require("../database/entity");
 const repository_1 = require("../database/repository");
+const StorageType_1 = require("../enums/StorageType");
 class ConnectionManager {
     constructor(configManager) {
-        this.schemas = [entity_1.Collection, entity_1.Store, entity_1.User, entity_1.Logger];
+        this.schemas = [entity_1.Collection, entity_1.Store, entity_1.Logger];
         this.subscribers = [];
         this.migrations = [];
-        this.connections = {};
-        this.omitables = ["title", "description", "enabled"];
-        this.setConfigManager(configManager);
-        let config = this.getConfigManager().get("database");
-        this.setConnections(this.normalize(config.connections));
-        this.registerEntities(this.connections);
-        this.registerSubscribers(this.connections);
-        this.registerMigrations(this.connections);
-        this.createDataSource();
-    }
-    setConfigManager(configManager) {
+        this.omitables = ['title', 'description', 'enabled'];
         this.configManager = configManager;
-    }
-    getConfigManager() {
-        return this.configManager;
-    }
-    normalize(connections) {
-        return connections.filter((item) => this.discardOmitables(item)).filter((item) => item.enabled);
-    }
-    setConnections(connections) {
-        this.connections = connections;
-    }
-    getConnections() {
-        return this.connections;
-    }
-    registerEntities(options) {
-        this.connections = options.map(obj => (Object.assign(Object.assign({}, obj), { entities: this.schemas })));
-    }
-    registerSubscribers(options) {
-        this.connections = options.map(obj => (Object.assign(Object.assign({}, obj), { subscribers: this.subscribers })));
-    }
-    registerMigrations(options) {
-        this.connections = options.map(obj => (Object.assign(Object.assign({}, obj), { migrations: this.migrations })));
-    }
-    setDataSource() {
-        console.log('this.connections', this.connections);
-        this.dataSource = new typeorm_1.DataSource(this.connections[0]);
-    }
-    getDataSource() {
-        return this.dataSource;
-    }
-    createDataSource() {
-        this.setDataSource();
+        this.options = this.normalize(this.configManager.get(StorageType_1.StorageType.DatabaseConnections));
+        this.registerEntities(this.options);
+        this.registerSubscribers(this.options);
+        this.registerMigrations(this.options);
+        this.dataSource = new typeorm_1.DataSource(this.options[0]);
     }
     initialize() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getDataSource().initialize();
+            return yield this.dataSource.initialize();
         });
     }
     isInitialized() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getDataSource().isInitialized;
+            return this.dataSource.isInitialized;
         });
+    }
+    getDataSource() {
+        return this.dataSource;
+    }
+    createDataSource(options) {
+        return new typeorm_1.DataSource(this.discardOmitables(options)).initialize();
+    }
+    registerEntities(options) {
+        this.options = options.map(obj => (Object.assign(Object.assign({}, obj), { entities: this.schemas })));
+    }
+    registerSubscribers(options) {
+        this.options = options.map(obj => (Object.assign(Object.assign({}, obj), { subscribers: this.subscribers })));
+    }
+    registerMigrations(options) {
+        this.options = options.map(obj => (Object.assign(Object.assign({}, obj), { migrations: this.migrations })));
     }
     discardOmitables(options) {
         return Object.fromEntries(Object.entries(options).filter(([key]) => !this.omitables.includes(key)));
     }
-    createDataSourceWithOptions(options) {
-        return new typeorm_1.DataSource(this.discardOmitables(options)).initialize();
+    normalize(options) {
+        return options.filter((item) => this.discardOmitables(item)).filter((item) => item.enabled);
     }
     /**
-     * Repository methods.
+     * Proxy methods
      */
     getCollection() {
-        return this.getDataSource().getRepository(entity_1.Collection);
+        return this.dataSource.getRepository(entity_1.Collection);
     }
     getLogger() {
-        return this.getDataSource().getRepository(entity_1.Logger);
+        return this.dataSource.getRepository(entity_1.Logger);
     }
     getStore() {
-        return this.getDataSource().getRepository(entity_1.Store);
-    }
-    getUser() {
-        return this.getDataSource().getRepository(entity_1.User);
+        return this.dataSource.getRepository(entity_1.Store);
     }
     getCollectionRepository() {
         return this.getCollection().extend(repository_1.CollectionRepository);
@@ -100,9 +77,6 @@ class ConnectionManager {
     }
     getStoreRepository() {
         return this.getStore().extend(repository_1.StoreRepository);
-    }
-    getUserRepository() {
-        return this.getUser().extend(repository_1.UserRepository);
     }
 }
 exports.default = ConnectionManager;

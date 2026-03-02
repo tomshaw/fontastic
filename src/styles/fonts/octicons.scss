@@ -1,18 +1,18 @@
 @font-face {
   font-family: 'octicon';
-  src: url('/assets/fonts/octicon/octicon.eot?15389122');
-  src: url('/assets/fonts/octicon/octicon.eot?15389122#iefix') format('embedded-opentype'), 
-       url('/assets/fonts/octicon/octicon.woff2?15389122') format('woff2'), 
-       url('/assets/fonts/octicon/octicon.woff?15389122') format('woff'), 
-       url('/assets/fonts/octicon/octicon.ttf?15389122') format('truetype'), 
-       url('/assets/fonts/octicon/octicon.svg?15389122#octicon') format('svg');
+  src: url('../../assets/fonts/octicon/octicon.eot?15389122');
+  src: url('../../assets/fonts/octicon/octicon.eot?15389122#iefix') format('embedded-opentype'), 
+       url('../../assets/fonts/octicon/octicon.woff2?15389122') format('woff2'), 
+       url('../../assets/fonts/octicon/octicon.woff?15389122') format('woff'), 
+       url('../../assets/fonts/octicon/octicon.ttf?15389122') format('truetype'), 
+       url('../../assets/fonts/octicon/octicon.svg?15389122#octicon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 // @font-face {
 //   font-family: 'octicon';
-//   src: url('/assets/fonts/octicon/octicon.woff2?15389122') format('woff2');
+//   src: url('../../assets/fonts/octicon/octicon.woff2?15389122') format('woff2');
 //   font-weight: normal;
 //   font-style: normal;
 // }
@@ -39,6 +39,7 @@
   font-weight: normal;
   speak: none;
   display: inline-block;
+  cursor: pointer;
   text-decoration: inherit;
   width: 1em;
   margin-right: .2em;

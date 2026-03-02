@@ -1,47 +1,50 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
 import { FontService } from '@app/core/services/font/font.service';
 import { MessageService } from '@app/core/services/message/message.service';
 import { PresentationService } from '@app/core/services/presentation/presentation.service';
 import { ElectronService } from '@app/core/services/electron/electron.service';
-
-import { QueryOptions, SystemStats } from '@app/core/interface';
+import { Store } from '@main/database/entity/Store.schema';
+import { Collection } from '@main/database/entity/Collection.schema';
+import { QueryOptions, SystemStats } from '@main/types';
+import { StorageType } from '@main/enums';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
 
-  private _activePage = new BehaviorSubject<number>(1);
+  _activePage = new BehaviorSubject<number>(1);
   watchActivePage$ = this._activePage.asObservable();
 
-  private _resultSet = new BehaviorSubject<any[]>([]);
-  watchResultSet$ = this._resultSet.asObservable();
-
-  private _resultSetCount = new BehaviorSubject<number>(0);
-  watchResultSetCount$ = this._resultSetCount.asObservable();
-
-  private _resultSetTotal = new BehaviorSubject<number>(0);
-  watchResultSetTotal$ = this._resultSetTotal.asObservable();
-
-  // Watch collection changes.
-  private _collection = new BehaviorSubject<any[]>([]);
-  watchCollection$ = this._collection.asObservable();
-
-  // Watch selected collection id.  
-  private _collectionId = new BehaviorSubject<number>(0);
-  watchCollectionId$ = this._collectionId.asObservable();
-
-  // Watch selected store id.
-  private _storeId = new BehaviorSubject<number>(0);
+  // STORE
+  _storeId = new BehaviorSubject<number>(0);
   watchStoreId$ = this._storeId.asObservable();
 
-  // Watch selected store row.
-  private _storeRow = new BehaviorSubject<any>({});
-  watchStoreRow$ = this._storeRow.asObservable();
+  _storeResult = new BehaviorSubject<Store>(null);
+  watchStoreResult$ = this._storeResult.asObservable();
 
-  private _queryOptions = new BehaviorSubject<QueryOptions>({
+  _storeResultSet = new BehaviorSubject<Store[]>([]);
+  watchStoreResultSet$ = this._storeResultSet.asObservable();
+
+  // COLLECTION 
+  _collectionId = new BehaviorSubject<number>(0);
+  watchCollectionId$ = this._collectionId.asObservable();
+
+  _collectionResult = new BehaviorSubject<Collection>(null);
+  watchCollectionResult$ = this._collectionResult.asObservable();
+
+  _collectionResultSet = new BehaviorSubject<Collection[]>([]);
+  watchCollectionResultSet$ = this._collectionResultSet.asObservable();
+
+  // COUNTS 
+  _resultSetCount = new BehaviorSubject<number>(0);
+  watchResultSetCount$ = this._resultSetCount.asObservable();
+
+  _resultSetTotal = new BehaviorSubject<number>(0);
+  watchResultSetTotal$ = this._resultSetTotal.asObservable();
+
+  _queryOptions = new BehaviorSubject<QueryOptions>({
     order: {
       column: 'id',
       direction: 'ASC',
@@ -53,12 +56,15 @@ export class DatabaseService {
   });
   watchQueryOptions$ = this._queryOptions.asObservable();
 
-  order: any = { column: 'file_name', direction: 'ASC' };
-  where: any[] = [];
-  skip: number = 0;
-  take: number = 100;
+  order = { column: 'file_name', direction: 'ASC' };
+  where = [];
+  skip = 0;
+  take = 100;
 
-  private _systemStats = new BehaviorSubject<SystemStats>({
+  search = false;
+  stats = false;
+
+  _systemStats = new BehaviorSubject<SystemStats>({
     rowCount: 0,
     favoriteCount: 0,
     systemCount: 0,
@@ -68,31 +74,29 @@ export class DatabaseService {
   watchSystemStats$ = this._systemStats.asObservable();
 
   constructor(
-    private fontService: FontService,
-    private messageService: MessageService,
-    private presentationService: PresentationService,
-    private electronService: ElectronService
+    public fontService: FontService,
+    public messageService: MessageService,
+    public presentationService: PresentationService,
+    public electronService: ElectronService
   ) {
 
     if (electronService.isElectron) {
 
-      // Load saved collection row id.
-      if (this.electronService.store.has('COLLECTION_ID')) {
-        const id = this.electronService.store.get('COLLECTION_ID');
+      if (this.electronService.store.has(StorageType.CollectionId)) {
+        const id = this.electronService.store.get(StorageType.CollectionId);
         if (id) {
           this.setCollectionId(id);
         }
       }
 
-      // Load saved store row id.
-      if (this.electronService.store.has('STORE_ID')) {
-        const id = this.electronService.store.get('STORE_ID');
+      if (this.electronService.store.has(StorageType.StoreId)) {
+        const id = this.electronService.store.get(StorageType.StoreId);
         if (id) {
           this.setStoreId(id);
         }
       }
 
-      this.watchQueryOptions$.subscribe((options: any) => {
+      this.watchQueryOptions$.subscribe((options: QueryOptions) => {
         if (options.run) {
           this.execute(options);
         }
@@ -100,28 +104,32 @@ export class DatabaseService {
 
       this.watchStoreId$.subscribe((id: number) => {
         if (Number.isInteger(id)) {
-          messageService.fetchStoreRow(id).then(async (result: any) => {
+          messageService.storeFindOne({ where: { id } }).then((result: Store) => {
             if (result) {
-              this.fontService.load(result.file_path).then((data) => {
-                this.setStoreRow({ ...result, font_meta: data });
-              })
+              this.setStoreResult(result);
+              const resource = this.fontService.withTransferProtocol(result.file_path, 'file');
+              this.fontService.load(resource).then((font: opentype.Font) => this.fontService.setFontObject(font));
             }
           });
         }
       });
 
-      // Boot system.
-      messageService.fetchCollections().subscribe(result => this.setCollection(result));
+      // System boot
+      this.fetchCollections();
 
       this.fetchSystemStats();
     }
   }
 
-  getResultSetCount() {
+  fetchCollections() {
+    this.messageService.collectionFetch({}).then((result: Collection[]) => this.setCollectionResultSet(result));
+  }
+
+  getResultSetCount(): number {
     return this._resultSetCount.getValue();
   }
 
-  getResultSetTotal() {
+  getResultSetTotal(): number {
     return this._resultSetTotal.getValue();
   }
 
@@ -131,66 +139,72 @@ export class DatabaseService {
 
   setStoreId(id: number): void {
     this._storeId.next(id);
-    this.electronService.store.set('STORE_ID', id);
+    this.electronService.store.set(StorageType.StoreId, id);
   }
 
   getStoreId(): number {
     return this._storeId.getValue();
   }
 
-  setStoreRow(items: any) {
-    this._storeRow.next(items)
+  setStoreResult(result: Store) {
+    this._storeResult.next(result);
   }
 
-  getStoreRow(): any {
-    return this._storeRow.getValue();
+  getStoreResult(): Store {
+    return this._storeResult.getValue();
   }
 
-  setStoreResultSet(data: any[]): void {
-    this._resultSet.next(data);
+  setStoreResultSet(results: Store[]): void {
+    this._storeResultSet.next(results);
   }
 
-  getStoreResultSet(): any {
-    return this._resultSet.getValue();
+  getStoreResultSet(): Store[] {
+    return this._storeResultSet.getValue();
   }
 
   /**
    * BEGIN SYSTEM STATS  
    */
 
-  setSystemStats(results: any) {
+  setSystemStats(results: SystemStats): void {
     this._systemStats.next(results);
   }
 
-  getSystemStats() {
+  getSystemStats(): SystemStats {
     return this._systemStats.getValue();
   }
 
-  fetchSystemStats() {
-    this.messageService.fetchSystemStats().then((result: any) => {
-      this.setSystemStats(result);
-    }).catch((err) => { });
+  fetchSystemStats(): void {
+    this.messageService.fetchSystemStats().then((result: SystemStats) => this.setSystemStats(result));
   }
 
   /**
    * BEGIN COLLECTION 
    */
 
-  setCollectionId(id: number) {
+  setCollectionId(id: number): void {
     this._collectionId.next(id);
-    this.electronService.store.set('COLLECTION_ID', id);
+    this.electronService.store.set(StorageType.CollectionId, id);
   }
 
   getCollectionId(): number {
     return this._collectionId.getValue();
   }
 
-  setCollection(items: any[]) {
-    this._collection.next(items)
+  setCollectionResult(result: Collection) {
+    this._collectionResult.next(result);
   }
 
-  getCollection(): object {
-    return this._collection.getValue();
+  getCollectionResult(): Collection {
+    return this._collectionResult.getValue();
+  }
+
+  setCollectionResultSet(results: Collection[]) {
+    this._collectionResultSet.next(results);
+  }
+
+  getCollectionResultSet(): Collection[] {
+    return this._collectionResultSet.getValue();
   }
 
   /**
@@ -212,7 +226,7 @@ export class DatabaseService {
   }
 
   setWhere(key: string, value: any): DatabaseService {
-    this.where.push({ key: key, value: value });
+    this.where.push({ key, value });
     return this;
   }
 
@@ -223,6 +237,11 @@ export class DatabaseService {
 
   setTake(take: number): DatabaseService {
     this.take = take;
+    return this;
+  }
+
+  setSearch(search: boolean): DatabaseService {
+    this.search = search;
     return this;
   }
 
@@ -248,13 +267,20 @@ export class DatabaseService {
 
   async execute(options: QueryOptions) {
     const t0 = performance.now();
-    let [total, results] = await this.messageService.fetchStore(options);
+    const [results, total]: any = (this.search) ? await this.fetchSearch(options) : await this.fetchStore(options);
     const t1 = performance.now();
     this._resultSetCount.next(results.length);
     this._resultSetTotal.next(total);
-    console.log('EXECUTE', results);
-    this._resultSet.next(results)
+    this._storeResultSet.next(results);
     this.presentationService.setSystemLoading(false);
-    console.log(t1 - t0, 'milliseconds');
+    console.warn(t1 - t0, 'milliseconds');
+  }
+
+  async fetchStore(options: QueryOptions) {
+    return await this.messageService.storeFetch((this.getCollectionId() && this.stats === false) ? { ...options, collectionId: this.getCollectionId() } : options);
+  }
+
+  async fetchSearch(options: QueryOptions) {
+    return await this.messageService.storeSearch(options);
   }
 }

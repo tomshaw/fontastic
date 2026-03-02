@@ -1,303 +1,302 @@
-import { Component, OnInit } from '@angular/core';
-import { UtilsService, MessageService, PresentationService, DatabaseService, BreadcrumbService, AlertService } from '@app/core/services';
-import { Router } from '@angular/router';
-import { SystemStats } from '@app/core/interface';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UtilsService, MessageService, PresentationService, DatabaseService, BreadcrumbService, ModalService } from '@app/core/services';
+import { SystemStats } from '@main/types';
+import { Collection } from '@main/database/entity/Collection.schema';
+
+type CollectionWithChildren<T> = Partial<T> & { children: Collection[] };
 
 @Component({
-  standalone: false,
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss']
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, OnDestroy {
 
-  resultSet: any[] = [];
-  collectionResultSet: any[] = [];
+  resultSet: CollectionWithChildren<Collection>[] = [];
 
-  // Selection tracking
-  activeFilter: string = '';
-  activeCollection: number = 0;
-  activeChild: number = 0;
+  collectionId: number;
 
-  navCollapsed: boolean = false;
+  toggleDetails = false;
 
-  // System stats
-  rowCount: number = 0;
-  activatedCount: number = 0;
-  favoriteCount: number = 0;
-  systemCount: number = 0;
+  statsCollapsed = true;
+  foldersCollapsed = true;
+  optionsCollapsed = true;
+  toggleCollapsed = false;
+
+  rowCount = 0;
+  activatedCount = 0;
+  favoriteCount = 0;
+  systemCount = 0;
 
   constructor(
-    private router: Router,
     private utils: UtilsService,
-    private alertService: AlertService,
     private messageService: MessageService,
+    private modalService: ModalService,
     private databaseService: DatabaseService,
     private breadcrumbService: BreadcrumbService,
     private presentationService: PresentationService
   ) { }
 
   ngOnInit() {
-    // Restore collection selection on boot
-    this.databaseService.watchCollectionId$.subscribe((id: number) => {
-      if (id) {
-        this.activeChild = id;
-        this.activeFilter = '';
-        this.databaseService.setWhere('collection_id', id).run();
-        this.breadcrumbService.setNavigation(id, this.collectionResultSet);
+    this.presentationService._statsCollapsed.subscribe((result) => this.statsCollapsed = result);
+    this.presentationService._foldersCollapsed.subscribe((result) => this.foldersCollapsed = result);
+    this.presentationService._optionsCollapsed.subscribe((result) => this.optionsCollapsed = result);
+
+    // Bootup fetch store.
+    this.databaseService.watchCollectionId$.subscribe((collectionId: number) => {
+      if (collectionId) {
+        this.collectionId = collectionId;
+        this.databaseService.setWhere('collection_id', collectionId).run();
       } else {
         this.databaseService.run();
       }
     });
 
-    // Reload tree when collections change
-    this.databaseService.watchCollection$.subscribe((result) => {
-      this.collectionResultSet = result;
-      if (this.activeChild) {
-        this.breadcrumbService.setNavigation(this.activeChild, result);
+    this.databaseService.watchCollectionResultSet$.subscribe((results: Collection[]) => {
+      if (results?.length) {
+        this.breadcrumbService.setNavigation(this.collectionId, results);
+        const copy = results.map(item => ({ ...item }));
+        this.resultSet = this.utils.listToTree(copy);
       }
-      this.resultSet = this.utils.expandEntities(result);
     });
 
-    // System stats
-    this.databaseService.watchSystemStats$.subscribe((result: SystemStats | any) => {
-      this.rowCount = result.rowCount?.total ?? 0;
-      this.favoriteCount = result.favoriteCount?.total ?? 0;
-      this.systemCount = result.systemCount?.total ?? 0;
-      this.activatedCount = result.activatedCount?.total ?? 0;
+    this.databaseService.watchSystemStats$.subscribe((result: SystemStats) => {
+      this.rowCount = (result?.rowCount) ? result.rowCount : 0;
+      this.favoriteCount = (result?.favoriteCount) ? result.favoriteCount : 0;
+      this.systemCount = (result?.systemCount) ? result.systemCount : 0;
+      this.activatedCount = (result?.activatedCount) ? result.activatedCount : 0;
     });
   }
 
-  // ─── Library Filters ─────────────────────────────────────────
-
-  handleClickAll(event: Event) {
-    this.clearSelection();
-    this.activeFilter = 'all';
-    this.databaseService.resetWhere().run();
-    this.breadcrumbService.set([
-      { title: 'Library', link: '/main' },
-      { title: 'All Fonts', link: '' }
-    ]);
-    this.navigateToMain();
+  ngOnDestroy() {
+    console.log('Navigation destroyed: ' + Date.now());
   }
 
-  handleClickFavorites(event: Event) {
-    this.clearSelection();
-    this.activeFilter = 'favorites';
-    this.databaseService.setWhere('store.favorite', 1).run();
-    this.breadcrumbService.set([
-      { title: 'Library', link: '/main' },
-      { title: 'Favorites', link: '' }
-    ]);
-    this.navigateToMain();
-  }
-
-  handleClickSystem(event: Event) {
-    this.clearSelection();
-    this.activeFilter = 'system';
-    this.databaseService.setWhere('store.system', 1).run();
-    this.breadcrumbService.set([
-      { title: 'Library', link: '/main' },
-      { title: 'System Fonts', link: '' }
-    ]);
-    this.navigateToMain();
-  }
-
-  handleClickActivated(event: Event) {
-    this.clearSelection();
-    this.activeFilter = 'activated';
-    this.databaseService.setWhere('store.activated', 1).run();
-    this.breadcrumbService.set([
-      { title: 'Library', link: '/main' },
-      { title: 'Activated', link: '' }
-    ]);
-    this.navigateToMain();
-  }
-
-  handleClickSystemScan(event: Event) {
+  handleNavigate(event: Event, collectionId: number): void {
+    event.preventDefault();
     event.stopPropagation();
-    this.alertService.info('Scanning system fonts, please wait...', false);
-    this.presentationService.setLoadingSpinner(true);
-    this.presentationService.setLoadingMessage('Scanning system fonts...');
 
-    this.messageService.fetchSystemFonts().then((result: any) => {
-      this.presentationService.setLoadingSpinner(false);
-      this.presentationService.setLoadingMessage('');
-      this.alertService.success(`Found ${result.systemCount.total} system fonts.`, false, 5e3);
-      this.databaseService.setSystemStats(result);
-      this.messageService.log(`Fetched system fonts found #${result.systemCount.total} total.`, 1);
-    }).catch(() => {
-      this.presentationService.setLoadingSpinner(false);
-      this.presentationService.setLoadingMessage('');
+    const target = event.target as HTMLElement;
+    const parent = target.parentElement.parentElement as HTMLElement;
+
+    if (collectionId === this.collectionId) {
+      return;
+    }
+
+    this.databaseService.stats = false;
+    this.databaseService.search = false;
+
+    this.toggleSelected(parent);
+    this.clearSelectedStats();
+
+    this.messageService.collectionEnable(collectionId, { enabled: true }).then((results: Collection[]) => {
+      this.databaseService.resetPage(1);
+      this.databaseService.setCollectionId(collectionId);
+      this.databaseService.setCollectionResultSet(results);
     });
   }
 
-  // ─── Collection Selection ────────────────────────────────────
-
-  handleSelectCollection(item: any) {
-    this.clearSelection();
-    this.activeCollection = item.id;
-
-    this.messageService.resetEnabledCollection().then(() => {
-      this.messageService.updateCollection(item.id, { enabled: true }).then(() => {
-        this.databaseService.resetPage(1);
-        this.databaseService.setCollectionId(item.id);
-        this.navigateToMain();
-      });
-    });
-  }
-
-  handleSelectChild(child: any) {
-    this.clearSelection();
-    this.activeChild = child.id;
-
-    this.messageService.resetEnabledCollection().then(() => {
-      this.messageService.updateCollection(child.id, { enabled: true }).then(() => {
-        this.databaseService.resetPage(1);
-        this.databaseService.setCollectionId(child.id);
-        this.navigateToMain();
-      });
-    });
-  }
-
-  // ─── Collection Management ───────────────────────────────────
-
-  handleCreateCollection(event: Event, parentId: number): void {
+  handleCollapse(event: Event, collectionId: number): void {
     event.stopPropagation();
-    this.presentationService.setLoadingSpinner(true);
-    this.presentationService.setLoadingMessage('Creating collection...');
 
-    this.messageService.createCollection(parentId).subscribe((result) => {
-      this.databaseService.setCollection(result);
-      this.presentationService.setLoadingSpinner(false);
-      this.presentationService.setLoadingMessage('');
-      this.messageService.log(`Created new collection under #${parentId}.`, 1);
-    });
+    const target = event.target as HTMLElement;
+    const element = target.parentElement.parentElement.parentElement as HTMLElement;
+
+    const isOpen: boolean = element.hasAttribute('open');
+
+    this.messageService.collectionUpdate(collectionId, { collapsed: !isOpen });
   }
 
-  handleDeleteCollection(event: Event, id: number): void {
+  handleUpdate(event: Event): void {
+    event.preventDefault();
     event.stopPropagation();
-    this.presentationService.setLoadingSpinner(true);
-    this.presentationService.setLoadingMessage('Deleting collection...');
-
-    this.messageService.deleteCollection(id).subscribe((result) => {
-      this.databaseService.setCollection(result);
-      this.presentationService.setLoadingSpinner(false);
-      this.presentationService.setLoadingMessage('');
-
-      // If we deleted the active collection, reset
-      if (this.activeChild === id || this.activeCollection === id) {
-        this.clearSelection();
-        this.activeFilter = 'all';
-        this.databaseService.resetWhere().run();
-      }
-
-      this.messageService.log(`Deleted collection #${id}.`, 1);
-    });
+    this.modalService.open('collection-update');
   }
 
-  handleTitleInput(event: KeyboardEvent | Event | any): void {
-    event.stopPropagation();
+  /**
+   * End collection methods 
+   */
+
+  toggleCollapse(event: Event): void {
     const target = event.target as HTMLInputElement;
-    const id = Number(target.dataset.id);
+    const item = target.parentElement.parentElement as HTMLElement;
 
-    this.messageService.updateCollection(id, { title: target.value });
-    this.messageService.log(`Updated collection name ${target.value}.`, 1);
+    const collectionId = Number(item.getAttribute('data-collection'));
 
-    if (event.keyCode === 13) {
-      target.blur();
+    const isFigStats: boolean = target.hasAttribute('data-figure-stats');
+    const isFigFolders: boolean = target.hasAttribute('data-figure-folders');
+    const isFigOptions: boolean = target.hasAttribute('data-figure-options');
+
+    const isCollapsed: boolean = item.classList.contains('collapsed');
+
+    if (isCollapsed) {
+      item.classList.remove('collapsed');
+      //target.innerHTML = 'arrow_right';
+    } else {
+      item.classList.add('collapsed');
+      //target.innerHTML = 'arrow_drop_down';
     }
+
+    if (collectionId) {
+      this.messageService.collectionUpdate(collectionId, { collapsed: isCollapsed ? false : true });
+    }
+
+    if (isFigStats) {
+      this.presentationService.setStatsCollapsed(isCollapsed ? false : true);
+    }
+
+    if (isFigFolders) {
+      this.presentationService.setFoldersCollapsed(isCollapsed ? false : true);
+    }
+
+    if (isFigOptions) {
+      this.presentationService.setOptionsCollapsed(isCollapsed ? false : true);
+    }
+
+    this.presentationService.saveLayoutSettings();
   }
 
-  handleAddFonts(event: Event, collectionId: number): void {
-    event.stopPropagation();
+  toggleFigureCollapse(): void {
+    this.toggleCollapsed = !this.toggleCollapsed;
 
-    const options = {
-      type: 'question',
-      buttons: ['Cancel', 'Select Files', 'Select Folders'],
-      defaultId: 2,
-      title: 'Add Fonts',
-      message: 'Do you want to add files or folders?'
-    };
+    this.statsCollapsed = this.toggleCollapsed;
+    this.foldersCollapsed = this.toggleCollapsed;
+    this.optionsCollapsed = this.toggleCollapsed;
 
-    this.messageService.showMessageBox(options).then((response: any) => {
-      if (response?.response) {
-        const isFiles = response.response === 1;
-        const dialogOptions = isFiles
-          ? { properties: ['openFile', 'multiSelections'] }
-          : { properties: ['openDirectory', 'multiSelections'] };
+    const toggle = this.toggleCollapsed;
 
-        this.messageService.showOpenDialog(dialogOptions).then((dialogResponse: any) => {
-          if (!dialogResponse?.filePaths) return;
-          if (isFiles) {
-            this.scanFiles(collectionId, dialogResponse);
-          } else {
-            this.scanFolders(collectionId, dialogResponse);
-          }
-        });
+    this.presentationService.setStatsCollapsed(toggle);
+    this.presentationService.setFoldersCollapsed(toggle);
+    this.presentationService.setOptionsCollapsed(toggle);
+  }
+
+  toggleDetailsOpen(): void {
+    this.toggleDetails = !this.toggleDetails;
+
+    const elems = document.querySelectorAll('details') as NodeListOf<HTMLElement>;
+
+    const ids = [];
+    elems.forEach((element: HTMLElement) => {
+      ids.push(element.getAttribute('data-id'));
+      if (this.toggleDetails) {
+        if (!element.hasAttribute('open')) {
+          element.setAttribute('open', '1');
+        }
+      } else {
+        if (element.hasAttribute('open')) {
+          element.removeAttribute('open');
+        }
       }
     });
+
+    this.messageService.collectionUpdateIds(ids, { collapsed: this.toggleDetails });
   }
 
-  // ─── Collapse / Expand ───────────────────────────────────────
+  handleClickAll(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode as HTMLElement;
 
-  toggleCollapse(event: Event, item: any): void {
-    event.stopPropagation();
-    item.collapsed = !item.collapsed;
-    this.messageService.updateCollection(item.id, { collapsed: item.collapsed });
+    this.databaseService.stats = true;
+    this.databaseService.search = false;
+    this.databaseService.resetWhere().run();
+
+    this.clearSelectedStats();
+    this.clearSelectedDetails();
+    this.toggleSelected(parent);
+
+    this.breadcrumbService.set([{
+      title: 'System Statistics',
+      link: '/main',
+      type: 'collection'
+    }, {
+      title: 'Font Count',
+      link: '',
+      type: 'collection'
+    }]);
   }
 
-  toggleCollapseAll(): void {
-    this.navCollapsed = !this.navCollapsed;
-    for (const item of this.resultSet) {
-      item.collapsed = this.navCollapsed;
-      this.messageService.updateCollection(item.id, { collapsed: this.navCollapsed });
+  handleClickFavorites(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode as HTMLElement;
+
+    this.databaseService.stats = true;
+    this.databaseService.search = false;
+    this.databaseService.setWhere('store.favorite', 1).run();
+
+    this.clearSelectedStats();
+    this.clearSelectedDetails();
+    this.toggleSelected(parent);
+
+    this.breadcrumbService.set([{
+      title: 'System Statistics',
+      link: '/main',
+      type: 'collection'
+    }, {
+      title: 'My Favorites',
+      link: '',
+      type: 'collection'
+    }]);
+  }
+
+  handleClickSystem(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode as HTMLElement;
+
+    this.databaseService.stats = true;
+    this.databaseService.search = false;
+    this.databaseService.setWhere('store.system', 1).run();
+
+    this.clearSelectedStats();
+    this.clearSelectedDetails();
+    this.toggleSelected(parent);
+
+    this.breadcrumbService.set([{
+      title: 'System Statistics',
+      link: '/main',
+      type: 'collection'
+    }, {
+      title: 'System Fonts',
+      link: '',
+      type: 'collection'
+    }]);
+  }
+
+  handleClickActivated(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const parent = target.parentNode as HTMLElement;
+
+    this.databaseService.stats = true;
+    this.databaseService.search = false;
+    this.databaseService.setWhere('store.activated', 1).run();
+
+    this.clearSelectedStats();
+    this.clearSelectedDetails();
+    this.toggleSelected(parent);
+
+    this.breadcrumbService.set([{
+      title: 'System Statistics',
+      link: '/main',
+      type: 'collection'
+    }, {
+      title: 'Activated Fonts',
+      link: '',
+      type: 'collection'
+    }]);
+  }
+
+  clearSelectedStats(): void {
+    const elms = document.querySelectorAll('ul.statistics > li > a') as NodeListOf<HTMLElement>;
+    elms.forEach((el: HTMLElement) => el.classList.remove('selected'));
+  }
+
+  clearSelectedDetails(): void {
+    const elms = document.querySelectorAll('details > summary') as NodeListOf<HTMLElement>;
+    elms.forEach((el: HTMLElement) => el.classList.remove('selected'));
+  }
+
+  toggleSelected(el: HTMLElement): void {
+    if (!el.classList.contains('selected')) {
+      el.classList.add('selected');
     }
-  }
-
-  // ─── Private Helpers ─────────────────────────────────────────
-
-  private clearSelection(): void {
-    this.activeFilter = '';
-    this.activeCollection = 0;
-    this.activeChild = 0;
-  }
-
-  private navigateToMain(): void {
-    if (this.router.url !== '/main') {
-      this.router.navigate(['/main']);
-    }
-  }
-
-  private scanFiles(collectionId: number, response: any): void {
-    this.presentationService.setLoadingSpinner(true);
-    this.presentationService.setLoadingMessage('Importing fonts...');
-
-    this.messageService.scanFiles(response.filePaths, collectionId).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
-        this.resultSet = this.utils.expandEntities(result);
-      });
-      this.databaseService.run();
-      this.databaseService.fetchSystemStats();
-      this.presentationService.setLoadingSpinner(false);
-      this.presentationService.setLoadingMessage('');
-      this.messageService.log(`Added files to collection #${collectionId}.`, 1);
-    });
-  }
-
-  private scanFolders(collectionId: number, response: any): void {
-    this.presentationService.setLoadingSpinner(true);
-    this.presentationService.setLoadingMessage('Importing fonts...');
-
-    this.messageService.scanFolders(response.filePaths, collectionId).then(() => {
-      this.messageService.updateCollectionCount(collectionId).subscribe((result) => {
-        this.resultSet = this.utils.expandEntities(result);
-      });
-      this.databaseService.run();
-      this.databaseService.fetchSystemStats();
-      this.presentationService.setLoadingSpinner(false);
-      this.presentationService.setLoadingMessage('');
-      this.messageService.log(`Added folders to collection #${collectionId}.`, 1);
-    });
   }
 }

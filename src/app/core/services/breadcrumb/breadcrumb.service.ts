@@ -1,44 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Router, NavigationStart } from '@angular/router';
-
-export interface IBreadcrumb {
-  title: string;
-  link: string;
-}
+import { Breadcrumb } from '@main/types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BreadcrumbService {
 
-  private _breadcrumb$ = new Subject<IBreadcrumb[]>();
+  private _breadcrumb$ = new Subject<Breadcrumb[]>();
 
-  constructor(private router: Router) { 
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {}
-    });
-  }
-
-  getObservable(): Observable<IBreadcrumb[]> {
+  getObservable(): Observable<Breadcrumb[]> {
     return this._breadcrumb$.asObservable();
   }
 
-  set(data: IBreadcrumb[] = []) {
-    if (data.length) {
-      this._breadcrumb$.next(data);
-    }
+  set(results: Breadcrumb[] = []) {
+    this._breadcrumb$.next(results);
   }
 
-  setNavigation(id: number, data: any[], items: any = []): void {
-    let found = data.filter((item: any) => item.id == id);
+  setNavigation(collectionId: number, results: any[], items: Breadcrumb[] = []) {
+    const found = results.filter((item: any) => item.id === collectionId);
+
     if (found.length) {
-      items.push({
-        title: found[0].title, 
-        link: ''
-      });
-      return this.setNavigation(found[0].parent_id, data, items);
+      items.push({ title: found[0].title, link: '', type: 'collection' });
+      return this.setNavigation(found[0].parent_id, results, items);
     }
+
     return this.set(items.reverse());
   }
 }

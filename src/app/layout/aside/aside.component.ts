@@ -1,28 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { DatabaseService, FontService } from '@app/core/services';
+import { PresentationService } from '@app/core/services';
 
 @Component({
-  standalone: false,
   selector: 'app-aside',
   templateUrl: './aside.component.html',
   styleUrls: ['./aside.component.scss']
 })
 export class AsideComponent implements OnInit {
 
-  _metaList: any = [];
+  componentName = 'tables';
+  componentList = ['tables', 'search', 'store'];
 
   constructor(
-    private databaseService: DatabaseService,
-    private fontService: FontService,
+    private presentationService: PresentationService,
   ) { }
 
   ngOnInit() {
-    this.databaseService.watchStoreRow$.subscribe((result) => {
-      if (result && result.font_meta && result.font_meta.names) {
-        this._metaList = this.fontService.normalizeTableNames(result.font_meta.names);
-      } else {
-        console.warn('watchStoreRow$', result);
-      }
-    });
+    this.presentationService._asideComponent.subscribe((value: string) => this.componentName = this.componentList.includes(value) ? value : this.componentName);
+  }
+
+  onComponentSwitch(): void {
+    this.componentName = (this.componentName === 'tables') ? 'store' : 'tables';
+    this.presentationService.setAsideComponent(this.componentName);
   }
 }

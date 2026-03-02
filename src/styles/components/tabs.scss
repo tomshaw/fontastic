@@ -1,0 +1,44 @@
+.tabs {
+    list-style: none;
+    padding-left: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    margin: 0;
+    height: 38px;
+}
+
+.tabs li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+    text-align: center;
+    background-color: inherit;
+    cursor: pointer;
+    transition: background-color 0.45s ease-in-out;
+}
+
+.tabs li:last-of-type {
+    border-right: unset !important;
+}
+
+.tabs li.tabs-panel-open {
+    border-bottom: none !important;
+}
+
+.tabs li>a {
+    text-decoration: none;
+}
+
+@media (max-width: 480px) {
+    .tabs {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tabs-content {
+    position: relative;
+    height: 100%;
+}
