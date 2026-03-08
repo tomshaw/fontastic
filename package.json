@@ -1,11 +1,12 @@
 {
   "name": "fontastic",
-  "version": "1.0.0",
-  "description": "Fontastic - Desktop Font Management",
-  "homepage": "",
+  "version": "0.2.0",
+  "description": "A gorgeous multi-platform font management application.",
+  "homepage": "https://github.com/tomshaw/fontastic",
+  "private": false,
   "author": {
     "name": "Tom Shaw",
-    "email": ""
+    "email": "tom@tomshaw.us"
   },
   "keywords": [
     "angular",
@@ -22,7 +23,6 @@
     "linux"
   ],
   "main": "app/main.js",
-  "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
