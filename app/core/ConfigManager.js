@@ -54,7 +54,7 @@ class ConfigManager {
         // database.connections = this.systemManager.isProduction() ? database.connections.filter((item: any) => item.name === 'default') : database.connections;
         // Assign user data path to default database.
         database_1.database.connections = database_1.database.connections.filter((item) => {
-            if (item.name === 'default' && item.type === 'sqlite') {
+            if (item.name === 'default' && item.type === 'better-sqlite3') {
                 item.database = this.systemManager.getDatabasePath(item.database);
             }
             return item;
@@ -65,7 +65,7 @@ class ConfigManager {
         else {
             // Ensure the default SQLite connection exists and has the correct path.
             const connections = store.connections || [];
-            const defaultConn = connections.find((item) => item.name === 'default' && item.type === 'sqlite');
+            const defaultConn = connections.find((item) => item.name === 'default' && item.type === 'better-sqlite3');
             if (defaultConn) {
                 defaultConn.database = this.systemManager.getDatabasePath('fontastic.sqlite');
             }
@@ -75,7 +75,7 @@ class ConfigManager {
             // Ensure at least the default SQLite connection is enabled.
             const hasEnabled = connections.some((item) => item.enabled);
             if (!hasEnabled) {
-                const sqliteConn = connections.find((item) => item.name === 'default' && item.type === 'sqlite');
+                const sqliteConn = connections.find((item) => item.name === 'default' && item.type === 'better-sqlite3');
                 if (sqliteConn)
                     sqliteConn.enabled = true;
             }
