@@ -48,6 +48,9 @@ testem.log
 /e2e/tracing
 /e2e/screenshots
 
+# Database
+*.sqlite
+
 # System Files
 .DS_Store
 Thumbs.db

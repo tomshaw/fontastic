@@ -29,10 +29,10 @@ class ConnectionManager {
     }
     getDefaultOptions(allConnections) {
         // Prefer sqlite from enabled options, then from all connections as fallback.
-        const fromEnabled = this.options.find((item) => item.type === 'sqlite');
+        const fromEnabled = this.options.find((item) => item.type === 'better-sqlite3');
         if (fromEnabled)
             return this.discardOmitables(fromEnabled);
-        const fromAll = allConnections.find((item) => item.type === 'sqlite');
+        const fromAll = allConnections.find((item) => item.type === 'better-sqlite3');
         if (fromAll)
             return this.discardOmitables(Object.assign(Object.assign({}, fromAll), { entities: this.schemas, subscribers: this.subscribers, migrations: this.migrations }));
         return this.discardOmitables(this.options[0]);

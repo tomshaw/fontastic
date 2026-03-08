@@ -84,7 +84,7 @@
     <div class="flex-1 flex items-center justify-center gap-3">
       <input
         type="text"
-        class="form-input w-75"
+        class="form-input w-52"
         placeholder="Enter preview text..."
         [value]="displayText"
         (input)="handleDisplayInput($event)"
@@ -110,7 +110,7 @@
       }
     </div>
 
-    <div class="flex-1 flex items-center justify-center gap-2">
+    <div class="flex items-center gap-2 mx-6">
       <input type="color" class="color-picker" [value]="colorPickerValue()" (input)="handleFontColor($event)" />
       <input type="color" class="color-picker" [value]="bgPickerValue()" (input)="handleBackgroundColor($event)" />
     </div>

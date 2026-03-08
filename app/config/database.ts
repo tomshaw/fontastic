@@ -4,11 +4,11 @@
  */
 
 export const database = {
-  drivers: ['sqlite', 'mysql', 'sqlserver', 'oracle', 'hana', 'sqljs'],
+  drivers: ['better-sqlite3', 'mysql', 'sqlserver', 'oracle', 'hana'],
   connections: [
     {
       name: 'default',
-      type: 'sqlite',
+      type: 'better-sqlite3',
       title: 'Default Database.',
       description: 'The default application database.',
       enabled: true,
