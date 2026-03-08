@@ -7,7 +7,7 @@ test.describe('Check Home Page', () => {
   let firstWindow: Page;
   let context: BrowserContext;
 
-  test.beforeAll( async () => {
+  test.beforeAll(async () => {
     app = await electron.launch({ args: [PATH.join(__dirname, '../app/main.js'), PATH.join(__dirname, '../app/package.json')] });
     context = app.context();
     await context.tracing.start({ screenshots: true, snapshots: true });
@@ -16,7 +16,6 @@ test.describe('Check Home Page', () => {
   });
 
   test('Launch electron app', async () => {
-
     const windowState: { isVisible: boolean; isDevToolsOpened: boolean; isCrashed: boolean } = await app.evaluate(async (process) => {
       const mainWindow = process.BrowserWindow.getAllWindows()[0];
 
@@ -47,12 +46,11 @@ test.describe('Check Home Page', () => {
   // });
 
   test('Check title', async () => {
-    const elem = await firstWindow.$('app-home h1');
-    const text = elem ? await elem.innerText() : null;
-    expect(text).toBe('App works !');
+    const title = await firstWindow.title();
+    expect(title).toBe('Fontastic');
   });
 
-  test.afterAll( async () => {
+  test.afterAll(async () => {
     await context.tracing.stop({ path: 'e2e/tracing/trace.zip' });
     await app.close();
   });
