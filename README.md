@@ -12,19 +12,18 @@
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
 
-Fontastic is a stunning font management and cataloging application. 
+Fontastic is a cross-platform font management and cataloging application built with Angular and Electron.
 
-- A gorgeous interface.
-- Font cataloging and management.
-- Multi platform font installation.
-- Multi database support.
-- Imports to catalog or inplace.
-- A selection of gorgeous themes.
-- Open source and completely free.
+## Features
+
+- Nested collections — organize fonts into hierarchical groups with drag-and-drop
+- Advanced search — quickly find fonts with powerful search and filtering
+- Glyph inspector — browse and examine individual characters and Unicode points
+- Waterfall preview — compare text rendering across multiple sizes at a glance
+- Font table viewer — read raw OpenType and TrueType metadata tables
+- Cross-platform — builds for Windows, macOS, and Linux
 
 ## Getting Started
-
-🔧 Fontastic is under active development, some features may break or change over time.
 
 *Clone this repository locally:*
 
@@ -32,57 +31,50 @@ Fontastic is a stunning font management and cataloging application.
 git clone https://github.com/tomshaw/fontastic.git
 ```
 
-Please use `npm` as dependencies manager. 
-
-Install dependencies with npm.
+Install dependencies with npm:
 
 ``` bash
 npm install
 ```
 
-Run the application in development mode.
+Run the application in development mode:
 
 ``` bash
 npm start
 ```
 
----
+## Tech Stack
 
-## Activator
+| Category | Technology |
+|---|---|
+| Framework | [Angular](https://angular.dev) 21 |
+| Desktop | [Electron](https://electronjs.org) 40 |
+| Language | [TypeScript](https://www.typescriptlang.org) 5.9 |
+| Database | [TypeORM](https://typeorm.io) + SQLite |
+| Font Parsing | [Fontkit](https://github.com/foliojs/fontkit) |
+| Styling | [Tailwind CSS](https://tailwindcss.com) 4 + SCSS |
+| i18n | [@ngx-translate](https://github.com/ngx-translate/core) |
+| Testing | [Vitest](https://vitest.dev) + [Playwright](https://playwright.dev) |
+| Linting | [ESLint](https://eslint.org) + [Prettier](https://prettier.io) |
+| Packaging | [electron-builder](https://www.electron.build) |
 
-Fontastic uses [Activator](https://github.com/tomshaw/activator) a multi platform Go executable for font installation and management. 📡
+## Requirements
 
-## Screen Shots
-
-As part of the documentation you can check out [screenshots here.](docs/screenshots/readme.md)
-
-## Libraries Used
-
-Fontastic was created with [Angular Electron](https://github.com/maximegris/angular-electron) an excellent boilerplate for Angular Electron applications
-
-+ [Electron.js](https://electronjs.org) - Build cross platform desktop apps with JavaScript, HTML, and CSS.
-+ [Angular.js](https://github.com/angular/angular) - Development platform for building web and desktop applications
-+ [Typeorm](https://github.com/typeorm/typeorm) - Data-Mapper ORM for TypeScript, ES7, ES6, ES5 with multi database support.
-+ [opentype.js](https://github.com/opentypejs/opentype.js) - JavaScript parser and writer for TrueType and OpenType fonts.
+- Node.js >= 22.12.0
 
 ## Resources
+
 Need free fonts for testing?
 
-+ [IBM Plex](https://github.com/IBM/plex) Meet the IBM Plex typeface, our new corporate typeface family.
-+ [Inter](https://github.com/rsms/inter/releases/tag/v3.19) A typeface carefully crafted & designed for computer screens.
-+ [Type Wolf](https://www.typewolf.com/google-fonts) An outstanding typography resource for designers.
-+ [Font Squirrell](https://www.fontsquirrel.com/) Great resource of hand-picked, high-quality, commercial-use fonts.
-+ [Google Fonts](https://github.com/google/fonts) Download all 3K Google Fonts. Great for testing processing speeds. 
-
-If you're using Fontastic, consider 🌟 [starring or contributing][repo] on GitHub! 🎉
++ [IBM Plex](https://github.com/IBM/plex) - IBM's corporate typeface family.
++ [Inter](https://github.com/rsms/inter) - A typeface designed for computer screens.
++ [Type Wolf](https://www.typewolf.com/google-fonts) - Typography resource for designers.
++ [Font Squirrel](https://www.fontsquirrel.com/) - Hand-picked, high-quality, commercial-use fonts.
++ [Google Fonts](https://github.com/google/fonts) - Download all Google Fonts.
 
 ## Contributing
 
-The contribution guide can be found here [Contribution Guide](CONTRIBUTING.md).
-
-## Code of Conduct
-
-Please review and abide by the [Code of Conduct](CODE_OF_CONDUCT.md). 🚫
+See the [Contribution Guide](CONTRIBUTING.md).
 
 ## License
 
