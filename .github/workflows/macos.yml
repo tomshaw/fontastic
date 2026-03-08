@@ -6,10 +6,10 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -49,12 +49,6 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
-
-    - name: Install macOS dependencies
-      if: matrix.platform == 'macos-latest'
-      run: |
-        brew install gnu-tar coreutils
-        echo "Homebrew dependencies installed"
 
     - name: Install Dependencies
       uses: nick-fields/retry@v3

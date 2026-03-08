@@ -94,11 +94,11 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           git stash
-          git pull --rebase origin main
+          git pull --rebase origin master
           git stash pop
           git add package.json app/package.json
           git commit -m "[Bumped Version] ${VERSION}"
-          git push origin main
+          git push origin master
           git tag "${VERSION}"
           git push origin "${VERSION}"
 
