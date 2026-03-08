@@ -1,0 +1,15 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title"><h3>Theme</h3></div>
+  </div>
+  <div class="card-body">
+    <div>
+      <label class="form-label" for="theme">Selected theme</label>
+      <select id="theme" class="form-select w-full" [ngModel]="presentation.theme()" (ngModelChange)="onThemeChange($event)" name="theme">
+        @for (t of themes; track t.key) {
+          <option [value]="t.key">{{ t.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+</div>

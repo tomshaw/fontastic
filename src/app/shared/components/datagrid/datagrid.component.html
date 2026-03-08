@@ -1,0 +1,96 @@
+<div class="panel">
+  <div class="h-full scrollbox-y">
+    <table class="w-full border-separate border-spacing-0">
+      <thead
+        class="sticky top-0 z-10"
+        [style.background-color]="'var(--surface-2)'"
+        [style.box-shadow]="'inset 0 -1px 0 0 var(--border-subtle)'"
+      >
+        <tr class="text-left text-[11px] uppercase tracking-wide" [style.color]="'var(--text-muted)'">
+          <th class="w-10 px-2 py-2 text-center font-medium"></th>
+          <th class="px-4 py-2 font-medium">Name</th>
+          <th class="px-4 py-2 font-medium">Family</th>
+          <th class="px-4 py-2 font-medium">Style</th>
+          <th class="px-4 py-2 font-medium">Type</th>
+          <th class="px-4 py-2 font-medium">Size</th>
+          <th class="px-4 py-2 font-medium">Version</th>
+          <th class="px-4 py-2 font-medium">Designer</th>
+          <th class="w-10 px-2 py-2 text-center font-medium"></th>
+          <th class="w-10 px-2 py-2 text-center font-medium"></th>
+          <th class="w-10 px-2 py-2 text-center font-medium"></th>
+        </tr>
+      </thead>
+      <tbody class="text-xs">
+        @for (store of db.stores(); track store.id) {
+          <tr
+            class="cursor-pointer transition-colors"
+            [style.border-bottom]="'1px solid var(--border-subtle)'"
+            [id]="'grid-store-' + store.id"
+            [style.background-color]="db.storeId() === store.id ? 'var(--selected-bg)' : 'transparent'"
+            (click)="selectStore(store.id)"
+            (mouseenter)="
+              $any($event.currentTarget).style.backgroundColor = db.storeId() === store.id ? 'var(--selected-bg)' : 'var(--hover-bg)'
+            "
+            (mouseleave)="
+              $any($event.currentTarget).style.backgroundColor = db.storeId() === store.id ? 'var(--selected-bg)' : 'transparent'
+            "
+          >
+            <td class="w-10 px-2 py-1.5 text-center">
+              <span
+                class="inline-block h-3.5 w-3.5 rounded-full border-2 cursor-pointer"
+                [style.border-color]="db.storeId() === store.id ? 'var(--accent)' : 'var(--text-muted)'"
+                [style.background]="
+                  db.storeId() === store.id ? 'radial-gradient(circle, var(--accent) 40%, transparent 41%)' : 'transparent'
+                "
+                (click)="$event.stopPropagation(); selectStore(store.id)"
+              ></span>
+            </td>
+            <td class="px-4 py-1.5" [style.color]="'var(--text-primary)'">{{ store.full_name || store.file_name }}</td>
+            <td class="px-4 py-1.5" [style.color]="'var(--text-secondary)'">{{ store.font_family }}</td>
+            <td class="px-4 py-1.5" [style.color]="'var(--text-secondary)'">{{ store.font_subfamily }}</td>
+            <td class="px-4 py-1.5" [style.color]="'var(--text-secondary)'">{{ store.file_type }}</td>
+            <td class="px-4 py-1.5" [style.color]="'var(--text-secondary)'">{{ store.file_size_pretty }}</td>
+            <td class="px-4 py-1.5" [style.color]="'var(--text-secondary)'">{{ store.version }}</td>
+            <td class="px-4 py-1.5 max-w-48 truncate" [style.color]="'var(--text-secondary)'">{{ store.designer }}</td>
+            <td class="w-10 px-2 py-1.5 text-center">
+              <span
+                class="cursor-pointer select-none text-lg transition-colors"
+                [style.color]="store.favorite ? '#ef4444' : 'var(--text-muted)'"
+                (click)="toggleFavorite($event, store)"
+                title="Toggle favorite"
+              >
+                {{ store.favorite ? '&#9829;' : '&#9825;' }}
+              </span>
+            </td>
+            <td class="w-10 px-2 py-1.5 text-center">
+              <span
+                class="material-symbols-outlined cursor-pointer select-none transition-colors hover:opacity-80"
+                style="font-size: 18px"
+                [style.color]="'var(--text-muted)'"
+                (click)="openFileLocation($event, store)"
+                title="Reveal in Finder"
+              >
+                folder_open
+              </span>
+            </td>
+            <td class="w-10 px-2 py-1.5 text-center">
+              <span
+                class="material-symbols-outlined cursor-pointer select-none transition-colors hover:opacity-80"
+                style="font-size: 18px"
+                [style.color]="'var(--text-muted)'"
+                (click)="openFileViewer($event, store)"
+                title="Open with default app"
+              >
+                open_in_new
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="11" class="px-4 py-8 text-center" [style.color]="'var(--text-muted)'">Select a collection to view fonts</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

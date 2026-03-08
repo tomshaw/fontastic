@@ -1,0 +1,46 @@
+<div
+  class="grid h-full overflow-hidden"
+  [style.grid-template-rows]="
+    (presentation.searchEnabled() ? '1fr ' : '') +
+    (presentation.previewEnabled() ? '1fr ' : '') +
+    (presentation.inspectEnabled() ? '1fr ' : '') +
+    (presentation.waterfallEnabled() ? '1fr ' : '') +
+    (presentation.toolbarEnabled() ? '42px ' : '') +
+    (presentation.gridEnabled() ? '1fr' : '')
+  "
+>
+  @if (presentation.searchEnabled()) {
+    <app-panel class="overflow-auto" [style.border-bottom]="'1px solid var(--border-subtle)'">
+      <app-search />
+    </app-panel>
+  }
+  @if (presentation.previewEnabled()) {
+    <app-panel class="overflow-auto" [style.border-bottom]="'1px solid var(--border-subtle)'">
+      <app-preview />
+    </app-panel>
+  }
+  @if (presentation.inspectEnabled()) {
+    <app-panel class="overflow-auto" [style.border-bottom]="'1px solid var(--border-subtle)'">
+      <app-inspector />
+    </app-panel>
+  }
+  @if (presentation.waterfallEnabled()) {
+    <app-panel class="overflow-auto" [style.border-bottom]="'1px solid var(--border-subtle)'">
+      <app-waterfall />
+    </app-panel>
+  }
+  @if (presentation.toolbarEnabled()) {
+    <app-panel
+      class="overflow-hidden"
+      [style.border-bottom]="'1px solid var(--border-subtle)'"
+      [style.background-color]="'var(--surface-2)'"
+    >
+      <app-toolbar />
+    </app-panel>
+  }
+  @if (presentation.gridEnabled()) {
+    <app-panel class="overflow-hidden">
+      <app-datagrid />
+    </app-panel>
+  }
+</div>

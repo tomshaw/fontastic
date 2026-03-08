@@ -1,14 +1,32 @@
-<div class="application main" [class.navigation]="navigationEnabled" [class.aside]="asideEnabled">
-  <app-header></app-header>
-  <app-navigation></app-navigation>
-  <main>
-    <router-outlet></router-outlet>
-  </main>
-  <app-aside></app-aside>
-  <app-footer></app-footer>
+<div class="grid h-screen grid-rows-[56px_1fr_32px]" [style.background-color]="'var(--surface-0)'">
+  <app-header
+    class="col-span-full"
+    [style.background-color]="'var(--surface-2)'"
+    [style.border-bottom]="'1px solid var(--border-subtle)'"
+  />
+  <div
+    class="grid overflow-hidden"
+    [style.grid-template-columns]="
+      (presentation.navigationEnabled() ? '280px ' : '') + '1fr' + (presentation.asideEnabled() ? ' 280px' : '')
+    "
+  >
+    @if (presentation.navigationEnabled()) {
+      <app-navigation
+        class="overflow-auto"
+        [style.background-color]="'var(--surface-1)'"
+        [style.border-right]="'1px solid var(--border-subtle)'"
+      />
+    }
+    <div class="overflow-auto" [style.background-color]="'var(--surface-1)'">
+      <router-outlet />
+    </div>
+    @if (presentation.asideEnabled()) {
+      <app-aside
+        class="overflow-auto"
+        [style.background-color]="'var(--surface-1)'"
+        [style.border-left]="'1px solid var(--border-subtle)'"
+      />
+    }
+  </div>
+  <app-footer class="col-span-full" [style.background-color]="'var(--surface-2)'" [style.border-top]="'1px solid var(--border-subtle)'" />
 </div>
-
-<app-glyph></app-glyph>
-<app-settings></app-settings>
-<app-update-collection></app-update-collection>
-<app-create-collection></app-create-collection>

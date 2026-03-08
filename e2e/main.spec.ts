@@ -47,10 +47,11 @@ test.describe('Check Home Page', () => {
   // });
 
   test('Check title', async () => {
-    const title = await firstWindow.title();
-    expect(title).toBe('Fontastic');
+    const elem = await firstWindow.$('app-home h1');
+    const text = elem ? await elem.innerText() : null;
+    expect(text).toBe('App works !');
   });
-  
+
   test.afterAll( async () => {
     await context.tracing.stop({ path: 'e2e/tracing/trace.zip' });
     await app.close();

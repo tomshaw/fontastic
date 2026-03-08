@@ -1,94 +1,52 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { ConfigService } from '@app/core/services/config/config.service';
-import { MessageService } from '@app/core/services/message/message.service';
-import { LatestNewsModel } from '@app/core/model/LatestNewsModel';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { ElectronService } from '../electron/electron.service';
+import { MessageService } from '../message/message.service';
 import { StorageType } from '@main/enums';
-import { NewsType } from '@main/types';
+import type { NewsArticlesType, NewsType } from '@main/types';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class NewsService {
+  private readonly electron = inject(ElectronService);
+  private readonly message = inject(MessageService);
 
-  oneHour = 60 * 60 * 1000;
+  readonly config = signal<NewsType | null>(null);
 
-  endpoints: any = {
-    sources: 'https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=',
-    articles: 'https://newsapi.org/v2/top-headlines?country=us&apiKey=',
-    business: 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey='
-  };
+  readonly hasArticles = computed(() => {
+    const c = this.config();
+    return !!c?.apiKey && !!c?.articles?.length;
+  });
 
-  _latestNews = new BehaviorSubject(new LatestNewsModel());
-  watchLatestNews$ = this._latestNews.asObservable();
+  readonly articles = computed(() => this.config()?.articles ?? []);
+  readonly articleCount = computed(() => this.articles().length);
 
-  constructor(
-    private configService: ConfigService,
-    private messageService: MessageService
-  ) {
-    if (this.configService.has(StorageType.News)) {
-      this.setLatestNews(this.configService.get(StorageType.News));
-    }
+  readonly sourceCount = computed(() => {
+    const articles = this.articles();
+    return new Set(articles.map((a) => a.source?.name).filter(Boolean)).size;
+  });
 
-    this.fetchLatestNews();
+  readonly authorCount = computed(() => {
+    const articles = this.articles();
+    return new Set(articles.map((a) => a.author).filter(Boolean)).size;
+  });
+
+  readonly lastFetched = computed(() => {
+    const ts = this.config()?.ts;
+    if (!ts) return 'Never';
+    return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  });
+
+  constructor() {
+    this.electron.ready.then(() => this.refresh());
   }
 
-  get currentTime(): number {
-    return Date.now();
+  async refresh() {
+    const config = (await this.message.get(StorageType.News, null)) as NewsType | null;
+    this.config.set(config);
   }
 
-  get timeUTCString(): string {
-    return new Date(this.currentTime).toUTCString();
-  }
-
-  getLatestNews() {
-    return this._latestNews.getValue();
-  }
-
-  setLatestNews(items: any = []) {
-    this._latestNews.next(items);
-  }
-
-  checkTime(timeStamp: number): boolean {
-    return (timeStamp + this.oneHour) < this.currentTime;
-  }
-
-  getApiKey() {
-    return this.hasApiKey() ? this.getLatestNews().apiKey : false;
-  }
-
-  hasApiKey() {
-    return this.getLatestNews().apiKey ? true : false;
-  }
-
-  async fetchLatestNews(skipTimeCheck: boolean = false) {
-    if (!this.hasApiKey()) {
-      return;
-    }
-
-    const news = this.getLatestNews();
-
-    if (skipTimeCheck) {
-      return await this.sendRequest();
-    } else if (this.checkTime(news.ts)) {
-      return await this.sendRequest();
-    }
-  }
-
-  async sendRequest() {
-    const response: NewsType = await this.messageService.fetchLatestNews({
-      endpoint: this.endpoints.business + this.getApiKey()
-    });
-    
-    if (response?.status === 'ok') {
-      const saved = { ts: this.currentTime, articles: response.articles, apiKey: this.getLatestNews().apiKey };
-      this.setLatestNews(saved);
-      this.messageService.set(StorageType.News, saved);
-      this.messageService.log(`Updated news at: ${this.timeUTCString}`, 1);
-    } else {
-      this.messageService.log('Failed to fetch news articles.', 1);
-    }
-
-    return response;
+  randomArticle(): NewsArticlesType | null {
+    const list = this.articles();
+    if (!list.length) return null;
+    return list[Math.floor(Math.random() * list.length)];
   }
 }

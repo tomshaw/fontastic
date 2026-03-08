@@ -1,0 +1,36 @@
+<div class="panel">
+  <div class="h-full scrollbox-y flex flex-col gap-3 p-4">
+    @for (store of db.stores(); track store.id; let last = $last) {
+      <div
+        [class.border-b]="!last"
+        class="pb-3 cursor-pointer transition-colors rounded-sm"
+        [style.border-color]="'var(--border-subtle)'"
+        [id]="'preview-store-' + store.id"
+        [style.background-color]="db.storeId() === store.id ? 'var(--selected-bg)' : 'transparent'"
+        (click)="selectStore(store.id)"
+      >
+        <p class="text-[11px] mb-1 flex items-center" [style.color]="'var(--text-muted)'">
+          <span class="cursor-pointer hover:underline mr-1" [title]="store.file_path" (click)="openFileLocation($event, store)"
+            >{{ store.font_family }} {{ store.font_subfamily }}</span
+          >
+          <span>—</span>
+          <span class="cursor-pointer hover:underline ml-1" [title]="store.file_size" (click)="openFileViewer($event, store)"
+            >({{ store.file_size_pretty }})</span
+          >
+        </p>
+        <p
+          [style.font-size.px]="presentation.fontSize()"
+          [style.color]="presentation.fontColor()"
+          [style.background-color]="presentation.backgroundColor()"
+          [style.letter-spacing.px]="presentation.letterSpacing()"
+          [style.word-spacing.px]="presentation.wordSpacing()"
+          [style.font-family]="store.full_name || store.font_family"
+        >
+          {{ presentation.displayText() }}
+        </p>
+      </div>
+    } @empty {
+      <p class="text-center py-8 text-xs" [style.color]="'var(--text-muted)'">Select a collection to preview fonts</p>
+    }
+  </div>
+</div>

@@ -1,0 +1,41 @@
+@layer base {
+  body {
+    color: var(--text-secondary);
+    background-color: var(--surface-0);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+  }
+}
+
+/* ==========================================================================
+Application
+========================================================================== */
+
+body {
+  @apply w-screen h-screen overflow-hidden;
+}
+
+/* ==========================================================================
+Panel
+========================================================================== */
+
+.panel {
+  @apply w-full h-full overflow-hidden;
+}

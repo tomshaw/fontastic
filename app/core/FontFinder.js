@@ -10,77 +10,64 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const FontObject_1 = require("./FontObject");
-const fs = require("fs");
+const fs = require("fs/promises");
 const path = require("path");
 const mimes_1 = require("../config/mimes");
 const prettyBytes = require("pretty-bytes");
 const mime = require("mime");
-// https://stackoverflow.com/questions/10049557/reading-all-files-in-a-directory-store-them-in-objects-and-send-the-object
-class FileSystem {
+class FontFinder {
     constructor(connectionManager) {
-        this.counter = 0;
         this.errors = [];
-        this.found = [];
+        this.counter = 0;
         this.connectionManager = connectionManager;
-        this.counter = 0;
-        this.errors = [];
     }
-    setCounter(count) {
-        this.counter = count;
+    isFontFile(filePath) {
+        const fileType = mime.getType(filePath);
+        return fileType && mimes_1.mimeTypes.includes(fileType);
     }
-    getCounter() {
-        return this.counter;
-    }
-    scanFolders(dir, options, done) {
-        fs.readdir(dir, (err, list) => {
-            if (err)
-                return done(err);
-            let i = 0;
-            let next = () => {
-                let file = list[i++];
-                if (!file)
-                    return done(null, this);
-                let fp = path.resolve(dir, file);
-                fs.stat(fp, (err, stat) => __awaiter(this, void 0, void 0, function* () {
-                    if (stat && stat.isDirectory()) {
-                        this.scanFolders(fp, options, (err, res) => next());
-                    }
-                    else {
-                        this.fontInstall(fp, stat, options);
-                        next();
-                    }
-                }));
-            };
-            next();
+    scanFiles(files, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const fp of files) {
+                if (this.isFontFile(fp)) {
+                    const stat = yield fs.stat(fp);
+                    yield this.processFont(fp, stat, options);
+                }
+            }
         });
     }
-    scanFiles(files, options, done) {
-        files.forEach((fp) => __awaiter(this, void 0, void 0, function* () {
-            let stat = fs.statSync(fp);
-            if (stat.isFile()) {
-                this.fontInstall(fp, stat, options);
+    scanFolder(dir, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const entries = yield fs.readdir(dir, { withFileTypes: true });
+            for (const entry of entries) {
+                const fp = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                    yield this.scanFolder(fp, options);
+                }
+                else if (this.isFontFile(fp)) {
+                    const stat = yield fs.stat(fp);
+                    yield this.processFont(fp, stat, options);
+                }
             }
-        }));
-        return done(null, this);
+        });
     }
-    fontInstall(fp, stat, options) {
-        let font = new FontObject_1.default(fp);
-        if (font.hasError()) {
-            this.errors.push(font.getError());
-        }
-        else {
-            let fileSize = stat.size;
-            let fileType = mime.getType(fp);
-            let data = Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: fileSize, file_size_pretty: prettyBytes(fileSize), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options);
+    processFont(fp, stat, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const font = new FontObject_1.default(fp);
+            if (font.hasError()) {
+                this.errors.push(font.getError());
+                return;
+            }
+            const fileType = mime.getType(fp);
+            const data = Object.assign(Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: stat.size, file_size_pretty: prettyBytes(stat.size), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options), font.getNamesTable());
             try {
-                this.connectionManager.getStoreRepository().create(Object.assign(Object.assign({}, data), font.getNamesTable()));
+                yield this.connectionManager.getStoreRepository().create(data);
+                this.counter++;
             }
             catch (err) {
                 this.errors.push(err.message);
             }
-            this.counter++;
-        }
+        });
     }
 }
-exports.default = FileSystem;
+exports.default = FontFinder;
 //# sourceMappingURL=FontFinder.js.map

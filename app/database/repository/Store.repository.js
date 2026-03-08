@@ -19,53 +19,117 @@ exports.StoreRepository = {
             const db = this.createQueryBuilder();
             if (options.where && options.where.length) {
                 const where = options.where;
-                const builder = [];
-                let isAndWhere = false;
+                const andConditions = [];
+                // Search term with optional field restriction
                 const hasSearchTerm = where.some((item) => item.key === 'term');
                 if (hasSearchTerm) {
                     const searchTerm = where.find((item) => item.key === 'term');
-                    config_1.searchDbColumns.forEach((item) => {
-                        builder.push({
-                            key: item,
-                            type: 'like',
-                            value: searchTerm.value.toLowerCase()
+                    const searchFieldsEntry = where.find((item) => item.key === 'search_fields');
+                    const columns = searchFieldsEntry && searchFieldsEntry.value.length > 0 ? searchFieldsEntry.value : config_1.searchDbColumns;
+                    const value = searchTerm.value.toLowerCase();
+                    andConditions.push((qb) => {
+                        columns.forEach((col, i) => {
+                            if (i === 0) {
+                                qb.where(`LOWER(${col}) LIKE :term`, { term: `%${value}%` });
+                            }
+                            else {
+                                qb.orWhere(`LOWER(${col}) LIKE :term`, { term: `%${value}%` });
+                            }
                         });
                     });
                 }
+                // File type filter
                 const hasFileTypes = where.some((item) => item.key === 'file_type');
                 if (hasFileTypes) {
                     const fileTypes = where.find((item) => item.key === 'file_type');
                     if (fileTypes && fileTypes.value.length) {
-                        isAndWhere = true;
-                        db.where(`${fileTypes.key} IN (:...mimes)`, { mimes: fileTypes.value });
+                        andConditions.push((qb) => {
+                            qb.where(`file_type IN (:...mimes)`, { mimes: fileTypes.value });
+                        });
                     }
                 }
-                if (isAndWhere) {
-                    db.andWhere(new typeorm_1.Brackets((qb) => {
-                        builder.forEach((item, i) => {
-                            const column = item.key;
-                            const value = item.value;
-                            if (i === 0) {
-                                qb.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
-                            }
-                            else {
-                                qb.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
-                            }
-                        });
-                    }));
-                }
-                else {
-                    builder.forEach((item, i) => {
-                        const column = item.key;
-                        const value = item.value;
-                        if (i === 0) {
-                            db.where(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
-                        }
-                        else {
-                            db.orWhere(`LOWER(${column}) LIKE :placeholder`, { placeholder: `%${value}%` });
-                        }
+                // Status filters
+                const favoriteEntry = where.find((item) => item.key === 'favorite');
+                if (favoriteEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.favorite = :fav`, { fav: favoriteEntry.value });
                     });
                 }
+                const systemEntry = where.find((item) => item.key === 'system');
+                if (systemEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.system = :sys`, { sys: systemEntry.value });
+                    });
+                }
+                const installableEntry = where.find((item) => item.key === 'installable');
+                if (installableEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.installable = :inst`, { inst: installableEntry.value });
+                    });
+                }
+                // Collection filter
+                const collectionEntry = where.find((item) => item.key === 'collection_id');
+                if (collectionEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.collection_id = :colId`, { colId: collectionEntry.value });
+                    });
+                }
+                // Designer text filter
+                const designerEntry = where.find((item) => item.key === 'designer');
+                if (designerEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`LOWER(store.designer) LIKE :designer`, { designer: `%${designerEntry.value.toLowerCase()}%` });
+                    });
+                }
+                // Manufacturer text filter
+                const manufacturerEntry = where.find((item) => item.key === 'manufacturer');
+                if (manufacturerEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`LOWER(store.manufacturer) LIKE :manufacturer`, { manufacturer: `%${manufacturerEntry.value.toLowerCase()}%` });
+                    });
+                }
+                // Font subfamily text filter
+                const subfamilyEntry = where.find((item) => item.key === 'font_subfamily');
+                if (subfamilyEntry) {
+                    andConditions.push((qb) => {
+                        qb.where(`LOWER(store.font_subfamily) LIKE :subfamily`, { subfamily: `%${subfamilyEntry.value.toLowerCase()}%` });
+                    });
+                }
+                // File size range
+                const fileSizeMin = where.find((item) => item.key === 'file_size_min');
+                if (fileSizeMin) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.file_size >= :sizeMin`, { sizeMin: fileSizeMin.value });
+                    });
+                }
+                const fileSizeMax = where.find((item) => item.key === 'file_size_max');
+                if (fileSizeMax) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.file_size <= :sizeMax`, { sizeMax: fileSizeMax.value });
+                    });
+                }
+                // Date range
+                const dateFrom = where.find((item) => item.key === 'date_from');
+                if (dateFrom) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.created >= :dateFrom`, { dateFrom: dateFrom.value });
+                    });
+                }
+                const dateTo = where.find((item) => item.key === 'date_to');
+                if (dateTo) {
+                    andConditions.push((qb) => {
+                        qb.where(`store.created <= :dateTo`, { dateTo: dateTo.value + ' 23:59:59' });
+                    });
+                }
+                // Apply all conditions with AND logic
+                andConditions.forEach((condition, i) => {
+                    if (i === 0) {
+                        db.where(new typeorm_1.Brackets(condition));
+                    }
+                    else {
+                        db.andWhere(new typeorm_1.Brackets(condition));
+                    }
+                });
             }
             if (options.take) {
                 db.limit(options.take);
@@ -74,12 +138,9 @@ exports.StoreRepository = {
                 db.offset(options.skip);
             }
             if (options.order && options.order.column) {
-                const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
+                const direction = options.order.direction === 'DESC' ? 'DESC' : 'ASC';
                 db.orderBy(`store.${options.order.column}`, direction);
             }
-            // console.log(db.printSql());
-            // console.log(db.getSql());
-            // console.log(db.getQuery());
             return yield db.getManyAndCount();
         });
     },
@@ -87,7 +148,7 @@ exports.StoreRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             const db = this.createQueryBuilder();
             if (options.ids && options.ids.length) {
-                db.where("store.collection_id IN (:...ids)", { ids: options.ids });
+                db.where('store.collection_id IN (:...ids)', { ids: options.ids });
             }
             else if (options.where && options.where.length) {
                 options.where.forEach((item, i) => {
@@ -108,53 +169,23 @@ exports.StoreRepository = {
                 db.offset(options.skip);
             }
             if (options.order && options.order.column) {
-                const direction = (options.order.direction === 'DESC') ? 'DESC' : 'ASC';
+                const direction = options.order.direction === 'DESC' ? 'DESC' : 'ASC';
                 db.orderBy(`store.${options.order.column}`, direction);
             }
-            // console.log(db.printSql());
-            // console.log(db.getSql());
-            // console.log(db.getQuery());
             return yield db.getManyAndCount();
         });
     },
     update(id, data) {
-        return this.createQueryBuilder().update(entity_1.Store)
-            .set(data)
-            .where("id = :id", { id: id })
-            .execute();
-    },
-    activateByIds(ids, activated) {
-        return this.createQueryBuilder().update(entity_1.Store)
-            .set({ activated: activated })
-            .where("id IN (:...ids)", { ids: ids })
-            .execute();
-    },
-    temporaryByIds(ids, activated) {
-        return this.createQueryBuilder().update(entity_1.Store)
-            .set({ temporary: activated })
-            .where("id IN (:...ids)", { ids: ids })
-            .execute();
-    },
-    activateCollection(collectionId, activated) {
-        return this.createQueryBuilder().update(entity_1.Store)
-            .set({ activated: activated })
-            .where("collection_id = :id", { id: collectionId })
-            .execute();
-    },
-    temporaryCollection(collectionId, activated) {
-        return this.createQueryBuilder().update(entity_1.Store)
-            .set({ temporary: activated })
-            .where("collection_id = :id", { id: collectionId })
-            .execute();
+        return this.createQueryBuilder().update(entity_1.Store).set(data).where('id = :id', { id: id }).execute();
     },
     resetTemporaryFonts(uptime) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield this.createQueryBuilder().where("store.temporary = 1").getMany();
+            const rows = yield this.createQueryBuilder().where('store.temporary = 1').getMany();
             const now = new Date().getTime();
             rows.forEach((row) => {
-                let updated = new Date(row.updated).getTime() + (1000 * uptime);
+                let updated = new Date(row.updated).getTime() + 1000 * uptime;
                 if (updated < now) {
-                    this.createQueryBuilder().update(entity_1.Store).set({ temporary: 0 }).where("id = :id", { id: row.id }).execute();
+                    this.createQueryBuilder().update(entity_1.Store).set({ temporary: 0 }).where('id = :id', { id: row.id }).execute();
                 }
             });
             return rows;
@@ -162,59 +193,38 @@ exports.StoreRepository = {
     },
     deleteCollection(collectionId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.createQueryBuilder().delete().where("collection_id = :id", { id: collectionId }).execute();
+            return yield this.createQueryBuilder().delete().where('collection_id = :id', { id: collectionId }).execute();
         });
     },
     resetSystem() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.createQueryBuilder().delete().where("store.system = 1").execute();
+            return yield this.createQueryBuilder().delete().where('store.system = 1').execute();
         });
     },
     resetFavorites() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.createQueryBuilder().update(entity_1.Store).set({ favorite: 0 }).where("store.favorite = 1").execute();
-        });
-    },
-    resetActivated() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.createQueryBuilder().update(entity_1.Store).set({ activated: 0 }).where("store.activated = 1").execute();
-        });
-    },
-    syncActivated() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const results = yield this.createQueryBuilder("store").select(['store.file_name']).where("store.system = 1").getMany();
-            const fileNames = results.map((item) => item.file_name);
-            return yield this.createQueryBuilder()
-                .update(entity_1.Store)
-                .set({ activated: 1 })
-                .where("store.system = 0")
-                .andWhere("store.file_name IN (:...names)", { names: fileNames })
-                //.getQuery();
-                .execute();
+            return yield this.createQueryBuilder().update(entity_1.Store).set({ favorite: 0 }).where('store.favorite = 1').execute();
         });
     },
     fetchCollectionItems(collectionId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.createQueryBuilder()
-                .select("store.id", "id")
+                .select('store.id', 'id')
                 .where({ collection_id: (0, typeorm_1.Equal)(collectionId) })
                 .getRawMany();
         });
     },
     fetchCollectionCount(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.createQueryBuilder()
-                .select("COUNT(*)", "total")
-                .where("store.collection_id = :id", { id: id })
-                .getRawOne();
+            return yield this.createQueryBuilder().select('COUNT(*)', 'total').where('store.collection_id = :id', { id: id }).getRawOne();
         });
     },
     fetchCollectionsCount() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.createQueryBuilder()
-                .select("store.collection_id", "collection_id")
-                .addSelect("COUNT(*)", "total")
-                .groupBy("store.collection_id")
+                .select('store.collection_id', 'collection_id')
+                .addSelect('COUNT(*)', 'total')
+                .groupBy('store.collection_id')
                 .getRawMany();
         });
     },
@@ -222,16 +232,15 @@ exports.StoreRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             let data = {};
             data.collection_id = item.collection_id;
-            data.file_name = (item.file_name) ? item.file_name : "";
-            data.file_path = (item.file_path) ? item.file_path : "";
-            data.file_size = (item.file_size) ? item.file_size : 0;
-            data.file_size_pretty = (item.file_size_pretty) ? item.file_size_pretty : "";
-            data.file_type = (item.file_type) ? item.file_type : "";
-            data.installable = (item.installable) ? item.installable : 0;
-            data.activated = (item.activated) ? item.activated : 0;
-            data.temporary = (item.temporary) ? item.temporary : 0;
-            data.favorite = (item.favorite) ? item.favorite : 0;
-            data.system = (item.system) ? item.system : 0;
+            data.file_name = item.file_name ? item.file_name : '';
+            data.file_path = item.file_path ? item.file_path : '';
+            data.file_size = item.file_size ? item.file_size : 0;
+            data.file_size_pretty = item.file_size_pretty ? item.file_size_pretty : '';
+            data.file_type = item.file_type ? item.file_type : '';
+            data.installable = item.installable ? item.installable : 0;
+            data.temporary = item.temporary ? item.temporary : 0;
+            data.favorite = item.favorite ? item.favorite : 0;
+            data.system = item.system ? item.system : 0;
             if (item.compatible_full_name && item.compatible_full_name !== '') {
                 data.compatible_full_name = item.compatible_full_name;
             }
@@ -290,39 +299,27 @@ exports.StoreRepository = {
                 data.version = item.version;
             }
             //@todo Log errors in log table.
-            return yield this.createQueryBuilder().insert().into(entity_1.Store).values(data).execute().catch((err) => console.log('insert-error', err));
+            return yield this.createQueryBuilder()
+                .insert()
+                .into(entity_1.Store)
+                .values(data)
+                .execute()
+                .catch((err) => console.log('insert-error', err));
         });
     },
     fetchSystemStats() {
         return __awaiter(this, void 0, void 0, function* () {
-            const rowCount = yield this.createQueryBuilder()
-                .select("COUNT(*)", "total")
-                .getRawOne();
-            const activatedCount = yield this.createQueryBuilder()
-                .select("COUNT(*)", "total")
-                .where("store.activated = 1")
-                .andWhere("store.system = 0")
-                .getRawOne();
-            const favoriteCount = yield this.createQueryBuilder()
-                .select("COUNT(*)", "total")
-                .where("store.favorite = 1")
-                .getRawOne();
-            const systemCount = yield this.createQueryBuilder()
-                .select("COUNT(*)", "total")
-                .where("store.system = 1")
-                .getRawOne();
-            const temporaryCount = yield this.createQueryBuilder()
-                .select("COUNT(*)", "total")
-                .where("store.temporary = 1")
-                .getRawOne();
+            const rowCount = yield this.createQueryBuilder().select('COUNT(*)', 'total').getRawOne();
+            const favoriteCount = yield this.createQueryBuilder().select('COUNT(*)', 'total').where('store.favorite = 1').getRawOne();
+            const systemCount = yield this.createQueryBuilder().select('COUNT(*)', 'total').where('store.system = 1').getRawOne();
+            const temporaryCount = yield this.createQueryBuilder().select('COUNT(*)', 'total').where('store.temporary = 1').getRawOne();
             return {
                 rowCount: rowCount.total,
-                activatedCount: activatedCount.total,
                 favoriteCount: favoriteCount.total,
                 systemCount: systemCount.total,
-                temporaryCount: temporaryCount.total
+                temporaryCount: temporaryCount.total,
             };
         });
-    }
+    },
 };
 //# sourceMappingURL=Store.repository.js.map

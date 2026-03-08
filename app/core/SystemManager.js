@@ -68,7 +68,9 @@ class ConfigManager {
         return path.join(os.tmpdir(), file);
     }
     getPlatformFontPaths() {
-        return system_1.systemFontPaths.get(this.getPlatform());
+        const paths = system_1.systemFontPaths.get(this.getPlatform()) || [];
+        const home = os.homedir();
+        return paths.map((p) => (p.startsWith('~') ? path.join(home, p.slice(1)) : p));
     }
     getUpTime() {
         let sec = os.uptime();
@@ -78,7 +80,7 @@ class ConfigManager {
             ts: sec,
             hours: Math.floor(hour) % 60,
             minutes: Math.floor(min) % 60,
-            seconds: Math.floor(sec) % 60
+            seconds: Math.floor(sec) % 60,
         };
     }
     getPlatform() {
@@ -102,37 +104,28 @@ class ConfigManager {
     getElectronVersion() {
         return process.versions.electron;
     }
-    getBinaryName() {
-        return (this.getPlatform() === 'win') ? 'activator.exe' : 'activator';
-    }
-    getBinaryPath() {
-        return this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
-    }
-    getExecutable() {
-        return path.resolve(path.join(this.getBinaryPath(), this.getBinaryName()));
-    }
     toArray() {
         return {
-            'uptime': this.getUpTime(),
-            'locale': this.getLocale(),
-            'is_dev': !this.isProduction,
-            'is_production': this.isProduction,
-            'is_x86': this.x86(),
-            'is_x64': this.x64(),
-            'is_mac': this.macOS(),
-            'is_windows': this.windows(),
-            'is_linux': this.linux(),
-            'cache_path': this.getCachePath(),
-            'app_path': this.getAppPath(),
-            'app_data_path': this.getAppDataPath(),
-            'user_data_path': this.getUserDataPath(),
-            'downloads_path': this.getDownloadsPath(),
-            'session_path': this.getSessionPath(),
-            'catalog_path': this.getCatalogPath(),
-            'version': {
-                'system': this.getAppVersion(),
-                'electron': this.getElectronVersion(),
-            }
+            uptime: this.getUpTime(),
+            locale: this.getLocale(),
+            is_dev: !this.isProduction,
+            is_production: this.isProduction,
+            is_x86: this.x86(),
+            is_x64: this.x64(),
+            is_mac: this.macOS(),
+            is_windows: this.windows(),
+            is_linux: this.linux(),
+            cache_path: this.getCachePath(),
+            app_path: this.getAppPath(),
+            app_data_path: this.getAppDataPath(),
+            user_data_path: this.getUserDataPath(),
+            downloads_path: this.getDownloadsPath(),
+            session_path: this.getSessionPath(),
+            catalog_path: this.getCatalogPath(),
+            version: {
+                system: this.getAppVersion(),
+                electron: this.getElectronVersion(),
+            },
         };
     }
 }

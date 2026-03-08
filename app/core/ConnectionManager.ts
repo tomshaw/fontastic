@@ -1,18 +1,17 @@
-import { DataSource, DataSourceOptions } from 'typeorm'
+import { DataSource, DataSourceOptions } from 'typeorm';
 import { Collection, Store, Logger } from '../database/entity';
 import { CollectionRepository, LoggerRepository, StoreRepository } from '../database/repository';
 import ConfigManager from './ConfigManager';
 import { StorageType } from '../enums/StorageType';
 
 export default class ConnectionManager {
-
   configManager: ConfigManager;
   options: DataSourceOptions[];
-  
+
   dataSource: DataSource;
 
   schemas: any[] = [Collection, Store, Logger];
-  subscribers: any[] = []
+  subscribers: any[] = [];
   migrations: any[] = [];
 
   omitables: any[] = ['title', 'description', 'enabled'];
@@ -20,13 +19,26 @@ export default class ConnectionManager {
   constructor(configManager: ConfigManager) {
     this.configManager = configManager;
 
-    this.options = this.normalize(this.configManager.get(StorageType.DatabaseConnections));
+    const allConnections: DataSourceOptions[] = this.configManager.get(StorageType.DatabaseConnections) || [];
+    this.options = this.normalize(allConnections);
 
     this.registerEntities(this.options);
     this.registerSubscribers(this.options);
     this.registerMigrations(this.options);
 
-    this.dataSource = new DataSource(this.options[0]);
+    this.dataSource = new DataSource(this.getDefaultOptions(allConnections));
+  }
+
+  getDefaultOptions(allConnections: DataSourceOptions[]): DataSourceOptions {
+    // Prefer sqlite from enabled options, then from all connections as fallback.
+    const fromEnabled = this.options.find((item: any) => item.type === 'sqlite');
+    if (fromEnabled) return this.discardOmitables(fromEnabled);
+
+    const fromAll = allConnections.find((item: any) => item.type === 'sqlite');
+    if (fromAll)
+      return this.discardOmitables({ ...fromAll, entities: this.schemas, subscribers: this.subscribers, migrations: this.migrations });
+
+    return this.discardOmitables(this.options[0]);
   }
 
   async initialize() {
@@ -42,19 +54,19 @@ export default class ConnectionManager {
   }
 
   createDataSource(options: DataSourceOptions) {
-    return new DataSource(this.discardOmitables(options)).initialize()
+    return new DataSource(this.discardOmitables(options)).initialize();
   }
 
   registerEntities(options: DataSourceOptions[]) {
-    this.options = options.map(obj => ({ ...obj, entities: this.schemas }))
+    this.options = options.map((obj) => ({ ...obj, entities: this.schemas }));
   }
 
   registerSubscribers(options: DataSourceOptions[]) {
-    this.options = options.map(obj => ({ ...obj, subscribers: this.subscribers }))
+    this.options = options.map((obj) => ({ ...obj, subscribers: this.subscribers }));
   }
 
   registerMigrations(options: DataSourceOptions[]) {
-    this.options = options.map(obj => ({ ...obj, migrations: this.migrations }))
+    this.options = options.map((obj) => ({ ...obj, migrations: this.migrations }));
   }
 
   discardOmitables(options: object | any): object | any {
@@ -62,23 +74,23 @@ export default class ConnectionManager {
   }
 
   normalize(options: DataSourceOptions[]) {
-    return options.filter((item: DataSourceOptions) => this.discardOmitables(item)).filter((item: any) => item.enabled)
+    return options.filter((item: DataSourceOptions) => this.discardOmitables(item)).filter((item: any) => item.enabled);
   }
 
   /**
-   * Proxy methods 
+   * Proxy methods
    */
 
   getCollection() {
-    return this.dataSource.getRepository(Collection)
+    return this.dataSource.getRepository(Collection);
   }
 
   getLogger() {
-    return this.dataSource.getRepository(Logger)
+    return this.dataSource.getRepository(Logger);
   }
 
   getStore() {
-    return this.dataSource.getRepository(Store)
+    return this.dataSource.getRepository(Store);
   }
 
   getCollectionRepository() {

@@ -6,59 +6,55 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchDbColumns = exports.dbColumns = exports.database = void 0;
 exports.database = {
-    drivers: [
-        "sqlite",
-        "mysql",
-        "sqlserver",
-        "oracle",
-        "hana",
-        "sqljs"
-    ],
-    connections: [{
-            name: "default",
-            type: "sqlite",
-            title: "Default Database.",
-            description: "The default application database.",
+    drivers: ['sqlite', 'mysql', 'sqlserver', 'oracle', 'hana', 'sqljs'],
+    connections: [
+        {
+            name: 'default',
+            type: 'sqlite',
+            title: 'Default Database.',
+            description: 'The default application database.',
             enabled: true,
             synchronize: true,
-            database: "fontastic.sqlite",
-            charset: "utf8mb4_unicode_ci",
-            logger: "simple-console",
-            logging: false
-        }, {
-            name: "mysql",
-            type: "mysql",
-            title: "Development Database.",
-            description: "An example MySQL database.",
+            database: 'fontastic.sqlite',
+            charset: 'utf8mb4_unicode_ci',
+            logger: 'simple-console',
+            logging: false,
+        },
+        {
+            name: 'mysql',
+            type: 'mysql',
+            title: 'Development Database.',
+            description: 'An example MySQL database.',
             enabled: false,
-            host: "localhost",
+            host: 'localhost',
             port: 3306,
-            username: "root",
-            password: "password",
-            database: "project_fontastic",
-            charset: "utf8mb4_unicode_ci",
+            username: 'root',
+            password: 'password',
+            database: 'project_fontastic',
+            charset: 'utf8mb4_unicode_ci',
             synchronize: true,
-            logger: "simple-console",
-            logging: false
-        }],
+            logger: 'simple-console',
+            logging: false,
+        },
+    ],
     loggers: [
         {
-            title: "Simple Console",
-            value: "simple-console"
+            title: 'Simple Console',
+            value: 'simple-console',
         },
         {
-            title: "Advanced Console",
-            value: "advanced-console"
+            title: 'Advanced Console',
+            value: 'advanced-console',
         },
         {
-            title: "File Logging",
-            value: "file"
+            title: 'File Logging',
+            value: 'file',
         },
         {
-            title: "Debug Logging",
-            value: "debug"
-        }
-    ]
+            title: 'Debug Logging',
+            value: 'debug',
+        },
+    ],
 };
 exports.dbColumns = [
     {
@@ -91,10 +87,6 @@ exports.dbColumns = [
     },
     {
         name: 'installable',
-        searchable: false,
-    },
-    {
-        name: 'activated',
         searchable: false,
     },
     {
@@ -192,7 +184,7 @@ exports.dbColumns = [
     {
         name: 'updated_at',
         searchable: false,
-    }
+    },
 ];
 exports.searchDbColumns = exports.dbColumns.reduce((prev, curr) => {
     if (curr.searchable) {

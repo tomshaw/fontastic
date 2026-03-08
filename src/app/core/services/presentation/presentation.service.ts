@@ -1,341 +1,253 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { ConfigService } from '../config/config.service';
+import { Injectable, inject, signal, computed, effect, untracked } from '@angular/core';
+import { ElectronService } from '../electron/electron.service';
 import { MessageService } from '../message/message.service';
-import { ElectronService } from '@app/core/services/electron/electron.service';
-import { AppThemes, ThemeColors } from '@main/config/themes';
-import { SystemTheme, LayoutPanelType, LayoutPreviewType, LayoutThemeType } from '@main/types';
-import { StorageType } from '@main/enums';
+import { ChannelType, StorageType } from '@main/enums';
+import type { LayoutPanelType, LayoutPreviewType } from '@main/types';
 
-export class ScrollToOptions {
-  id: string;
-  type: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class PresentationService {
+  private electronService = inject(ElectronService);
+  private messageService = inject(MessageService);
 
-  quickText: any[] = [{
-    title: 'default',
-    text: 'The quick brown fox jumped over the lazy dog.'
-  }, {
-    title: 'All Caps',
-    text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  }, {
-    title: 'Alternating Caps',
-    text: 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'
-  }];
+  readonly loading = signal(false);
+  private loadingCount = 0;
 
-  // Defaults.
-  defaultText = 'The quick brown fox jumped over the lazy dog.';
-  defaultFontSize = 48;
-  defaultFontColor = '#3e4245';
-  defaultBackgroundColor = '#ffffff';
+  startLoading() {
+    this.loadingCount++;
+    this.loading.set(true);
+  }
 
-  defaultFillColor = '#808080';
-  defaultStrokeColor = '#000000';
-  defaultLineColor = '#00a0be';
+  stopLoading() {
+    this.loadingCount--;
+    if (this.loadingCount === 0) {
+      this.loading.set(false);
+    }
+  }
 
-  defaultWordSpacing = 0;
-  defaultLetterSpacing = 0;
+  static readonly themes = ['light', 'dark', 'dashboard', 'euphoria', 'midnight', 'mellow', 'passion', 'swiss'] as const;
 
-  _gridEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  _toolbarEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  _previewEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  _inspectEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _inspectComponent: BehaviorSubject<string> = new BehaviorSubject('glyph-list');
-  _navigationEnabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  _asideEnabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _asideComponent = new BehaviorSubject<string>('names');
-  _asideTableTabs = new BehaviorSubject<any[]>([]);
+  readonly theme = signal<string>('light');
 
-  _statsCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _foldersCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _optionsCollapsed: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  constructor() {
+    effect(() => {
+      const current = this.theme();
+      const el = document.documentElement;
+      for (const t of PresentationService.themes) {
+        el.classList.toggle(t, t === current);
+      }
+    });
 
-  _systemLoading: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  _loadingScreen: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  _loadingSpinner: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  _scrollToItem: BehaviorSubject<ScrollToOptions> = new BehaviorSubject(null);
-
-  _glyphIndex: BehaviorSubject<number> = new BehaviorSubject(0);
-  watchGlyphIndex$ = this._glyphIndex.asObservable();
-
-  _fontSize = new BehaviorSubject<number>(this.defaultFontSize);
-  watchFontSize$ = this._fontSize.asObservable();
-
-  _fontColor = new BehaviorSubject<string>(this.defaultFontColor);
-  watchFontColor$ = this._fontColor.asObservable();
-
-  _displayText = new BehaviorSubject<string>(this.defaultText);
-  watchDisplayText$ = this._displayText.asObservable();
-
-  _backgroundColor = new BehaviorSubject<string>(this.defaultBackgroundColor);
-  watchBackgroundColor$ = this._backgroundColor.asObservable();
-
-  _wordSpacing = new BehaviorSubject<number>(this.defaultWordSpacing);
-  watchWordSpacing$ = this._wordSpacing.asObservable();
-
-  _letterSpacing = new BehaviorSubject<number>(this.defaultLetterSpacing);
-  watchLetterSpacing$ = this._letterSpacing.asObservable();
-
-  _defaultTheme: BehaviorSubject<string> = new BehaviorSubject('default');
-  watchDefaultTheme$ = this._defaultTheme.asObservable();
-
-  _displayNews: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  constructor(
-    private configService: ConfigService,
-    private messageService: MessageService,
-    private electronService: ElectronService
-  ) {
     if (this.electronService.isElectron) {
-      if (this.configService.has(StorageType.LayoutPanel)) {
-        this.loadLayoutSettings();
-      }
-      if (this.configService.has(StorageType.LayoutPreview)) {
-        this.loadPreviewSettings();
-      }
-      if (this.configService.has(StorageType.LayoutTheme)) {
-        this.loadThemeSettings();
-      }
-      this.setThemeVars(this._defaultTheme.getValue());
-    }
-  }
+      this.loadThemeSettings();
+      this.loadLayoutSettings();
+      this.loadPreviewSettings();
+      this.listenForMenuToggle();
 
-  getQuickText(): any {
-    return this.quickText;
-  }
-
-  setNavigationEnabled(status: any): void {
-    this._navigationEnabled.next(status);
-    this.saveLayoutSettings();
-  }
-
-  setAsideEnabled(status: any): void {
-    this._asideEnabled.next(status);
-    this.saveLayoutSettings();
-  }
-
-  setAsideComponent(name: any): void {
-    this._asideComponent.next(name);
-    this.saveLayoutSettings();
-  }
-
-  setAsideTableTabs(tabs: any[]): void {
-    this._asideTableTabs.next(tabs);
-    this.saveLayoutSettings();
-  }
-
-  setGridEnabled(status: any): void {
-    this._gridEnabled.next(status);
-    this.saveLayoutSettings();
-  }
-
-  setToolbarEnabled(status: any): void {
-    this._toolbarEnabled.next(status);
-    this.saveLayoutSettings();
-  }
-
-  setPreviewEnabled(status: any): void {
-    this._previewEnabled.next(status);
-    this.saveLayoutSettings();
-  }
-
-  setInspectEnabled(status: any): void {
-    this._inspectEnabled.next(status);
-    this.saveLayoutSettings();
-  }
-
-  setInspectComponent(name: any): void {
-    this._inspectComponent.next(name);
-    this.saveLayoutSettings();
-  }
-
-  setStatsCollapsed(toggle: any): void {
-    this._statsCollapsed.next(toggle);
-    this.saveLayoutSettings();
-  }
-
-  setFoldersCollapsed(toggle: any): void {
-    this._foldersCollapsed.next(toggle);
-    this.saveLayoutSettings();
-  }
-
-  setOptionsCollapsed(toggle: any): void {
-    this._optionsCollapsed.next(toggle);
-    this.saveLayoutSettings();
-  }
-
-  saveLayoutSettings(): void {
-    const settings: LayoutPanelType = {
-      _gridEnabled: this._gridEnabled.getValue(),
-      _asideEnabled: this._asideEnabled.getValue(),
-      _asideComponent: this._asideComponent.getValue(),
-      _asideTableTabs: this._asideTableTabs.getValue(),
-      _navigationEnabled: this._navigationEnabled.getValue(),
-      _toolbarEnabled: this._toolbarEnabled.getValue(),
-      _previewEnabled: this._previewEnabled.getValue(),
-      _inspectEnabled: this._inspectEnabled.getValue(),
-      _inspectComponent: this._inspectComponent.getValue(),
-      _statsCollapsed: this._statsCollapsed.getValue(),
-      _foldersCollapsed: this._foldersCollapsed.getValue(),
-      _optionsCollapsed: this._optionsCollapsed.getValue()
-    };
-    this.messageService.set(StorageType.LayoutPanel, settings);
-  }
-
-  loadLayoutSettings(): void {
-    const settings: LayoutPanelType = this.configService.get(StorageType.LayoutPanel);
-    if (Object.keys(settings).length) {
-      for (const [key, value] of Object.entries(settings)) {
-        if (this[key]) {
-          this[key].next(value);
+      let themeInitialized = false;
+      effect(() => {
+        const current = this.theme();
+        if (themeInitialized) {
+          untracked(() => this.messageService.set(StorageType.LayoutTheme, { theme: current }));
         }
-      }
-    }
-  }
+        themeInitialized = true;
+      });
 
-  savePreviewSettings(): void {
-    const settings: LayoutPreviewType = {
-      _fontSize: this._fontSize.getValue(),
-      _fontColor: this._fontColor.getValue(),
-      _displayText: this._displayText.getValue(),
-      _backgroundColor: this._backgroundColor.getValue(),
-      _wordSpacing: this._wordSpacing.getValue(),
-      _letterSpacing: this._letterSpacing.getValue(),
-      _displayNews: this._displayNews.getValue()
-    };
-    this.messageService.set(StorageType.LayoutPreview, settings);
-  }
-
-  loadPreviewSettings(): void {
-    const settings: LayoutPreviewType = this.configService.get(StorageType.LayoutPreview);
-    if (Object.keys(settings).length) {
-      for (const [key, value] of Object.entries(settings)) {
-        if (this[key]) {
-          this[key].next(value);
+      let panelInitialized = false;
+      effect(() => {
+        const settings: LayoutPanelType = {
+          gridEnabled: this.gridEnabled(),
+          asideEnabled: this.asideEnabled(),
+          navigationEnabled: this.navigationEnabled(),
+          toolbarEnabled: this.toolbarEnabled(),
+          previewEnabled: this.previewEnabled(),
+          inspectEnabled: this.inspectEnabled(),
+          searchEnabled: this.searchEnabled(),
+          waterfallEnabled: this.waterfallEnabled(),
+        };
+        if (panelInitialized) {
+          untracked(() => this.messageService.set(StorageType.LayoutPanel, settings));
         }
-      }
-    }
-  }
+        panelInitialized = true;
+      });
 
-  saveThemeSettings(): void {
-    const settings: LayoutThemeType = {
-      _defaultTheme: this._defaultTheme.getValue()
-    };
-    this.messageService.set(StorageType.LayoutTheme, settings);
-  }
-
-  loadThemeSettings(): void {
-    const settings: LayoutThemeType = this.configService.get(StorageType.LayoutTheme);
-    if (Object.keys(settings).length) {
-      for (const [key, value] of Object.entries(settings)) {
-        if (this[key]) {
-          this[key].next(value);
+      let previewInitialized = false;
+      effect(() => {
+        const settings: LayoutPreviewType = {
+          fontSize: this.fontSize(),
+          fontColor: this.fontColor(),
+          backgroundColor: this.backgroundColor(),
+          displayText: this.customText(),
+          wordSpacing: this.wordSpacing(),
+          letterSpacing: this.letterSpacing(),
+        };
+        if (previewInitialized) {
+          untracked(() => this.messageService.set(StorageType.LayoutPreview, settings));
         }
+        previewInitialized = true;
+      });
+    }
+  }
+
+  toggleTheme() {
+    const themes = PresentationService.themes;
+    const i = themes.indexOf(this.theme() as (typeof themes)[number]);
+    this.theme.set(themes[(i + 1) % themes.length]);
+  }
+
+  readonly quickTexts = [
+    { title: 'Default', text: 'The quick brown fox jumped over the lazy dog.' },
+    { title: 'All Caps', text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+    { title: 'Alternating Caps', text: 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz' },
+  ];
+
+  readonly quickTextIndex = signal(0);
+  readonly customText = signal<string | null>(null);
+  readonly quickText = computed(() => this.quickTexts[this.quickTextIndex()]);
+  readonly displayText = computed(() => this.customText() ?? this.quickText().text);
+
+  cycleQuickText() {
+    this.customText.set(null);
+    this.quickTextIndex.update((i) => (i + 1) % this.quickTexts.length);
+  }
+
+  setCustomText(text: string) {
+    this.customText.set(text);
+  }
+
+  readonly fontSize = signal(24);
+  readonly fontColor = signal<string | null>(null);
+  readonly backgroundColor = signal<string | null>(null);
+  readonly letterSpacing = signal(0);
+  readonly wordSpacing = signal(0);
+
+  readonly gridEnabled = signal(true);
+  readonly toolbarEnabled = signal(true);
+  readonly previewEnabled = signal(true);
+  readonly inspectEnabled = signal(false);
+  readonly asideEnabled = signal(true);
+  readonly navigationEnabled = signal(true);
+  readonly searchEnabled = signal(false);
+  readonly waterfallEnabled = signal(false);
+
+  readonly activePanelCount = computed(
+    () =>
+      [
+        this.gridEnabled(),
+        this.toolbarEnabled(),
+        this.previewEnabled(),
+        this.inspectEnabled(),
+        this.asideEnabled(),
+        this.navigationEnabled(),
+      ].filter(Boolean).length,
+  );
+
+  toggleGrid() {
+    this.gridEnabled.update((v) => !v);
+  }
+  toggleToolbar() {
+    this.toolbarEnabled.update((v) => !v);
+  }
+  togglePreview() {
+    this.previewEnabled.update((v) => !v);
+  }
+  toggleInspect() {
+    this.inspectEnabled.update((v) => !v);
+  }
+  toggleAside() {
+    this.asideEnabled.update((v) => !v);
+  }
+  toggleNavigation() {
+    this.navigationEnabled.update((v) => !v);
+  }
+  toggleSearch() {
+    const enabling = !this.searchEnabled();
+    this.searchEnabled.set(enabling);
+    if (enabling) {
+      this.waterfallEnabled.set(false);
+      this.inspectEnabled.set(false);
+      this.previewEnabled.set(false);
+    }
+  }
+  toggleWaterfall() {
+    this.waterfallEnabled.update((v) => !v);
+  }
+
+  private readonly panelToggleMap: Record<string, () => void> = {
+    navigation: () => this.toggleNavigation(),
+    aside: () => this.toggleAside(),
+    preview: () => this.togglePreview(),
+    inspect: () => this.toggleInspect(),
+    toolbar: () => this.toggleToolbar(),
+    grid: () => this.toggleGrid(),
+    waterfall: () => this.toggleWaterfall(),
+  };
+
+  private listenForMenuToggle() {
+    this.messageService.on(ChannelType.IPC_TOGGLE_PANEL, (_event: any, panel: string) => {
+      const toggle = this.panelToggleMap[panel];
+      if (toggle) {
+        toggle();
+      }
+    });
+  }
+
+  private async loadThemeSettings() {
+    const settings = (await this.messageService.get(StorageType.LayoutTheme, null)) as { theme: string } | null;
+    if (settings?.theme && PresentationService.themes.includes(settings.theme as (typeof PresentationService.themes)[number])) {
+      this.theme.set(settings.theme);
+    }
+  }
+
+  private async loadLayoutSettings() {
+    const settings = (await this.messageService.get(StorageType.LayoutPanel, null)) as LayoutPanelType | null;
+    if (settings) {
+      this.gridEnabled.set(settings.gridEnabled);
+      this.asideEnabled.set(settings.asideEnabled);
+      this.navigationEnabled.set(settings.navigationEnabled);
+      this.toolbarEnabled.set(settings.toolbarEnabled);
+      this.previewEnabled.set(settings.previewEnabled);
+      this.inspectEnabled.set(settings.inspectEnabled);
+      if (settings.searchEnabled !== undefined) {
+        this.searchEnabled.set(settings.searchEnabled);
+      }
+      if (settings.waterfallEnabled !== undefined) {
+        this.waterfallEnabled.set(settings.waterfallEnabled);
       }
     }
   }
 
-  setSystemLoading(value: boolean): void {
-    this._systemLoading.next(value);
-  }
-
-  setLoadingScreen(value: boolean): void {
-    this._loadingScreen.next(value);
-  }
-
-  setLoadingSpinner(value: boolean): void {
-    this._loadingSpinner.next(value);
-  }
-
-  setGlyphIndex(value: number): void {
-    this._glyphIndex.next(value);
-  }
-
-  setFontSize(value: number): void {
-    this._fontSize.next(value);
-    this.savePreviewSettings();
-  }
-
-  setFontColor(value: string): void {
-    this._fontColor.next(value);
-    this.savePreviewSettings();
-  }
-
-  setDisplayText(value: string): void {
-    this._displayText.next(value);
-    this.savePreviewSettings();
-  }
-
-  setBackgroundColor(value: string): void {
-    this._backgroundColor.next(value);
-    this.savePreviewSettings();
-  }
-
-  setWordSpacing(value: number): void {
-    this._wordSpacing.next(value);
-    this.savePreviewSettings();
-  }
-
-  setLetterSpacing(value: number): void {
-    this._letterSpacing.next(value);
-    this.savePreviewSettings();
-  }
-
-  setTheme(value: string): void {
-    this._defaultTheme.next(value);
-    this.saveThemeSettings();
-  }
-
-  getTheme(): string {
-    return this._defaultTheme.getValue();
-  }
-
-  getThemes(): SystemTheme[] {
-    return AppThemes;
-  }
-
-  resetPreview() {
-    const settings: LayoutPreviewType = {
-      _fontSize: this.defaultFontSize,
-      _fontColor: this.defaultFontColor,
-      _displayText: this._displayText.getValue(),
-      _backgroundColor: this.defaultBackgroundColor,
-      _wordSpacing: this.defaultWordSpacing,
-      _letterSpacing: this.defaultLetterSpacing
-    };
-    for (const [key, value] of Object.entries(settings)) {
-      if (this[key]) {
-        this[key].next(value);
+  private async loadPreviewSettings() {
+    const settings = (await this.messageService.get(StorageType.LayoutPreview, null)) as LayoutPreviewType | null;
+    if (settings) {
+      this.fontSize.set(settings.fontSize);
+      this.fontColor.set(settings.fontColor);
+      this.backgroundColor.set(settings.backgroundColor ?? null);
+      this.wordSpacing.set(settings.wordSpacing);
+      this.letterSpacing.set(settings.letterSpacing);
+      if (settings.displayText) {
+        this.customText.set(settings.displayText);
       }
     }
-    this.messageService.set(StorageType.LayoutPreview, settings);
   }
 
-  setThemeVars(name: string): void {
-    const config = ThemeColors.has(name) ? ThemeColors.get(name) : ThemeColors.get('default');
-
-    const root = document.documentElement;
-    root.style.setProperty('--font-color', config.color);
-    root.style.setProperty('--background-color', config.background);
-    root.style.setProperty('--border-color', config.border);
-    root.style.setProperty('--fill-color', config.fill);
-    root.style.setProperty('--stroke-color', config.stroke);
-
-    this.setFontColor(config.color);
-    this.setBackgroundColor(config.background);
+  resetDefaults() {
+    this.gridEnabled.set(true);
+    this.toolbarEnabled.set(true);
+    this.previewEnabled.set(true);
+    this.inspectEnabled.set(false);
+    this.asideEnabled.set(true);
+    this.navigationEnabled.set(true);
+    this.searchEnabled.set(false);
+    this.waterfallEnabled.set(false);
   }
 
-  getDisplayNews(): boolean {
-    return this._displayNews.getValue();
-  }
-
-  setDisplayNews(toggle: boolean): void {
-    this._displayNews.next(toggle);
+  resetToolbarDefaults() {
+    this.fontSize.set(24);
+    this.fontColor.set(null);
+    this.backgroundColor.set(null);
+    this.letterSpacing.set(0);
+    this.wordSpacing.set(0);
+    this.customText.set(null);
+    this.quickTextIndex.set(0);
   }
 }

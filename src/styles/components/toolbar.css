@@ -1,0 +1,92 @@
+/* ==========================================================================
+Color Picker
+========================================================================== */
+
+.color-picker {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0 !important;
+    border: 2px solid var(--input-border) !important;
+    border-radius: 50% !important;
+    background: none !important;
+    cursor: pointer !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.color-picker:hover {
+    border-color: var(--text-muted) !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 2px !important;
+}
+
+.color-picker::-webkit-color-swatch {
+    border: none !important;
+    border-radius: 50% !important;
+}
+
+/* ==========================================================================
+Preview Range (font size slider)
+========================================================================== */
+
+.preview-range {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 100px !important;
+    height: 3px !important;
+    background: var(--slider-track) !important;
+    border-radius: 2px !important;
+    outline: none !important;
+    cursor: pointer;
+}
+
+.preview-range::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 12px !important;
+    height: 12px !important;
+    background: var(--slider-thumb) !important;
+    border-radius: 50% !important;
+    border: none !important;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.preview-range::-webkit-slider-thumb:hover {
+    background: var(--slider-thumb-hover) !important;
+}
+
+/* ==========================================================================
+Reset Button
+========================================================================== */
+
+.toolbar-reset-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--text-muted);
+    background-color: var(--hover-bg);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.toolbar-reset-btn span {
+    font-size: 22px;
+}
+
+.toolbar-reset-btn:hover {
+    background-color: var(--selected-bg);
+    color: var(--text-primary);
+}
+
+.toolbar-reset-btn:focus {
+    outline: none;
+}

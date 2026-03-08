@@ -15,18 +15,17 @@ class MenuBuilder {
     buildContextMenu() {
         this.mainWindow.webContents.on('context-menu', (_, props) => {
             const { x, y } = props;
-            electron_1.Menu.buildFromTemplate([{
+            electron_1.Menu.buildFromTemplate([
+                {
                     label: 'Inspect element',
                     click: () => {
                         this.mainWindow.webContents.inspectElement(x, y);
                     },
-                }]).popup({ window: this.mainWindow });
+                },
+            ]).popup({ window: this.mainWindow });
         });
     }
     initialize() {
-        if (!this.isProductionReady) {
-            return;
-        }
         const template = process.platform === 'darwin' ? this.buildDarwinTemplate() : this.buildDefaultTemplate();
         const menu = electron_1.Menu.buildFromTemplate(template);
         electron_1.Menu.setApplicationMenu(menu);

@@ -1,0 +1,70 @@
+/* ==========================================================================
+Form Label
+========================================================================== */
+
+.form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+/* ==========================================================================
+Form Input
+========================================================================== */
+
+.form-input {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    height: 28px;
+    padding: 4px 8px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-input:focus {
+    border-color: var(--text-muted);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+Form Select
+========================================================================== */
+
+.form-select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    height: 28px;
+    padding: 4px 28px 4px 8px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-select:focus {
+    border-color: var(--text-muted);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}

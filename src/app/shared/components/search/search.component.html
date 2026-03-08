@@ -1,54 +1,329 @@
-<figure class="border-bottom">
-  <figcaption>
-    <span class="material-icons">arrow_drop_down</span>
-    <span class="grow whitespace-nowrap">Font Search</span>
-    <span class="flex items-center justify-end material-icons-rounded">
-      <span title="Collapse" class="material-icons" (click)="onComponentSwitch();">more_horiz</span>
-    </span>
-  </figcaption>
-</figure>
-
-<div class="hover-scrollbox-y overflow-x-hidden">
-
-  <form class="p-5" (ngSubmit)="onSubmit()" #form="ngForm">
-
-    <div class="form-group">
-      <label form="term">Search term</label>
-      <input type="text" class="form-control" [(ngModel)]="model.term" #term="ngModel" name="term" id="term" />
-      <span class="form-text text-muted">Please enter a search term.</span>
+<div class="h-full flex flex-col">
+  <div
+    class="flex items-center justify-between px-2.5 shrink-0 h-[34px]"
+    [style.border-top]="'1px solid var(--border-subtle)'"
+    [style.border-bottom]="'1px solid var(--border-subtle)'"
+    [style.background-color]="'var(--surface-2)'"
+  >
+    <div class="flex items-center text-[10px] font-semibold uppercase tracking-widest" [style.color]="'var(--text-muted)'">
+      <span
+        class="material-symbols-outlined icon-sm mr-1"
+        style="
+          font-variation-settings:
+            'opsz' 20,
+            'wght' 500;
+        "
+        >search</span
+      >
+      @if (hasSearched()) {
+        {{ db.storeCount() }} results found
+      } @else {
+        Search fonts
+      }
     </div>
-
-    <div class="form-group">
-      <label for="mimes">Mime types</label>
-      <select class="form-control" [(ngModel)]="model.mimes" #mimes="ngModel" name="mimes" id="mimes" multiple>
-        <option *ngFor="let item of fontTypes;" [value]="item.type">{{item.name}}</option>
-      </select>
-      <span class="form-text text-muted">Please select mime type.</span>
+    <div class="flex items-center gap-1">
+      @if (hasSearched()) {
+        <button
+          class="px-2 py-0.5 rounded cursor-pointer text-[10px] transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          [style.background-color]="'transparent'"
+          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
+          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'transparent'"
+          (click)="onReset()"
+        >
+          Clear
+        </button>
+      }
     </div>
+  </div>
 
-    <div class="form-group">
-      <label for="sort">Sort by</label>
-      <select class="form-control" [(ngModel)]="model.sort" #sort="ngModel" name="sort" id="sort">
-        <option *ngFor="let item of dbColumns; let i = index;" [value]="item.name">{{item.name}}</option>
-      </select>
-      <span class="form-text text-muted">Select column sort.</span>
+  <div class="flex-1 overflow-auto">
+    <div class="w-full max-w-4xl mx-auto px-6 py-10">
+      <!-- Search Term (full width) -->
+      <div class="flex flex-col gap-1.5 mb-5">
+        <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Search Term</label>
+        <input
+          type="text"
+          class="w-full px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+          [style.background-color]="'var(--surface-2)'"
+          [style.border]="'1px solid var(--border-default)'"
+          [style.color]="'var(--text-primary)'"
+          placeholder="Font name, family, designer..."
+          [(ngModel)]="searchTerm"
+          (keydown)="onKeydown($event)"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-8 gap-y-5">
+        <!-- Search Fields -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Search In</label>
+          <span class="text-[10px]" [style.color]="'var(--text-muted)'">Leave empty to search all fields</span>
+          <div class="grid grid-cols-2 gap-1">
+            @for (sf of searchFields; track sf.value) {
+              <label
+                class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
+                [style.color]="'var(--text-secondary)'"
+                [style.background-color]="isSearchFieldSelected(sf.value) ? 'var(--selected-bg)' : 'transparent'"
+                (mouseenter)="
+                  $any($event.currentTarget).style.backgroundColor = isSearchFieldSelected(sf.value)
+                    ? 'var(--selected-bg)'
+                    : 'var(--hover-bg)'
+                "
+                (mouseleave)="
+                  $any($event.currentTarget).style.backgroundColor = isSearchFieldSelected(sf.value) ? 'var(--selected-bg)' : 'transparent'
+                "
+              >
+                <input
+                  type="checkbox"
+                  class="accent-current"
+                  [checked]="isSearchFieldSelected(sf.value)"
+                  (change)="toggleSearchField(sf.value)"
+                />
+                {{ sf.label }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <!-- File Type + Status (stacked in right column) -->
+        <div class="flex flex-col gap-5">
+          <!-- File Type -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">File Type</label>
+            <div class="grid grid-cols-2 gap-1">
+              @for (ft of fileTypes; track ft.value) {
+                <label
+                  class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
+                  [style.color]="'var(--text-secondary)'"
+                  [style.background-color]="isFileTypeSelected(ft.value) ? 'var(--selected-bg)' : 'transparent'"
+                  (mouseenter)="
+                    $any($event.currentTarget).style.backgroundColor = isFileTypeSelected(ft.value)
+                      ? 'var(--selected-bg)'
+                      : 'var(--hover-bg)'
+                  "
+                  (mouseleave)="
+                    $any($event.currentTarget).style.backgroundColor = isFileTypeSelected(ft.value) ? 'var(--selected-bg)' : 'transparent'
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    class="accent-current"
+                    [checked]="isFileTypeSelected(ft.value)"
+                    (change)="toggleFileType(ft.value)"
+                  />
+                  {{ ft.label }}
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Status Filters -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Status</label>
+            <div class="flex flex-col gap-1">
+              <label
+                class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
+                [style.color]="'var(--text-secondary)'"
+                [style.background-color]="favoritesOnly ? 'var(--selected-bg)' : 'transparent'"
+                (mouseenter)="$any($event.currentTarget).style.backgroundColor = favoritesOnly ? 'var(--selected-bg)' : 'var(--hover-bg)'"
+                (mouseleave)="$any($event.currentTarget).style.backgroundColor = favoritesOnly ? 'var(--selected-bg)' : 'transparent'"
+              >
+                <input type="checkbox" class="accent-current" [(ngModel)]="favoritesOnly" />
+                Favorites Only
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
+                [style.color]="'var(--text-secondary)'"
+                [style.background-color]="systemOnly ? 'var(--selected-bg)' : 'transparent'"
+                (mouseenter)="$any($event.currentTarget).style.backgroundColor = systemOnly ? 'var(--selected-bg)' : 'var(--hover-bg)'"
+                (mouseleave)="$any($event.currentTarget).style.backgroundColor = systemOnly ? 'var(--selected-bg)' : 'transparent'"
+              >
+                <input type="checkbox" class="accent-current" [(ngModel)]="systemOnly" />
+                System Fonts Only
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
+                [style.color]="'var(--text-secondary)'"
+                [style.background-color]="installedOnly ? 'var(--selected-bg)' : 'transparent'"
+                (mouseenter)="$any($event.currentTarget).style.backgroundColor = installedOnly ? 'var(--selected-bg)' : 'var(--hover-bg)'"
+                (mouseleave)="$any($event.currentTarget).style.backgroundColor = installedOnly ? 'var(--selected-bg)' : 'transparent'"
+              >
+                <input type="checkbox" class="accent-current" [(ngModel)]="installedOnly" />
+                Installed Only
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collection Filter -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Collection</label>
+          <select
+            class="w-full px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+            [style.background-color]="'var(--surface-2)'"
+            [style.border]="'1px solid var(--border-default)'"
+            [style.color]="'var(--text-primary)'"
+            [(ngModel)]="selectedCollectionId"
+          >
+            <option [ngValue]="null">All Collections</option>
+            @for (col of collections; track col.id) {
+              <option [ngValue]="col.id">{{ col.title }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Sort By -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Sort By</label>
+          <select
+            class="w-full px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+            [style.background-color]="'var(--surface-2)'"
+            [style.border]="'1px solid var(--border-default)'"
+            [style.color]="'var(--text-primary)'"
+            [(ngModel)]="selectedSortIndex"
+          >
+            <option [ngValue]="null">Default</option>
+            @for (opt of sortOptions; track $index) {
+              <option [ngValue]="$index">{{ opt.label }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Designer Filter -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Designer</label>
+          <input
+            type="text"
+            class="w-full px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+            [style.background-color]="'var(--surface-2)'"
+            [style.border]="'1px solid var(--border-default)'"
+            [style.color]="'var(--text-primary)'"
+            placeholder="Filter by designer name..."
+            [(ngModel)]="designerFilter"
+            (keydown)="onKeydown($event)"
+          />
+        </div>
+
+        <!-- Manufacturer Filter -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Manufacturer</label>
+          <input
+            type="text"
+            class="w-full px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+            [style.background-color]="'var(--surface-2)'"
+            [style.border]="'1px solid var(--border-default)'"
+            [style.color]="'var(--text-primary)'"
+            placeholder="Filter by manufacturer..."
+            [(ngModel)]="manufacturerFilter"
+            (keydown)="onKeydown($event)"
+          />
+        </div>
+
+        <!-- Font Subfamily Filter -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Font Style</label>
+          <input
+            type="text"
+            class="w-full px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+            [style.background-color]="'var(--surface-2)'"
+            [style.border]="'1px solid var(--border-default)'"
+            [style.color]="'var(--text-primary)'"
+            placeholder="e.g. Bold, Italic, Regular..."
+            [(ngModel)]="subfamilyFilter"
+            (keydown)="onKeydown($event)"
+          />
+        </div>
+
+        <!-- File Size Range -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">File Size (KB)</label>
+          <div class="flex gap-2 items-center">
+            <input
+              type="number"
+              class="flex-1 px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+              [style.background-color]="'var(--surface-2)'"
+              [style.border]="'1px solid var(--border-default)'"
+              [style.color]="'var(--text-primary)'"
+              placeholder="Min"
+              [(ngModel)]="fileSizeMin"
+              min="0"
+            />
+            <span class="text-[10px]" [style.color]="'var(--text-muted)'">to</span>
+            <input
+              type="number"
+              class="flex-1 px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+              [style.background-color]="'var(--surface-2)'"
+              [style.border]="'1px solid var(--border-default)'"
+              [style.color]="'var(--text-primary)'"
+              placeholder="Max"
+              [(ngModel)]="fileSizeMax"
+              min="0"
+            />
+          </div>
+        </div>
+
+        <!-- Date Range -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold" [style.color]="'var(--text-primary)'">Date Added</label>
+          <div class="flex gap-2 items-center">
+            <input
+              type="date"
+              class="flex-1 px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+              [style.background-color]="'var(--surface-2)'"
+              [style.border]="'1px solid var(--border-default)'"
+              [style.color]="'var(--text-primary)'"
+              [(ngModel)]="dateFrom"
+            />
+            <span class="text-[10px]" [style.color]="'var(--text-muted)'">to</span>
+            <input
+              type="date"
+              class="flex-1 px-2.5 py-1.5 rounded text-xs outline-none transition-colors"
+              [style.background-color]="'var(--surface-2)'"
+              [style.border]="'1px solid var(--border-default)'"
+              [style.color]="'var(--text-primary)'"
+              [(ngModel)]="dateTo"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2 pt-5">
+        <button
+          class="flex-1 px-3 py-1.5 rounded text-[11px] font-medium cursor-pointer transition-colors"
+          [style.background-color]="'var(--selected-bg)'"
+          [style.color]="'var(--text-primary)'"
+          [style.border]="'1px solid var(--border-default)'"
+          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
+          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'var(--selected-bg)'"
+          (click)="onSearch()"
+        >
+          <span class="flex items-center justify-center gap-1">
+            <i
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >search</i
+            >
+            Search
+          </span>
+        </button>
+        <button
+          class="px-3 py-1.5 rounded text-[11px] cursor-pointer transition-colors"
+          [style.color]="'var(--text-muted)'"
+          [style.border]="'1px solid var(--border-subtle)'"
+          [style.background-color]="'transparent'"
+          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
+          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'transparent'"
+          (click)="onReset()"
+        >
+          Reset
+        </button>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label for="order">Order by</label>
-      <select class="form-control" [(ngModel)]="model.order" #order="ngModel" name="order" id="order">
-        <option *ngFor="let item of orderBy; let i = index;" [value]="item">{{item}}</option>
-      </select>
-      <span class="form-text text-muted">Select orer by.</span>
-    </div>
-
-    <div class="form__actions">
-      <app-button [type]="'submit'" [title]="'Submit'"
-        [ngClass]="'app-button__xl app-button__rounded'">Submit</app-button>
-      <app-button [type]="'reset'" [title]="'Submit'" [ngClass]="'app-button__xl app-button__rounded'"
-        (click)="onReset();">Reset</app-button>
-    </div>
-
-  </form>
-
+  </div>
 </div>

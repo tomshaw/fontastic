@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/inter";
+
+@import "./styles/base/reset.css";
+@import "./styles/base/variables.css";
+
+@import "./styles/components/scrollbox.css";
+@import "./styles/components/splash.css";
+@import "./styles/components/spinner.css";
+@import "./styles/components/buttons.css";
+@import "./styles/components/forms.css";
+@import "./styles/components/toolbar.css";
+@import "./styles/components/cards.css";
+@import "./styles/components/navigation.css";
+
+@import "./styles/fonts/md.css";

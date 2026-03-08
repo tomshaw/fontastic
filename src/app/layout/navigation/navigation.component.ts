@@ -1,302 +1,372 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UtilsService, MessageService, PresentationService, DatabaseService, BreadcrumbService, ModalService } from '@app/core/services';
-import { SystemStats } from '@main/types';
-import { Collection } from '@main/database/entity/Collection.schema';
+import { Component, inject, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DatabaseService, MessageService, PresentationService } from '../../core/services';
+import { CollapsiblePanelComponent } from '../../shared/components/collapsible-panel/collapsible-panel.component';
+import { ContextMenuComponent, ContextMenuItem } from '../../shared/components/context-menu/context-menu.component';
+import { PromptDialogComponent } from '../../shared/components';
+import { AutofocusDirective } from '../../shared/directives/autofocus/autofocus.directive';
+import { LibraryComponent } from './library/library.component';
+import { NewsStatsComponent } from './stats/stats.component';
+import type { Collection } from '@main/database/entity/Collection.schema';
 
-type CollectionWithChildren<T> = Partial<T> & { children: Collection[] };
+export interface TreeNode {
+  collection: Collection;
+  children: TreeNode[];
+}
 
 @Component({
   selector: 'app-navigation',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    CollapsiblePanelComponent,
+    ContextMenuComponent,
+    PromptDialogComponent,
+    AutofocusDirective,
+    LibraryComponent,
+    NewsStatsComponent,
+  ],
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
 })
-export class NavigationComponent implements OnInit, OnDestroy {
+export class NavigationComponent {
+  readonly db = inject(DatabaseService);
+  private message = inject(MessageService);
+  private presentation = inject(PresentationService);
 
-  resultSet: CollectionWithChildren<Collection>[] = [];
+  readonly tree = computed<TreeNode[]>(() => {
+    const all = this.db.collections();
+    const buildChildren = (parentId: number): TreeNode[] =>
+      all.filter((c) => c.parent_id === parentId).map((c) => ({ collection: c, children: buildChildren(c.id) }));
+    return buildChildren(0);
+  });
 
-  collectionId: number;
+  readonly totalFonts = computed(() => this.db.collections().reduce((sum, c) => sum + (c.count ?? 0), 0));
 
-  toggleDetails = false;
+  readonly parentCount = computed(() => this.db.collections().filter((c) => c.parent_id === 0).length);
 
-  statsCollapsed = true;
-  foldersCollapsed = true;
-  optionsCollapsed = true;
-  toggleCollapsed = false;
+  contextMenuItems: ContextMenuItem[] = [];
+  contextMenu: { x: number; y: number; collection: Collection } | null = null;
+  editingId: number | null = null;
+  editingTitle = '';
+  expandedIds = new Set<number>();
+  allExpanded = false;
 
-  rowCount = 0;
-  activatedCount = 0;
-  favoriteCount = 0;
-  systemCount = 0;
+  showCollectionDialog = false;
+  pendingParentId: number | null = null;
 
-  constructor(
-    private utils: UtilsService,
-    private messageService: MessageService,
-    private modalService: ModalService,
-    private databaseService: DatabaseService,
-    private breadcrumbService: BreadcrumbService,
-    private presentationService: PresentationService
-  ) { }
+  // Drag state
+  draggedNode: TreeNode | null = null;
+  dropTargetId: number | null = null;
+  dropAsRoot = false;
+  dropPosition: 'before' | 'after' | 'into' = 'into';
 
-  ngOnInit() {
-    this.presentationService._statsCollapsed.subscribe((result) => this.statsCollapsed = result);
-    this.presentationService._foldersCollapsed.subscribe((result) => this.foldersCollapsed = result);
-    this.presentationService._optionsCollapsed.subscribe((result) => this.optionsCollapsed = result);
-
-    // Bootup fetch store.
-    this.databaseService.watchCollectionId$.subscribe((collectionId: number) => {
-      if (collectionId) {
-        this.collectionId = collectionId;
-        this.databaseService.setWhere('collection_id', collectionId).run();
-      } else {
-        this.databaseService.run();
-      }
-    });
-
-    this.databaseService.watchCollectionResultSet$.subscribe((results: Collection[]) => {
-      if (results?.length) {
-        this.breadcrumbService.setNavigation(this.collectionId, results);
-        const copy = results.map(item => ({ ...item }));
-        this.resultSet = this.utils.listToTree(copy);
-      }
-    });
-
-    this.databaseService.watchSystemStats$.subscribe((result: SystemStats) => {
-      this.rowCount = (result?.rowCount) ? result.rowCount : 0;
-      this.favoriteCount = (result?.favoriteCount) ? result.favoriteCount : 0;
-      this.systemCount = (result?.systemCount) ? result.systemCount : 0;
-      this.activatedCount = (result?.activatedCount) ? result.activatedCount : 0;
-    });
+  onDragStart(event: DragEvent, node: TreeNode) {
+    event.stopPropagation();
+    this.draggedNode = node;
+    event.dataTransfer!.effectAllowed = 'move';
+    event.dataTransfer!.setData('text/plain', String(node.collection.id));
   }
 
-  ngOnDestroy() {
-    console.log('Navigation destroyed: ' + Date.now());
-  }
-
-  handleNavigate(event: Event, collectionId: number): void {
+  onDragOver(event: DragEvent, targetId: number) {
+    if (!this.draggedNode || this.draggedNode.collection.id === targetId) return;
+    if (targetId !== 0 && this.isDescendant(this.draggedNode, targetId)) return;
     event.preventDefault();
     event.stopPropagation();
+    event.dataTransfer!.dropEffect = 'move';
 
-    const target = event.target as HTMLElement;
-    const parent = target.parentElement.parentElement as HTMLElement;
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const localX = event.clientX - rect.left;
 
-    if (collectionId === this.collectionId) {
+    // If cursor is in the left 28px zone, treat as "move to root"
+    if (targetId !== 0 && localX < 28) {
+      this.dropAsRoot = true;
+      this.dropTargetId = 0;
+      this.dropPosition = 'into';
       return;
     }
 
-    this.databaseService.stats = false;
-    this.databaseService.search = false;
+    this.dropAsRoot = false;
 
-    this.toggleSelected(parent);
-    this.clearSelectedStats();
-
-    this.messageService.collectionEnable(collectionId, { enabled: true }).then((results: Collection[]) => {
-      this.databaseService.resetPage(1);
-      this.databaseService.setCollectionId(collectionId);
-      this.databaseService.setCollectionResultSet(results);
-    });
-  }
-
-  handleCollapse(event: Event, collectionId: number): void {
-    event.stopPropagation();
-
-    const target = event.target as HTMLElement;
-    const element = target.parentElement.parentElement.parentElement as HTMLElement;
-
-    const isOpen: boolean = element.hasAttribute('open');
-
-    this.messageService.collectionUpdate(collectionId, { collapsed: !isOpen });
-  }
-
-  handleUpdate(event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.modalService.open('collection-update');
-  }
-
-  /**
-   * End collection methods 
-   */
-
-  toggleCollapse(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const item = target.parentElement.parentElement as HTMLElement;
-
-    const collectionId = Number(item.getAttribute('data-collection'));
-
-    const isFigStats: boolean = target.hasAttribute('data-figure-stats');
-    const isFigFolders: boolean = target.hasAttribute('data-figure-folders');
-    const isFigOptions: boolean = target.hasAttribute('data-figure-options');
-
-    const isCollapsed: boolean = item.classList.contains('collapsed');
-
-    if (isCollapsed) {
-      item.classList.remove('collapsed');
-      //target.innerHTML = 'arrow_right';
-    } else {
-      item.classList.add('collapsed');
-      //target.innerHTML = 'arrow_drop_down';
-    }
-
-    if (collectionId) {
-      this.messageService.collectionUpdate(collectionId, { collapsed: isCollapsed ? false : true });
-    }
-
-    if (isFigStats) {
-      this.presentationService.setStatsCollapsed(isCollapsed ? false : true);
-    }
-
-    if (isFigFolders) {
-      this.presentationService.setFoldersCollapsed(isCollapsed ? false : true);
-    }
-
-    if (isFigOptions) {
-      this.presentationService.setOptionsCollapsed(isCollapsed ? false : true);
-    }
-
-    this.presentationService.saveLayoutSettings();
-  }
-
-  toggleFigureCollapse(): void {
-    this.toggleCollapsed = !this.toggleCollapsed;
-
-    this.statsCollapsed = this.toggleCollapsed;
-    this.foldersCollapsed = this.toggleCollapsed;
-    this.optionsCollapsed = this.toggleCollapsed;
-
-    const toggle = this.toggleCollapsed;
-
-    this.presentationService.setStatsCollapsed(toggle);
-    this.presentationService.setFoldersCollapsed(toggle);
-    this.presentationService.setOptionsCollapsed(toggle);
-  }
-
-  toggleDetailsOpen(): void {
-    this.toggleDetails = !this.toggleDetails;
-
-    const elems = document.querySelectorAll('details') as NodeListOf<HTMLElement>;
-
-    const ids = [];
-    elems.forEach((element: HTMLElement) => {
-      ids.push(element.getAttribute('data-id'));
-      if (this.toggleDetails) {
-        if (!element.hasAttribute('open')) {
-          element.setAttribute('open', '1');
-        }
-      } else {
-        if (element.hasAttribute('open')) {
-          element.removeAttribute('open');
+    // Check if dragged item and target are siblings (same parent)
+    // Use three zones: top edge = reorder before, bottom edge = reorder after, middle = move into
+    if (targetId !== 0) {
+      const target = this.db.collections().find((c) => c.id === targetId);
+      if (target && target.parent_id === this.draggedNode.collection.parent_id) {
+        const localY = event.clientY - rect.top;
+        const edgeZone = Math.min(8, rect.height / 4);
+        if (localY < edgeZone) {
+          this.dropPosition = 'before';
+          this.dropTargetId = targetId;
+          return;
+        } else if (localY > rect.height - edgeZone) {
+          this.dropPosition = 'after';
+          this.dropTargetId = targetId;
+          return;
         }
       }
+    }
+
+    // Middle zone or non-sibling: treat as "move into" the target
+    this.dropPosition = 'into';
+    this.dropTargetId = targetId;
+  }
+
+  onDragLeave(event: DragEvent, targetId: number) {
+    const related = event.relatedTarget as HTMLElement | null;
+    const current = event.currentTarget as HTMLElement;
+    if (related && current.contains(related)) return;
+    if (this.dropTargetId === targetId || (this.dropAsRoot && this.dropTargetId === 0)) {
+      this.dropTargetId = null;
+      this.dropAsRoot = false;
+      this.dropPosition = 'into';
+    }
+  }
+
+  async onDrop(event: DragEvent, targetId: number) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.draggedNode) return;
+
+    const draggedNode = this.draggedNode;
+    const collectionId = draggedNode.collection.id;
+    const draggedParentId = draggedNode.collection.parent_id;
+    const effectiveTargetId = this.dropAsRoot ? 0 : targetId;
+    const position = this.dropPosition;
+
+    // Check for sibling reorder
+    const isSiblingReorder =
+      !this.dropAsRoot &&
+      targetId !== 0 &&
+      position !== 'into' &&
+      this.db.collections().find((c) => c.id === targetId)?.parent_id === draggedParentId;
+
+    // Dropping on the root zone when item is already at root = move to end
+    const isRootZoneReorder = !this.dropAsRoot && targetId === 0 && draggedParentId === 0;
+
+    this.draggedNode = null;
+    this.dropTargetId = null;
+    this.dropAsRoot = false;
+    this.dropPosition = 'into';
+
+    if (isSiblingReorder || isRootZoneReorder) {
+      // Reorder within the same parent
+      const siblings = this.db
+        .collections()
+        .filter((c) => c.parent_id === draggedParentId && c.id !== collectionId)
+        .sort((a, b) => a.orderby - b.orderby);
+
+      let newIndex: number;
+      if (isRootZoneReorder) {
+        // Dropped on root zone = move to end
+        newIndex = siblings.length;
+      } else {
+        const targetIndex = siblings.findIndex((c) => c.id === targetId);
+        newIndex = position === 'before' ? targetIndex : targetIndex + 1;
+      }
+
+      try {
+        await this.db.collectionMove(collectionId, draggedParentId, newIndex);
+      } catch (err) {
+        console.error('[drag] reorder error:', err);
+      }
+      return;
+    }
+
+    // Move to a new parent
+    const newParentId = effectiveTargetId;
+
+    if (collectionId === newParentId) return;
+    if (newParentId !== 0 && this.isDescendant(draggedNode, newParentId)) return;
+
+    // Optimistic update
+    const updated = this.db.collections().map((c) => (c.id === collectionId ? { ...c, parent_id: newParentId } : c));
+    this.db.collections.set(updated);
+
+    if (newParentId !== 0) {
+      this.expandedIds.add(newParentId);
+    }
+
+    try {
+      await this.db.collectionMove(collectionId, newParentId, 0);
+    } catch (err) {
+      console.error('[drag] move error:', err);
+    }
+  }
+
+  onDragEnd() {
+    this.draggedNode = null;
+    this.dropTargetId = null;
+    this.dropAsRoot = false;
+    this.dropPosition = 'into';
+  }
+
+  private isDescendant(draggedNode: TreeNode, targetId: number): boolean {
+    const check = (nodes: TreeNode[]): boolean => nodes.some((n) => n.collection.id === targetId || check(n.children));
+    return check(draggedNode.children);
+  }
+
+  onContextMenu(event: MouseEvent, collection: Collection) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.contextMenuItems = [
+      { label: 'Add Collection', action: 'add-collection', icon: 'create_new_folder' },
+      { label: 'Add Fonts', action: 'add-fonts', icon: 'list_alt' },
+      { label: 'Rename', action: 'rename' },
+      { label: 'Delete', action: 'delete' },
+    ];
+
+    this.contextMenu = { x: event.clientX, y: event.clientY, collection };
+  }
+
+  onContextMenuSelect(action: string) {
+    if (!this.contextMenu) return;
+    const collection = this.contextMenu.collection;
+    this.contextMenu = null;
+
+    switch (action) {
+      case 'add-collection':
+        this.pendingParentId = collection.id;
+        this.showCollectionDialog = true;
+        break;
+      case 'add-fonts':
+        this.handleAddFonts(collection);
+        break;
+      case 'rename':
+        this.editingId = collection.id;
+        this.editingTitle = collection.title;
+        break;
+      case 'delete':
+        this.db.collectionDelete(collection.id);
+        break;
+    }
+  }
+
+  onCollectionConfirmed(name: string) {
+    this.db.collectionCreate({ title: name, parentId: this.pendingParentId });
+    this.showCollectionDialog = false;
+    this.pendingParentId = null;
+  }
+
+  onCollectionCancelled() {
+    this.showCollectionDialog = false;
+    this.pendingParentId = null;
+  }
+
+  async handleAddFonts(collection: Collection) {
+    const collectionId = collection.id;
+
+    const response = await this.message.showMessageBox({
+      type: 'question',
+      buttons: ['Cancel', 'Select files', 'Select folders'],
+      defaultId: 2,
+      title: 'Select Fonts',
+      message: 'Do you want to select files or folders?',
     });
 
-    this.messageService.collectionUpdateIds(ids, { collapsed: this.toggleDetails });
-  }
+    if (!response?.response) return;
 
-  handleClickAll(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
+    const isFiles = response.response === 1;
 
-    this.databaseService.stats = true;
-    this.databaseService.search = false;
-    this.databaseService.resetWhere().run();
+    const options = isFiles
+      ? {
+          properties: ['openFile', 'multiSelections'],
+          filters: [{ name: 'Fonts', extensions: ['ttf', 'otf', 'woff', 'woff2', 'ttc', 'dfont'] }],
+        }
+      : { properties: ['openDirectory', 'multiSelections'] };
 
-    this.clearSelectedStats();
-    this.clearSelectedDetails();
-    this.toggleSelected(parent);
+    const dialog = await this.message.showOpenDialog(options);
+    if (!dialog.filePaths?.length) return;
 
-    this.breadcrumbService.set([{
-      title: 'System Statistics',
-      link: '/main',
-      type: 'collection'
-    }, {
-      title: 'Font Count',
-      link: '',
-      type: 'collection'
-    }]);
-  }
+    this.presentation.startLoading();
+    try {
+      if (isFiles) {
+        await this.message.scanFiles({ files: dialog.filePaths, collectionId });
+      } else {
+        await this.message.scanFolders({ folders: dialog.filePaths, collectionId });
+      }
 
-  handleClickFavorites(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
+      await this.db.collectionUpdateCount(collectionId);
 
-    this.databaseService.stats = true;
-    this.databaseService.search = false;
-    this.databaseService.setWhere('store.favorite', 1).run();
-
-    this.clearSelectedStats();
-    this.clearSelectedDetails();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'System Statistics',
-      link: '/main',
-      type: 'collection'
-    }, {
-      title: 'My Favorites',
-      link: '',
-      type: 'collection'
-    }]);
-  }
-
-  handleClickSystem(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
-
-    this.databaseService.stats = true;
-    this.databaseService.search = false;
-    this.databaseService.setWhere('store.system', 1).run();
-
-    this.clearSelectedStats();
-    this.clearSelectedDetails();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'System Statistics',
-      link: '/main',
-      type: 'collection'
-    }, {
-      title: 'System Fonts',
-      link: '',
-      type: 'collection'
-    }]);
-  }
-
-  handleClickActivated(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const parent = target.parentNode as HTMLElement;
-
-    this.databaseService.stats = true;
-    this.databaseService.search = false;
-    this.databaseService.setWhere('store.activated', 1).run();
-
-    this.clearSelectedStats();
-    this.clearSelectedDetails();
-    this.toggleSelected(parent);
-
-    this.breadcrumbService.set([{
-      title: 'System Statistics',
-      link: '/main',
-      type: 'collection'
-    }, {
-      title: 'Activated Fonts',
-      link: '',
-      type: 'collection'
-    }]);
-  }
-
-  clearSelectedStats(): void {
-    const elms = document.querySelectorAll('ul.statistics > li > a') as NodeListOf<HTMLElement>;
-    elms.forEach((el: HTMLElement) => el.classList.remove('selected'));
-  }
-
-  clearSelectedDetails(): void {
-    const elms = document.querySelectorAll('details > summary') as NodeListOf<HTMLElement>;
-    elms.forEach((el: HTMLElement) => el.classList.remove('selected'));
-  }
-
-  toggleSelected(el: HTMLElement): void {
-    if (!el.classList.contains('selected')) {
-      el.classList.add('selected');
+      if (this.db.collectionId() === collectionId) {
+        this.db.currentPage.set(1);
+        await this.db.storeFetch({ collectionId, skip: 0, take: this.db.pageSize() });
+      }
+    } finally {
+      this.presentation.stopLoading();
     }
+  }
+
+  isExpanded(id: number): boolean {
+    return this.expandedIds.has(id);
+  }
+
+  toggleExpand(event: Event, id: number) {
+    event.stopPropagation();
+    if (this.expandedIds.has(id)) {
+      this.expandedIds.delete(id);
+    } else {
+      this.expandedIds.add(id);
+    }
+  }
+
+  toggleExpandAll(event: Event) {
+    event.stopPropagation();
+    if (this.allExpanded) {
+      this.expandedIds.clear();
+    } else {
+      const collectIds = (nodes: TreeNode[]) => {
+        for (const node of nodes) {
+          this.expandedIds.add(node.collection.id);
+          collectIds(node.children);
+        }
+      };
+      collectIds(this.tree());
+    }
+    this.allExpanded = !this.allExpanded;
+  }
+
+  isSelected(collection: Collection): boolean {
+    return this.db.collectionId() === collection.id && !this.db.activeFilter();
+  }
+
+  selectCollection(collection: Collection) {
+    if (collection.parent_id === 0) {
+      this.db.selectParent(collection.id);
+    } else {
+      this.db.selectChild(collection);
+    }
+  }
+
+  closeContextMenu() {
+    this.contextMenu = null;
+  }
+
+  saveEditing(id: number) {
+    const title = this.editingTitle.trim();
+    if (title) {
+      this.db.collectionUpdate(id, { title });
+    }
+    this.cancelEditing();
+  }
+
+  cancelEditing() {
+    this.editingId = null;
+    this.editingTitle = '';
+  }
+
+  findRootParentId(collection: Collection): number {
+    const all = this.db.collections();
+    let current = collection;
+    while (current.parent_id !== 0) {
+      const parent = all.find((c) => c.id === current.parent_id);
+      if (!parent) break;
+      current = parent;
+    }
+    return current.id;
   }
 }

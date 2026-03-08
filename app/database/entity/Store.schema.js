@@ -14,133 +14,129 @@ const typeorm_1 = require("typeorm");
 const Collection_schema_1 = require("./Collection.schema");
 let Store = class Store {
 };
+exports.Store = Store;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Store.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)("int"),
+    (0, typeorm_1.Column)('int'),
     __metadata("design:type", Number)
 ], Store.prototype, "collection_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "varchar", length: 255, default: "", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'varchar', length: 255, default: '', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "file_name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "file_path", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "int", default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'int', default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Store.prototype, "file_size", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "file_size_pretty", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "file_type", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "smallint", default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'smallint', default: 0, nullable: true }),
     (0, typeorm_1.Index)(),
     __metadata("design:type", Number)
 ], Store.prototype, "installable", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "smallint", default: 0, nullable: true }),
-    (0, typeorm_1.Index)(),
-    __metadata("design:type", Number)
-], Store.prototype, "activated", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "smallint", default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'smallint', default: 0, nullable: true }),
     (0, typeorm_1.Index)(),
     __metadata("design:type", Number)
 ], Store.prototype, "temporary", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "smallint", default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'smallint', default: 0, nullable: true }),
     (0, typeorm_1.Index)(),
     __metadata("design:type", Number)
 ], Store.prototype, "favorite", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "smallint", default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'smallint', default: 0, nullable: true }),
     (0, typeorm_1.Index)(),
     __metadata("design:type", Number)
 ], Store.prototype, "system", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "compatible_full_name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "copyright", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "designer", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "designer_url", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "font_family", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "font_subfamily", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "full_name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "license", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "license_url", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "manufacturer", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "manufacturer_url", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "post_script_name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "preferred_family", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "preferred_sub_family", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "sample_text", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "trademark", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "unique_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Store.prototype, "version", void 0);
 __decorate([
@@ -153,13 +149,12 @@ __decorate([
 ], Store.prototype, "updated", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Collection_schema_1.Collection, (model) => model.stores, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
     }),
-    (0, typeorm_1.JoinColumn)({ name: "collection_id" }),
+    (0, typeorm_1.JoinColumn)({ name: 'collection_id' }),
     __metadata("design:type", Collection_schema_1.Collection)
 ], Store.prototype, "collection", void 0);
-Store = __decorate([
+exports.Store = Store = __decorate([
     (0, typeorm_1.Entity)()
 ], Store);
-exports.Store = Store;
 //# sourceMappingURL=Store.schema.js.map

@@ -1,0 +1,41 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title"><h3>System Logs</h3></div>
+    <div class="card-tools">
+      <button class="btn btn-sm btn-default" (click)="onTruncateLogs()">Clear All</button>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    @if (logs().length) {
+      <table class="w-full text-xs" [style.color]="'var(--text-primary)'">
+        <thead>
+          <tr [style.border-bottom]="'1px solid var(--border-subtle)'">
+            <th class="text-left px-4 py-2 font-semibold" [style.color]="'var(--text-secondary)'">Message</th>
+            <th class="text-center px-4 py-2 font-semibold w-24" [style.color]="'var(--text-secondary)'">Status</th>
+            <th class="text-center px-4 py-2 font-semibold w-40" [style.color]="'var(--text-secondary)'">Created</th>
+            <th class="text-center px-4 py-2 font-semibold w-16" [style.color]="'var(--text-secondary)'"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of logs(); track item.id) {
+            <tr [style.border-bottom]="'1px solid var(--border-subtle)'">
+              <td class="px-4 py-2">
+                <span class="font-semibold">{{ filterMessageType(item.type) }}</span>
+                <span class="ml-2" [style.color]="'var(--text-muted)'">{{ item.message.substring(0, 80) }}</span>
+              </td>
+              <td class="text-center px-4 py-2">{{ filterMessageStatus(item.status) }}</td>
+              <td class="text-center px-4 py-2" [style.color]="'var(--text-muted)'">{{ item.created | date: 'medium' }}</td>
+              <td class="text-center px-4 py-2">
+                <button class="btn btn-xs btn-ghost" (click)="onDeleteLog(item.id)" title="Delete">
+                  <span class="material-symbols-outlined icon-xs">delete</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="px-4 py-6 text-center text-xs" [style.color]="'var(--text-muted)'">No log entries.</div>
+    }
+  </div>
+</div>

@@ -6,9 +6,9 @@
 /out-tsc
 /app-builds
 /release
+/test-results
 main.js
 src/**/*.js
-!src/karma.conf.js
 *.js.map
 
 # dependencies
@@ -39,9 +39,7 @@ node_modules
 npm-debug.log
 testem.log
 /typings
-
-# catalog
-src/catalog/*
+.nx
 
 # e2e
 /e2e/*.js
@@ -54,5 +52,7 @@ src/catalog/*
 .DS_Store
 Thumbs.db
 
-# Developer Notes
-developer.md
+.claude
+CLAUDE.local.md
+
+.worktrees

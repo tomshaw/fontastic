@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
+const enums_1 = require("../../../enums");
 class SystemTemplate {
     constructor(mainWindow, isProduction) {
         this.mainWindow = mainWindow;
@@ -11,26 +12,23 @@ class SystemTemplate {
         const subMenuEdit = this.addSubMenuEdit();
         const subMenuView = this.addSubMenuView();
         const subMenuWindow = this.addSubMenuWindow();
-        const subMenuHelp = this.addSubMenuHelp();
-        return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+        return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow];
     }
     addSubMenuAbout() {
         return {
-            label: 'Electron',
-            submenu: [{
-                    label: 'About ElectronReact',
-                    accelerator: 'Command+H'
+            label: 'Fontastic',
+            submenu: [
+                {
+                    label: 'About Fontastic',
                 },
                 { type: 'separator' },
-                { label: 'Services', submenu: [] },
-                { type: 'separator' },
                 {
-                    label: 'Hide ElectronReact',
-                    accelerator: 'Command+H'
+                    label: 'Hide Fontastic',
+                    accelerator: 'Command+H',
                 },
                 {
                     label: 'Hide Others',
-                    accelerator: 'Command+Shift+H'
+                    accelerator: 'Command+Shift+H',
                 },
                 { label: 'Show All' },
                 { type: 'separator' },
@@ -54,32 +52,38 @@ class SystemTemplate {
                 { label: 'Cut', accelerator: 'Command+X' },
                 { label: 'Copy', accelerator: 'Command+C' },
                 { label: 'Paste', accelerator: 'Command+V' },
-                { label: 'Select All', accelerator: 'Command+A' }
+                { label: 'Select All', accelerator: 'Command+A' },
             ],
         };
     }
     addSubMenuView() {
+        const items = [
+            {
+                label: 'Toggle Full Screen',
+                accelerator: 'Ctrl+Command+F',
+                click: () => {
+                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+                },
+            },
+        ];
+        if (!this.isProduction) {
+            items.push({ type: 'separator' }, {
+                label: 'Reload',
+                accelerator: 'Command+R',
+                click: () => {
+                    this.mainWindow.webContents.reload();
+                },
+            }, {
+                label: 'Toggle Developer Tools',
+                accelerator: 'Alt+Command+I',
+                click: () => {
+                    this.mainWindow.webContents.toggleDevTools();
+                },
+            });
+        }
         return {
             label: 'View',
-            submenu: [{
-                    label: 'Reload',
-                    accelerator: 'Command+R',
-                    click: () => {
-                        this.mainWindow.webContents.reload();
-                    },
-                }, {
-                    label: 'Toggle Full Screen',
-                    accelerator: 'Ctrl+Command+F',
-                    click: () => {
-                        this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-                    },
-                }, {
-                    label: 'Toggle Developer Tools',
-                    accelerator: 'Alt+Command+I',
-                    click: () => {
-                        this.mainWindow.webContents.toggleDevTools();
-                    },
-                }]
+            submenu: items,
         };
     }
     addSubMenuWindow() {
@@ -90,34 +94,28 @@ class SystemTemplate {
                 { label: 'Close', accelerator: 'Command+W' },
                 { type: 'separator' },
                 { label: 'Bring All to Front' },
-            ]
+                { type: 'separator' },
+                ...this.addTogglePanelItems(),
+            ],
         };
     }
-    addSubMenuHelp() {
-        return {
-            label: 'Help',
-            submenu: [{
-                    label: 'Learn More',
-                    click() {
-                        electron_1.shell.openExternal('https://electronjs.org');
-                    },
-                }, {
-                    label: 'Documentation',
-                    click() {
-                        electron_1.shell.openExternal('https://github.com/electron/electron/tree/main/docs#readme');
-                    },
-                }, {
-                    label: 'Community Discussions',
-                    click() {
-                        electron_1.shell.openExternal('https://www.electronjs.org/community');
-                    },
-                }, {
-                    label: 'Search Issues',
-                    click() {
-                        electron_1.shell.openExternal('https://github.com/electron/electron/issues');
-                    },
-                }]
-        };
+    addTogglePanelItems() {
+        const panels = [
+            { label: 'Toggle Navigation', panel: 'navigation', accelerator: 'Alt+Ctrl+1' },
+            { label: 'Toggle Aside', panel: 'aside', accelerator: 'Alt+Ctrl+2' },
+            { label: 'Toggle Preview', panel: 'preview', accelerator: 'Alt+Ctrl+3' },
+            { label: 'Toggle Inspect', panel: 'inspect', accelerator: 'Alt+Ctrl+4' },
+            { label: 'Toggle Toolbar', panel: 'toolbar', accelerator: 'Alt+Ctrl+5' },
+            { label: 'Toggle Grid', panel: 'grid', accelerator: 'Alt+Ctrl+6' },
+            { label: 'Toggle Waterfall', panel: 'waterfall', accelerator: 'Alt+Ctrl+7' },
+        ];
+        return panels.map(({ label, panel, accelerator }) => ({
+            label,
+            accelerator,
+            click: () => {
+                this.mainWindow.webContents.send(enums_1.ChannelType.IPC_TOGGLE_PANEL, panel);
+            },
+        }));
     }
 }
 exports.default = SystemTemplate;

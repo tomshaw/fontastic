@@ -1,0 +1,47 @@
+<div class="grid h-screen grid-rows-[56px_1fr_32px]" [style.background-color]="'var(--surface-0)'">
+  <!-- Header -->
+  <div
+    class="flex items-center justify-between px-4"
+    [style.background-color]="'var(--surface-2)'"
+    [style.border-bottom]="'1px solid var(--border-subtle)'"
+  >
+    <h1 class="text-sm font-bold" [style.color]="'var(--text-primary)'">Settings</h1>
+    <a routerLink="/home" class="btn btn-sm btn-default">Back</a>
+  </div>
+
+  <!-- Body -->
+  <div class="grid overflow-hidden" style="grid-template-columns: 200px 1fr">
+    <!-- Sidebar -->
+    <nav
+      class="overflow-auto py-4 px-3"
+      [style.background-color]="'var(--surface-2)'"
+      [style.border-right]="'1px solid var(--border-subtle)'"
+    >
+      <ul class="space-y-1">
+        <li>
+          <a routerLink="general" routerLinkActive="active" class="settings-nav-link">General</a>
+        </li>
+        <li>
+          <a routerLink="logs" routerLinkActive="active" class="settings-nav-link">Logs</a>
+        </li>
+        <li>
+          <a routerLink="system" routerLinkActive="active" class="settings-nav-link">System</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="overflow-auto" [style.background-color]="'var(--surface-1)'">
+      <div class="p-6">
+        <router-outlet />
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div
+    class="flex items-center px-4"
+    [style.background-color]="'var(--surface-2)'"
+    [style.border-top]="'1px solid var(--border-subtle)'"
+  ></div>
+</div>

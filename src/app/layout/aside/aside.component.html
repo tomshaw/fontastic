@@ -1,9 +1,35 @@
-<ng-container [ngSwitch]="componentName">
-  <aside class="component border-left">
-    <div class="component__panel">
-      <app-tables *ngSwitchCase="'tables'"></app-tables>
-      <app-search *ngSwitchCase="'search'"></app-search>
-      <app-store *ngSwitchCase="'store'"></app-store>
-    </div>
-  </aside>
-</ng-container>
+<div class="panel">
+  <div class="h-full scrollbox-y text-xs">
+    <app-collapsible-panel title="Font Details">
+      @if (db.store(); as store) {
+        <div class="flex flex-col p-3.5 gap-2.5">
+          @for (field of fields; track field.label; let last = $last) {
+            @if (field.value(store); as value) {
+              <div [class.border-b]="!last" class="border-dashed pb-2" [style.border-color]="'var(--border-subtle)'">
+                <p class="font-semibold text-[11px]" [style.color]="'var(--text-primary)'">{{ field.label }}</p>
+                <p class="break-all" [style.color]="'var(--text-secondary)'">{{ value }}</p>
+              </div>
+            }
+          }
+        </div>
+      } @else {
+        <p class="px-3.5 py-3" [style.color]="'var(--text-muted)'">Select a font to view details</p>
+      }
+    </app-collapsible-panel>
+
+    <app-collapsible-panel title="Metrics">
+      @if (db.fontMetrics(); as metrics) {
+        <div class="flex flex-col p-3.5 gap-2.5">
+          @for (field of metricFields; track field.label; let last = $last) {
+            <div [class.border-b]="!last" class="border-dashed pb-2" [style.border-color]="'var(--border-subtle)'">
+              <p class="font-semibold text-[11px]" [style.color]="'var(--text-primary)'">{{ field.label }}</p>
+              <p [style.color]="'var(--text-secondary)'">{{ field.value(metrics) }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="px-3.5 py-3" [style.color]="'var(--text-muted)'">No metrics available</p>
+      }
+    </app-collapsible-panel>
+  </div>
+</div>

@@ -1,16 +1,15 @@
-body[data-theme="mellow"] {
+body[data-theme='mellow'] {
   @apply text-mellow bg-mellow;
 }
 
-[data-theme="mellow"] {
-
+[data-theme='mellow'] {
   .hover-scrollbox-x,
   .hover-scrollbox-y {
     --scrollbar-color: #252525;
     --scrollbar-hover-color: #252525d7;
     --scrollbar-space: 0.1rem;
-    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
-    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
+    --scrollbar-height: calc(0.3rem + var(--scrollbar-space));
+    --scrollbar-width: calc(0.3rem + var(--scrollbar-space));
   }
 
   a {
@@ -68,7 +67,7 @@ body[data-theme="mellow"] {
     }
   }
 
-  input:not(.form-control-hidden):not([type="range"]),
+  input:not(.form-control-hidden):not([type='range']),
   select:not(.form-control-hidden) {
     border: 1px solid var(--border-color) !important;
   }
@@ -77,12 +76,12 @@ body[data-theme="mellow"] {
   .checkbox label {
     border: 2px solid var(--font-color);
   }
-  
+
   .radio :checked ~ label::before,
   .checkbox :checked ~ label::before {
     background-color: var(--font-color);
   }
-  
+
   .radio :checked ~ span,
   .checkbox :checked ~ span {
     color: var(--font-color);
@@ -111,21 +110,23 @@ body[data-theme="mellow"] {
   //   accent-color: #cc2ea4;
   // }
 
-  input[type="range"]::-webkit-slider-runnable-track {
+  input[type='range']::-webkit-slider-runnable-track {
     background: #000000;
   }
-  
-  input[type="range"]::-webkit-slider-thumb {
+
+  input[type='range']::-webkit-slider-thumb {
     background: var(--font-color) !important;
     border: 3px solid var(--background-color) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   .paginator {
     a {
       background-color: #252525;
       i.material-icons {
-        color: #dfc136; 
+        color: #dfc136;
       }
     }
   }
@@ -149,24 +150,24 @@ body[data-theme="mellow"] {
   .border-top-dashed {
     border-top: 1px dashed var(--border-color) !important;
   }
-  
+
   .border-right-dashed {
     border-right: 1px dashed var(--border-color) !important;
   }
-  
+
   .border-bottom-dashed {
     border-bottom: 1px dashed var(--border-color) !important;
   }
-  
+
   .border-left-dashed {
     border-left: 1px dashed var(--border-color) !important;
   }
 
   details {
-    >summary {
+    > summary {
       color: #252525;
     }
-    >details {
+    > details {
       &::after {
         background-color: #252525;
       }
@@ -204,7 +205,7 @@ body[data-theme="mellow"] {
     .material-icons {
       color: var(--font-color);
     }
-    [class^="icon-"] {
+    [class^='icon-'] {
       color: var(--font-color);
     }
   }

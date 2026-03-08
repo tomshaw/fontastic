@@ -1,0 +1,6 @@
+{
+  "*.ts": ["eslint --no-warn-ignored --fix", "prettier --write"],
+  "*.html": ["prettier --write", "eslint --no-warn-ignored --fix"],
+  "*.scss": ["prettier --write"],
+  "*.json": ["prettier --write"]
+}

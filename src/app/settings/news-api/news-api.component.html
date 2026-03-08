@@ -1,0 +1,40 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title"><h3>News API</h3></div>
+    <div class="card-tools">
+      @if (newsApiKey()) {
+        <button class="btn btn-sm btn-default" (click)="onFetchNews()" [disabled]="fetchStatus() === 'fetching'">
+          {{ fetchStatus() === 'fetching' ? 'Fetching...' : 'Fetch Articles' }}
+        </button>
+      }
+    </div>
+  </div>
+  <div class="card-body">
+    <div>
+      <label class="form-label" for="apiKey">API Key</label>
+      <input
+        type="text"
+        id="apiKey"
+        class="form-input w-full"
+        [ngModel]="newsApiKey()"
+        (ngModelChange)="newsApiKey.set($event)"
+        name="apiKey"
+        placeholder="Enter your newsapi.org key"
+      />
+      <p class="text-xs mt-1" [style.color]="'var(--text-muted)'">Visit newsapi.org to obtain your free key.</p>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div>
+      @if (saveStatus() === 'saved') {
+        <span class="text-xs" [style.color]="'var(--text-muted)'">API key saved.</span>
+      }
+      @if (fetchMessage()) {
+        <span class="text-xs" [style.color]="fetchStatus() === 'error' ? '#dc2626' : 'var(--text-muted)'">{{ fetchMessage() }}</span>
+      }
+    </div>
+    <div class="card-tools">
+      <button class="btn btn-sm btn-theme" (click)="onSaveNewsApiKey()">Save</button>
+    </div>
+  </div>
+</div>

@@ -6,7 +6,6 @@ import { systemFontPaths } from '../config/system';
 const root = process.cwd();
 
 export default class ConfigManager {
-
   machineId: string;
   isProduction: boolean;
 
@@ -16,15 +15,15 @@ export default class ConfigManager {
   }
 
   x86() {
-    return process.arch === 'ia32'
+    return process.arch === 'ia32';
   }
 
   x64() {
-    return process.arch === 'x64'
+    return process.arch === 'x64';
   }
 
   macOS() {
-    return process.platform === 'darwin'
+    return process.platform === 'darwin';
   }
 
   windows() {
@@ -32,7 +31,7 @@ export default class ConfigManager {
   }
 
   linux() {
-    return process.platform === 'linux'
+    return process.platform === 'linux';
   }
 
   getLocale() {
@@ -44,11 +43,11 @@ export default class ConfigManager {
   }
 
   getPathDir(str: string) {
-    return path.dirname(str)
+    return path.dirname(str);
   }
 
   getPathBase(str: string) {
-    return path.basename(str)
+    return path.basename(str);
   }
 
   getAppPath(): string {
@@ -76,7 +75,7 @@ export default class ConfigManager {
   }
 
   getSessionPath(): string {
-    return path.resolve(this.getUserDataPath(), './Session')
+    return path.resolve(this.getUserDataPath(), './Session');
   }
 
   getDatabasePath(file: string) {
@@ -92,7 +91,9 @@ export default class ConfigManager {
   }
 
   getPlatformFontPaths() {
-    return systemFontPaths.get(this.getPlatform());
+    const paths = systemFontPaths.get(this.getPlatform()) || [];
+    const home = os.homedir();
+    return paths.map((p: string) => (p.startsWith('~') ? path.join(home, p.slice(1)) : p));
   }
 
   getUpTime() {
@@ -104,8 +105,8 @@ export default class ConfigManager {
       ts: sec,
       hours: Math.floor(hour) % 60,
       minutes: Math.floor(min) % 60,
-      seconds: Math.floor(sec) % 60
-    }
+      seconds: Math.floor(sec) % 60,
+    };
   }
 
   getPlatform() {
@@ -132,40 +133,28 @@ export default class ConfigManager {
     return process.versions.electron;
   }
 
-  getBinaryName() {
-    return (this.getPlatform() === 'win') ? 'activator.exe' : 'activator';
-  }
-
-  getBinaryPath() {
-    return this.isProduction ? path.join(this.getAppPath(), '..', 'bin') : path.join(root, 'src', 'bin');
-  }
-
-  getExecutable(): string {
-    return path.resolve(path.join(this.getBinaryPath(), this.getBinaryName()));
-  }
-
   toArray() {
     return {
-      'uptime': this.getUpTime(),
-      'locale': this.getLocale(),
-      'is_dev': !this.isProduction,
-      'is_production': this.isProduction,
-      'is_x86': this.x86(),
-      'is_x64': this.x64(),
-      'is_mac': this.macOS(),
-      'is_windows': this.windows(),
-      'is_linux': this.linux(),
-      'cache_path': this.getCachePath(),
-      'app_path': this.getAppPath(),
-      'app_data_path': this.getAppDataPath(),
-      'user_data_path': this.getUserDataPath(),
-      'downloads_path': this.getDownloadsPath(),
-      'session_path': this.getSessionPath(),
-      'catalog_path': this.getCatalogPath(),
-      'version': {
-        'system': this.getAppVersion(),
-        'electron': this.getElectronVersion(),
-      }
-    }
+      uptime: this.getUpTime(),
+      locale: this.getLocale(),
+      is_dev: !this.isProduction,
+      is_production: this.isProduction,
+      is_x86: this.x86(),
+      is_x64: this.x64(),
+      is_mac: this.macOS(),
+      is_windows: this.windows(),
+      is_linux: this.linux(),
+      cache_path: this.getCachePath(),
+      app_path: this.getAppPath(),
+      app_data_path: this.getAppDataPath(),
+      user_data_path: this.getUserDataPath(),
+      downloads_path: this.getDownloadsPath(),
+      session_path: this.getSessionPath(),
+      catalog_path: this.getCatalogPath(),
+      version: {
+        system: this.getAppVersion(),
+        electron: this.getElectronVersion(),
+      },
+    };
   }
 }

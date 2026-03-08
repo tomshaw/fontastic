@@ -36,8 +36,8 @@ class ConfigManager {
     initSettingsConfig() {
         const settings = {
             import: {
-                type: 'ask'
-            }
+                type: 'ask',
+            },
         };
         if (this.has(StorageType_1.StorageType.Options)) {
             const saved = this.get(StorageType_1.StorageType.Options);
@@ -63,8 +63,24 @@ class ConfigManager {
             this.set(StorageType_1.StorageType.Database, database_1.database);
         }
         else {
-            // Resets database.
-            //this.set(StorageType.Database, database);
+            // Ensure the default SQLite connection exists and has the correct path.
+            const connections = store.connections || [];
+            const defaultConn = connections.find((item) => item.name === 'default' && item.type === 'sqlite');
+            if (defaultConn) {
+                defaultConn.database = this.systemManager.getDatabasePath('fontastic.sqlite');
+            }
+            else {
+                connections.unshift(database_1.database.connections.find((item) => item.name === 'default'));
+            }
+            // Ensure at least the default SQLite connection is enabled.
+            const hasEnabled = connections.some((item) => item.enabled);
+            if (!hasEnabled) {
+                const sqliteConn = connections.find((item) => item.name === 'default' && item.type === 'sqlite');
+                if (sqliteConn)
+                    sqliteConn.enabled = true;
+            }
+            store.connections = connections;
+            this.set(StorageType_1.StorageType.Database, store);
         }
     }
     createDbConnection(options) {
@@ -88,7 +104,7 @@ class ConfigManager {
     enableDbConnection(options) {
         let config = this.get(StorageType_1.StorageType.Database);
         config.connections = config.connections.filter((item) => {
-            item.enabled = (item.name === options.name) ? true : false;
+            item.enabled = item.name === options.name ? true : false;
             return item;
         });
         this.set(StorageType_1.StorageType.Database, config);

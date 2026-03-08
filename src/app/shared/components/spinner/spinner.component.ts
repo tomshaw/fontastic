@@ -1,26 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { PresentationService } from '@app/core/services';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-spinner',
-  templateUrl: './spinner.component.html',
-  styleUrls: ['./spinner.component.scss']
+  standalone: true,
+  template: `<span class="app-spinner" [class.is-animating]="animating()"></span>`,
 })
-export class SpinnerComponent implements OnInit {
-
-  isActivated = false;
-
-  constructor(
-    private presentationService: PresentationService
-  ) { }
-
-  ngOnInit() {
-    this.presentationService._loadingSpinner.subscribe((status: boolean) => {
-      if (status) {
-        this.isActivated = status;
-      } else {
-        setTimeout(() => this.isActivated = status, 1e3/3);
-      }
-    });
-  }
+export class SpinnerComponent {
+  readonly animating = input(false);
 }

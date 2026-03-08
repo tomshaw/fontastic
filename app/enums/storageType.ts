@@ -10,5 +10,6 @@ export enum StorageType {
   StoreId = 'catalog.store.id',
   LayoutPanel = 'layout.panel',
   LayoutPreview = 'layout.preview',
-  LayoutTheme = 'layout.theme'
+  LayoutTheme = 'layout.theme',
+  AiKeys = 'ai.keys',
 }

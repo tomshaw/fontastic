@@ -1,0 +1,50 @@
+/* ==========================================================================
+Scrollbox
+========================================================================== */
+
+.scrollbox-x,
+.scrollbox-y {
+  --scrollbar-thumb: var(--scrollbar-thumb-color);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-hover-color);
+  --scrollbar-track: transparent;
+  --scrollbar-size: 5px;
+  --scrollbar-radius: 3px;
+}
+
+.scrollbox-x {
+  overflow-x: overlay;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+.scrollbox-y {
+  overflow-y: overlay;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+/* Webkit track */
+.scrollbox-x::-webkit-scrollbar {
+  height: var(--scrollbar-size);
+}
+
+.scrollbox-y::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+}
+
+.scrollbox-x::-webkit-scrollbar-track,
+.scrollbox-y::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+/* Webkit thumb */
+.scrollbox-x::-webkit-scrollbar-thumb,
+.scrollbox-y::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+}
+
+.scrollbox-x::-webkit-scrollbar-thumb:hover,
+.scrollbox-y::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}

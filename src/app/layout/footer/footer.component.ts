@@ -1,32 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ConfigService } from '@app/core/services';
-
-export interface AppVersion {
-  system: string;
-  electron: string;
-}
+import { Component, inject } from '@angular/core';
+import { SpinnerComponent } from '../../shared/components';
+import { PresentationService } from '../../core/services';
 
 @Component({
   selector: 'app-footer',
+  standalone: true,
+  imports: [SpinnerComponent],
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent implements OnInit {
-
-  version: AppVersion;
-  ngVersion: string;
-  
-  constructor(
-    private configService: ConfigService,
-  ) { }
-
-  ngOnInit() {
-    if (this.configService.has('system.version')) {
-      this.version = this.configService.get('system.version') as AppVersion;
-    }
-    if (this.configService.has('ng-version')) {
-      this.ngVersion = this.configService.get('ng-version');
-    }
-  }
-
+export class FooterComponent {
+  readonly presentation = inject(PresentationService);
 }

@@ -20,11 +20,22 @@ class ConnectionManager {
         this.migrations = [];
         this.omitables = ['title', 'description', 'enabled'];
         this.configManager = configManager;
-        this.options = this.normalize(this.configManager.get(StorageType_1.StorageType.DatabaseConnections));
+        const allConnections = this.configManager.get(StorageType_1.StorageType.DatabaseConnections) || [];
+        this.options = this.normalize(allConnections);
         this.registerEntities(this.options);
         this.registerSubscribers(this.options);
         this.registerMigrations(this.options);
-        this.dataSource = new typeorm_1.DataSource(this.options[0]);
+        this.dataSource = new typeorm_1.DataSource(this.getDefaultOptions(allConnections));
+    }
+    getDefaultOptions(allConnections) {
+        // Prefer sqlite from enabled options, then from all connections as fallback.
+        const fromEnabled = this.options.find((item) => item.type === 'sqlite');
+        if (fromEnabled)
+            return this.discardOmitables(fromEnabled);
+        const fromAll = allConnections.find((item) => item.type === 'sqlite');
+        if (fromAll)
+            return this.discardOmitables(Object.assign(Object.assign({}, fromAll), { entities: this.schemas, subscribers: this.subscribers, migrations: this.migrations }));
+        return this.discardOmitables(this.options[0]);
     }
     initialize() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -43,13 +54,13 @@ class ConnectionManager {
         return new typeorm_1.DataSource(this.discardOmitables(options)).initialize();
     }
     registerEntities(options) {
-        this.options = options.map(obj => (Object.assign(Object.assign({}, obj), { entities: this.schemas })));
+        this.options = options.map((obj) => (Object.assign(Object.assign({}, obj), { entities: this.schemas })));
     }
     registerSubscribers(options) {
-        this.options = options.map(obj => (Object.assign(Object.assign({}, obj), { subscribers: this.subscribers })));
+        this.options = options.map((obj) => (Object.assign(Object.assign({}, obj), { subscribers: this.subscribers })));
     }
     registerMigrations(options) {
-        this.options = options.map(obj => (Object.assign(Object.assign({}, obj), { migrations: this.migrations })));
+        this.options = options.map((obj) => (Object.assign(Object.assign({}, obj), { migrations: this.migrations })));
     }
     discardOmitables(options) {
         return Object.fromEntries(Object.entries(options).filter(([key]) => !this.omitables.includes(key)));

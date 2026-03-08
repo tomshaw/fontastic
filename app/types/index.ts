@@ -1,4 +1,5 @@
 ﻿export * from './AppAlert';
+export * from './FontMetrics';
 export * from './AuthUser';
 export * from './Breadcrumb';
 export * from './QueryOptions';

@@ -10,40 +10,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs/promises");
-const path = require('path');
-const exec = require('child_process').exec;
-const child = require('child_process').execFile;
+const path = require("path");
 class FontCatalog {
-    constructor(systemManager) {
-        this.systemManager = systemManager;
-    }
     createCatalog(folder) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield fs.mkdir(folder, { recursive: true });
         });
     }
-    commandHelp(done) {
+    copyFiles(files, dest) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield child(this.systemManager.getExecutable(), ['-h'], done);
+            yield this.createCatalog(dest);
+            yield Promise.all(files.map(file => fs.copyFile(file, path.join(dest, path.basename(file)))));
         });
     }
-    findFonts(src, done) {
+    copyFolder(src, dest) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield child(this.systemManager.getExecutable(), ['fonts', 'find', '--root', src], done);
-        });
-    }
-    copyFiles(files, dest, done) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const cmdPath = this.systemManager.getExecutable();
-            const items = files.map((item) => `"${path.normalize(item)}"`).join(" ");
-            const command = `${cmdPath} copy files --destination "${dest}" ${items}`;
-            return exec(command, done);
-        });
-    }
-    copyFolders(src, dest, done) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const params = ['copy', 'folders', '--source', src, '--destination', dest];
-            return child(this.systemManager.getExecutable(), params, done);
+            yield fs.cp(src, dest, { recursive: true });
         });
     }
 }

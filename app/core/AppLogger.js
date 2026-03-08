@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_log_1 = require("electron-log");
 class AppLogger {
     constructor(logName) {
-        this.logger = electron_log_1.default.initialize();
+        this.logger = electron_log_1.default;
         this.logger.transports.file.level = 'debug';
         this.logger.transports.file.fileName = logName + '.log';
         this.logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] {text}';

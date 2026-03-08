@@ -6,7 +6,6 @@ const Store = require('electron-store');
 const store = new Store();
 
 export default class ConfigManager {
-
   systemManager: SystemManager;
 
   constructor(systemManager: SystemManager) {
@@ -48,8 +47,8 @@ export default class ConfigManager {
   initSettingsConfig(): void {
     const settings = {
       import: {
-        type: 'ask'
-      }
+        type: 'ask',
+      },
     };
     if (this.has(StorageType.Options)) {
       const saved = this.get(StorageType.Options);
@@ -72,13 +71,27 @@ export default class ConfigManager {
         item.database = this.systemManager.getDatabasePath(item.database);
       }
       return item;
-    })
+    });
 
     if (!store) {
       this.set(StorageType.Database, database);
     } else {
-      // Resets database.
-      //this.set(StorageType.Database, database);
+      // Ensure the default SQLite connection exists and has the correct path.
+      const connections = store.connections || [];
+      const defaultConn = connections.find((item: any) => item.name === 'default' && item.type === 'sqlite');
+      if (defaultConn) {
+        defaultConn.database = this.systemManager.getDatabasePath('fontastic.sqlite');
+      } else {
+        connections.unshift(database.connections.find((item: any) => item.name === 'default'));
+      }
+      // Ensure at least the default SQLite connection is enabled.
+      const hasEnabled = connections.some((item: any) => item.enabled);
+      if (!hasEnabled) {
+        const sqliteConn = connections.find((item: any) => item.name === 'default' && item.type === 'sqlite');
+        if (sqliteConn) sqliteConn.enabled = true;
+      }
+      store.connections = connections;
+      this.set(StorageType.Database, store);
     }
   }
 
@@ -107,9 +120,9 @@ export default class ConfigManager {
     let config = this.get(StorageType.Database);
 
     config.connections = config.connections.filter((item: any) => {
-      item.enabled = (item.name === options.name) ? true : false;
+      item.enabled = item.name === options.name ? true : false;
       return item;
-    })
+    });
 
     this.set(StorageType.Database, config);
 

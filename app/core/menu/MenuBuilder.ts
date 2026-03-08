@@ -19,20 +19,18 @@ export default class MenuBuilder {
   buildContextMenu(): void {
     this.mainWindow.webContents.on('context-menu', (_, props) => {
       const { x, y } = props;
-      Menu.buildFromTemplate([{
-        label: 'Inspect element',
-        click: () => {
-          this.mainWindow.webContents.inspectElement(x, y);
+      Menu.buildFromTemplate([
+        {
+          label: 'Inspect element',
+          click: () => {
+            this.mainWindow.webContents.inspectElement(x, y);
+          },
         },
-      }]).popup({ window: this.mainWindow });
+      ]).popup({ window: this.mainWindow });
     });
   }
 
   initialize() {
-    if (!this.isProductionReady) {
-      return;
-    }
-
     const template = process.platform === 'darwin' ? this.buildDarwinTemplate() : this.buildDefaultTemplate();
 
     const menu = Menu.buildFromTemplate(template);

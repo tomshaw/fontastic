@@ -1,2 +1,2 @@
-export * from './ChannelType'
-export * from './StorageType'
+export * from './ChannelType';
+export * from './StorageType';

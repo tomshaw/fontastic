@@ -1,4 +1,5 @@
-import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions } from 'electron';
+import { app, Menu, BrowserWindow, MenuItemConstructorOptions } from 'electron';
+import { ChannelType } from '../../../enums';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -19,24 +20,21 @@ export default class DarwinTemplate {
     const subMenuEdit = this.addSubMenuEdit();
     const subMenuView = this.addSubMenuView();
     const subMenuWindow = this.addSubMenuWindow();
-    const subMenuHelp = this.addSubMenuHelp();
 
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow];
   }
 
   addSubMenuAbout(): MenuItemConstructorOptions | DarwinMenuItemConstructorOptions {
     return {
-      label: 'Electron',
+      label: 'Fontastic',
       submenu: [
         {
-          label: 'About ElectronReact',
+          label: 'About Fontastic',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
-        { label: 'Services', submenu: [] },
-        { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide Fontastic',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
@@ -68,33 +66,45 @@ export default class DarwinTemplate {
         { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
         { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
         { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
-        { label: 'Select All', accelerator: 'Command+A', selector: 'selectAll:' }
+        { label: 'Select All', accelerator: 'Command+A', selector: 'selectAll:' },
       ],
     };
   }
 
   addSubMenuView(): MenuItemConstructorOptions {
-    return {
-      label: 'View',
-      submenu: [{
-        label: 'Reload',
-        accelerator: 'Command+R',
-        click: () => {
-          this.mainWindow.webContents.reload();
-        },
-      }, {
+    const items: MenuItemConstructorOptions[] = [
+      {
         label: 'Toggle Full Screen',
         accelerator: 'Ctrl+Command+F',
         click: () => {
           this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
         },
-      }, {
-        label: 'Toggle Developer Tools',
-        accelerator: 'Alt+Command+I',
-        click: () => {
-          this.mainWindow.webContents.toggleDevTools();
+      },
+    ];
+
+    if (!this.isProduction) {
+      items.push(
+        { type: 'separator' },
+        {
+          label: 'Reload',
+          accelerator: 'Command+R',
+          click: () => {
+            this.mainWindow.webContents.reload();
+          },
         },
-      }]
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: 'Alt+Command+I',
+          click: () => {
+            this.mainWindow.webContents.toggleDevTools();
+          },
+        },
+      );
+    }
+
+    return {
+      label: 'View',
+      submenu: items,
     };
   }
 
@@ -106,37 +116,29 @@ export default class DarwinTemplate {
         { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
         { type: 'separator' },
         { label: 'Bring All to Front', selector: 'arrangeInFront:' },
-      ]
+        { type: 'separator' },
+        ...this.addTogglePanelItems(),
+      ],
     };
   }
 
-  addSubMenuHelp(): MenuItemConstructorOptions {
-    return {
-      label: 'Help',
-      submenu: [{
-        label: 'Learn More',
-        click() {
-          shell.openExternal('https://electronjs.org');
-        },
-      }, {
-        label: 'Documentation',
-        click() {
-          shell.openExternal(
-            'https://github.com/electron/electron/tree/main/docs#readme'
-          );
-        },
-      }, {
-        label: 'Community Discussions',
-        click() {
-          shell.openExternal('https://www.electronjs.org/community');
-        },
-      }, {
-        label: 'Search Issues',
-        click() {
-          shell.openExternal('https://github.com/electron/electron/issues');
-        },
-      }]
-    };
-  }
+  addTogglePanelItems(): MenuItemConstructorOptions[] {
+    const panels: { label: string; panel: string; accelerator: string }[] = [
+      { label: 'Toggle Navigation', panel: 'navigation', accelerator: 'Alt+Command+1' },
+      { label: 'Toggle Aside', panel: 'aside', accelerator: 'Alt+Command+2' },
+      { label: 'Toggle Preview', panel: 'preview', accelerator: 'Alt+Command+3' },
+      { label: 'Toggle Inspect', panel: 'inspect', accelerator: 'Alt+Command+4' },
+      { label: 'Toggle Toolbar', panel: 'toolbar', accelerator: 'Alt+Command+5' },
+      { label: 'Toggle Grid', panel: 'grid', accelerator: 'Alt+Command+6' },
+      { label: 'Toggle Waterfall', panel: 'waterfall', accelerator: 'Alt+Command+7' },
+    ];
 
+    return panels.map(({ label, panel, accelerator }) => ({
+      label,
+      accelerator,
+      click: () => {
+        this.mainWindow.webContents.send(ChannelType.IPC_TOGGLE_PANEL, panel);
+      },
+    }));
+  }
 }

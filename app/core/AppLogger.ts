@@ -7,7 +7,7 @@ export default class AppLogger {
   private logger: any;
 
   private constructor(logName: string) {
-    this.logger = log.initialize();
+    this.logger = log;
     this.logger.transports.file.level = 'debug';
     this.logger.transports.file.fileName = logName + '.log';
     this.logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] {text}';

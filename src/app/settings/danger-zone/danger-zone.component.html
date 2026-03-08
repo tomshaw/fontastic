@@ -1,0 +1,22 @@
+<div class="card" style="border-color: #dc2626">
+  <div class="card-header" style="border-color: #dc2626">
+    <div class="card-title"><h3 style="color: #dc2626">Danger Zone</h3></div>
+  </div>
+  <div class="card-body space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Drop active database</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Drops the database and all its data.</p>
+      </div>
+      <button class="btn btn-sm btn-danger" (click)="onDropDatabase()">Drop</button>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Clear system storage</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Removes all settings from system store.</p>
+      </div>
+      <button class="btn btn-sm btn-danger" (click)="onClearStore()">Clear</button>
+    </div>
+  </div>
+</div>

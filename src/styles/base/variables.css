@@ -1,0 +1,356 @@
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* ---------------------------------------------------------------------------
+   Light mode — warm stone neutrals
+   --------------------------------------------------------------------------- */
+
+.light {
+  --surface-0: #FBFBF9;
+  --surface-1: #FFFFFF;
+  --surface-2: #F3F2EF;
+  --surface-3: #EAE8E4;
+
+  --border-subtle: #E9E7E2;
+  --border-default: #D8D5CE;
+
+  --text-primary: #1C1917;
+  --text-secondary: #57534E;
+  --text-muted: #A8A29E;
+
+  --accent: #92400E;
+  --accent-hover: #78350F;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(146, 64, 14, 0.08);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(99, 102, 241, 0.06);
+  --selected-border: rgba(99, 102, 241, 0.25);
+  --hover-bg: rgba(0, 0, 0, 0.03);
+
+  --context-bg: #FFFFFF;
+  --context-border: #E5E3DE;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  --input-bg: #FFFFFF;
+  --input-border: #D2CFC8;
+  --input-focus-border: #6366F1;
+
+  --slider-track: #E5E3DE;
+  --slider-thumb: #868076;
+  --slider-thumb-hover: #635E55;
+
+  --scrollbar-thumb-color: #D2CFC8;
+  --scrollbar-thumb-hover-color: #B0ABA3;
+}
+
+/* ---------------------------------------------------------------------------
+   Dark mode — deep cool zinc
+   --------------------------------------------------------------------------- */
+
+.dark {
+  --surface-0: #0E0E11;
+  --surface-1: #161619;
+  --surface-2: #1E1E23;
+  --surface-3: #28282F;
+
+  --border-subtle: #232329;
+  --border-default: #2E2E36;
+
+  --text-primary: #EDEDF0;
+  --text-secondary: #A3A3B0;
+  --text-muted: #55555F;
+
+  --accent: #D97706;
+  --accent-hover: #B45309;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(217, 119, 6, 0.10);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(129, 140, 248, 0.08);
+  --selected-border: rgba(129, 140, 248, 0.30);
+  --hover-bg: rgba(255, 255, 255, 0.04);
+
+  --context-bg: #1C1C21;
+  --context-border: #2E2E36;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.16);
+
+  --input-bg: #1C1C21;
+  --input-border: #3B3B44;
+  --input-focus-border: #818CF8;
+
+  --slider-track: #27272E;
+  --slider-thumb: #55555F;
+  --slider-thumb-hover: #7C7C88;
+
+  --scrollbar-thumb-color: #27272E;
+  --scrollbar-thumb-hover-color: #3B3B44;
+}
+
+/* ---------------------------------------------------------------------------
+   Dashboard — dark blue-green
+   --------------------------------------------------------------------------- */
+
+.dashboard {
+  --surface-0: #14202b;
+  --surface-1: #1a2631;
+  --surface-2: #1e2d3a;
+  --surface-3: #2d3e50;
+
+  --border-subtle: #0e161f;
+  --border-default: #2d3e50;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #637785;
+  --text-muted: #3d5060;
+
+  --accent: #00a0be;
+  --accent-hover: #008da6;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(0, 160, 190, 0.10);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(0, 160, 190, 0.10);
+  --selected-border: rgba(0, 160, 190, 0.30);
+  --hover-bg: rgba(255, 255, 255, 0.04);
+
+  --context-bg: #1a2631;
+  --context-border: #2d3e50;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.16);
+
+  --input-bg: #1a2631;
+  --input-border: #2d3e50;
+  --input-focus-border: #00a0be;
+
+  --slider-track: #0e161f;
+  --slider-thumb: #637785;
+  --slider-thumb-hover: #7a8f9e;
+
+  --scrollbar-thumb-color: #2d3e50;
+  --scrollbar-thumb-hover-color: #3d5060;
+}
+
+/* ---------------------------------------------------------------------------
+   Euphoria — dark purple with gold accents
+   --------------------------------------------------------------------------- */
+
+.euphoria {
+  --surface-0: #23121c;
+  --surface-1: #2a1623;
+  --surface-2: #3a1f32;
+  --surface-3: #4a2942;
+
+  --border-subtle: #3a1f32;
+  --border-default: #4a2942;
+
+  --text-primary: #deb431;
+  --text-secondary: #943577;
+  --text-muted: #5a2a48;
+
+  --accent: #c10156;
+  --accent-hover: #a30148;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(193, 1, 86, 0.10);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(222, 180, 49, 0.10);
+  --selected-border: rgba(222, 180, 49, 0.30);
+  --hover-bg: rgba(222, 180, 49, 0.05);
+
+  --context-bg: #2a1623;
+  --context-border: #4a2942;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.16);
+
+  --input-bg: #2a1623;
+  --input-border: #4a2942;
+  --input-focus-border: #deb431;
+
+  --slider-track: #3a1f32;
+  --slider-thumb: #943577;
+  --slider-thumb-hover: #deb431;
+
+  --scrollbar-thumb-color: #3a1f32;
+  --scrollbar-thumb-hover-color: #4a2942;
+}
+
+/* ---------------------------------------------------------------------------
+   Midnight — pure black
+   --------------------------------------------------------------------------- */
+
+.midnight {
+  --surface-0: #000000;
+  --surface-1: #0a0a0a;
+  --surface-2: #111111;
+  --surface-3: #1a1a1a;
+
+  --border-subtle: #1a1a1a;
+  --border-default: #2e2e2e;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #999999;
+  --text-muted: #555555;
+
+  --accent: #777777;
+  --accent-hover: #999999;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(119, 119, 119, 0.10);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(255, 255, 255, 0.06);
+  --selected-border: rgba(255, 255, 255, 0.20);
+  --hover-bg: rgba(255, 255, 255, 0.04);
+
+  --context-bg: #0a0a0a;
+  --context-border: #2e2e2e;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.48), 0 1px 4px rgba(0, 0, 0, 0.24);
+
+  --input-bg: #0a0a0a;
+  --input-border: #2e2e2e;
+  --input-focus-border: #FFFFFF;
+
+  --slider-track: #1a1a1a;
+  --slider-thumb: #555555;
+  --slider-thumb-hover: #777777;
+
+  --scrollbar-thumb-color: #1a1a1a;
+  --scrollbar-thumb-hover-color: #2e2e2e;
+}
+
+/* ---------------------------------------------------------------------------
+   Mellow — bright yellow with dark text
+   --------------------------------------------------------------------------- */
+
+.mellow {
+  --surface-0: #ffdf00;
+  --surface-1: #ffe52a;
+  --surface-2: #ddc000;
+  --surface-3: #ccb000;
+
+  --border-subtle: #ccb000;
+  --border-default: #252525;
+
+  --text-primary: #252525;
+  --text-secondary: #3e4245;
+  --text-muted: #777777;
+
+  --accent: #cc0000;
+  --accent-hover: #aa0000;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(204, 0, 0, 0.08);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(37, 37, 37, 0.10);
+  --selected-border: rgba(37, 37, 37, 0.30);
+  --hover-bg: rgba(0, 0, 0, 0.06);
+
+  --context-bg: #ffe52a;
+  --context-border: #252525;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+
+  --input-bg: #ffe52a;
+  --input-border: #252525;
+  --input-focus-border: #cc0000;
+
+  --slider-track: #ccb000;
+  --slider-thumb: #252525;
+  --slider-thumb-hover: #3e4245;
+
+  --scrollbar-thumb-color: #252525;
+  --scrollbar-thumb-hover-color: #3e4245;
+}
+
+/* ---------------------------------------------------------------------------
+   Passion — deep purple with hot pink accents
+   --------------------------------------------------------------------------- */
+
+.passion {
+  --surface-0: #620f72;
+  --surface-1: #69147a;
+  --surface-2: #7d0080;
+  --surface-3: #8a1090;
+
+  --border-subtle: #69147a;
+  --border-default: #fe1963;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #e0a0c0;
+  --text-muted: #9a5080;
+
+  --accent: #fe1963;
+  --accent-hover: #e01555;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(254, 25, 99, 0.10);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(254, 25, 99, 0.12);
+  --selected-border: rgba(254, 25, 99, 0.35);
+  --hover-bg: rgba(255, 255, 255, 0.06);
+
+  --context-bg: #69147a;
+  --context-border: #fe1963;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.16);
+
+  --input-bg: #69147a;
+  --input-border: #fe1963;
+  --input-focus-border: #fe1963;
+
+  --slider-track: #69147a;
+  --slider-thumb: #fe1963;
+  --slider-thumb-hover: #ff4d88;
+
+  --scrollbar-thumb-color: #fe1963;
+  --scrollbar-thumb-hover-color: #ff4d88;
+}
+
+/* ---------------------------------------------------------------------------
+   Swiss — bold red with white text
+   --------------------------------------------------------------------------- */
+
+.swiss {
+  --surface-0: #ed1b24;
+  --surface-1: #d61720;
+  --surface-2: #c01520;
+  --surface-3: #aa1018;
+
+  --border-subtle: #d61720;
+  --border-default: #ffcccc;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #ffcccc;
+  --text-muted: #ff9999;
+
+  --accent: #d61720;
+  --accent-hover: #b01018;
+  --accent-text: #FFFFFF;
+  --accent-muted: rgba(214, 23, 32, 0.10);
+
+  --card-bg: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+
+  --selected-bg: rgba(255, 255, 255, 0.12);
+  --selected-border: rgba(255, 255, 255, 0.30);
+  --hover-bg: rgba(255, 255, 255, 0.08);
+
+  --context-bg: #d61720;
+  --context-border: #ffcccc;
+  --context-shadow: 0 4px 24px rgba(0, 0, 0, 0.24), 0 1px 4px rgba(0, 0, 0, 0.12);
+
+  --input-bg: #d61720;
+  --input-border: #ffcccc;
+  --input-focus-border: #FFFFFF;
+
+  --slider-track: #aa1018;
+  --slider-thumb: #ffcccc;
+  --slider-thumb-hover: #FFFFFF;
+
+  --scrollbar-thumb-color: #aa1018;
+  --scrollbar-thumb-hover-color: #ffcccc;
+}

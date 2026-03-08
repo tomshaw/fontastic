@@ -1,0 +1,140 @@
+<div class="panel">
+  <div class="h-full scrollbox-y flex flex-col">
+    <div
+      class="flex items-center justify-between px-4 py-1.5 shrink-0"
+      [style.border-bottom]="'1px solid var(--border-subtle)'"
+      [style.background-color]="'var(--surface-2)'"
+    >
+      <div class="text-[11px]" [style.color]="'var(--text-muted)'">
+        @if (db.store(); as store) {
+          {{ store.full_name || store.file_name }} — {{ db.glyphs().length }} glyphs
+        } @else {
+          No font selected
+        }
+      </div>
+      @if (totalPages() > 1) {
+        <div class="flex items-center gap-1 text-[11px]">
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="currentPage() === 1"
+            [class.opacity-30]="currentPage() === 1"
+            (click)="currentPage.set(1)"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >first_page</span
+            >
+          </button>
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="currentPage() === 1"
+            [class.opacity-30]="currentPage() === 1"
+            (click)="currentPage.set(currentPage() - 1)"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >chevron_left</span
+            >
+          </button>
+          <span class="px-1.5 select-none" [style.color]="'var(--text-muted)'">{{ currentPage() }} / {{ totalPages() }}</span>
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="currentPage() === totalPages()"
+            [class.opacity-30]="currentPage() === totalPages()"
+            (click)="currentPage.set(currentPage() + 1)"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >chevron_right</span
+            >
+          </button>
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="currentPage() === totalPages()"
+            [class.opacity-30]="currentPage() === totalPages()"
+            (click)="currentPage.set(totalPages())"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >last_page</span
+            >
+          </button>
+        </div>
+      }
+    </div>
+
+    @if (selectedGlyph() !== null) {
+      <div class="flex items-center gap-5 px-4 py-3 shrink-0" [style.border-bottom]="'1px solid var(--border-subtle)'">
+        <div
+          class="flex items-center justify-center w-24 h-24 rounded-lg"
+          [style.border]="'1px solid var(--border-default)'"
+          [style.background-color]="'var(--surface-2)'"
+          [style.font-family]="fontFamily()"
+        >
+          <span class="text-6xl leading-none" [style.color]="'var(--text-primary)'">{{ toChar(selectedGlyph()!) }}</span>
+        </div>
+        <div class="flex flex-col gap-0.5 text-[11px]" [style.color]="'var(--text-secondary)'">
+          <p>
+            <span class="font-semibold" [style.color]="'var(--text-primary)'">Unicode</span> U+{{
+              selectedGlyph()!.toString(16).toUpperCase().padStart(4, '0')
+            }}
+          </p>
+          <p><span class="font-semibold" [style.color]="'var(--text-primary)'">Decimal</span> {{ selectedGlyph() }}</p>
+          <p><span class="font-semibold" [style.color]="'var(--text-primary)'">Character</span> {{ toChar(selectedGlyph()!) }}</p>
+          <p><span class="font-semibold" [style.color]="'var(--text-primary)'">HTML Entity</span> &amp;#{{ selectedGlyph() }};</p>
+        </div>
+      </div>
+    }
+
+    <div class="flex-1 overflow-auto p-3">
+      @if (pageGlyphs().length) {
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(44px,1fr))] gap-1">
+          @for (codePoint of pageGlyphs(); track codePoint) {
+            <div
+              class="flex flex-col items-center justify-center rounded aspect-square cursor-pointer transition-colors"
+              [style.border]="selectedGlyph() === codePoint ? '1px solid var(--selected-border)' : '1px solid var(--border-subtle)'"
+              [style.background-color]="selectedGlyph() === codePoint ? 'var(--selected-bg)' : 'transparent'"
+              [title]="'U+' + codePoint.toString(16).toUpperCase().padStart(4, '0')"
+              [style.font-family]="fontFamily()"
+              (click)="selectedGlyph.set(codePoint)"
+              (mouseenter)="
+                $any($event.currentTarget).style.backgroundColor = selectedGlyph() === codePoint ? 'var(--selected-bg)' : 'var(--hover-bg)'
+              "
+              (mouseleave)="
+                $any($event.currentTarget).style.backgroundColor = selectedGlyph() === codePoint ? 'var(--selected-bg)' : 'transparent'
+              "
+            >
+              <span class="text-lg leading-none" [style.color]="'var(--text-primary)'">{{ toChar(codePoint) }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-center py-8 text-xs" [style.color]="'var(--text-muted)'">Select a font to inspect glyphs</p>
+      }
+    </div>
+  </div>
+</div>

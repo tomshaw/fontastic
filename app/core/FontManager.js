@@ -12,9 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const FontCatalog_1 = require("./FontCatalog");
 const FontFinder_1 = require("./FontFinder");
-const FontInstaller_1 = require("./FontInstaller");
 const command_1 = require("../helpers/command");
-const random_1 = require("../helpers/random");
 const StorageType_1 = require("../enums/StorageType");
 const path = require("path");
 const fetch = require('node-fetch');
@@ -27,7 +25,11 @@ class FontManager {
     fetchLatestNews(args) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(args.endpoint);
-            return yield response.json();
+            const data = yield response.json();
+            if (data === null || data === void 0 ? void 0 : data.articles) {
+                this.configManager.set(StorageType_1.StorageType.News, Object.assign(Object.assign({}, this.configManager.get(StorageType_1.StorageType.News)), { articles: data.articles, ts: Date.now() }));
+            }
+            return data;
         });
     }
     systemAuthenticate(args) {
@@ -47,81 +49,43 @@ class FontManager {
             }
         });
     }
+    getDestinationFolder(collectionId) {
+        return path.join(this.systemManager.getCatalogPath(), String(collectionId));
+    }
+    copyFiles(files, collectionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dest = this.getDestinationFolder(collectionId);
+            console.log('[FontManager.copyFiles] dest:', dest, 'files:', files);
+            const catalog = new FontCatalog_1.default();
+            yield catalog.copyFiles(files, dest);
+            const catalogFiles = files.map((file) => path.join(dest, path.basename(file)));
+            console.log('[FontManager.copyFiles] catalogFiles:', catalogFiles);
+            return catalogFiles;
+        });
+    }
+    copyFolder(src, collectionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dest = this.getDestinationFolder(collectionId);
+            console.log('[FontManager.copyFolder] src:', src, 'dest:', dest);
+            const catalog = new FontCatalog_1.default();
+            yield catalog.copyFolder(src, dest);
+            return dest;
+        });
+    }
     scanFiles(files, options) {
-        return new Promise((resolve, reject) => {
-            let finder = new FontFinder_1.default(this.connectionManager);
-            finder.scanFiles(files, options, (err) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve({});
-            });
-        });
-    }
-    scanFolders(dir, options) {
-        return new Promise((resolve, reject) => {
-            let finder = new FontFinder_1.default(this.connectionManager);
-            finder.scanFolders(dir, options, (err) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve({});
-            });
-        });
-    }
-    fontInstaller(options) {
-        let installer = new FontInstaller_1.default(this.systemManager, this.connectionManager);
-        return installer.activate(options);
-    }
-    /**
-     * @todo
-     */
-    folderInstaller(options) {
-        let installer = new FontInstaller_1.default(this.systemManager, this.connectionManager);
-        return installer.activate(options);
-    }
-    getMapFilePaths(files, dest) {
-        return files.map((file) => dest + path.sep + path.basename(file));
-    }
-    getSourceFolder(sourceFolder) {
-        return path.normalize(sourceFolder);
-    }
-    getDestinationFolder() {
-        return path.normalize(this.systemManager.getCatalogPath() + path.sep + Date.now() + (0, random_1.randNumber)(7));
-    }
-    getSourceDestinationFolders(sourceFolder) {
-        const src = this.getSourceFolder(sourceFolder);
-        const dest = this.getDestinationFolder();
-        return { src, dest };
-    }
-    createCatalog(folder) {
-        const catalog = new FontCatalog_1.default(this.systemManager);
-        return catalog.createCatalog(folder);
-    }
-    copyFiles(files, dest) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const catalog = new FontCatalog_1.default(this.systemManager);
-                catalog.copyFiles(files, dest, (err, stdout) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    return resolve({});
-                });
-            });
+            console.log('[FontManager.scanFiles] files:', files, 'options:', options);
+            const finder = new FontFinder_1.default(this.connectionManager);
+            yield finder.scanFiles(files, options);
+            console.log('[FontManager.scanFiles] done, processed:', finder.counter, 'errors:', finder.errors);
         });
     }
-    copyFolders(src, dest) {
+    scanFolder(dir, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const catalog = new FontCatalog_1.default(this.systemManager);
-                catalog.copyFolders(src, dest, (err, stdout) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    return resolve({});
-                });
-            });
+            console.log('[FontManager.scanFolder] dir:', dir, 'options:', options);
+            const finder = new FontFinder_1.default(this.connectionManager);
+            yield finder.scanFolder(dir, options);
+            console.log('[FontManager.scanFolder] done, processed:', finder.counter, 'errors:', finder.errors);
         });
     }
     showMessageBox(options) {

@@ -1,17 +1,16 @@
-body[data-theme="euphoria"] {
+body[data-theme='euphoria'] {
   background-color: var(--background-color);
   color: var(--font-color);
 }
 
-[data-theme="euphoria"] {
-
+[data-theme='euphoria'] {
   .hover-scrollbox-x,
   .hover-scrollbox-y {
     --scrollbar-color: #deb431;
     --scrollbar-hover-color: #deb431;
     --scrollbar-space: 0.1rem;
-    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
-    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
+    --scrollbar-height: calc(0.3rem + var(--scrollbar-space));
+    --scrollbar-width: calc(0.3rem + var(--scrollbar-space));
   }
 
   a {
@@ -69,7 +68,7 @@ body[data-theme="euphoria"] {
     }
   }
 
-  input:not(.form-control-hidden):not([type="range"]),
+  input:not(.form-control-hidden):not([type='range']),
   select:not(.form-control-hidden) {
     border: 1px solid #3c1f31 !important;
   }
@@ -78,12 +77,12 @@ body[data-theme="euphoria"] {
   .checkbox label {
     border: 2px solid var(--font-color);
   }
-  
+
   .radio :checked ~ label::before,
   .checkbox :checked ~ label::before {
     background-color: var(--font-color);
   }
-  
+
   .radio :checked ~ span,
   .checkbox :checked ~ span {
     color: var(--font-color);
@@ -108,18 +107,20 @@ body[data-theme="euphoria"] {
     }
   }
 
-  input[type="range"] {
+  input[type='range'] {
     @apply bg-euphoria;
   }
 
-  input[type="range"]::-webkit-slider-runnable-track {
+  input[type='range']::-webkit-slider-runnable-track {
     background: var(--font-color);
   }
-  
-  input[type="range"]::-webkit-slider-thumb {
+
+  input[type='range']::-webkit-slider-thumb {
     background: var(--font-color) !important;
     border: 3px solid var(--border-color) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   .paginator {
@@ -150,24 +151,24 @@ body[data-theme="euphoria"] {
   .border-top-dashed {
     border-top: 1px dashed var(--border-color) !important;
   }
-  
+
   .border-right-dashed {
     border-right: 1px dashed var(--border-color) !important;
   }
-  
+
   .border-bottom-dashed {
     border-bottom: 1px dashed var(--border-color) !important;
   }
-  
+
   .border-left-dashed {
     border-left: 1px dashed var(--border-color) !important;
   }
 
   details {
-    >summary {
+    > summary {
       color: #deb431;
     }
-    >details {
+    > details {
       &::after {
         background-color: #c80054;
       }
@@ -204,7 +205,7 @@ body[data-theme="euphoria"] {
     .material-icons {
       color: var(--font-color);
     }
-    [class^="icon-"] {
+    [class^='icon-'] {
       color: var(--font-color);
     }
   }

@@ -1,37 +1,40 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, afterNextRender, inject } from '@angular/core';
+import { ElectronService } from './core/services';
 import { TranslateService } from '@ngx-translate/core';
-import { delay } from 'rxjs/operators';
-import { ConfigService, PresentationService } from './core/services';
-import { gsap } from 'gsap';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-
-gsap.registerPlugin(ScrollToPlugin);
+import { APP_CONFIG } from '../environments/environment';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  standalone: true,
+  imports: [RouterOutlet],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
+  private electronService = inject(ElectronService);
+  private translate = inject(TranslateService);
 
-  constructor(
-    private translate: TranslateService,
-    private configService: ConfigService,
-    private presentationService: PresentationService,
-    private el: ElementRef
-  ) {
+  constructor() {
+    const electronService = this.electronService;
+
     this.translate.setDefaultLang('en');
-    this.presentationService._systemLoading.pipe(delay(2e3)).subscribe(() => this.init());
-    this.configService.set('ng-version', this.el.nativeElement.getAttribute('ng-version'));
-  }
+    console.log('APP_CONFIG', APP_CONFIG);
 
-  ngOnInit(): void {
-    const plugins = [ScrollToPlugin];
-  }
+    if (electronService.isElectron) {
+      console.log(process.env);
+      console.log('Run in electron');
+      console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
+      console.log('NodeJS childProcess', this.electronService.childProcess);
+      void this.electronService.ipcRenderer.invoke('app:get-version').then((v) => console.log('App version:', v));
+    } else {
+      console.log('Run in browser');
+    }
 
-  init(): void {
-    const body = document.querySelector('body');
-    body.classList.remove('app-loading');
-    body.classList.add('app-loaded');
+    afterNextRender(() => {
+      setTimeout(() => {
+        document.body.classList.remove('app-loading');
+        document.body.classList.add('app-loaded');
+      }, 1000);
+    });
   }
 }

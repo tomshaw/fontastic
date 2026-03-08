@@ -1,286 +1,410 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { FontService } from '@app/core/services/font/font.service';
-import { MessageService } from '@app/core/services/message/message.service';
-import { PresentationService } from '@app/core/services/presentation/presentation.service';
-import { ElectronService } from '@app/core/services/electron/electron.service';
-import { Store } from '@main/database/entity/Store.schema';
-import { Collection } from '@main/database/entity/Collection.schema';
-import { QueryOptions, SystemStats } from '@main/types';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
+import { ElectronService } from '../electron/electron.service';
+import { MessageService } from '../message/message.service';
+import { PresentationService } from '../presentation/presentation.service';
 import { StorageType } from '@main/enums';
+import type { Collection } from '@main/database/entity/Collection.schema';
+import type { Logger } from '@main/database/entity/Logger.schema';
+import type { Store, StoreManyAndCountType } from '@main/database/entity/Store.schema';
+import type { FontMetrics, SystemStats } from '@main/types';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DatabaseService {
+  private electron = inject(ElectronService);
+  private message = inject(MessageService);
+  private presentation = inject(PresentationService);
 
-  _activePage = new BehaviorSubject<number>(1);
-  watchActivePage$ = this._activePage.asObservable();
+  // Reactive state
+  readonly collections = signal<Collection[]>([]);
+  readonly parentId = signal<number | null>(null);
+  readonly collectionId = signal<number | null>(null);
+  readonly stores = signal<Store[]>([]);
+  readonly storeCount = signal(0);
+  readonly systemStats = signal<SystemStats | null>(null);
 
-  // STORE
-  _storeId = new BehaviorSubject<number>(0);
-  watchStoreId$ = this._storeId.asObservable();
+  readonly storeId = signal<number | null>(null);
+  readonly store = signal<Store | null>(null);
+  readonly fontMetrics = signal<FontMetrics | null>(null);
+  readonly glyphs = signal<number[]>([]);
+  readonly activeFilter = signal<string | null>(null);
+  readonly activeSearchWhere = signal<{ key: string; value: any }[] | null>(null);
+  readonly collectionCount = computed(() => this.collections().length);
+  readonly collection = computed(() => this.collections().find((c) => c.id === this.collectionId()) ?? null);
 
-  _storeResult = new BehaviorSubject<Store>(null);
-  watchStoreResult$ = this._storeResult.asObservable();
-
-  _storeResultSet = new BehaviorSubject<Store[]>([]);
-  watchStoreResultSet$ = this._storeResultSet.asObservable();
-
-  // COLLECTION 
-  _collectionId = new BehaviorSubject<number>(0);
-  watchCollectionId$ = this._collectionId.asObservable();
-
-  _collectionResult = new BehaviorSubject<Collection>(null);
-  watchCollectionResult$ = this._collectionResult.asObservable();
-
-  _collectionResultSet = new BehaviorSubject<Collection[]>([]);
-  watchCollectionResultSet$ = this._collectionResultSet.asObservable();
-
-  // COUNTS 
-  _resultSetCount = new BehaviorSubject<number>(0);
-  watchResultSetCount$ = this._resultSetCount.asObservable();
-
-  _resultSetTotal = new BehaviorSubject<number>(0);
-  watchResultSetTotal$ = this._resultSetTotal.asObservable();
-
-  _queryOptions = new BehaviorSubject<QueryOptions>({
-    order: {
-      column: 'id',
-      direction: 'ASC',
-    },
-    where: [],
-    skip: 0,
-    take: 100,
-    run: false
+  // Pagination
+  readonly currentPage = signal(1);
+  readonly pageSize = signal(50);
+  readonly totalPages = computed(() => {
+    const count = this.storeCount();
+    const size = this.pageSize();
+    return Math.max(1, Math.ceil(count / size));
   });
-  watchQueryOptions$ = this._queryOptions.asObservable();
 
-  order = { column: 'file_name', direction: 'ASC' };
-  where = [];
-  skip = 0;
-  take = 100;
-
-  search = false;
-  stats = false;
-
-  _systemStats = new BehaviorSubject<SystemStats>({
-    rowCount: 0,
-    favoriteCount: 0,
-    systemCount: 0,
-    activatedCount: 0,
-    temporaryCount: 0
-  });
-  watchSystemStats$ = this._systemStats.asObservable();
-
-  constructor(
-    public fontService: FontService,
-    public messageService: MessageService,
-    public presentationService: PresentationService,
-    public electronService: ElectronService
-  ) {
-
-    if (electronService.isElectron) {
-
-      if (this.electronService.store.has(StorageType.CollectionId)) {
-        const id = this.electronService.store.get(StorageType.CollectionId);
-        if (id) {
-          this.setCollectionId(id);
-        }
-      }
-
-      if (this.electronService.store.has(StorageType.StoreId)) {
-        const id = this.electronService.store.get(StorageType.StoreId);
-        if (id) {
-          this.setStoreId(id);
-        }
-      }
-
-      this.watchQueryOptions$.subscribe((options: QueryOptions) => {
-        if (options.run) {
-          this.execute(options);
-        }
-      });
-
-      this.watchStoreId$.subscribe((id: number) => {
-        if (Number.isInteger(id)) {
-          messageService.storeFindOne({ where: { id } }).then((result: Store) => {
-            if (result) {
-              this.setStoreResult(result);
-              const resource = this.fontService.withTransferProtocol(result.file_path, 'file');
-              this.fontService.load(resource).then((font: opentype.Font) => this.fontService.setFontObject(font));
-            }
-          });
-        }
-      });
-
-      // System boot
-      this.fetchCollections();
-
-      this.fetchSystemStats();
+  private async track<T>(operation: Promise<T>): Promise<T> {
+    this.presentation.startLoading();
+    try {
+      return await operation;
+    } finally {
+      this.presentation.stopLoading();
     }
   }
 
-  fetchCollections() {
-    this.messageService.collectionFetch({}).then((result: Collection[]) => this.setCollectionResultSet(result));
+  selectParent(parentId: number) {
+    this.parentId.set(parentId);
+    this.collectionId.set(parentId);
+    this.activeFilter.set(null);
+    this.activeSearchWhere.set(null);
+    this.currentPage.set(1);
   }
 
-  getResultSetCount(): number {
-    return this._resultSetCount.getValue();
+  selectChild(child: Collection) {
+    this.parentId.set(this.findRootParentId(child));
+    this.collectionId.set(child.id);
+    this.activeFilter.set(null);
+    this.activeSearchWhere.set(null);
+    this.currentPage.set(1);
   }
 
-  getResultSetTotal(): number {
-    return this._resultSetTotal.getValue();
+  private findRootParentId(collection: Collection): number {
+    const all = this.collections();
+    let current = collection;
+    while (current.parent_id !== 0) {
+      const parent = all.find((c) => c.id === current.parent_id);
+      if (!parent) break;
+      current = parent;
+    }
+    return current.id;
   }
 
-  /**
-   * BEGIN STORE 
-   */
+  selectFilter(filter: string) {
+    this.parentId.set(null);
+    this.collectionId.set(null);
+    this.activeFilter.set(filter);
+    this.activeSearchWhere.set(null);
+    this.currentPage.set(1);
 
-  setStoreId(id: number): void {
-    this._storeId.next(id);
-    this.electronService.store.set(StorageType.StoreId, id);
+    const whereMap: Record<string, { key: string; value: number }[]> = {
+      all: [],
+      favorites: [{ key: 'store.favorite', value: 1 }],
+      system: [{ key: 'store.system', value: 1 }],
+    };
+
+    this.fetchCurrentPage({ where: whereMap[filter] ?? [] });
   }
 
-  getStoreId(): number {
-    return this._storeId.getValue();
+  goToPage(page: number) {
+    const clamped = Math.max(1, Math.min(page, this.totalPages()));
+    if (clamped !== this.currentPage()) {
+      this.currentPage.set(clamped);
+      this.fetchCurrentPage();
+    }
   }
 
-  setStoreResult(result: Store) {
-    this._storeResult.next(result);
+  nextPage() {
+    this.goToPage(this.currentPage() + 1);
   }
 
-  getStoreResult(): Store {
-    return this._storeResult.getValue();
+  prevPage() {
+    this.goToPage(this.currentPage() - 1);
   }
 
-  setStoreResultSet(results: Store[]): void {
-    this._storeResultSet.next(results);
+  firstPage() {
+    this.goToPage(1);
   }
 
-  getStoreResultSet(): Store[] {
-    return this._storeResultSet.getValue();
+  lastPage() {
+    this.goToPage(this.totalPages());
   }
 
-  /**
-   * BEGIN SYSTEM STATS  
-   */
+  private fetchCurrentPage(extraOptions: any = {}) {
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const take = this.pageSize();
 
-  setSystemStats(results: SystemStats): void {
-    this._systemStats.next(results);
+    const searchWhere = this.activeSearchWhere();
+    if (searchWhere) {
+      const searchOrder = this.activeSearchOrder();
+      this.storeSearch({ where: searchWhere, skip, take, ...(searchOrder ? { order: searchOrder } : {}) });
+      return;
+    }
+
+    const collectionId = this.collectionId();
+    const filter = this.activeFilter();
+
+    const options: any = { skip, take, ...extraOptions };
+
+    if (collectionId) {
+      options.collectionId = collectionId;
+    } else if (filter) {
+      const whereMap: Record<string, { key: string; value: number }[]> = {
+        all: [],
+        favorites: [{ key: 'store.favorite', value: 1 }],
+        system: [{ key: 'store.system', value: 1 }],
+      };
+      options.where = whereMap[filter] ?? [];
+    }
+
+    this.storeFetch(options);
   }
 
-  getSystemStats(): SystemStats {
-    return this._systemStats.getValue();
+  constructor() {
+    this.electron.ready.then(async () => {
+      const [collections, savedCollectionId, savedStoreId] = await Promise.all([
+        this.message.collectionFetch({}),
+        this.message.get(StorageType.CollectionId, null),
+        this.message.get(StorageType.StoreId, null),
+      ]);
+
+      this.collections.set(collections);
+      console.log('System Boot:', collections);
+
+      if (savedCollectionId) {
+        this.collectionId.set(savedCollectionId);
+      }
+
+      if (savedStoreId) {
+        this.storeId.set(savedStoreId);
+      }
+
+      this.fetchSystemStats();
+    });
+
+    effect(() => {
+      const collectionId = this.collectionId();
+      if (Number.isInteger(collectionId)) {
+        this.message.set(StorageType.CollectionId, collectionId);
+        this.fetchCurrentPage();
+      } else if (!this.activeSearchWhere() && !this.activeFilter()) {
+        this.stores.set([]);
+        this.storeCount.set(0);
+      }
+    });
+
+    effect(() => {
+      const storeId = this.storeId();
+      if (Number.isInteger(storeId)) {
+        this.message.set(StorageType.StoreId, storeId);
+        this.message.storeFindOneBy({ id: storeId }).then((store) => {
+          this.store.set(store);
+          if (store?.file_path) {
+            this.message.fontMetrics(store.file_path).then((metrics) => this.fontMetrics.set(metrics));
+            this.message.fontGlyphs(store.file_path).then((glyphs) => this.glyphs.set(glyphs));
+          } else {
+            this.fontMetrics.set(null);
+            this.glyphs.set([]);
+          }
+        });
+      } else {
+        this.store.set(null);
+        this.fontMetrics.set(null);
+        this.glyphs.set([]);
+      }
+    });
   }
 
-  fetchSystemStats(): void {
-    this.messageService.fetchSystemStats().then((result: SystemStats) => this.setSystemStats(result));
+  // Collection
+
+  collectionFind(args: any): Promise<Collection[]> {
+    return this.track(this.message.collectionFind(args));
   }
 
-  /**
-   * BEGIN COLLECTION 
-   */
-
-  setCollectionId(id: number): void {
-    this._collectionId.next(id);
-    this.electronService.store.set(StorageType.CollectionId, id);
+  collectionFindOne(args: any): Promise<Collection> {
+    return this.track(this.message.collectionFindOne(args));
   }
 
-  getCollectionId(): number {
-    return this._collectionId.getValue();
+  collectionFindOneBy(args: any): Promise<Collection> {
+    return this.track(this.message.collectionFindOneBy(args));
   }
 
-  setCollectionResult(result: Collection) {
-    this._collectionResult.next(result);
+  collectionFetch(args: any): Promise<Collection[]> {
+    return this.track(this.message.collectionFetch(args));
   }
 
-  getCollectionResult(): Collection {
-    return this._collectionResult.getValue();
+  collectionCreate(args: any): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionCreate(args).then((result) => {
+        this.collections.set(result);
+        console.log('Collection Created:', result);
+        return result;
+      }),
+    );
   }
 
-  setCollectionResultSet(results: Collection[]) {
-    this._collectionResultSet.next(results);
+  collectionUpdate(collectionId: number, data: any): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionUpdate(collectionId, data).then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  getCollectionResultSet(): Collection[] {
-    return this._collectionResultSet.getValue();
+  collectionUpdateIds(ids: any[], data: any): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionUpdateIds(ids, data).then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  /**
-   * BEGIN QUERY OPTIONS
-   */
-
-  setQueryOptions(options: any): DatabaseService {
-    this._queryOptions.next(options);
-    return this;
+  collectionDelete(collectionId: number): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionDelete(collectionId).then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  getQueryOptions(): QueryOptions {
-    return this._queryOptions.getValue();
+  collectionEnable(collectionId: number, data: any): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionEnable(collectionId, data).then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  setOrder(column: string, direction: string): DatabaseService {
-    this.order = { column, direction };
-    return this;
+  collectionUpdateCount(id: number): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionUpdateCount(id).then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  setWhere(key: string, value: any): DatabaseService {
-    this.where.push({ key, value });
-    return this;
+  collectionUpdateCounts(): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionUpdateCounts().then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  setSkip(skip: number): DatabaseService {
-    this.skip = skip;
-    return this;
+  collectionMove(collectionId: number, newParentId: number, newIndex: number): Promise<Collection[]> {
+    return this.track(
+      this.message.collectionMove(collectionId, newParentId, newIndex).then((result) => {
+        this.collections.set(result);
+        return result;
+      }),
+    );
   }
 
-  setTake(take: number): DatabaseService {
-    this.take = take;
-    return this;
+  // Store
+
+  storeFind(args: any): Promise<Store[]> {
+    return this.track(this.message.storeFind(args));
   }
 
-  setSearch(search: boolean): DatabaseService {
-    this.search = search;
-    return this;
+  storeFindOne(args: any): Promise<Store> {
+    return this.track(this.message.storeFindOne(args));
   }
 
-  run(): void {
-    this.setQueryOptions({
-      order: this.order,
-      where: this.where,
-      skip: this.skip,
-      take: this.take,
-      run: true
-    }).resetWhere();
+  storeFindOneBy(args: any): Promise<Store> {
+    return this.track(this.message.storeFindOneBy(args));
   }
 
-  resetWhere(): DatabaseService {
-    this.where = [];
-    return this;
+  storeFetch(options: any): Promise<StoreManyAndCountType> {
+    return this.track(
+      this.message.storeFetch(options).then((result) => {
+        this.stores.set(result[0] as Store[]);
+        this.storeCount.set(result[1] as number);
+        return result;
+      }),
+    );
   }
 
-  resetPage(page: number): DatabaseService {
-    this._activePage.next(page);
-    return this;
+  storeSearch(options: any): Promise<StoreManyAndCountType> {
+    return this.track(
+      this.message.storeSearch(options).then((result) => {
+        this.stores.set(result[0] as Store[]);
+        this.storeCount.set(result[1] as number);
+        return result;
+      }),
+    );
   }
 
-  async execute(options: QueryOptions) {
-    const t0 = performance.now();
-    const [results, total]: any = (this.search) ? await this.fetchSearch(options) : await this.fetchStore(options);
-    const t1 = performance.now();
-    this._resultSetCount.next(results.length);
-    this._resultSetTotal.next(total);
-    this._storeResultSet.next(results);
-    this.presentationService.setSystemLoading(false);
-    console.warn(t1 - t0, 'milliseconds');
+  readonly activeSearchOrder = signal<{ column: string; direction: string } | null>(null);
+
+  selectSearch(where: { key: string; value: any }[], order?: { column: string; direction: string }) {
+    this.parentId.set(null);
+    this.collectionId.set(null);
+    this.activeFilter.set(null);
+    this.activeSearchWhere.set(where);
+    this.activeSearchOrder.set(order ?? null);
+    this.currentPage.set(1);
+    this.fetchCurrentPage();
   }
 
-  async fetchStore(options: QueryOptions) {
-    return await this.messageService.storeFetch((this.getCollectionId() && this.stats === false) ? { ...options, collectionId: this.getCollectionId() } : options);
+  clearSearch() {
+    this.activeSearchWhere.set(null);
+    this.activeSearchOrder.set(null);
+    this.stores.set([]);
+    this.storeCount.set(0);
   }
 
-  async fetchSearch(options: QueryOptions) {
-    return await this.messageService.storeSearch(options);
+  storeUpdate(id: number, data: any): Promise<Store> {
+    return this.track(this.message.storeUpdate(id, data));
+  }
+
+  syncSystemFonts(): Promise<SystemStats> {
+    return this.track(
+      this.message.syncSystemFonts().then((result) => {
+        this.systemStats.set(result);
+        return result;
+      }),
+    );
+  }
+
+  resetFavorites(): Promise<SystemStats> {
+    return this.track(
+      this.message.resetFavorites().then((result) => {
+        this.systemStats.set(result);
+        return result;
+      }),
+    );
+  }
+
+  fetchSystemStats(): Promise<SystemStats> {
+    return this.track(
+      this.message.fetchSystemStats().then((result) => {
+        this.systemStats.set(result);
+        return result;
+      }),
+    );
+  }
+
+  // Logger
+
+  log(message: string, type: number): Promise<Logger[]> {
+    return this.track(this.message.loggerCreate(message, type));
+  }
+
+  loggerFind(args: any): Promise<Logger[]> {
+    return this.track(this.message.loggerFind(args));
+  }
+
+  loggerFindOne(args: any): Promise<Logger> {
+    return this.track(this.message.loggerFindOne(args));
+  }
+
+  loggerFindOneBy(args: any): Promise<Logger> {
+    return this.track(this.message.loggerFindOneBy(args));
+  }
+
+  loggerCreate(message: string, type: number): Promise<Logger[]> {
+    return this.track(this.message.loggerCreate(message, type));
+  }
+
+  loggerDelete(id: number): Promise<Logger[]> {
+    return this.track(this.message.loggerDelete(id));
+  }
+
+  loggerTruncate(): Promise<Logger[]> {
+    return this.track(this.message.loggerTruncate());
   }
 }

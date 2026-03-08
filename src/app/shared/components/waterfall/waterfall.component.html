@@ -1,0 +1,119 @@
+<div class="panel">
+  <div class="h-full scrollbox-y flex flex-col">
+    <div
+      class="flex items-center justify-between px-4 py-1.5 shrink-0"
+      [style.border-bottom]="'1px solid var(--border-subtle)'"
+      [style.background-color]="'var(--surface-2)'"
+    >
+      <div class="flex items-center gap-2">
+        <input
+          type="number"
+          class="w-10 px-1.5 py-0.5 rounded text-[11px] text-center outline-none"
+          [style.background-color]="'var(--surface-1)'"
+          [style.border]="'1px solid var(--border-default)'"
+          [style.color]="'var(--text-primary)'"
+          [value]="baseFontSize()"
+          (change)="onBaseFontSizeChange($event)"
+          title="Base font size (px)"
+        />
+        <select
+          class="px-1.5 py-0.5 rounded text-[11px] outline-none cursor-pointer"
+          [style.background-color]="'var(--surface-1)'"
+          [style.border]="'1px solid var(--border-default)'"
+          [style.color]="'var(--text-primary)'"
+          [value]="scaleRatio()"
+          (change)="onScaleRatioChange($event)"
+          title="Type scale ratio"
+        >
+          @for (opt of scaleOptions; track opt.size) {
+            <option [value]="opt.size">{{ opt.label }}</option>
+          }
+        </select>
+        <div class="flex items-center">
+          <button
+            class="px-0.5 py-0.5 rounded cursor-pointer transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            (click)="addHighScale()"
+            title="Add high scale step"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >add_circle</span
+            >
+          </button>
+          <button
+            class="px-0.5 py-0.5 rounded cursor-pointer transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            (click)="addLowScale()"
+            title="Add low scale step"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >remove_circle</span
+            >
+          </button>
+        </div>
+        <button
+          class="px-2 py-0.5 rounded cursor-pointer text-[10px] transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          [style.border]="'1px solid var(--border-default)'"
+          [style.background-color]="'transparent'"
+          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
+          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'transparent'"
+          (click)="resetScale()"
+          title="Reset scale"
+        >
+          Reset
+        </button>
+      </div>
+      <div class="text-[11px]" [style.color]="'var(--text-muted)'">
+        @if (db.store(); as store) {
+          {{ store.full_name || store.file_name }}
+        } @else {
+          No font selected
+        }
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-auto">
+      @if (fontFamily()) {
+        @for (item of typeScale(); track item.label) {
+          <div
+            class="flex items-stretch w-full"
+            [style.border-bottom]="'1px solid var(--border-subtle)'"
+            [style.background-color]="item.active ? 'var(--selected-bg)' : 'transparent'"
+          >
+            <div
+              class="flex items-center min-w-[140px] px-5 py-3 whitespace-nowrap shrink-0"
+              [style.border-right]="'1px solid var(--border-subtle)'"
+            >
+              <span class="text-[10px]" [style.color]="'var(--text-muted)'">{{ item.label }}</span>
+            </div>
+            <div class="flex items-center justify-start w-full px-5 py-3 overflow-hidden">
+              <span
+                class="leading-tight whitespace-nowrap"
+                [style.color]="presentation.fontColor() || 'var(--text-primary)'"
+                [style.font-family]="fontFamily()"
+                [style.font-size]="item.size"
+              >
+                {{ displayText() }}
+              </span>
+            </div>
+          </div>
+        }
+      } @else {
+        <p class="text-center py-8 text-xs" [style.color]="'var(--text-muted)'">Select a font to view type scale</p>
+      }
+    </div>
+  </div>
+</div>

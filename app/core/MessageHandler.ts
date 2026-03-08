@@ -4,7 +4,8 @@ import SystemManager from './SystemManager';
 import ConfigManager from './ConfigManager';
 import ConnectionManager from './ConnectionManager';
 import FontManager from './FontManager';
-import AppLogger from './AppLogger'
+import FontObject from './FontObject';
+import AppLogger from './AppLogger';
 
 import { Collection } from '../database/entity/Collection.schema';
 // import { Logger } from '../database/entity/Logger.schema';
@@ -14,18 +15,12 @@ import { ChannelType } from '../enums/ChannelType';
 import { StorageType } from '../enums/StorageType';
 
 export default class MessageHandler {
-
   systemManager: SystemManager;
   configManager: ConfigManager;
   connectionManager: ConnectionManager;
   fontManager: FontManager;
 
-  constructor(
-    systemManager: SystemManager,
-    configManager: ConfigManager,
-    connectionManager: ConnectionManager,
-    fontManager: FontManager
-  ) {
+  constructor(systemManager: SystemManager, configManager: ConfigManager, connectionManager: ConnectionManager, fontManager: FontManager) {
     this.systemManager = systemManager;
     this.configManager = configManager;
     this.connectionManager = connectionManager;
@@ -64,18 +59,24 @@ export default class MessageHandler {
 
     // Connection Manager
 
-    this.handle(ChannelType.IPC_DBCONNECTION_CREATE, async (_event: IpcMainEvent, args: any) => this.configManager.createDbConnection(args));
+    this.handle(ChannelType.IPC_DBCONNECTION_CREATE, async (_event: IpcMainEvent, args: any) =>
+      this.configManager.createDbConnection(args),
+    );
     this.handle(ChannelType.IPC_DBCONNECTION_ENABLE, (_event: IpcMainEvent, args: any) => this.configManager.enableDbConnection(args));
-    this.handle(ChannelType.IPC_DBCONNECTION_DELETE, async (_event: IpcMainEvent, name: string) => this.configManager.deleteDbConnection(name));
+    this.handle(ChannelType.IPC_DBCONNECTION_DELETE, async (_event: IpcMainEvent, name: string) =>
+      this.configManager.deleteDbConnection(name),
+    );
 
     this.handle(ChannelType.IPC_DBCONNECTION_TEST, async (_event: IpcMainEvent, args: any) => {
       const options = this.connectionManager.dataSource.options;
       if (options.database === args.database) {
-        return this.connectionManager.isInitialized()
+        return this.connectionManager
+          .isInitialized()
           .then(() => this.sendMessage('success', 'Connection tested successfully'))
           .catch((err: Error) => this.sendMessage('error', err.message));
       } else {
-        return this.connectionManager.createDataSource(args)
+        return this.connectionManager
+          .createDataSource(args)
           .then(() => this.sendMessage('success', 'Connection tested successfully'))
           .catch((err: Error) => this.sendMessage('error', err.message));
       }
@@ -85,66 +86,29 @@ export default class MessageHandler {
 
     // Font Manager
 
-    this.handle(ChannelType.IPC_EXEC_CMD, async (_event: IpcMainEvent, args: any) => this.fontManager.executeCommand(args).catch((err: Error) => this.sendMessage('error', err.message)));
+    this.handle(ChannelType.IPC_EXEC_CMD, async (_event: IpcMainEvent, args: any) =>
+      this.fontManager.executeCommand(args).catch((err: Error) => this.sendMessage('error', err.message)),
+    );
 
     this.handle(ChannelType.IPC_AUTH_USER, async (_event: IpcMainEvent, args: any) => this.fontManager.systemAuthenticate(args));
 
-    this.handle(ChannelType.IPC_SCAN_FILES, async (event: IpcMainEvent, args: any) => {
-      const promises = [];
-
-      const addToCatalog = async () => {
-        const dest = this.fontManager.getDestinationFolder();
-        await this.fontManager.createCatalog(dest);
-        await this.fontManager.copyFiles(args.files, dest);
-        const files = this.fontManager.getMapFilePaths(args.files, dest);
-        await this.fontManager.scanFiles(files, { collection_id: args.collectionId });
-      }
-
-      const addInPlace = async () => {
-        await this.fontManager.scanFiles(args.files, { collection_id: args.collectionId });
-      }
-
-      if (args.addToCatalog) {
-        promises.push(addToCatalog());
-      } else {
-        promises.push(addInPlace());
-      }
-
-      return Promise.allSettled(promises);
+    this.handle(ChannelType.IPC_SCAN_FILES, async (_event: IpcMainEvent, args: any) => {
+      console.log('[IPC_SCAN_FILES] args:', JSON.stringify(args));
+      const catalogFiles = await this.fontManager.copyFiles(args.files, args.collectionId);
+      console.log('[IPC_SCAN_FILES] copied to catalog:', catalogFiles);
+      await this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId });
+      console.log('[IPC_SCAN_FILES] scan complete');
     });
 
     this.handle(ChannelType.IPC_SCAN_FOLDERS, async (_event: IpcMainEvent, args: any) => {
-      const promises = [];
-
-      args.folders.forEach(async (sourceFolder: string) => {
-
-        const addToCatalog = async () => {
-          const folders = this.fontManager.getSourceDestinationFolders(sourceFolder);
-          await this.fontManager.createCatalog(folders.dest);
-          await this.fontManager.copyFolders(folders.src, folders.dest);
-          await this.fontManager.scanFolders(folders.dest, { collection_id: args.collectionId });
-        }
-
-        const addInPlace = async () => {
-          await this.fontManager.scanFolders(sourceFolder, { collection_id: args.collectionId });
-        }
-
-        if (args.addToCatalog) {
-          promises.push(addToCatalog());
-        } else {
-          promises.push(addInPlace());
-        }
+      console.log('[IPC_SCAN_FOLDERS] args:', JSON.stringify(args));
+      const promises = args.folders.map(async (sourceFolder: string) => {
+        const dest = await this.fontManager.copyFolder(sourceFolder, args.collectionId);
+        console.log('[IPC_SCAN_FOLDERS] copied to:', dest);
+        await this.fontManager.scanFolder(dest, { collection_id: args.collectionId });
+        console.log('[IPC_SCAN_FOLDERS] scan complete for:', dest);
       });
-
-      return Promise.allSettled(promises);
-    });
-
-    this.handle(ChannelType.IPC_ACTIVATE_FONT, async (_event: IpcMainEvent, args: any) => {
-      this.fontManager.fontInstaller(args).catch((err: Error) => this.sendMessage('error', err.message));
-    });
-
-    this.handle(ChannelType.IPC_ACTIVATE_FOLDER, async (_event: IpcMainEvent, args: any) => {
-      this.fontManager.folderInstaller(args).catch((err: Error) => this.sendMessage('error', err.message));
+      await Promise.allSettled(promises);
     });
 
     this.handle(ChannelType.IPC_FETCH_NEWS, async (_event: IpcMainEvent, args: any) => this.fontManager.fetchLatestNews(args));
@@ -154,7 +118,7 @@ export default class MessageHandler {
     this.handle(ChannelType.IPC_OPEN_PATH, async (_event: IpcMainEvent, path: string) => this.fontManager.openPath(path));
     this.handle(ChannelType.IPC_OPEN_FOLDER, async (_event: IpcMainEvent, fullPath: string) => this.fontManager.showItemInFolder(fullPath));
     this.handle(ChannelType.IPC_OPEN_EXTERNAL, async (_event: IpcMainEvent, url: string) => this.fontManager.openExternal(url));
-    
+
     this.on(ChannelType.IPC_RELOAD_WINDOW, async (_event: IpcMainEvent) => this.fontManager.reLaunch());
     this.on(ChannelType.IPC_EXIT, async (_event: IpcMainEvent) => this.fontManager.exit());
     this.on(ChannelType.IPC_QUIT, async (_event: IpcMainEvent) => this.fontManager.quit());
@@ -197,6 +161,11 @@ export default class MessageHandler {
       return await this.connectionManager.getCollectionRepository().updateCollectionIds(args.ids, args.data);
     });
 
+    this.handle(ChannelType.IPC_COLLECTION_MOVE, async (_event: IpcMainEvent, args: any) => {
+      await this.connectionManager.getCollectionRepository().moveCollection(args.collectionId, args.newParentId, args.newIndex);
+      return await this.fetchCollectionsWithCounts(args);
+    });
+
     this.handle(ChannelType.IPC_COLLECTION_ENABLE, async (_event: IpcMainEvent, args: any) => {
       await this.connectionManager.getCollectionRepository().resetEnabled();
       await this.connectionManager.getCollectionRepository().updateCollection(args.collectionId, args.data);
@@ -236,7 +205,7 @@ export default class MessageHandler {
         if (row) {
           const children = await this.connectionManager.getCollectionRepository().fetchChildren(row, true, false);
           if (Array.isArray(children)) {
-            args.ids = Object.keys(children).map(val => children[val].id);
+            args.ids = Object.keys(children).map((val) => children[val].id);
           }
         }
       }
@@ -258,19 +227,16 @@ export default class MessageHandler {
       if (row) {
         const paths = this.systemManager.getPlatformFontPaths();
         const promises = [];
-        paths.forEach(async (folder: string) => {
-          promises.push(this.fontManager.scanFolders(folder, { collection_id: row.id, system: 1 }).catch((err: Error) => AppLogger.getInstance().error(err)));
-        });
-        Promise.allSettled(promises).then(async () => {
-          return await this.connectionManager.getStoreRepository().fetchSystemStats();
-        });
+        for (const folder of paths) {
+          promises.push(
+            this.fontManager
+              .scanFolder(folder, { collection_id: row.id, system: 1 })
+              .catch((err: Error) => AppLogger.getInstance().error(err)),
+          );
+        }
+        await Promise.allSettled(promises);
+        return await this.connectionManager.getStoreRepository().fetchSystemStats();
       }
-    });
-
-    this.handle(ChannelType.IPC_STORE_SYNC_ACTIVATED, async (_event: IpcMainEvent) => {
-      await this.connectionManager.getStoreRepository().resetActivated();
-      await this.connectionManager.getStoreRepository().syncActivated();
-      return await this.connectionManager.getStoreRepository().fetchSystemStats();
     });
 
     this.handle(ChannelType.IPC_STORE_RESET_FAVORITES, async (_event: IpcMainEvent) => {
@@ -280,6 +246,30 @@ export default class MessageHandler {
 
     this.handle(ChannelType.IPC_STORE_SYSTEM_STATS, async (_event: IpcMainEvent) => {
       return await this.connectionManager.getStoreRepository().fetchSystemStats();
+    });
+
+    this.handle(ChannelType.IPC_FONT_METRICS, async (_event: IpcMainEvent, filePath: string) => {
+      const fontObject = new FontObject(filePath);
+      if (fontObject.hasError()) {
+        return null;
+      }
+      const font = fontObject.getFont();
+      return {
+        numGlyphs: font.numGlyphs ?? 0,
+        unitsPerEm: font.unitsPerEm ?? 0,
+        ascent: font.ascent ?? 0,
+        descent: font.descent ?? 0,
+        lineGap: font.lineGap ?? 0,
+      };
+    });
+
+    this.handle(ChannelType.IPC_FONT_GLYPHS, async (_event: IpcMainEvent, filePath: string) => {
+      const fontObject = new FontObject(filePath);
+      if (fontObject.hasError()) {
+        return [];
+      }
+      const font = fontObject.getFont();
+      return font.characterSet ? Array.from(font.characterSet).sort((a: number, b: number) => a - b) : [];
     });
 
     // Logger
@@ -324,11 +314,14 @@ export default class MessageHandler {
   }
 
   async fetchCollectionsWithRelations() {
-    return await this.connectionManager.getCollection().find({
-      relations: {
-        stores: true,
-      },
-    }).catch((err: Error) => AppLogger.getInstance().info(err.message));
+    return await this.connectionManager
+      .getCollection()
+      .find({
+        relations: {
+          stores: true,
+        },
+      })
+      .catch((err: Error) => AppLogger.getInstance().info(err.message));
   }
 
   async fetchCollectionsWithCounts(args: any): Promise<Collection[]> {

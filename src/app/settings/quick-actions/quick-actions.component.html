@@ -1,0 +1,49 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title"><h3>Quick Actions</h3></div>
+    <div class="card-tools">
+      @if (syncing()) {
+        <span class="text-xs font-medium" [style.color]="'var(--text-muted)'">Syncing...</span>
+      }
+    </div>
+  </div>
+  <div class="card-body space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Reset favorited fonts</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Resets fonts that have been favorited.</p>
+      </div>
+      <button class="btn btn-sm btn-default" (click)="onResetFavorites()">Run</button>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Synchronize system fonts</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Imports fonts from system fonts folder.</p>
+      </div>
+      <button class="btn btn-sm btn-default" (click)="onSyncSystemFonts()" [disabled]="syncing()">
+        @if (syncing()) {
+          <app-spinner [animating]="true" />
+        } @else {
+          Run
+        }
+      </button>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Restart application</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Restarts the application.</p>
+      </div>
+      <button class="btn btn-sm btn-default" (click)="onRestartApp()">Run</button>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Exit application</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Exits the application.</p>
+      </div>
+      <button class="btn btn-sm btn-default" (click)="onExitApp()">Run</button>
+    </div>
+  </div>
+</div>

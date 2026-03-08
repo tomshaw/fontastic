@@ -1,15 +1,13 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
-    "analytics": "d3f4d848-cf46-4b28-9bab-c8c5f4d90ab8"
+    "schematicCollections": ["@angular-eslint/schematics"],
+    "analytics": false
   },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-electron": {
+    "fontastic": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -18,38 +16,25 @@
           "strict": true
         },
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "css"
         }
       },
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles/fonts/roboto.scss",
-              "src/styles/fonts/md.scss",
-              "src/styles.scss"
-            ],
-            "scripts": [],
-            "customWebpackConfig": {
-              "path": "./angular.webpack.js",
-              "replaceDuplicatePlugins": true
+            "outputPath": {
+              "base": "dist"
             },
-            "allowedCommonJsDependencies": [
-              "rxjs",
-              "opentype.js"
-            ]
+            "index": "src/index.html",
+            "polyfills": ["zone.js"],
+            "tsConfig": "src/tsconfig.app.json",
+            "inlineStyleLanguage": "css",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.css"],
+            "scripts": [],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "dev": {
@@ -59,8 +44,6 @@
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -75,8 +58,6 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -84,109 +65,67 @@
                 }
               ]
             },
-            "web": {
-              "optimization": false,
-              "outputHashing": "none",
-              "sourceMap": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.web.ts"
-                }
-              ]
-            },
-            "web-production": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.web.prod.ts"
-                }
-              ]
+            "testing": {
+              "polyfills": ["zone.js", "zone.js/testing"]
             }
           }
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
-            "browserTarget": "angular-electron:build"
+            "buildTarget": "fontastic:build"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "angular-electron:build:dev"
+              "buildTarget": "fontastic:build:dev"
             },
             "production": {
-              "browserTarget": "angular-electron:build:production"
-            },
-            "web": {
-              "browserTarget": "angular-electron:build:web"
-            },
-            "web-production": {
-              "browserTarget": "angular-electron:build:web-production"
+              "buildTarget": "fontastic:build:production"
             }
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
-            "browserTarget": "angular-electron:build"
+            "buildTarget": "fontastic:build"
           }
         },
         "test": {
-          "builder": "@angular-builders/custom-webpack:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills-test.ts",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "scripts": [],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "customWebpackConfig": {
-              "path": "./angular.webpack.js",
-              "replaceDuplicatePlugins": true
-            }
+            "browsers": ["chromium"],
+            "buildTarget": "fontastic:build:testing",
+            "coverage": true,
+            "coverageReporters": ["html", "lcovonly"],
+            "reporters": [
+              ["default", { "summary": true }],
+              [
+                "html",
+                {
+                  "outputFile": "test-results/vitest/index.html"
+                }
+              ]
+            ]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     },
-    "angular-electron-e2e": {
+    "fontastic-e2e": {
       "root": "e2e",
       "projectType": "application",
       "architect": {
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "e2e/**/*.ts"
-            ]
+            "lintFilePatterns": ["e2e/**/*.ts"]
           }
         }
       }
@@ -198,6 +137,30 @@
     },
     "@angular-eslint/schematics:library": {
       "setParserOptionsProject": true
+    },
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

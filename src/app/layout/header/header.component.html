@@ -1,35 +1,118 @@
-<header class="component">
-  <div class="left border-top border-bottom">
-    <div class="header-block flex justify-items-start items-center">
-      <a class="enabled" title="New Collection"><i class="material-icons" (click)="handleCreateCollection($event)">widgets</i> New Collection</a>
-      <ng-container *ngIf="collectionId>0; else elseAddFontsDisabled">
-        <a class="enabled" title="New Collection"><i class="material-icons" (click)="handleAddFonts($event, collectionId)">list_alt</i> Add Fonts</a>
-      </ng-container>
-      <ng-template #elseAddFontsDisabled>
-        <a class="disabled" title="New Collection"><i class="material-icons">list_alt</i> Add Fonts</a>
-      </ng-template>
+<header class="grid grid-cols-[220px_1fr_220px] min-[1440px]:grid-cols-[280px_1fr_280px] w-full h-full">
+  <div class="relative">
+    <div class="p-0 h-full flex justify-items-start items-center">
+      <a
+        class="enabled cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2.5 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="'var(--text-secondary)'"
+        title="New Collection"
+      >
+        <i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5" (click)="handleCreateCollection($event)">widgets</i> New
+        Collection
+      </a>
     </div>
   </div>
-  <div class="middle border-top border-bottom">
-    <div class="header-block flex justify-start items-center">
-      <a href="javascript:;" (click)="handleToggleNavigation($event)" [className]="navigationEnabled ? 'enabled' : 'disabled'" title="Toggle Navigation"><i class="material-icons">border_all</i> Navigation</a>
-      <a href="javascript:;" (click)="handleToggleAside($event)" [className]="asideEnabled ? 'enabled' : 'disabled'" title="Toggle Aside"><i class="material-icons">border_all</i> Aside</a>
-      <a href="javascript:;" (click)="handleTogglePreview($event)" [className]="previewEnabled ? 'enabled' : 'disabled'" title="Toggle Preview"><i class="material-icons">border_all</i> Preview</a>
-      <a href="javascript:;" (click)="handleToggleInspect($event)" [className]="inspectEnabled ? 'enabled' : 'disabled'" title="Toggle Inspect"><i class="material-icons">border_all</i> Inspect</a>
-      <a href="javascript:;" (click)="handleToggleToolbar($event)" [className]="toolbarEnabled ? 'enabled' : 'disabled'" title="Toggle Toolbar"><i class="material-icons">border_all</i> Toolbar</a>
-      <a href="javascript:;" (click)="handleToggleGrid($event)" [className]="gridEnabled ? 'enabled' : 'disabled'" title="Toggle Grid"><i class="material-icons">border_all</i> Grid</a>
+  <div class="relative m-0">
+    <div class="p-0 h-full flex justify-start items-center">
+      <a
+        href="javascript:;"
+        (click)="presentation.toggleNavigation()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.navigationEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Navigation"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">menu</i> Navigation</a
+      >
+      <a
+        href="javascript:;"
+        (click)="presentation.toggleAside()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.asideEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Aside"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">side_navigation</i> Aside</a
+      >
+      <a
+        href="javascript:;"
+        (click)="presentation.togglePreview()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.previewEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Preview"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">visibility</i> Preview</a
+      >
+      <a
+        href="javascript:;"
+        (click)="presentation.toggleInspect()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.inspectEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Inspect"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">info</i> Inspect</a
+      >
+      <a
+        href="javascript:;"
+        (click)="presentation.toggleToolbar()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.toolbarEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Toolbar"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">toolbar</i> Toolbar</a
+      >
+      <a
+        href="javascript:;"
+        (click)="presentation.toggleGrid()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.gridEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Grid"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">grid_view</i> Grid</a
+      >
+      <a
+        href="javascript:;"
+        (click)="presentation.toggleWaterfall()"
+        class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.waterfallEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Waterfall"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">format_size</i> Waterfall</a
+      >
     </div>
   </div>
-  <div class="right border-top border-bottom">
-    <div class="header-block flex justify-end items-center">
-      <a class="enabled" title="Theme" (click)="handleToggleSearch($event)"><i class="material-icons">search</i> Search</a>
-      <a class="enabled" title="Theme" (click)="handleSwitchTheme($event)"><i class="material-icons">burst_mode</i> Theme</a>
-      <ng-container *ngIf="currentUser; else elseif1">
-        <a (click)="handleLoadSettings()" class="gravatar" title="Settings"><img src="{{gravatarUrl}}" alt="{{currentUser.name}}" /></a>
-      </ng-container>
-      <ng-template #elseif1>
-        <a (click)="handleLoadSettings()" title="Settings"><i class="material-icons">exit_to_app</i> Settings</a>
-      </ng-template>
+  <div class="relative">
+    <div class="p-0 h-full flex justify-end items-center">
+      <a
+        class="enabled cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="presentation.searchEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Search"
+        (click)="handleToggleSearch($event)"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">search</i> Search</a
+      >
+      <a
+        class="enabled cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+        [style.color]="'var(--text-secondary)'"
+        title="Theme"
+        (click)="handleSwitchTheme($event)"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">burst_mode</i> Theme</a
+      >
+      @if (currentUser) {
+        <a
+          (click)="handleLoadSettings()"
+          class="mt-px cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+          title="Settings"
+          ><img src="{{ gravatarUrl }}" alt="{{ currentUser.name }}" class="w-8 rounded-full"
+        /></a>
+      } @else {
+        <a
+          (click)="handleLoadSettings()"
+          class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          title="Settings"
+          ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">exit_to_app</i> Settings</a
+        >
+      }
     </div>
   </div>
 </header>
+
+@if (showCollectionDialog) {
+  <app-prompt-dialog
+    title="New Collection"
+    placeholder="Collection name"
+    confirmText="Create"
+    (confirmed)="onCollectionConfirmed($event)"
+    (cancelled)="onCollectionCancelled()"
+  />
+}

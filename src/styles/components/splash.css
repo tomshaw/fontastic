@@ -1,0 +1,47 @@
+/* ==========================================================================
+Splash Screen
+========================================================================== */
+
+.splash-screen {
+  display: none;
+}
+
+body.app-loading .splash-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: var(--surface-0);
+}
+
+body.app-loading .splash-screen .dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0.5;
+  animation: splash-bounce 1.4s ease-in-out infinite both;
+}
+
+body.app-loading .splash-screen .dot-2 {
+  animation-delay: 0.16s;
+}
+
+body.app-loading .splash-screen .dot-3 {
+  animation-delay: 0.32s;
+}
+
+@keyframes splash-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,56 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title"><h3>AI API Keys</h3></div>
+  </div>
+  <div class="card-body space-y-4">
+    <div>
+      <label class="form-label" for="anthropicKey">Anthropic</label>
+      <input
+        type="password"
+        id="anthropicKey"
+        class="form-input w-full"
+        [ngModel]="anthropicKey()"
+        (ngModelChange)="anthropicKey.set($event)"
+        name="anthropicKey"
+        placeholder="sk-ant-..."
+        autocomplete="off"
+      />
+    </div>
+    <div>
+      <label class="form-label" for="googleKey">Google Gemini</label>
+      <input
+        type="password"
+        id="googleKey"
+        class="form-input w-full"
+        [ngModel]="googleKey()"
+        (ngModelChange)="googleKey.set($event)"
+        name="googleKey"
+        placeholder="AIza..."
+        autocomplete="off"
+      />
+    </div>
+    <div>
+      <label class="form-label" for="openaiKey">OpenAI</label>
+      <input
+        type="password"
+        id="openaiKey"
+        class="form-input w-full"
+        [ngModel]="openaiKey()"
+        (ngModelChange)="openaiKey.set($event)"
+        name="openaiKey"
+        placeholder="sk-..."
+        autocomplete="off"
+      />
+    </div>
+  </div>
+  <div class="card-footer">
+    <div>
+      @if (saveStatus() === 'saved') {
+        <span class="text-xs" [style.color]="'var(--text-muted)'">Keys saved.</span>
+      }
+    </div>
+    <div class="card-tools">
+      <button class="btn btn-sm btn-theme" (click)="onSave()">Save</button>
+    </div>
+  </div>
+</div>

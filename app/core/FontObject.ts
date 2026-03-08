@@ -1,4 +1,4 @@
-const opentype = require("opentype.js");
+const fontkit = require("fontkit");
 
 export default class FontObject {
 
@@ -7,7 +7,7 @@ export default class FontObject {
 
   constructor(fp: string) {
     try {
-      this.setFont(opentype.loadSync(fp));
+      this.setFont(fontkit.openSync(fp));
     } catch (err) {
       this.setError(fp, err.message);
     }
@@ -34,7 +34,7 @@ export default class FontObject {
   }
 
   getNamesTable() {
-    const names = (this.font && this.font.names) ? this.font.names : false;
+    const names = (this.font && this.font.name && this.font.name.records) ? this.font.name.records : false;
 
     let item: any = {};
     item.compatible_full_name = (names && names.compatibleFullName) ? names.compatibleFullName.en : "";
@@ -54,7 +54,7 @@ export default class FontObject {
     item.preferred_sub_family = (names && names.preferredSubfamily) ? names.preferredSubfamily.en : "";
     item.sample_text = (names && names.sampleText) ? names.sampleText.en : "";
     item.trademark = (names && names.trademark) ? names.trademark.en : "";
-    item.unique_id = (names && names.uniqueID) ? names.uniqueID.en : "";
+    item.unique_id = (names && names.uniqueSubfamily) ? names.uniqueSubfamily.en : "";
     item.version = (names && names.version) ? names.version.en : "";
 
     return item;

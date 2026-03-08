@@ -1,16 +1,15 @@
-body[data-theme="dashboard"] {
+body[data-theme='dashboard'] {
   @apply text-dashboard bg-dashboard;
 }
 
-[data-theme="dashboard"] {
-
+[data-theme='dashboard'] {
   .hover-scrollbox-x,
   .hover-scrollbox-y {
     --scrollbar-color: #00a1be79;
     --scrollbar-hover-color: #00a1beb9;
     --scrollbar-space: 0.2rem;
-    --scrollbar-height: calc(.5rem + var(--scrollbar-space));
-    --scrollbar-width: calc(.5rem + var(--scrollbar-space));
+    --scrollbar-height: calc(0.5rem + var(--scrollbar-space));
+    --scrollbar-width: calc(0.5rem + var(--scrollbar-space));
   }
 
   a {
@@ -79,12 +78,12 @@ body[data-theme="dashboard"] {
   .checkbox label {
     @apply border-2 border-solid border-white;
   }
-  
+
   .radio :checked ~ label::before,
   .checkbox :checked ~ label::before {
     @apply bg-white;
   }
-  
+
   .radio :checked ~ span,
   .checkbox :checked ~ span {
     @apply text-white;
@@ -94,15 +93,15 @@ body[data-theme="dashboard"] {
   Range Slider
   ========================================================================== */
 
-  input[type="range"] {
+  input[type='range'] {
     @apply bg-dashboard;
   }
 
-  input[type="range"]::-webkit-slider-runnable-track {
+  input[type='range']::-webkit-slider-runnable-track {
     @apply bg-[#2d3e50];
   }
 
-  input[type="range"]::-webkit-slider-thumb {
+  input[type='range']::-webkit-slider-thumb {
     @apply bg-[#2d3e50] border-[#00a0be];
   }
 
@@ -163,24 +162,24 @@ body[data-theme="dashboard"] {
   .border-top-dashed {
     @apply border-t border-dashed border-dashboard;
   }
-  
+
   .border-right-dashed {
     @apply border-r border-dashed border-dashboard;
   }
-  
+
   .border-bottom-dashed {
     @apply border-b border-dashed border-dashboard;
   }
-  
+
   .border-left-dashed {
     @apply border-left border-dashed border-dashboard;
   }
 
   details {
-    >summary {
+    > summary {
       @apply text-white;
     }
-    >details {
+    > details {
       &::after {
         background-color: #00a0be;
       }
@@ -217,7 +216,7 @@ body[data-theme="dashboard"] {
     .material-icons {
       @apply text-white;
     }
-    [class^="icon-"] {
+    [class^='icon-'] {
       @apply text-white;
     }
   }

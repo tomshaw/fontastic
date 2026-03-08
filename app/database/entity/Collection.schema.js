@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const Store_schema_1 = require("./Store.schema");
 let Collection = class Collection {
 };
+exports.Collection = Collection;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -92,8 +93,7 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Store_schema_1.Store, (store) => store.collection, { cascade: true }),
     __metadata("design:type", Array)
 ], Collection.prototype, "stores", void 0);
-Collection = __decorate([
+exports.Collection = Collection = __decorate([
     (0, typeorm_1.Entity)()
 ], Collection);
-exports.Collection = Collection;
 //# sourceMappingURL=Collection.schema.js.map

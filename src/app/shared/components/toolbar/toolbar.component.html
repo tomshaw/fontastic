@@ -1,0 +1,207 @@
+<div class="panel">
+  <div class="h-full flex items-center justify-around px-3">
+    <div class="flex-1 flex items-center gap-3">
+      @if (db.totalPages() > 1) {
+        <div class="flex items-center gap-0.5 text-[11px]">
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="db.currentPage() === 1"
+            [class.opacity-30]="db.currentPage() === 1"
+            (click)="db.firstPage()"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >first_page</span
+            >
+          </button>
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="db.currentPage() === 1"
+            [class.opacity-30]="db.currentPage() === 1"
+            (click)="db.prevPage()"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >chevron_left</span
+            >
+          </button>
+          <span class="px-1.5 select-none" [style.color]="'var(--text-muted)'">{{ db.currentPage() }} / {{ db.totalPages() }}</span>
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="db.currentPage() === db.totalPages()"
+            [class.opacity-30]="db.currentPage() === db.totalPages()"
+            (click)="db.nextPage()"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >chevron_right</span
+            >
+          </button>
+          <button
+            class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+            [style.color]="'var(--text-secondary)'"
+            [disabled]="db.currentPage() === db.totalPages()"
+            [class.opacity-30]="db.currentPage() === db.totalPages()"
+            (click)="db.lastPage()"
+          >
+            <span
+              class="material-symbols-outlined text-sm"
+              style="
+                font-variation-settings:
+                  'opsz' 20,
+                  'wght' 300;
+              "
+              >last_page</span
+            >
+          </button>
+        </div>
+      }
+      <span class="text-[11px]" [style.color]="'var(--text-muted)'">
+        @if (db.storeCount()) {
+          {{ db.storeCount() }} fonts
+        }
+      </span>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center gap-3">
+      <input
+        type="text"
+        class="form-input w-75"
+        placeholder="Enter preview text..."
+        [value]="displayText"
+        (input)="handleDisplayInput($event)"
+      />
+      <select class="form-select" [value]="presentation.quickTextIndex()" (change)="handleQuickTextChange($event)">
+        @for (item of presentation.quickTexts; track item.title; let i = $index) {
+          <option [value]="i">{{ item.title }}</option>
+        }
+      </select>
+      @if (news.hasArticles()) {
+        <button class="flex items-center cursor-pointer" title="Use random news headline as preview text" (click)="setRandomHeadline()">
+          <span
+            class="material-symbols-outlined text-sm"
+            [style.color]="'var(--text-muted)'"
+            style="
+              font-variation-settings:
+                'opsz' 20,
+                'wght' 300;
+            "
+            >newspaper</span
+          >
+        </button>
+      }
+    </div>
+
+    <div class="flex-1 flex items-center justify-center gap-2">
+      <input type="color" class="color-picker" [value]="colorPickerValue()" (input)="handleFontColor($event)" />
+      <input type="color" class="color-picker" [value]="bgPickerValue()" (input)="handleBackgroundColor($event)" />
+    </div>
+
+    <div class="flex-1 flex items-center justify-end gap-3">
+      <div class="flex items-center gap-2">
+        <span
+          class="material-symbols-outlined text-sm"
+          [style.color]="'var(--text-muted)'"
+          style="
+            font-variation-settings:
+              'opsz' 20,
+              'wght' 300;
+          "
+          >text_decrease</span
+        >
+        <input
+          type="range"
+          class="preview-range"
+          min="8"
+          max="72"
+          step="1"
+          [value]="presentation.fontSize()"
+          (input)="handleFontSize($event)"
+        />
+        <span
+          class="material-symbols-outlined text-sm"
+          [style.color]="'var(--text-muted)'"
+          style="
+            font-variation-settings:
+              'opsz' 20,
+              'wght' 300;
+          "
+          >text_increase</span
+        >
+        <span class="text-[11px] w-8 text-center select-none" [style.color]="'var(--text-muted)'">{{ presentation.fontSize() }}px</span>
+      </div>
+      <span
+        class="material-symbols-outlined text-sm"
+        [style.color]="'var(--text-muted)'"
+        style="
+          font-variation-settings:
+            'opsz' 20,
+            'wght' 300;
+        "
+        >format_letter_spacing</span
+      >
+      <input
+        type="range"
+        class="preview-range"
+        min="-5"
+        max="20"
+        step="0.5"
+        [value]="presentation.letterSpacing()"
+        (input)="handleLetterSpacing($event)"
+      />
+      <span class="text-[11px] w-10 text-center select-none" [style.color]="'var(--text-muted)'">{{ presentation.letterSpacing() }}px</span>
+      <span
+        class="material-symbols-outlined text-sm"
+        [style.color]="'var(--text-muted)'"
+        style="
+          font-variation-settings:
+            'opsz' 20,
+            'wght' 300;
+        "
+        >width</span
+      >
+      <input
+        type="range"
+        class="preview-range"
+        min="-5"
+        max="20"
+        step="0.5"
+        [value]="presentation.wordSpacing()"
+        (input)="handleWordSpacing($event)"
+      />
+      <span class="text-[11px] w-10 text-center select-none" [style.color]="'var(--text-muted)'">{{ presentation.wordSpacing() }}px</span>
+    </div>
+
+    <div class="flex items-center justify-end">
+      <button class="toolbar-reset-btn" (click)="presentation.resetToolbarDefaults()">
+        <span
+          class="material-symbols-outlined"
+          style="
+            font-variation-settings:
+              'opsz' 20,
+              'wght' 300;
+          "
+          >restart_alt</span
+        >
+      </button>
+    </div>
+  </div>
+</div>

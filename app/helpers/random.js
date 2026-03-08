@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.randNumber = exports.randString = void 0;
+exports.randNumber = void 0;
+exports.randString = randString;
 function randString(len = 7) {
     const list = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
     let res = "";
@@ -10,7 +11,6 @@ function randString(len = 7) {
     }
     return res;
 }
-exports.randString = randString;
 const randNumber = (n) => [...Array(n)].map(_ => Math.random() * 10 | 0).join('');
 exports.randNumber = randNumber;
 //# sourceMappingURL=random.js.map

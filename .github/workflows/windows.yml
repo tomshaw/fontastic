@@ -22,43 +22,60 @@ jobs:
   build:
     strategy:
       matrix:
-        node-version: [18]
+        node-version: [24]
 
     # The type of runner that the job will run on
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - name: Cache node modules
-      uses: actions/cache@v3
-      env:
-        cache-name: cache-node-modules
+    - name: Cache Node modules
+      uses: actions/cache@v5
       with:
-        # npm cache files are stored in `~/.npm`
+        # npm cache files are stored in ~/.npm
         path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+          ${{ runner.os }}-node-
+
+    - name: Cache Electron binaries
+      uses: actions/cache@v5
+      with:
+        path: |
+          ${{ env.LOCALAPPDATA }}\electron\Cache
+          ${{ env.LOCALAPPDATA }}\electron-builder\Cache
+        key: ${{ runner.os }}-electron-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-electron-
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Install Dependencies
-      run: npm i
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: npm ci
 
     - name: Check lint
       run: npm run lint
 
+    - name: Install Playwright Browsers
+      run: npx playwright@1.58.2 install --with-deps
+
     - name: Run headless unit test
-      run: npm run test
+      run: npm run test -- --reporters=default
 
     - name: Run headless e2e test
       run: npm run e2e
 
     - name: Build the app
-      run: npm run electron:build
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 15
+        max_attempts: 3
+        command: npm run electron:build

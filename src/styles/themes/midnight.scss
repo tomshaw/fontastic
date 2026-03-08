@@ -1,17 +1,16 @@
-body[data-theme="midnight"] {
+body[data-theme='midnight'] {
   background-color: var(--background-color);
   color: var(--font-color);
 }
 
-[data-theme="midnight"] {
-
+[data-theme='midnight'] {
   .hover-scrollbox-x,
   .hover-scrollbox-y {
     --scrollbar-color: #fff;
     --scrollbar-hover-color: rgba(255, 255, 255, 0.507);
     --scrollbar-space: 0.1rem;
-    --scrollbar-height: calc(.3rem + var(--scrollbar-space));
-    --scrollbar-width: calc(.3rem + var(--scrollbar-space));
+    --scrollbar-height: calc(0.3rem + var(--scrollbar-space));
+    --scrollbar-width: calc(0.3rem + var(--scrollbar-space));
   }
 
   a {
@@ -69,7 +68,7 @@ body[data-theme="midnight"] {
     }
   }
 
-  input:not(.form-control-hidden):not([type="range"]),
+  input:not(.form-control-hidden):not([type='range']),
   select:not(.form-control-hidden) {
     border: 1px solid #ffffff;
   }
@@ -78,12 +77,12 @@ body[data-theme="midnight"] {
   .checkbox label {
     border: 2px solid var(--font-color);
   }
-  
+
   .radio :checked ~ label::before,
   .checkbox :checked ~ label::before {
     background-color: var(--font-color);
   }
-  
+
   .radio :checked ~ span,
   .checkbox :checked ~ span {
     color: var(--font-color);
@@ -108,18 +107,20 @@ body[data-theme="midnight"] {
     }
   }
 
-  input[type="range"] {
+  input[type='range'] {
     background: #000;
   }
 
-  input[type="range"]::-webkit-slider-runnable-track {
+  input[type='range']::-webkit-slider-runnable-track {
     background: #474747;
   }
 
-  input[type="range"]::-webkit-slider-thumb {
+  input[type='range']::-webkit-slider-thumb {
     background: #fff;
     border: 3px solid #2e2e2e;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   .paginator {
@@ -164,10 +165,10 @@ body[data-theme="midnight"] {
   }
 
   details {
-    >summary {
+    > summary {
       color: #fff;
     }
-    >details {
+    > details {
       &::after {
         background-color: #fff;
       }
@@ -204,7 +205,7 @@ body[data-theme="midnight"] {
     .material-icons {
       color: var(--font-color);
     }
-    [class^="icon-"] {
+    [class^='icon-'] {
       color: var(--font-color);
     }
   }

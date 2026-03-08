@@ -15,5 +15,6 @@ var StorageType;
     StorageType["LayoutPanel"] = "layout.panel";
     StorageType["LayoutPreview"] = "layout.preview";
     StorageType["LayoutTheme"] = "layout.theme";
-})(StorageType = exports.StorageType || (exports.StorageType = {}));
+    StorageType["AiKeys"] = "ai.keys";
+})(StorageType || (exports.StorageType = StorageType = {}));
 //# sourceMappingURL=StorageType.js.map
