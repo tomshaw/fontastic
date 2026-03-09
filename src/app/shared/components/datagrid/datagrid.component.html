@@ -1,5 +1,5 @@
-<div class="panel">
-  <div class="h-full scrollbox-y">
+<div class="panel grid" [style.grid-template-rows]="db.totalPages() > 1 ? '1fr 32px' : '1fr'">
+  <div class="overflow-hidden scrollbox-y">
     <table class="w-full border-separate border-spacing-0">
       <thead
         class="sticky top-0 z-10"
@@ -93,4 +93,84 @@
       </tbody>
     </table>
   </div>
+  @if (db.totalPages() > 1) {
+    <div
+      class="flex items-center gap-2 px-3"
+      [style.background-color]="'var(--surface-2)'"
+      [style.border-top]="'1px solid var(--border-subtle)'"
+    >
+      <div class="flex items-center gap-0.5 text-[11px]">
+        <button
+          class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          [disabled]="db.currentPage() === 1"
+          [class.opacity-30]="db.currentPage() === 1"
+          (click)="db.firstPage()"
+        >
+          <span
+            class="material-symbols-outlined text-sm"
+            style="
+              font-variation-settings:
+                'opsz' 20,
+                'wght' 300;
+            "
+            >first_page</span
+          >
+        </button>
+        <button
+          class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          [disabled]="db.currentPage() === 1"
+          [class.opacity-30]="db.currentPage() === 1"
+          (click)="db.prevPage()"
+        >
+          <span
+            class="material-symbols-outlined text-sm"
+            style="
+              font-variation-settings:
+                'opsz' 20,
+                'wght' 300;
+            "
+            >chevron_left</span
+          >
+        </button>
+        <span class="px-1.5 select-none" [style.color]="'var(--text-muted)'">{{ db.currentPage() }} / {{ db.totalPages() }}</span>
+        <button
+          class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          [disabled]="db.currentPage() === db.totalPages()"
+          [class.opacity-30]="db.currentPage() === db.totalPages()"
+          (click)="db.nextPage()"
+        >
+          <span
+            class="material-symbols-outlined text-sm"
+            style="
+              font-variation-settings:
+                'opsz' 20,
+                'wght' 300;
+            "
+            >chevron_right</span
+          >
+        </button>
+        <button
+          class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
+          [style.color]="'var(--text-secondary)'"
+          [disabled]="db.currentPage() === db.totalPages()"
+          [class.opacity-30]="db.currentPage() === db.totalPages()"
+          (click)="db.lastPage()"
+        >
+          <span
+            class="material-symbols-outlined text-sm"
+            style="
+              font-variation-settings:
+                'opsz' 20,
+                'wght' 300;
+            "
+            >last_page</span
+          >
+        </button>
+      </div>
+      <span class="text-[11px]" [style.color]="'var(--text-muted)'"> {{ db.storeCount() }} fonts </span>
+    </div>
+  }
 </div>

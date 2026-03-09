@@ -7,7 +7,7 @@
   <div
     class="grid overflow-hidden"
     [style.grid-template-columns]="
-      (presentation.navigationEnabled() ? '280px ' : '') + '1fr' + (presentation.asideEnabled() ? ' 280px' : '')
+      (presentation.navigationEnabled() ? 'var(--panel-width) ' : '') + '1fr' + (presentation.asideEnabled() ? ' var(--panel-width)' : '')
     "
   >
     @if (presentation.navigationEnabled()) {

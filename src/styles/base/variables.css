@@ -3,6 +3,22 @@
   --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
+:root {
+  --panel-width: 200px;
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --panel-width: 250px;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --panel-width: 300px;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Light mode — warm stone neutrals
    --------------------------------------------------------------------------- */

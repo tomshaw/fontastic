@@ -1,5 +1,5 @@
 import { Component, inject, computed, ElementRef } from '@angular/core';
-import { DatabaseService, NewsService, PresentationService } from '../../../core/services';
+import { NewsService, PresentationService } from '../../../core/services';
 
 @Component({
   selector: 'app-toolbar',
@@ -7,7 +7,6 @@ import { DatabaseService, NewsService, PresentationService } from '../../../core
   templateUrl: './toolbar.component.html',
 })
 export class ToolbarComponent {
-  readonly db = inject(DatabaseService);
   readonly presentation = inject(PresentationService);
   readonly news = inject(NewsService);
   private el = inject(ElementRef);
