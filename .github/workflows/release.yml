@@ -13,8 +13,10 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  version:
     runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Guard — owner only
         if: github.actor != github.repository_owner
@@ -40,7 +42,9 @@ jobs:
       - name: Bump version
         env:
           BUMP: ${{ github.event.inputs.bump }}
-        run: npm version "$BUMP" --no-git-tag-version
+        run: |
+          npm version "$BUMP" --no-git-tag-version
+          node -e "const fs=require('fs');const app=JSON.parse(fs.readFileSync('./app/package.json'));app.version=require('./package.json').version;fs.writeFileSync('./app/package.json',JSON.stringify(app,null,2)+'\n');"
 
       - name: Capture new version
         id: version
@@ -107,3 +111,58 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.version }}
         run: gh release create "${VERSION}" --notes-file CHANGELOG_BODY.md --title "${VERSION}"
+
+
+  build:
+    needs: version
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux
+          - os: macos-latest
+            platform: mac
+          - os: windows-latest
+            platform: win
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.version.outputs.version }}
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install linux dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Install dependencies
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: npm ci
+
+      - name: Build app
+        run: npm run electron:build
+
+      - name: Upload artifacts to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.version.outputs.version }}
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(release/*.dmg release/*.AppImage release/*.exe release/*.zip release/*.deb release/*.rpm)
+          if [ ${#files[@]} -gt 0 ]; then
+            gh release upload "${VERSION}" "${files[@]}" --clobber
+          else
+            echo "No release artifacts found"
+            exit 1
+          fi
