@@ -12,4 +12,5 @@ export enum StorageType {
   LayoutPreview = 'layout.preview',
   LayoutTheme = 'layout.theme',
   AiKeys = 'ai.keys',
+  NavigationExpanded = 'navigation.expanded',
 }

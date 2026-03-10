@@ -41,6 +41,7 @@ export class PresentationService {
       this.loadThemeSettings();
       this.loadLayoutSettings();
       this.loadPreviewSettings();
+      this.loadNavigationExpandedSettings();
       this.listenForMenuToggle();
 
       let themeInitialized = false;
@@ -68,6 +69,15 @@ export class PresentationService {
           untracked(() => this.messageService.set(StorageType.LayoutPanel, settings));
         }
         panelInitialized = true;
+      });
+
+      let navExpandedInitialized = false;
+      effect(() => {
+        const ids = this.navigationExpandedIds();
+        if (navExpandedInitialized) {
+          untracked(() => this.messageService.set(StorageType.NavigationExpanded, ids));
+        }
+        navExpandedInitialized = true;
       });
 
       let previewInitialized = false;
@@ -119,6 +129,8 @@ export class PresentationService {
   readonly backgroundColor = signal<string | null>(null);
   readonly letterSpacing = signal(0);
   readonly wordSpacing = signal(0);
+
+  readonly navigationExpandedIds = signal<number[]>([]);
 
   readonly gridEnabled = signal(true);
   readonly toolbarEnabled = signal(true);
@@ -189,6 +201,41 @@ export class PresentationService {
         toggle();
       }
     });
+  }
+
+  isNavigationExpanded(id: number): boolean {
+    return this.navigationExpandedIds().includes(id);
+  }
+
+  toggleNavigationExpanded(id: number) {
+    const ids = this.navigationExpandedIds();
+    if (ids.includes(id)) {
+      this.navigationExpandedIds.set(ids.filter((i) => i !== id));
+    } else {
+      this.navigationExpandedIds.set([...ids, id]);
+    }
+  }
+
+  expandNavigationId(id: number) {
+    const ids = this.navigationExpandedIds();
+    if (!ids.includes(id)) {
+      this.navigationExpandedIds.set([...ids, id]);
+    }
+  }
+
+  setAllNavigationExpanded(allIds: number[]) {
+    this.navigationExpandedIds.set(allIds);
+  }
+
+  clearAllNavigationExpanded() {
+    this.navigationExpandedIds.set([]);
+  }
+
+  private async loadNavigationExpandedSettings() {
+    const ids = (await this.messageService.get(StorageType.NavigationExpanded, null)) as number[] | null;
+    if (Array.isArray(ids)) {
+      this.navigationExpandedIds.set(ids);
+    }
   }
 
   private async loadThemeSettings() {

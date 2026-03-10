@@ -50,7 +50,6 @@ export class NavigationComponent {
   contextMenu: { x: number; y: number; collection: Collection } | null = null;
   editingId: number | null = null;
   editingTitle = '';
-  expandedIds = new Set<number>();
   allExpanded = false;
 
   showCollectionDialog = false;
@@ -187,7 +186,7 @@ export class NavigationComponent {
     this.db.collections.set(updated);
 
     if (newParentId !== 0) {
-      this.expandedIds.add(newParentId);
+      this.presentation.expandNavigationId(newParentId);
     }
 
     try {
@@ -302,30 +301,28 @@ export class NavigationComponent {
   }
 
   isExpanded(id: number): boolean {
-    return this.expandedIds.has(id);
+    return this.presentation.isNavigationExpanded(id);
   }
 
   toggleExpand(event: Event, id: number) {
     event.stopPropagation();
-    if (this.expandedIds.has(id)) {
-      this.expandedIds.delete(id);
-    } else {
-      this.expandedIds.add(id);
-    }
+    this.presentation.toggleNavigationExpanded(id);
   }
 
   toggleExpandAll(event: Event) {
     event.stopPropagation();
     if (this.allExpanded) {
-      this.expandedIds.clear();
+      this.presentation.clearAllNavigationExpanded();
     } else {
+      const allIds: number[] = [];
       const collectIds = (nodes: TreeNode[]) => {
         for (const node of nodes) {
-          this.expandedIds.add(node.collection.id);
+          allIds.push(node.collection.id);
           collectIds(node.children);
         }
       };
       collectIds(this.tree());
+      this.presentation.setAllNavigationExpanded(allIds);
     }
     this.allExpanded = !this.allExpanded;
   }
