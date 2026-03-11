@@ -1,0 +1,94 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" (click)="cancel()">
+  <div class="card mb-0 w-[560px]" style="box-shadow: var(--context-shadow)" (click)="$event.stopPropagation()">
+    <div class="card-header">
+      <div class="card-title">
+        <h3>{{ smartCollection ? 'Edit Smart Collection' : 'New Smart Collection' }}</h3>
+      </div>
+      <div class="card-tools"></div>
+    </div>
+    <div class="card-body">
+      <div class="mb-4">
+        <label class="form-label" for="scTitle">Name</label>
+        <input
+          type="text"
+          class="form-input w-full"
+          id="scTitle"
+          placeholder="Smart Collection name"
+          [(ngModel)]="title"
+          (keyup.escape)="cancel()"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Match</label>
+        <select class="form-input" [(ngModel)]="matchType">
+          <option value="AND">All rules (AND)</option>
+          <option value="OR">Any rule (OR)</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Rules</label>
+      </div>
+
+      <div class="space-y-2 mb-4 max-h-[300px] overflow-y-auto">
+        @for (rule of rules; track $index; let i = $index) {
+          <div class="flex items-center gap-2">
+            <select class="form-input flex-1" [(ngModel)]="rule.field" (ngModelChange)="onFieldChange(rule)">
+              @for (f of fieldOptions; track f.value) {
+                <option [value]="f.value">{{ f.label }}</option>
+              }
+            </select>
+
+            <select class="form-input w-[120px]" [(ngModel)]="rule.operator">
+              @for (op of getOperators(rule.field); track op.value) {
+                <option [value]="op.value">{{ op.label }}</option>
+              }
+            </select>
+
+            @switch (getFieldType(rule.field)) {
+              @case ('enum') {
+                <select class="form-input flex-1" [(ngModel)]="rule.value">
+                  @for (opt of getEnumOptions(rule.field); track opt.value) {
+                    <option [value]="opt.value">{{ opt.label }}</option>
+                  }
+                </select>
+              }
+              @case ('boolean') {
+                <select class="form-input flex-1" [(ngModel)]="rule.value">
+                  <option [ngValue]="1">Yes</option>
+                  <option [ngValue]="0">No</option>
+                </select>
+              }
+              @case ('numeric') {
+                <input type="number" class="form-input flex-1" [(ngModel)]="rule.value" placeholder="Value" />
+              }
+              @case ('date') {
+                <input type="date" class="form-input flex-1" [(ngModel)]="rule.value" />
+              }
+              @default {
+                <input type="text" class="form-input flex-1" [(ngModel)]="rule.value" placeholder="Value" />
+              }
+            }
+
+            <button class="btn btn-sm btn-default px-2" (click)="removeRule(i)" [disabled]="rules.length <= 1" title="Remove rule">
+              <span class="material-symbols-outlined" style="font-size: 16px">remove</span>
+            </button>
+          </div>
+        }
+      </div>
+
+      <button class="btn btn-sm btn-default" (click)="addRule()">
+        <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle">add</span>
+        Add Rule
+      </button>
+    </div>
+    <div class="card-footer">
+      <div></div>
+      <div class="card-tools">
+        <button class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>
+        <button class="btn btn-sm btn-theme" (click)="save()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,10 +4,10 @@
       <app-library />
     </app-collapsible-panel>
 
-    <app-collapsible-panel title="Explorer" class="flex-1 min-h-0">
+    <app-collapsible-panel title="Smart Collections">
       <span
         panelActions
-        class="material-symbols-outlined cursor-pointer transition-transform duration-200"
+        class="material-symbols-outlined cursor-pointer"
         [style.color]="'var(--text-muted)'"
         style="
           font-size: 18px;
@@ -15,9 +15,57 @@
             'opsz' 20,
             'wght' 300;
         "
-        [title]="allExpanded ? 'Collapse All' : 'Expand All'"
-        (click)="toggleExpandAll($event)"
-        >{{ allExpanded ? 'unfold_less' : 'unfold_more' }}</span
+        title="New Smart Collection"
+        (click)="openCreateSmartCollection()"
+        >add</span
+      >
+      <ul class="flex flex-col py-0.5">
+        @for (sc of db.smartCollections(); track sc.id) {
+          <li>
+            <a
+              class="flex items-center px-3 py-1 text-xs font-normal cursor-pointer transition-colors"
+              [style.background-color]="isSmartSelected(sc) ? 'var(--selected-bg)' : 'transparent'"
+              [style.color]="isSmartSelected(sc) ? 'var(--text-primary)' : 'inherit'"
+              (click)="selectSmartCollection(sc)"
+              (dblclick)="editSmartCollection(sc)"
+              (contextmenu)="onSmartContextMenu($event, sc)"
+              (mouseenter)="$any($event.target).style.backgroundColor = isSmartSelected(sc) ? 'var(--selected-bg)' : 'var(--hover-bg)'"
+              (mouseleave)="$any($event.target).style.backgroundColor = isSmartSelected(sc) ? 'var(--selected-bg)' : 'transparent'"
+            >
+              <span
+                class="material-symbols-outlined icon-sm mr-1"
+                [style.color]="'var(--text-muted)'"
+                style="
+                  font-size: 16px;
+                  font-variation-settings:
+                    'opsz' 20,
+                    'wght' 300;
+                "
+                >auto_awesome</span
+              >
+              {{ sc.title }}
+            </a>
+          </li>
+        } @empty {
+          <li class="px-3 py-1 text-xs" [style.color]="'var(--text-muted)'">No smart collections</li>
+        }
+      </ul>
+    </app-collapsible-panel>
+
+    <app-collapsible-panel title="Explorer" class="flex-1 min-h-0">
+      <span
+        panelActions
+        class="material-symbols-outlined cursor-pointer"
+        [style.color]="'var(--text-muted)'"
+        style="
+          font-size: 18px;
+          font-variation-settings:
+            'opsz' 20,
+            'wght' 300;
+        "
+        title="New Collection"
+        (click)="openCreateRootCollection()"
+        >add</span
       >
       <ul class="flex-1 overflow-auto flex flex-col py-0.5">
         <ng-container *ngTemplateOutlet="subtree; context: { $implicit: tree(), level: 0 }" />
@@ -120,6 +168,24 @@
         confirmText="Create"
         (confirmed)="onCollectionConfirmed($event)"
         (cancelled)="onCollectionCancelled()"
+      />
+    }
+
+    @if (smartContextMenu) {
+      <app-context-menu
+        [x]="smartContextMenu.x"
+        [y]="smartContextMenu.y"
+        [items]="smartContextMenuItems"
+        (menuSelect)="onSmartContextMenuSelect($event)"
+        (menuClose)="closeSmartContextMenu()"
+      />
+    }
+
+    @if (showRuleBuilder) {
+      <app-rule-builder
+        [smartCollection]="editingSmartCollection"
+        (saved)="onRuleBuilderSaved($event)"
+        (cancelled)="onRuleBuilderCancelled()"
       />
     }
   </div>

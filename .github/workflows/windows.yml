@@ -72,10 +72,3 @@ jobs:
 
     - name: Run headless e2e test
       run: npm run e2e
-
-    - name: Build the app
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 15
-        max_attempts: 3
-        command: npm run electron:build

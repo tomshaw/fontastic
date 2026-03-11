@@ -5,6 +5,7 @@ import type { Logger } from '@main/database/entity/Logger.schema';
 import type { Store, StoreManyAndCountType } from '@main/database/entity/Store.schema';
 import { ChannelType } from '@main/enums';
 import type { FontMetrics, SystemConfig, SystemStats } from '@main/types';
+import type { SmartCollection } from '@main/database/entity/SmartCollection.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -211,6 +212,28 @@ export class MessageService {
 
   collectionMove(collectionId: number, newParentId: number, newIndex: number): Promise<Collection[]> {
     return this.invoke<Collection[]>(ChannelType.IPC_COLLECTION_MOVE, { collectionId, newParentId, newIndex });
+  }
+
+  // Smart Collection
+
+  smartCollectionFind(): Promise<SmartCollection[]> {
+    return this.invoke<SmartCollection[]>(ChannelType.IPC_SMART_COLLECTION_FIND);
+  }
+
+  smartCollectionCreate(args: any): Promise<SmartCollection[]> {
+    return this.invoke<SmartCollection[]>(ChannelType.IPC_SMART_COLLECTION_CREATE, args);
+  }
+
+  smartCollectionUpdate(id: number, data: any): Promise<SmartCollection[]> {
+    return this.invoke<SmartCollection[]>(ChannelType.IPC_SMART_COLLECTION_UPDATE, { id, data });
+  }
+
+  smartCollectionDelete(id: number): Promise<SmartCollection[]> {
+    return this.invoke<SmartCollection[]>(ChannelType.IPC_SMART_COLLECTION_DELETE, { id });
+  }
+
+  smartCollectionEvaluate(id: number, options: any): Promise<StoreManyAndCountType> {
+    return this.invoke<StoreManyAndCountType>(ChannelType.IPC_SMART_COLLECTION_EVALUATE, { id, ...options });
   }
 
   // Store

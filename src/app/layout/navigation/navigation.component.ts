@@ -1,14 +1,17 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService, MessageService, PresentationService } from '../../core/services';
 import { CollapsiblePanelComponent } from '../../shared/components/collapsible-panel/collapsible-panel.component';
 import { ContextMenuComponent, ContextMenuItem } from '../../shared/components/context-menu/context-menu.component';
-import { PromptDialogComponent } from '../../shared/components';
+import { PromptDialogComponent, RuleBuilderComponent } from '../../shared/components';
 import { AutofocusDirective } from '../../shared/directives/autofocus/autofocus.directive';
 import { LibraryComponent } from './library/library.component';
 import { NewsStatsComponent } from './stats/stats.component';
 import type { Collection } from '@main/database/entity/Collection.schema';
+import type { SmartCollection } from '@main/database/entity/SmartCollection.schema';
+import type { SmartCollectionRule } from '@main/types';
+import { ChannelType } from '@main/enums';
 
 export interface TreeNode {
   collection: Collection;
@@ -24,16 +27,33 @@ export interface TreeNode {
     CollapsiblePanelComponent,
     ContextMenuComponent,
     PromptDialogComponent,
+    RuleBuilderComponent,
     AutofocusDirective,
     LibraryComponent,
     NewsStatsComponent,
   ],
   templateUrl: './navigation.component.html',
 })
-export class NavigationComponent {
+export class NavigationComponent implements OnInit, OnDestroy {
   readonly db = inject(DatabaseService);
   private message = inject(MessageService);
   private presentation = inject(PresentationService);
+
+  private menuToggleListener = (_event: any, panel: string) => {
+    if (panel === 'expand-collections') {
+      this.expandAll();
+    } else if (panel === 'collapse-collections') {
+      this.collapseAll();
+    }
+  };
+
+  ngOnInit() {
+    this.message.on(ChannelType.IPC_TOGGLE_PANEL, this.menuToggleListener);
+  }
+
+  ngOnDestroy() {
+    this.message.removeListener(ChannelType.IPC_TOGGLE_PANEL, this.menuToggleListener);
+  }
 
   readonly tree = computed<TreeNode[]>(() => {
     const all = this.db.collections();
@@ -54,6 +74,12 @@ export class NavigationComponent {
 
   showCollectionDialog = false;
   pendingParentId: number | null = null;
+
+  // Smart Collection state
+  showRuleBuilder = false;
+  editingSmartCollection: SmartCollection | null = null;
+  smartContextMenu: { x: number; y: number; smartCollection: SmartCollection } | null = null;
+  smartContextMenuItems: ContextMenuItem[] = [];
 
   // Drag state
   draggedNode: TreeNode | null = null;
@@ -245,6 +271,11 @@ export class NavigationComponent {
     }
   }
 
+  openCreateRootCollection() {
+    this.pendingParentId = 0;
+    this.showCollectionDialog = true;
+  }
+
   onCollectionConfirmed(name: string) {
     this.db.collectionCreate({ title: name, parentId: this.pendingParentId });
     this.showCollectionDialog = false;
@@ -309,22 +340,22 @@ export class NavigationComponent {
     this.presentation.toggleNavigationExpanded(id);
   }
 
-  toggleExpandAll(event: Event) {
-    event.stopPropagation();
-    if (this.allExpanded) {
-      this.presentation.clearAllNavigationExpanded();
-    } else {
-      const allIds: number[] = [];
-      const collectIds = (nodes: TreeNode[]) => {
-        for (const node of nodes) {
-          allIds.push(node.collection.id);
-          collectIds(node.children);
-        }
-      };
-      collectIds(this.tree());
-      this.presentation.setAllNavigationExpanded(allIds);
-    }
-    this.allExpanded = !this.allExpanded;
+  expandAll() {
+    const allIds: number[] = [];
+    const collectIds = (nodes: TreeNode[]) => {
+      for (const node of nodes) {
+        allIds.push(node.collection.id);
+        collectIds(node.children);
+      }
+    };
+    collectIds(this.tree());
+    this.presentation.setAllNavigationExpanded(allIds);
+    this.allExpanded = true;
+  }
+
+  collapseAll() {
+    this.presentation.clearAllNavigationExpanded();
+    this.allExpanded = false;
   }
 
   isSelected(collection: Collection): boolean {
@@ -354,6 +385,82 @@ export class NavigationComponent {
   cancelEditing() {
     this.editingId = null;
     this.editingTitle = '';
+  }
+
+  // Smart Collection methods
+
+  selectSmartCollection(sc: SmartCollection) {
+    this.db.selectSmartCollection(sc.id);
+  }
+
+  isSmartSelected(sc: SmartCollection): boolean {
+    return this.db.activeSmartCollectionId() === sc.id;
+  }
+
+  openCreateSmartCollection() {
+    this.editingSmartCollection = null;
+    this.showRuleBuilder = true;
+  }
+
+  editSmartCollection(sc: SmartCollection) {
+    this.editingSmartCollection = sc;
+    this.showRuleBuilder = true;
+  }
+
+  onSmartContextMenu(event: MouseEvent, sc: SmartCollection) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.smartContextMenuItems = [
+      { label: 'Edit Rules', action: 'edit-rules', icon: 'tune' },
+      { label: 'Delete', action: 'delete' },
+    ];
+
+    this.smartContextMenu = { x: event.clientX, y: event.clientY, smartCollection: sc };
+  }
+
+  onSmartContextMenuSelect(action: string) {
+    if (!this.smartContextMenu) return;
+    const sc = this.smartContextMenu.smartCollection;
+    this.smartContextMenu = null;
+
+    switch (action) {
+      case 'edit-rules':
+        this.editingSmartCollection = sc;
+        this.showRuleBuilder = true;
+        break;
+      case 'delete':
+        this.db.smartCollectionDelete(sc.id);
+        break;
+    }
+  }
+
+  closeSmartContextMenu() {
+    this.smartContextMenu = null;
+  }
+
+  onRuleBuilderSaved(data: { title: string; rules: SmartCollectionRule[]; match_type: string }) {
+    const rulesJson = JSON.stringify(data.rules);
+    if (this.editingSmartCollection) {
+      this.db.smartCollectionUpdate(this.editingSmartCollection.id, {
+        title: data.title,
+        rules: rulesJson,
+        match_type: data.match_type,
+      });
+    } else {
+      this.db.smartCollectionCreate({
+        title: data.title,
+        rules: rulesJson,
+        match_type: data.match_type,
+      });
+    }
+    this.showRuleBuilder = false;
+    this.editingSmartCollection = null;
+  }
+
+  onRuleBuilderCancelled() {
+    this.showRuleBuilder = false;
+    this.editingSmartCollection = null;
   }
 
   findRootParentId(collection: Collection): number {

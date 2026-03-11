@@ -7,6 +7,7 @@ import type { Collection } from '@main/database/entity/Collection.schema';
 import type { Logger } from '@main/database/entity/Logger.schema';
 import type { Store, StoreManyAndCountType } from '@main/database/entity/Store.schema';
 import type { FontMetrics, SystemStats } from '@main/types';
+import type { SmartCollection } from '@main/database/entity/SmartCollection.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,8 @@ export class DatabaseService {
 
   // Reactive state
   readonly collections = signal<Collection[]>([]);
+  readonly smartCollections = signal<SmartCollection[]>([]);
+  readonly activeSmartCollectionId = signal<number | null>(null);
   readonly parentId = signal<number | null>(null);
   readonly collectionId = signal<number | null>(null);
   readonly stores = signal<Store[]>([]);
@@ -56,6 +59,7 @@ export class DatabaseService {
     this.collectionId.set(parentId);
     this.activeFilter.set(null);
     this.activeSearchWhere.set(null);
+    this.activeSmartCollectionId.set(null);
     this.currentPage.set(1);
   }
 
@@ -64,6 +68,7 @@ export class DatabaseService {
     this.collectionId.set(child.id);
     this.activeFilter.set(null);
     this.activeSearchWhere.set(null);
+    this.activeSmartCollectionId.set(null);
     this.currentPage.set(1);
   }
 
@@ -78,11 +83,22 @@ export class DatabaseService {
     return current.id;
   }
 
+  selectSmartCollection(id: number) {
+    this.parentId.set(null);
+    this.collectionId.set(null);
+    this.activeFilter.set(null);
+    this.activeSearchWhere.set(null);
+    this.activeSmartCollectionId.set(id);
+    this.currentPage.set(1);
+    this.fetchCurrentPage();
+  }
+
   selectFilter(filter: string) {
     this.parentId.set(null);
     this.collectionId.set(null);
     this.activeFilter.set(filter);
     this.activeSearchWhere.set(null);
+    this.activeSmartCollectionId.set(null);
     this.currentPage.set(1);
 
     const whereMap: Record<string, { key: string; value: number }[]> = {
@@ -122,6 +138,12 @@ export class DatabaseService {
     const skip = (this.currentPage() - 1) * this.pageSize();
     const take = this.pageSize();
 
+    const smartCollectionId = this.activeSmartCollectionId();
+    if (smartCollectionId) {
+      this.smartCollectionEvaluate(smartCollectionId, { skip, take });
+      return;
+    }
+
     const searchWhere = this.activeSearchWhere();
     if (searchWhere) {
       const searchOrder = this.activeSearchOrder();
@@ -150,13 +172,15 @@ export class DatabaseService {
 
   constructor() {
     this.electron.ready.then(async () => {
-      const [collections, savedCollectionId, savedStoreId] = await Promise.all([
+      const [collections, smartCollections, savedCollectionId, savedStoreId] = await Promise.all([
         this.message.collectionFetch({}),
+        this.message.smartCollectionFind(),
         this.message.get(StorageType.CollectionId, null),
         this.message.get(StorageType.StoreId, null),
       ]);
 
       this.collections.set(collections);
+      this.smartCollections.set(smartCollections);
       console.log('System Boot:', collections);
 
       if (savedCollectionId) {
@@ -294,6 +318,50 @@ export class DatabaseService {
     );
   }
 
+  // Smart Collection
+
+  smartCollectionCreate(args: any): Promise<SmartCollection[]> {
+    return this.track(
+      this.message.smartCollectionCreate(args).then((result) => {
+        this.smartCollections.set(result);
+        return result;
+      }),
+    );
+  }
+
+  smartCollectionUpdate(id: number, data: any): Promise<SmartCollection[]> {
+    return this.track(
+      this.message.smartCollectionUpdate(id, data).then((result) => {
+        this.smartCollections.set(result);
+        return result;
+      }),
+    );
+  }
+
+  smartCollectionDelete(id: number): Promise<SmartCollection[]> {
+    return this.track(
+      this.message.smartCollectionDelete(id).then((result) => {
+        this.smartCollections.set(result);
+        if (this.activeSmartCollectionId() === id) {
+          this.activeSmartCollectionId.set(null);
+          this.stores.set([]);
+          this.storeCount.set(0);
+        }
+        return result;
+      }),
+    );
+  }
+
+  smartCollectionEvaluate(id: number, options: any): Promise<StoreManyAndCountType> {
+    return this.track(
+      this.message.smartCollectionEvaluate(id, options).then((result) => {
+        this.stores.set(result[0] as Store[]);
+        this.storeCount.set(result[1] as number);
+        return result;
+      }),
+    );
+  }
+
   // Store
 
   storeFind(args: any): Promise<Store[]> {
@@ -336,6 +404,7 @@ export class DatabaseService {
     this.activeFilter.set(null);
     this.activeSearchWhere.set(where);
     this.activeSearchOrder.set(order ?? null);
+    this.activeSmartCollectionId.set(null);
     this.currentPage.set(1);
     this.fetchCurrentPage();
   }
