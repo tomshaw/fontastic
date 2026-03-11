@@ -184,6 +184,35 @@ export default class MessageHandler {
       return await this.fetchCollectionsWithCounts({});
     });
 
+    // Smart Collection
+
+    this.handle(ChannelType.IPC_SMART_COLLECTION_FIND, async (_event: IpcMainEvent) => {
+      return await this.connectionManager.getSmartCollectionRepository().fetchAll();
+    });
+
+    this.handle(ChannelType.IPC_SMART_COLLECTION_CREATE, async (_event: IpcMainEvent, args: any) => {
+      return await this.connectionManager.getSmartCollectionRepository().createSmartCollection(args);
+    });
+
+    this.handle(ChannelType.IPC_SMART_COLLECTION_UPDATE, async (_event: IpcMainEvent, args: any) => {
+      return await this.connectionManager.getSmartCollectionRepository().updateSmartCollection(args.id, args.data);
+    });
+
+    this.handle(ChannelType.IPC_SMART_COLLECTION_DELETE, async (_event: IpcMainEvent, args: any) => {
+      return await this.connectionManager.getSmartCollectionRepository().deleteSmartCollection(args.id);
+    });
+
+    this.handle(ChannelType.IPC_SMART_COLLECTION_EVALUATE, async (_event: IpcMainEvent, args: any) => {
+      const sc = await this.connectionManager.getSmartCollectionRepository().findOneBy({ id: args.id });
+      if (!sc) return [[], 0];
+      const rules = JSON.parse(sc.rules);
+      return await this.connectionManager.getStoreRepository().evaluateSmartRules(rules, sc.match_type, {
+        skip: args.skip,
+        take: args.take,
+        order: args.order,
+      });
+    });
+
     // Store
 
     this.handle(ChannelType.IPC_STORE_FIND, async (_event: IpcMainEvent, args: any) => {

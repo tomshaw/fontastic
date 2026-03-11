@@ -141,6 +141,30 @@ class MessageHandler {
             yield this.connectionManager.getCollectionRepository().updateCollectionCounts(items);
             return yield this.fetchCollectionsWithCounts({});
         }));
+        // Smart Collection
+        this.handle(ChannelType_1.ChannelType.IPC_SMART_COLLECTION_FIND, (_event) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getSmartCollectionRepository().fetchAll();
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_SMART_COLLECTION_CREATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getSmartCollectionRepository().createSmartCollection(args);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_SMART_COLLECTION_UPDATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getSmartCollectionRepository().updateSmartCollection(args.id, args.data);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_SMART_COLLECTION_DELETE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.connectionManager.getSmartCollectionRepository().deleteSmartCollection(args.id);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_SMART_COLLECTION_EVALUATE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            const sc = yield this.connectionManager.getSmartCollectionRepository().findOneBy({ id: args.id });
+            if (!sc)
+                return [[], 0];
+            const rules = JSON.parse(sc.rules);
+            return yield this.connectionManager.getStoreRepository().evaluateSmartRules(rules, sc.match_type, {
+                skip: args.skip,
+                take: args.take,
+                order: args.order,
+            });
+        }));
         // Store
         this.handle(ChannelType_1.ChannelType.IPC_STORE_FIND, (_event, args) => __awaiter(this, void 0, void 0, function* () {
             return yield this.connectionManager.getStore().find(args);

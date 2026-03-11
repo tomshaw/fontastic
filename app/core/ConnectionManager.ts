@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { Collection, Store, Logger } from '../database/entity';
-import { CollectionRepository, LoggerRepository, StoreRepository } from '../database/repository';
+import { Collection, Store, Logger, SmartCollection } from '../database/entity';
+import { CollectionRepository, LoggerRepository, SmartCollectionRepository, StoreRepository } from '../database/repository';
 import ConfigManager from './ConfigManager';
 import { StorageType } from '../enums/StorageType';
 
@@ -10,7 +10,7 @@ export default class ConnectionManager {
 
   dataSource: DataSource;
 
-  schemas: any[] = [Collection, Store, Logger];
+  schemas: any[] = [Collection, Store, Logger, SmartCollection];
   subscribers: any[] = [];
   migrations: any[] = [];
 
@@ -103,5 +103,13 @@ export default class ConnectionManager {
 
   getStoreRepository() {
     return this.getStore().extend(StoreRepository);
+  }
+
+  getSmartCollection() {
+    return this.dataSource.getRepository(SmartCollection);
+  }
+
+  getSmartCollectionRepository() {
+    return this.getSmartCollection().extend(SmartCollectionRepository);
   }
 }

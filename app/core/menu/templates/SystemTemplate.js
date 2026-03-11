@@ -65,6 +65,21 @@ class SystemTemplate {
                     this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
                 },
             },
+            { type: 'separator' },
+            {
+                label: 'Expand Collections',
+                accelerator: 'Alt+Ctrl+E',
+                click: () => {
+                    this.mainWindow.webContents.send(enums_1.ChannelType.IPC_TOGGLE_PANEL, 'expand-collections');
+                },
+            },
+            {
+                label: 'Collapse Collections',
+                accelerator: 'Alt+Ctrl+Shift+E',
+                click: () => {
+                    this.mainWindow.webContents.send(enums_1.ChannelType.IPC_TOGGLE_PANEL, 'collapse-collections');
+                },
+            },
         ];
         if (!this.isProduction) {
             items.push({ type: 'separator' }, {

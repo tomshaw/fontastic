@@ -15,7 +15,7 @@ const repository_1 = require("../database/repository");
 const StorageType_1 = require("../enums/StorageType");
 class ConnectionManager {
     constructor(configManager) {
-        this.schemas = [entity_1.Collection, entity_1.Store, entity_1.Logger];
+        this.schemas = [entity_1.Collection, entity_1.Store, entity_1.Logger, entity_1.SmartCollection];
         this.subscribers = [];
         this.migrations = [];
         this.omitables = ['title', 'description', 'enabled'];
@@ -88,6 +88,12 @@ class ConnectionManager {
     }
     getStoreRepository() {
         return this.getStore().extend(repository_1.StoreRepository);
+    }
+    getSmartCollection() {
+        return this.dataSource.getRepository(entity_1.SmartCollection);
+    }
+    getSmartCollectionRepository() {
+        return this.getSmartCollection().extend(repository_1.SmartCollectionRepository);
     }
 }
 exports.default = ConnectionManager;

@@ -7,3 +7,4 @@ export * from './SystemTheme';
 export * from './SystemStats';
 export * from './SystemConfig';
 export * from './ImportOptions';
+export * from './SmartCollection';

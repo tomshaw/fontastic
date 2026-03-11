@@ -1,6 +1,7 @@
 import { Brackets, Equal } from 'typeorm';
 import { Store } from '../entity';
 import { searchDbColumns } from '../../config';
+import type { SmartCollectionRule } from '../../types';
 
 export const StoreRepository = {
   async search(options: any) {
@@ -328,6 +329,111 @@ export const StoreRepository = {
       .values(data)
       .execute()
       .catch((err: any) => console.log('insert-error', err));
+  },
+
+  async evaluateSmartRules(rules: SmartCollectionRule[], matchType: string, options: any = {}) {
+    const db = this.createQueryBuilder();
+
+    const textFields = [
+      'file_name',
+      'file_path',
+      'compatible_full_name',
+      'copyright',
+      'description',
+      'designer',
+      'designer_url',
+      'font_family',
+      'font_subfamily',
+      'full_name',
+      'license',
+      'license_url',
+      'manufacturer',
+      'manufacturer_url',
+      'post_script_name',
+      'preferred_family',
+      'preferred_sub_family',
+      'sample_text',
+      'trademark',
+      'unique_id',
+      'version',
+    ];
+    const booleanFields = ['favorite', 'system', 'installable', 'temporary'];
+    const numericFields = ['file_size'];
+    const dateFields = ['created'];
+
+    if (rules.length > 0) {
+      const conditions: ((qb: any) => void)[] = rules.map((rule, idx) => {
+        const field = `store.${rule.field}`;
+        const paramName = `p${idx}`;
+
+        return (qb: any) => {
+          if (textFields.includes(rule.field)) {
+            const val = String(rule.value).toLowerCase();
+            switch (rule.operator) {
+              case 'contains':
+                qb.where(`LOWER(${field}) LIKE :${paramName}`, { [paramName]: `%${val}%` });
+                break;
+              case 'equals':
+                qb.where(`LOWER(${field}) = :${paramName}`, { [paramName]: val });
+                break;
+              case 'starts_with':
+                qb.where(`LOWER(${field}) LIKE :${paramName}`, { [paramName]: `${val}%` });
+                break;
+              case 'ends_with':
+                qb.where(`LOWER(${field}) LIKE :${paramName}`, { [paramName]: `%${val}` });
+                break;
+              default:
+                qb.where(`LOWER(${field}) LIKE :${paramName}`, { [paramName]: `%${val}%` });
+            }
+          } else if (rule.field === 'file_type') {
+            qb.where(`${field} = :${paramName}`, { [paramName]: rule.value });
+          } else if (booleanFields.includes(rule.field)) {
+            const boolVal = rule.operator === 'is_not' ? 0 : 1;
+            qb.where(`${field} = :${paramName}`, { [paramName]: boolVal });
+          } else if (numericFields.includes(rule.field)) {
+            if (rule.operator === 'greater_than') {
+              qb.where(`${field} > :${paramName}`, { [paramName]: rule.value });
+            } else if (rule.operator === 'less_than') {
+              qb.where(`${field} < :${paramName}`, { [paramName]: rule.value });
+            } else {
+              qb.where(`${field} = :${paramName}`, { [paramName]: rule.value });
+            }
+          } else if (dateFields.includes(rule.field)) {
+            if (rule.operator === 'greater_than') {
+              qb.where(`${field} >= :${paramName}`, { [paramName]: rule.value });
+            } else if (rule.operator === 'less_than') {
+              qb.where(`${field} <= :${paramName}`, { [paramName]: rule.value });
+            } else {
+              qb.where(`${field} = :${paramName}`, { [paramName]: rule.value });
+            }
+          }
+        };
+      });
+
+      const joiner = matchType === 'OR' ? 'orWhere' : 'andWhere';
+      conditions.forEach((condition, i) => {
+        if (i === 0) {
+          db.where(new Brackets(condition));
+        } else {
+          db[joiner](new Brackets(condition));
+        }
+      });
+    }
+
+    if (options.take) {
+      db.limit(options.take);
+    }
+
+    if (options.skip) {
+      db.offset(options.skip);
+    }
+
+    if (options.order && options.order.column) {
+      const direction = options.order.direction === 'DESC' ? 'DESC' : 'ASC';
+      db.orderBy(`store.${options.order.column}`, direction);
+    }
+
+    return await db.getManyAndCount();
   },
 
   async fetchSystemStats() {
