@@ -20,35 +20,35 @@ __decorate([
 ], SmartCollection.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        length: 100
+        length: 100,
     }),
     __metadata("design:type", String)
 ], SmartCollection.prototype, "title", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "text"
+        type: 'text',
     }),
     __metadata("design:type", String)
 ], SmartCollection.prototype, "rules", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "varchar",
+        type: 'varchar',
         length: 3,
-        default: "AND"
+        default: 'AND',
     }),
     __metadata("design:type", String)
 ], SmartCollection.prototype, "match_type", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], SmartCollection.prototype, "orderby", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], SmartCollection.prototype, "enabled", void 0);

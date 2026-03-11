@@ -311,11 +311,27 @@ exports.StoreRepository = {
         return __awaiter(this, arguments, void 0, function* (rules, matchType, options = {}) {
             const db = this.createQueryBuilder();
             const textFields = [
-                'file_name', 'file_path', 'compatible_full_name', 'copyright', 'description',
-                'designer', 'designer_url', 'font_family', 'font_subfamily', 'full_name',
-                'license', 'license_url', 'manufacturer', 'manufacturer_url', 'post_script_name',
-                'preferred_family', 'preferred_sub_family', 'sample_text', 'trademark',
-                'unique_id', 'version',
+                'file_name',
+                'file_path',
+                'compatible_full_name',
+                'copyright',
+                'description',
+                'designer',
+                'designer_url',
+                'font_family',
+                'font_subfamily',
+                'full_name',
+                'license',
+                'license_url',
+                'manufacturer',
+                'manufacturer_url',
+                'post_script_name',
+                'preferred_family',
+                'preferred_sub_family',
+                'sample_text',
+                'trademark',
+                'unique_id',
+                'version',
             ];
             const booleanFields = ['favorite', 'system', 'installable', 'temporary'];
             const numericFields = ['file_size'];

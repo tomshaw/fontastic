@@ -14,10 +14,7 @@ const entity_1 = require("../entity");
 exports.SmartCollectionRepository = {
     fetchAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.createQueryBuilder('sc')
-                .orderBy('sc.orderby', 'ASC')
-                .addOrderBy('LOWER(sc.title)', 'ASC')
-                .getMany();
+            return this.createQueryBuilder('sc').orderBy('sc.orderby', 'ASC').addOrderBy('LOWER(sc.title)', 'ASC').getMany();
         });
     },
     createSmartCollection(args) {
@@ -36,21 +33,13 @@ exports.SmartCollectionRepository = {
     },
     updateSmartCollection(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.createQueryBuilder()
-                .update(entity_1.SmartCollection)
-                .set(data)
-                .where('id = :id', { id })
-                .execute();
+            yield this.createQueryBuilder().update(entity_1.SmartCollection).set(data).where('id = :id', { id }).execute();
             return this.fetchAll();
         });
     },
     deleteSmartCollection(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.createQueryBuilder()
-                .delete()
-                .from(entity_1.SmartCollection)
-                .where('id = :id', { id })
-                .execute();
+            yield this.createQueryBuilder().delete().from(entity_1.SmartCollection).where('id = :id', { id }).execute();
             return this.fetchAll();
         });
     },
