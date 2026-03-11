@@ -17,6 +17,7 @@ Fontastic is a cross-platform font management and cataloging application built w
 ## Features
 
 - Nested collections — organize fonts into hierarchical groups with drag-and-drop
+- Smart collections — auto-populate collections using rule-based filters on font metadata
 - Advanced search — quickly find fonts with powerful search and filtering
 - Glyph inspector — browse and examine individual characters and Unicode points
 - Waterfall preview — compare text rendering across multiple sizes at a glance
