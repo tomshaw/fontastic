@@ -5,7 +5,7 @@
     "name": "Tom Shaw",
     "email": ""
   },
-  "version": "1.0.2",
+  "version": "1.1.0",
   "main": "main.js",
   "private": true,
   "dependencies": {
