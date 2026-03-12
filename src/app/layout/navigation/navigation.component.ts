@@ -241,8 +241,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.contextMenuItems = [
       { label: 'Add Collection', action: 'add-collection', icon: 'create_new_folder' },
       { label: 'Add Fonts', action: 'add-fonts', icon: 'list_alt' },
-      { label: 'Rename', action: 'rename' },
-      { label: 'Delete', action: 'delete' },
+      { label: 'Rename', action: 'rename', icon: 'edit', separator: true },
+      { label: 'Delete', action: 'delete', icon: 'delete', separator: true },
     ];
 
     this.contextMenu = { x: event.clientX, y: event.clientY, collection };
@@ -413,7 +413,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
     this.smartContextMenuItems = [
       { label: 'Edit Rules', action: 'edit-rules', icon: 'tune' },
-      { label: 'Delete', action: 'delete' },
+      { label: 'Delete', action: 'delete', icon: 'delete', separator: true },
     ];
 
     this.smartContextMenu = { x: event.clientX, y: event.clientY, smartCollection: sc };
