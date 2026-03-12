@@ -46,6 +46,7 @@ export interface LayoutPreviewType {
   displayText: string | null;
   wordSpacing: number;
   letterSpacing: number;
+  selectedGlyph: number | null;
 }
 
 export interface LayoutType {

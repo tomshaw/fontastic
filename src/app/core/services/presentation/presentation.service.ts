@@ -89,6 +89,7 @@ export class PresentationService {
           displayText: this.customText(),
           wordSpacing: this.wordSpacing(),
           letterSpacing: this.letterSpacing(),
+          selectedGlyph: this.selectedGlyph(),
         };
         if (previewInitialized) {
           untracked(() => this.messageService.set(StorageType.LayoutPreview, settings));
@@ -129,6 +130,8 @@ export class PresentationService {
   readonly backgroundColor = signal<string | null>(null);
   readonly letterSpacing = signal(0);
   readonly wordSpacing = signal(0);
+
+  readonly selectedGlyph = signal<number | null>(null);
 
   readonly navigationExpandedIds = signal<number[]>([]);
 
@@ -273,6 +276,9 @@ export class PresentationService {
       this.letterSpacing.set(settings.letterSpacing);
       if (settings.displayText) {
         this.customText.set(settings.displayText);
+      }
+      if (settings.selectedGlyph !== undefined) {
+        this.selectedGlyph.set(settings.selectedGlyph);
       }
     }
   }

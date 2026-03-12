@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
-import { DatabaseService } from '../../../core/services';
+import { DatabaseService, PresentationService } from '../../../core/services';
 
 const PAGE_SIZE = 200;
 
@@ -10,9 +10,10 @@ const PAGE_SIZE = 200;
 })
 export class InspectorComponent {
   readonly db = inject(DatabaseService);
+  private readonly presentation = inject(PresentationService);
 
   readonly currentPage = signal(1);
-  readonly selectedGlyph = signal<number | null>(null);
+  readonly selectedGlyph = this.presentation.selectedGlyph;
 
   readonly totalPages = computed(() => Math.max(1, Math.ceil(this.db.glyphs().length / PAGE_SIZE)));
 
@@ -28,10 +29,28 @@ export class InspectorComponent {
   });
 
   constructor() {
+    // Reset selection when user switches to a different font.
+    // Skip the null → savedId transition on startup (restore, not a switch).
+    let lastStoreId: number | null = null;
     effect(() => {
-      this.db.glyphs();
-      this.currentPage.set(1);
-      this.selectedGlyph.set(null);
+      const storeId = this.db.storeId();
+      if (lastStoreId !== null && storeId !== lastStoreId) {
+        this.currentPage.set(1);
+        this.presentation.selectedGlyph.set(null);
+      }
+      lastStoreId = storeId;
+    });
+
+    // Navigate to the correct page for the restored/selected glyph.
+    effect(() => {
+      const glyphs = this.db.glyphs();
+      const selected = this.presentation.selectedGlyph();
+      if (selected !== null && glyphs.length) {
+        const index = glyphs.indexOf(selected);
+        if (index >= 0) {
+          this.currentPage.set(Math.floor(index / PAGE_SIZE) + 1);
+        }
+      }
     });
   }
 
