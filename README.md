@@ -13,7 +13,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/tomshaw/fontastic?style=plastic&logo=github&label=Stars)](https://github.com/tomshaw/fontastic/stargazers)
 [![GitHub Watchers](https://img.shields.io/github/watchers/tomshaw/fontastic?style=plastic&logo=github&label=Watchers)](https://github.com/tomshaw/fontastic/watchers)
 
-Fontastic is a cross-platform font management and cataloging application built with Angular and Electron.
+Fontastic is an Electron-based font management and cataloging application built for organizing, browsing, and inspecting font libraries.
 
 ## Features
 
