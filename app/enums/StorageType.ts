@@ -13,4 +13,6 @@ export enum StorageType {
   LayoutTheme = 'layout.theme',
   AiKeys = 'ai.keys',
   NavigationExpanded = 'navigation.expanded',
+  SortColumn = 'datagrid.sort.column',
+  SortDirection = 'datagrid.sort.direction',
 }

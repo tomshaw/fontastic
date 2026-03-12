@@ -11,6 +11,16 @@ export class DatagridComponent {
   private messageService = inject(MessageService);
   private el = inject(ElementRef);
 
+  readonly sortableColumns = [
+    { field: 'full_name', label: 'Name' },
+    { field: 'font_family', label: 'Family' },
+    { field: 'font_subfamily', label: 'Style' },
+    { field: 'file_type', label: 'Type' },
+    { field: 'file_size', label: 'Size' },
+    { field: 'version', label: 'Version' },
+    { field: 'designer', label: 'Designer' },
+  ];
+
   constructor() {
     effect(() => {
       this.db.currentPage();

@@ -137,24 +137,26 @@ export class DatabaseService {
   private fetchCurrentPage(extraOptions: any = {}) {
     const skip = (this.currentPage() - 1) * this.pageSize();
     const take = this.pageSize();
+    const sortOrder = this.getSortOrder();
 
     const smartCollectionId = this.activeSmartCollectionId();
     if (smartCollectionId) {
-      this.smartCollectionEvaluate(smartCollectionId, { skip, take });
+      this.smartCollectionEvaluate(smartCollectionId, { skip, take, ...(sortOrder ? { order: sortOrder } : {}) });
       return;
     }
 
     const searchWhere = this.activeSearchWhere();
     if (searchWhere) {
       const searchOrder = this.activeSearchOrder();
-      this.storeSearch({ where: searchWhere, skip, take, ...(searchOrder ? { order: searchOrder } : {}) });
+      const order = sortOrder ?? searchOrder;
+      this.storeSearch({ where: searchWhere, skip, take, ...(order ? { order } : {}) });
       return;
     }
 
     const collectionId = this.collectionId();
     const filter = this.activeFilter();
 
-    const options: any = { skip, take, ...extraOptions };
+    const options: any = { skip, take, ...extraOptions, ...(sortOrder ? { order: sortOrder } : {}) };
 
     if (collectionId) {
       options.collectionId = collectionId;
@@ -172,16 +174,23 @@ export class DatabaseService {
 
   constructor() {
     this.electron.ready.then(async () => {
-      const [collections, smartCollections, savedCollectionId, savedStoreId] = await Promise.all([
+      const [collections, smartCollections, savedCollectionId, savedStoreId, savedSortColumn, savedSortDirection] = await Promise.all([
         this.message.collectionFetch({}),
         this.message.smartCollectionFind(),
         this.message.get(StorageType.CollectionId, null),
         this.message.get(StorageType.StoreId, null),
+        this.message.get(StorageType.SortColumn, null),
+        this.message.get(StorageType.SortDirection, null),
       ]);
 
       this.collections.set(collections);
       this.smartCollections.set(smartCollections);
       console.log('System Boot:', collections);
+
+      if (savedSortColumn) {
+        this.sortColumn.set(savedSortColumn);
+        this.sortDirection.set(savedSortDirection === 'DESC' ? 'DESC' : 'ASC');
+      }
 
       if (savedCollectionId) {
         this.collectionId.set(savedCollectionId);
@@ -397,6 +406,44 @@ export class DatabaseService {
   }
 
   readonly activeSearchOrder = signal<{ column: string; direction: string } | null>(null);
+
+  // Datagrid sort (persisted)
+  readonly sortColumn = signal<string | null>(null);
+  readonly sortDirection = signal<'ASC' | 'DESC'>('ASC');
+
+  toggleSort(column: string) {
+    const current = this.sortColumn();
+    if (current === column) {
+      if (this.sortDirection() === 'ASC') {
+        this.sortDirection.set('DESC');
+      } else {
+        // Clear sort
+        this.sortColumn.set(null);
+        this.sortDirection.set('ASC');
+      }
+    } else {
+      this.sortColumn.set(column);
+      this.sortDirection.set('ASC');
+    }
+
+    // Persist
+    const col = this.sortColumn();
+    if (col) {
+      this.message.set(StorageType.SortColumn, col);
+      this.message.set(StorageType.SortDirection, this.sortDirection());
+    } else {
+      this.message.set(StorageType.SortColumn, null);
+      this.message.set(StorageType.SortDirection, null);
+    }
+
+    this.currentPage.set(1);
+    this.fetchCurrentPage();
+  }
+
+  private getSortOrder(): { column: string; direction: string } | null {
+    const col = this.sortColumn();
+    return col ? { column: col, direction: this.sortDirection() } : null;
+  }
 
   selectSearch(where: { key: string; value: any }[], order?: { column: string; direction: string }) {
     this.parentId.set(null);

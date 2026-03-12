@@ -8,13 +8,31 @@
       >
         <tr class="text-left text-[11px] uppercase tracking-wide" [style.color]="'var(--text-muted)'">
           <th class="w-10 px-2 py-2 text-center font-medium"></th>
-          <th class="px-4 py-2 font-medium">Name</th>
-          <th class="px-4 py-2 font-medium">Family</th>
-          <th class="px-4 py-2 font-medium">Style</th>
-          <th class="px-4 py-2 font-medium">Type</th>
-          <th class="px-4 py-2 font-medium">Size</th>
-          <th class="px-4 py-2 font-medium">Version</th>
-          <th class="px-4 py-2 font-medium">Designer</th>
+          @for (col of sortableColumns; track col.field) {
+            <th
+              class="px-4 py-2 font-medium cursor-pointer select-none transition-colors hover:brightness-125"
+              [class.max-w-48]="col.field === 'designer'"
+              (click)="db.toggleSort(col.field)"
+            >
+              <div class="flex items-center justify-between gap-1">
+                <span>{{ col.label }}</span>
+                @if (db.sortColumn() === col.field) {
+                  <span
+                    class="material-symbols-outlined"
+                    style="
+                      font-size: 14px;
+                      font-variation-settings:
+                        'opsz' 20,
+                        'wght' 300;
+                    "
+                    [style.color]="'var(--accent)'"
+                  >
+                    {{ db.sortDirection() === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}
+                  </span>
+                }
+              </div>
+            </th>
+          }
           <th class="w-10 px-2 py-2 text-center font-medium"></th>
           <th class="w-10 px-2 py-2 text-center font-medium"></th>
           <th class="w-10 px-2 py-2 text-center font-medium"></th>

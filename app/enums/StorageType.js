@@ -17,5 +17,7 @@ var StorageType;
     StorageType["LayoutTheme"] = "layout.theme";
     StorageType["AiKeys"] = "ai.keys";
     StorageType["NavigationExpanded"] = "navigation.expanded";
+    StorageType["SortColumn"] = "datagrid.sort.column";
+    StorageType["SortDirection"] = "datagrid.sort.direction";
 })(StorageType || (exports.StorageType = StorageType = {}));
 //# sourceMappingURL=StorageType.js.map
