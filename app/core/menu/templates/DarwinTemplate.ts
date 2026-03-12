@@ -142,7 +142,7 @@ export default class DarwinTemplate {
       { label: 'Toggle Navigation', panel: 'navigation', accelerator: 'Alt+Command+1' },
       { label: 'Toggle Aside', panel: 'aside', accelerator: 'Alt+Command+2' },
       { label: 'Toggle Preview', panel: 'preview', accelerator: 'Alt+Command+3' },
-      { label: 'Toggle Inspect', panel: 'inspect', accelerator: 'Alt+Command+4' },
+      { label: 'Toggle Glyphs', panel: 'glyphs', accelerator: 'Alt+Command+4' },
       { label: 'Toggle Toolbar', panel: 'toolbar', accelerator: 'Alt+Command+5' },
       { label: 'Toggle Grid', panel: 'grid', accelerator: 'Alt+Command+6' },
       { label: 'Toggle Waterfall', panel: 'waterfall', accelerator: 'Alt+Command+7' },

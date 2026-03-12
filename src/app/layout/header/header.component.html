@@ -39,11 +39,11 @@
       >
       <a
         href="javascript:;"
-        (click)="presentation.toggleInspect()"
+        (click)="presentation.toggleGlyphs()"
         class="cursor-pointer text-[10px] font-medium tracking-wide text-center no-underline py-1 px-2 inline-flex flex-col items-center outline-none whitespace-nowrap transition-colors"
-        [style.color]="presentation.inspectEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
-        title="Toggle Inspect"
-        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">info</i> Inspect</a
+        [style.color]="presentation.glyphsEnabled() ? 'var(--text-primary)' : 'var(--text-muted)'"
+        title="Toggle Glyphs"
+        ><i class="material-symbols-outlined block text-xl leading-none p-0 mb-0.5">info</i> Glyphs</a
       >
       <a
         href="javascript:;"

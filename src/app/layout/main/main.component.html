@@ -3,7 +3,7 @@
   [style.grid-template-rows]="
     (presentation.searchEnabled() ? '1fr ' : '') +
     (presentation.previewEnabled() ? '1fr ' : '') +
-    (presentation.inspectEnabled() ? '1fr ' : '') +
+    (presentation.glyphsEnabled() ? '1fr ' : '') +
     (presentation.waterfallEnabled() ? '1fr ' : '') +
     (presentation.toolbarEnabled() ? '42px ' : '') +
     (presentation.gridEnabled() ? '1fr' : '')
@@ -19,9 +19,9 @@
       <app-preview />
     </app-panel>
   }
-  @if (presentation.inspectEnabled()) {
+  @if (presentation.glyphsEnabled()) {
     <app-panel class="overflow-auto" [style.border-bottom]="'1px solid var(--border-subtle)'">
-      <app-inspector />
+      <app-glyphs />
     </app-panel>
   }
   @if (presentation.waterfallEnabled()) {

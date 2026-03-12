@@ -134,7 +134,7 @@ export default class SystemTemplate {
       { label: 'Toggle Navigation', panel: 'navigation', accelerator: 'Alt+Ctrl+1' },
       { label: 'Toggle Aside', panel: 'aside', accelerator: 'Alt+Ctrl+2' },
       { label: 'Toggle Preview', panel: 'preview', accelerator: 'Alt+Ctrl+3' },
-      { label: 'Toggle Inspect', panel: 'inspect', accelerator: 'Alt+Ctrl+4' },
+      { label: 'Toggle Glyphs', panel: 'glyphs', accelerator: 'Alt+Ctrl+4' },
       { label: 'Toggle Toolbar', panel: 'toolbar', accelerator: 'Alt+Ctrl+5' },
       { label: 'Toggle Grid', panel: 'grid', accelerator: 'Alt+Ctrl+6' },
       { label: 'Toggle Waterfall', panel: 'waterfall', accelerator: 'Alt+Ctrl+7' },

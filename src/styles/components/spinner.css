@@ -1,7 +1,8 @@
 .app-spinner {
   @apply relative block rounded-full w-[19px] h-[19px] m-0 p-0 opacity-0 overflow-hidden border-4 border-[#00a0be];
   border-left: 4px solid #fff;
-  &.is-animating {
-    @apply opacity-100 animate-spin;
-  }
+}
+
+.app-spinner.is-animating {
+  @apply opacity-100 animate-spin;
 }

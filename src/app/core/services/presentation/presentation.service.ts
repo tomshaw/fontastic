@@ -61,7 +61,7 @@ export class PresentationService {
           navigationEnabled: this.navigationEnabled(),
           toolbarEnabled: this.toolbarEnabled(),
           previewEnabled: this.previewEnabled(),
-          inspectEnabled: this.inspectEnabled(),
+          glyphsEnabled: this.glyphsEnabled(),
           searchEnabled: this.searchEnabled(),
           waterfallEnabled: this.waterfallEnabled(),
         };
@@ -138,7 +138,7 @@ export class PresentationService {
   readonly gridEnabled = signal(true);
   readonly toolbarEnabled = signal(true);
   readonly previewEnabled = signal(true);
-  readonly inspectEnabled = signal(false);
+  readonly glyphsEnabled = signal(false);
   readonly asideEnabled = signal(true);
   readonly navigationEnabled = signal(true);
   readonly searchEnabled = signal(false);
@@ -150,7 +150,7 @@ export class PresentationService {
         this.gridEnabled(),
         this.toolbarEnabled(),
         this.previewEnabled(),
-        this.inspectEnabled(),
+        this.glyphsEnabled(),
         this.asideEnabled(),
         this.navigationEnabled(),
       ].filter(Boolean).length,
@@ -165,8 +165,8 @@ export class PresentationService {
   togglePreview() {
     this.previewEnabled.update((v) => !v);
   }
-  toggleInspect() {
-    this.inspectEnabled.update((v) => !v);
+  toggleGlyphs() {
+    this.glyphsEnabled.update((v) => !v);
   }
   toggleAside() {
     this.asideEnabled.update((v) => !v);
@@ -179,7 +179,7 @@ export class PresentationService {
     this.searchEnabled.set(enabling);
     if (enabling) {
       this.waterfallEnabled.set(false);
-      this.inspectEnabled.set(false);
+      this.glyphsEnabled.set(false);
       this.previewEnabled.set(false);
     }
   }
@@ -191,7 +191,7 @@ export class PresentationService {
     navigation: () => this.toggleNavigation(),
     aside: () => this.toggleAside(),
     preview: () => this.togglePreview(),
-    inspect: () => this.toggleInspect(),
+    glyphs: () => this.toggleGlyphs(),
     toolbar: () => this.toggleToolbar(),
     grid: () => this.toggleGrid(),
     waterfall: () => this.toggleWaterfall(),
@@ -256,7 +256,7 @@ export class PresentationService {
       this.navigationEnabled.set(settings.navigationEnabled);
       this.toolbarEnabled.set(settings.toolbarEnabled);
       this.previewEnabled.set(settings.previewEnabled);
-      this.inspectEnabled.set(settings.inspectEnabled);
+      this.glyphsEnabled.set(settings.glyphsEnabled);
       if (settings.searchEnabled !== undefined) {
         this.searchEnabled.set(settings.searchEnabled);
       }
@@ -287,7 +287,7 @@ export class PresentationService {
     this.gridEnabled.set(true);
     this.toolbarEnabled.set(true);
     this.previewEnabled.set(true);
-    this.inspectEnabled.set(false);
+    this.glyphsEnabled.set(false);
     this.asideEnabled.set(true);
     this.navigationEnabled.set(true);
     this.searchEnabled.set(false);

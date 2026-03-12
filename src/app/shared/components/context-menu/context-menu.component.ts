@@ -55,11 +55,11 @@ export interface ContextMenuItem {
       border-radius: 0;
       text-align: left;
       gap: 0;
+    }
 
-      &:hover {
-        background-color: var(--hover-bg);
-        color: var(--text-primary);
-      }
+    .context-menu-item:hover {
+      background-color: var(--hover-bg);
+      color: var(--text-primary);
     }
 
     .context-menu-icon {

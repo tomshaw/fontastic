@@ -4,11 +4,11 @@ import { DatabaseService, PresentationService } from '../../../core/services';
 const PAGE_SIZE = 200;
 
 @Component({
-  selector: 'app-inspector',
+  selector: 'app-glyphs',
   standalone: true,
-  templateUrl: './inspector.component.html',
+  templateUrl: './glyphs.component.html',
 })
-export class InspectorComponent {
+export class GlyphsComponent {
   readonly db = inject(DatabaseService);
   private readonly presentation = inject(PresentationService);
 

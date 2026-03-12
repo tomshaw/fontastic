@@ -30,7 +30,7 @@ export interface LayoutPanelType {
   navigationEnabled: boolean;
   toolbarEnabled: boolean;
   previewEnabled: boolean;
-  inspectEnabled: boolean;
+  glyphsEnabled: boolean;
   searchEnabled: boolean;
   waterfallEnabled: boolean;
 }

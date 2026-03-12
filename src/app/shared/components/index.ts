@@ -6,7 +6,7 @@ export * from './datagrid/datagrid.component';
 export * from './prompt-dialog/prompt-dialog.component';
 export * from './rule-builder/rule-builder.component';
 export * from './toolbar/toolbar.component';
-export * from './inspector/inspector.component';
+export * from './glyphs/glyphs.component';
 export * from './search/search.component';
 export * from './spinner/spinner.component';
 export * from './waterfall/waterfall.component';
