@@ -1,16 +1,17 @@
 # Fontastic
 
-![Maintained][maintained-badge]
-[![Make a pull request][prs-badge]][prs]
-[![License][license-badge]](LICENSE.md)
+[![Angular](https://img.shields.io/badge/Angular-21-dd0031?style=plastic&logo=angular&logoColor=white)](https://angular.dev)
+[![Electron](https://img.shields.io/badge/Electron-40-47848f?style=plastic&logo=electron&logoColor=white)](https://electronjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=plastic&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![License](https://img.shields.io/badge/License-MIT-f59e0b?style=plastic)](LICENSE.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-22c55e?style=plastic)](http://makeapullrequest.com)
 
 [![Linux Build][linux-build-badge]][linux-build]
 [![MacOS Build][macos-build-badge]][macos-build]
 [![Windows Build][windows-build-badge]][windows-build]
 
-[![Watch on GitHub][github-watch-badge]][github-watch]
-[![Star on GitHub][github-star-badge]][github-star]
-[![Tweet][twitter-badge]][twitter]
+[![GitHub Stars](https://img.shields.io/github/stars/tomshaw/fontastic?style=plastic&logo=github&label=Stars)](https://github.com/tomshaw/fontastic/stargazers)
+[![GitHub Watchers](https://img.shields.io/github/watchers/tomshaw/fontastic?style=plastic&logo=github&label=Watchers)](https://github.com/tomshaw/fontastic/watchers)
 
 Fontastic is a cross-platform font management and cataloging application built with Angular and Electron.
 
@@ -83,12 +84,6 @@ Fontastic is open-sourced software licensed under the [MIT license](https://open
 
 [repo]: https://github.com/tomshaw/fontastic
 
-[maintained-badge]: https://img.shields.io/badge/maintained-yes-brightgreen
-[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license]: https://github.com/tomshaw/fontastic/blob/main/LICENSE.md
-[prs-badge]: https://img.shields.io/badge/PRs-welcome-red.svg
-[prs]: http://makeapullrequest.com
-
 [linux-build-badge]: https://github.com/tomshaw/fontastic/workflows/Linux%20Build/badge.svg
 [linux-build]: https://github.com/tomshaw/fontastic/actions?query=workflow%3A%22Linux+Build%22
 [macos-build-badge]: https://github.com/tomshaw/fontastic/workflows/MacOS%20Build/badge.svg
@@ -96,9 +91,3 @@ Fontastic is open-sourced software licensed under the [MIT license](https://open
 [windows-build-badge]: https://github.com/tomshaw/fontastic/workflows/Windows%20Build/badge.svg
 [windows-build]: https://github.com/tomshaw/fontastic/actions?query=workflow%3A%22Windows+Build%22
 
-[github-watch-badge]: https://img.shields.io/github/watchers/tomshaw/fontastic.svg?style=social
-[github-watch]: https://github.com/tomshaw/fontastic/watchers
-[github-star-badge]: https://img.shields.io/github/stars/tomshaw/fontastic.svg?style=social
-[github-star]: https://github.com/tomshaw/fontastic/stargazers
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20fontastic!%20https://github.com/tomshaw/fontastic%20%F0%9F%91%8D
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/tomshaw/fontastic.svg?style=social
