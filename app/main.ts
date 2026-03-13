@@ -1,18 +1,21 @@
-import {app, BrowserWindow, ipcMain, net, protocol, screen} from 'electron';
+import { app, BrowserWindow, ipcMain, net, protocol, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { machineId } from 'node-machine-id';
 import Application from './Application';
 
+app.name = 'Fontastic';
+
 let win: BrowserWindow | null = null;
 let resolveAppReady: () => void;
-const appReadyPromise = new Promise<void>(resolve => { resolveAppReady = resolve; });
+const appReadyPromise = new Promise<void>((resolve) => {
+  resolveAppReady = resolve;
+});
 
 const args = process.argv.slice(1),
-  serve = args.some(val => val === '--serve');
+  serve = args.some((val) => val === '--serve');
 
 function createWindow(): BrowserWindow {
-
   const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
@@ -25,20 +28,18 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
       allowRunningInsecureContent: serve,
       contextIsolation: false,
-      webSecurity: !serve
+      webSecurity: !serve,
     },
   });
 
-  machineId(true).then((machineId: string) =>
-    new Application(machineId, !serve, win!).initialize().then(() => resolveAppReady())
-  );
+  machineId(true).then((machineId: string) => new Application(machineId, !serve, win!).initialize().then(() => resolveAppReady()));
 
   if (serve) {
-    import('electron-debug').then(debug => {
-      debug.default({isEnabled: true, showDevTools: true});
+    import('electron-debug').then((debug) => {
+      debug.default({ isEnabled: true, showDevTools: true });
     });
 
-    import('electron-reloader').then(reloader => {
+    import('electron-reloader').then((reloader) => {
       const reloaderFn = (reloader as any).default || reloader;
       // watchRenderer: false — Angular dev server handles HMR for the renderer.
       // Without this, reloader triggers spurious reloads on macOS (issue #840).
@@ -50,7 +51,7 @@ function createWindow(): BrowserWindow {
     let pathIndex = './browser/index.html';
 
     if (fs.existsSync(path.join(__dirname, '../dist/browser/index.html'))) {
-       // Path when running electron in local folder
+      // Path when running electron in local folder
       pathIndex = '../dist/browser/index.html';
     }
 
@@ -71,10 +72,12 @@ function createWindow(): BrowserWindow {
 }
 
 try {
-  protocol.registerSchemesAsPrivileged([{
-    scheme: 'font',
-    privileges: { bypassCSP: true, supportFetchAPI: true }
-  }]);
+  protocol.registerSchemesAsPrivileged([
+    {
+      scheme: 'font',
+      privileges: { bypassCSP: true, supportFetchAPI: true },
+    },
+  ]);
 
   ipcMain.handle('app:get-version', () => app.getVersion());
   ipcMain.handle('app:ready', () => appReadyPromise);
@@ -107,7 +110,6 @@ try {
       createWindow();
     }
   });
-
 } catch (e) {
   // Catch Error
   // throw e;
