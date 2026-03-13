@@ -1,10 +1,18 @@
-import { app, BrowserWindow, ipcMain, net, protocol, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeImage, net, protocol, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { machineId } from 'node-machine-id';
 import Application from './Application';
 
 app.name = 'Fontastic';
+
+const iconPath = path.join(__dirname, '..', 'src', 'assets', 'icons', 'favicon.512x512.png');
+
+app.setAboutPanelOptions({
+  applicationName: 'Fontastic',
+  applicationVersion: app.getVersion(),
+  iconPath,
+});
 
 let win: BrowserWindow | null = null;
 let resolveAppReady: () => void;
