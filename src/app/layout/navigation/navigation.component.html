@@ -16,7 +16,7 @@
             'wght' 300;
         "
         title="New Smart Collection"
-        (click)="openCreateSmartCollection()"
+        (click)="$event.stopPropagation(); openCreateSmartCollection()"
         >add</span
       >
       <ul class="flex flex-col py-0.5">
@@ -64,10 +64,39 @@
             'wght' 300;
         "
         title="New Collection"
-        (click)="openCreateRootCollection()"
+        (click)="$event.stopPropagation(); openCreateRootCollection()"
         >add</span
       >
       <ul class="flex-1 overflow-auto flex flex-col py-0.5">
+        @if (isCreating && pendingParentId === 0) {
+          <li>
+            <a class="flex items-center pr-3 py-1 text-xs font-normal" style="padding-left: 14px">
+              <span
+                class="material-symbols-outlined icon-sm mr-1"
+                [style.color]="'var(--text-muted)'"
+                style="
+                  font-variation-settings:
+                    'opsz' 20,
+                    'wght' 300;
+                "
+                >chevron_right</span
+              >
+              <input
+                class="border rounded px-1 w-full outline-none text-xs"
+                [style.background-color]="'var(--input-bg)'"
+                [style.border-color]="'var(--input-border)'"
+                [style.color]="'var(--text-primary)'"
+                [(ngModel)]="creatingTitle"
+                (blur)="saveCreating()"
+                (keydown.enter)="saveCreating()"
+                (keydown.escape)="cancelCreating()"
+                (click)="$event.stopPropagation()"
+                placeholder="Collection name"
+                appAutofocus
+              />
+            </a>
+          </li>
+        }
         <ng-container *ngTemplateOutlet="subtree; context: { $implicit: tree(), level: 0 }" />
         <li
           class="flex-1 min-h-6"
@@ -142,8 +171,37 @@
               {{ node.collection.title }}
             }
           </a>
-          @if (node.children.length && isExpanded(node.collection.id)) {
+          @if ((node.children.length && isExpanded(node.collection.id)) || (isCreating && pendingParentId === node.collection.id)) {
             <ul>
+              @if (isCreating && pendingParentId === node.collection.id) {
+                <li>
+                  <a class="flex items-center pr-3 py-1 text-xs font-normal" [style.padding-left.px]="14 + (level + 1) * 14">
+                    <span
+                      class="material-symbols-outlined icon-sm mr-1"
+                      [style.color]="'var(--text-muted)'"
+                      style="
+                        font-variation-settings:
+                          'opsz' 20,
+                          'wght' 300;
+                      "
+                      >chevron_right</span
+                    >
+                    <input
+                      class="border rounded px-1 w-full outline-none text-xs"
+                      [style.background-color]="'var(--input-bg)'"
+                      [style.border-color]="'var(--input-border)'"
+                      [style.color]="'var(--text-primary)'"
+                      [(ngModel)]="creatingTitle"
+                      (blur)="saveCreating()"
+                      (keydown.enter)="saveCreating()"
+                      (keydown.escape)="cancelCreating()"
+                      (click)="$event.stopPropagation()"
+                      placeholder="Collection name"
+                      appAutofocus
+                    />
+                  </a>
+                </li>
+              }
               <ng-container *ngTemplateOutlet="subtree; context: { $implicit: node.children, level: level + 1 }" />
             </ul>
           }
@@ -158,16 +216,6 @@
         [items]="contextMenuItems"
         (menuSelect)="onContextMenuSelect($event)"
         (menuClose)="closeContextMenu()"
-      />
-    }
-
-    @if (showCollectionDialog) {
-      <app-prompt-dialog
-        title="New Collection"
-        placeholder="Collection name"
-        confirmText="Create"
-        (confirmed)="onCollectionConfirmed($event)"
-        (cancelled)="onCollectionCancelled()"
       />
     }
 

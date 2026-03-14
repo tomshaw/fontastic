@@ -1,0 +1,19 @@
+{
+  "last-release-sha": "f4d4a7fa3de1e1516d1b8eb0cd04f0df00d24c0c",
+  "packages": {
+    ".": {
+      "release-type": "php",
+      "changelog-sections": [
+        { "type": "feat", "section": "🎉 Features", "hidden": false },
+        { "type": "fix", "section": "🛠️ Fixes", "hidden": false },
+        { "type": "docs", "section": "📄 Documentation", "hidden": false },
+        { "type": "perf", "section": "⚡ Performance", "hidden": false },
+        { "type": "refactor", "section": "🏗️ Refactor", "hidden": false },
+        { "type": "chore", "section": "♻️ Chores", "hidden": true },
+        { "type": "test", "section": "♻️ Chores", "hidden": true },
+        { "type": "build", "section": "⚙️ Automation", "hidden": true },
+        { "type": "ci", "section": "⚙️ Automation", "hidden": true }
+      ]
+    }
+  }
+}

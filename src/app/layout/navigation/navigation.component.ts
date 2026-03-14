@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DatabaseService, MessageService, PresentationService } from '../../core/services';
 import { CollapsiblePanelComponent } from '../../shared/components/collapsible-panel/collapsible-panel.component';
 import { ContextMenuComponent, ContextMenuItem } from '../../shared/components/context-menu/context-menu.component';
-import { PromptDialogComponent, RuleBuilderComponent } from '../../shared/components';
+import { RuleBuilderComponent } from '../../shared/components';
 import { AutofocusDirective } from '../../shared/directives/autofocus/autofocus.directive';
 import { LibraryComponent } from './library/library.component';
 import { NewsStatsComponent } from './stats/stats.component';
@@ -26,7 +26,6 @@ export interface TreeNode {
     FormsModule,
     CollapsiblePanelComponent,
     ContextMenuComponent,
-    PromptDialogComponent,
     RuleBuilderComponent,
     AutofocusDirective,
     LibraryComponent,
@@ -72,7 +71,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   editingTitle = '';
   allExpanded = false;
 
-  showCollectionDialog = false;
+  isCreating = false;
+  creatingTitle = '';
   pendingParentId: number | null = null;
 
   // Smart Collection state
@@ -256,7 +256,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
     switch (action) {
       case 'add-collection':
         this.pendingParentId = collection.id;
-        this.showCollectionDialog = true;
+        this.isCreating = true;
+        this.creatingTitle = '';
+        this.presentation.expandNavigationId(collection.id);
         break;
       case 'add-fonts':
         this.handleAddFonts(collection);
@@ -273,17 +275,24 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   openCreateRootCollection() {
     this.pendingParentId = 0;
-    this.showCollectionDialog = true;
+    this.isCreating = true;
+    this.creatingTitle = '';
   }
 
-  onCollectionConfirmed(name: string) {
-    this.db.collectionCreate({ title: name, parentId: this.pendingParentId });
-    this.showCollectionDialog = false;
-    this.pendingParentId = null;
+  saveCreating() {
+    const title = this.creatingTitle.trim();
+    if (title) {
+      this.db.collectionCreate({ title, parentId: this.pendingParentId });
+      if (this.pendingParentId) {
+        this.presentation.expandNavigationId(this.pendingParentId);
+      }
+    }
+    this.cancelCreating();
   }
 
-  onCollectionCancelled() {
-    this.showCollectionDialog = false;
+  cancelCreating() {
+    this.isCreating = false;
+    this.creatingTitle = '';
     this.pendingParentId = null;
   }
 
