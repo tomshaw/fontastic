@@ -133,6 +133,13 @@ export class PresentationService {
 
   readonly selectedGlyph = signal<number | null>(null);
 
+  readonly createRootCollectionRequest = signal(0);
+
+  requestCreateRootCollection() {
+    this.navigationEnabled.set(true);
+    this.createRootCollectionRequest.update((v) => v + 1);
+  }
+
   readonly navigationExpandedIds = signal<number[]>([]);
 
   readonly gridEnabled = signal(true);

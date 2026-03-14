@@ -106,13 +106,3 @@
     </div>
   </div>
 </header>
-
-@if (showCollectionDialog) {
-  <app-prompt-dialog
-    title="New Collection"
-    placeholder="Collection name"
-    confirmText="Create"
-    (confirmed)="onCollectionConfirmed($event)"
-    (cancelled)="onCollectionCancelled()"
-  />
-}

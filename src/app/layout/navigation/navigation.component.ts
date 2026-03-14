@@ -1,4 +1,4 @@
-import { Component, inject, computed, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, computed, effect, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService, MessageService, PresentationService } from '../../core/services';
@@ -37,6 +37,15 @@ export class NavigationComponent implements OnInit, OnDestroy {
   readonly db = inject(DatabaseService);
   private message = inject(MessageService);
   private presentation = inject(PresentationService);
+
+  constructor() {
+    effect(() => {
+      const req = this.presentation.createRootCollectionRequest();
+      if (req > 0) {
+        this.openCreateRootCollection();
+      }
+    });
+  }
 
   private menuToggleListener = (_event: any, panel: string) => {
     if (panel === 'expand-collections') {
