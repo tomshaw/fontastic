@@ -1,8 +1,9 @@
 {
-  "last-release-sha": "f4d4a7fa3de1e1516d1b8eb0cd04f0df00d24c0c",
+  "last-release-sha": "c7f3f9afba466a150f90e374f8a401daf1a56d11",
   "packages": {
     ".": {
-      "release-type": "php",
+      "release-type": "node",
+      "extra-files": ["app/package.json"],
       "changelog-sections": [
         { "type": "feat", "section": "🎉 Features", "hidden": false },
         { "type": "fix", "section": "🛠️ Fixes", "hidden": false },
