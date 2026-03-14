@@ -1,6 +1,6 @@
 {
   "name": "fontastic",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Fontastic is an Electron-based font management and cataloging application built for organizing, browsing, and inspecting font libraries.",
   "homepage": "https://github.com/tomshaw/fontastic",
   "private": false,
