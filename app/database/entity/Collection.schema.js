@@ -21,63 +21,63 @@ __decorate([
 ], Collection.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        length: 100
+        length: 100,
     }),
     __metadata("design:type", String)
 ], Collection.prototype, "title", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "int",
-        default: 0
+        type: 'int',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], Collection.prototype, "parent_id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], Collection.prototype, "left_id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], Collection.prototype, "right_id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], Collection.prototype, "count", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], Collection.prototype, "is_system", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Number)
 ], Collection.prototype, "orderby", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Boolean)
 ], Collection.prototype, "enabled", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: "smallint",
-        default: 0
+        type: 'smallint',
+        default: 0,
     }),
     __metadata("design:type", Boolean)
 ], Collection.prototype, "collapsed", void 0);

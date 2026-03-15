@@ -1,5 +1,5 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" (click)="cancel()">
-  <div class="card mb-0 w-[480px]" style="box-shadow: var(--context-shadow)" (click)="$event.stopPropagation()">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" appModalBackdrop (backdropClick)="cancel()">
+  <div class="card mb-0 w-[480px]" style="box-shadow: var(--context-shadow)">
     <div class="card-header">
       <div class="card-title">
         <h3>{{ title }}</h3>

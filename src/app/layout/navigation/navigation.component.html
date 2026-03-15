@@ -16,7 +16,8 @@
             'wght' 300;
         "
         title="New Smart Collection"
-        (click)="$event.stopPropagation(); openCreateSmartCollection()"
+        appStopPropagation
+        (click)="openCreateSmartCollection()"
         >add</span
       >
       <ul class="flex flex-col py-0.5">
@@ -24,13 +25,12 @@
           <li>
             <a
               class="flex items-center px-3 py-1 text-xs font-normal cursor-pointer transition-colors"
-              [style.background-color]="isSmartSelected(sc) ? 'var(--selected-bg)' : 'transparent'"
-              [style.color]="isSmartSelected(sc) ? 'var(--text-primary)' : 'inherit'"
+              [appHoverHighlight]="isSmartSelected(sc)"
+              selectedColor="var(--text-primary)"
+              normalColor="inherit"
               (click)="selectSmartCollection(sc)"
               (dblclick)="editSmartCollection(sc)"
               (contextmenu)="onSmartContextMenu($event, sc)"
-              (mouseenter)="$any($event.target).style.backgroundColor = isSmartSelected(sc) ? 'var(--selected-bg)' : 'var(--hover-bg)'"
-              (mouseleave)="$any($event.target).style.backgroundColor = isSmartSelected(sc) ? 'var(--selected-bg)' : 'transparent'"
             >
               <span
                 class="material-symbols-outlined icon-sm mr-1"
@@ -64,7 +64,8 @@
             'wght' 300;
         "
         title="New Collection"
-        (click)="$event.stopPropagation(); openCreateRootCollection()"
+        appStopPropagation
+        (click)="openCreateRootCollection()"
         >add</span
       >
       <ul class="flex-1 overflow-auto flex flex-col py-0.5">
@@ -90,7 +91,7 @@
                 (blur)="saveCreating()"
                 (keydown.enter)="saveCreating()"
                 (keydown.escape)="cancelCreating()"
-                (click)="$event.stopPropagation()"
+                appStopPropagation
                 placeholder="Collection name"
                 appAutofocus
               />
@@ -164,7 +165,7 @@
                 (blur)="saveEditing(node.collection.id)"
                 (keydown.enter)="saveEditing(node.collection.id)"
                 (keydown.escape)="cancelEditing()"
-                (click)="$event.stopPropagation()"
+                appStopPropagation
                 appAutofocus
               />
             } @else {
@@ -195,7 +196,7 @@
                       (blur)="saveCreating()"
                       (keydown.enter)="saveCreating()"
                       (keydown.escape)="cancelCreating()"
-                      (click)="$event.stopPropagation()"
+                      appStopPropagation
                       placeholder="Collection name"
                       appAutofocus
                     />

@@ -17,8 +17,7 @@
           <button
             class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
             [style.color]="'var(--text-secondary)'"
-            [disabled]="currentPage() === 1"
-            [class.opacity-30]="currentPage() === 1"
+            [appDisabledOpacity]="currentPage() === 1"
             (click)="currentPage.set(1)"
           >
             <span
@@ -34,8 +33,7 @@
           <button
             class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
             [style.color]="'var(--text-secondary)'"
-            [disabled]="currentPage() === 1"
-            [class.opacity-30]="currentPage() === 1"
+            [appDisabledOpacity]="currentPage() === 1"
             (click)="currentPage.set(currentPage() - 1)"
           >
             <span
@@ -52,8 +50,7 @@
           <button
             class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
             [style.color]="'var(--text-secondary)'"
-            [disabled]="currentPage() === totalPages()"
-            [class.opacity-30]="currentPage() === totalPages()"
+            [appDisabledOpacity]="currentPage() === totalPages()"
             (click)="currentPage.set(currentPage() + 1)"
           >
             <span
@@ -69,8 +66,7 @@
           <button
             class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
             [style.color]="'var(--text-secondary)'"
-            [disabled]="currentPage() === totalPages()"
-            [class.opacity-30]="currentPage() === totalPages()"
+            [appDisabledOpacity]="currentPage() === totalPages()"
             (click)="currentPage.set(totalPages())"
           >
             <span
@@ -117,16 +113,10 @@
             <div
               class="flex flex-col items-center justify-center rounded aspect-square cursor-pointer transition-colors"
               [style.border]="selectedGlyph() === codePoint ? '1px solid var(--selected-border)' : '1px solid var(--border-subtle)'"
-              [style.background-color]="selectedGlyph() === codePoint ? 'var(--selected-bg)' : 'transparent'"
+              [appHoverHighlight]="selectedGlyph() === codePoint"
               [title]="'U+' + codePoint.toString(16).toUpperCase().padStart(4, '0')"
               [style.font-family]="fontFamily()"
               (click)="selectedGlyph.set(codePoint)"
-              (mouseenter)="
-                $any($event.currentTarget).style.backgroundColor = selectedGlyph() === codePoint ? 'var(--selected-bg)' : 'var(--hover-bg)'
-              "
-              (mouseleave)="
-                $any($event.currentTarget).style.backgroundColor = selectedGlyph() === codePoint ? 'var(--selected-bg)' : 'transparent'
-              "
             >
               <span class="text-lg leading-none" [style.color]="'var(--text-primary)'">{{ toChar(codePoint) }}</span>
             </div>

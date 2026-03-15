@@ -68,11 +68,7 @@ exports.CollectionRepository = {
     },
     updateCollectionCounts(items) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield Promise.all(items.map((item) => this.createQueryBuilder()
-                .update(entity_1.Collection)
-                .set({ count: item.total })
-                .where('id = :id', { id: item.collection_id })
-                .execute()));
+            yield Promise.all(items.map((item) => this.createQueryBuilder().update(entity_1.Collection).set({ count: item.total }).where('id = :id', { id: item.collection_id }).execute()));
         });
     },
     updateCollection(collectionId, data) {

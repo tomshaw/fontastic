@@ -29,10 +29,7 @@ class Application {
             const menuBuilder = new MenuBuilder_1.default(this.mainWindow, this.isProduction);
             const connectionManager = new ConnectionManager_1.default(configManager);
             // Initialize menu and database connection in parallel — menu doesn't depend on DB
-            yield Promise.all([
-                connectionManager.initialize(),
-                Promise.resolve(menuBuilder.initialize()),
-            ]);
+            yield Promise.all([connectionManager.initialize(), Promise.resolve(menuBuilder.initialize())]);
             const fontManager = new FontManager_1.default(systemManager, configManager, connectionManager);
             const messageHandler = new MessageHandler_1.default(systemManager, configManager, connectionManager, fontManager);
             messageHandler.initialize();

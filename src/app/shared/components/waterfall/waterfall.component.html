@@ -67,9 +67,7 @@
           class="px-2 py-0.5 rounded cursor-pointer text-[10px] transition-colors"
           [style.color]="'var(--text-secondary)'"
           [style.border]="'1px solid var(--border-default)'"
-          [style.background-color]="'transparent'"
-          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
-          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'transparent'"
+          [appHoverHighlight]="false"
           (click)="resetScale()"
           title="Reset scale"
         >

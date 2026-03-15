@@ -1,11 +1,14 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
 import { DatabaseService, PresentationService } from '../../../core/services';
+import { DisabledOpacityDirective } from '../../directives/disabled-opacity/disabled-opacity.directive';
+import { HoverHighlightDirective } from '../../directives/hover-highlight/hover-highlight.directive';
 
 const PAGE_SIZE = 200;
 
 @Component({
   selector: 'app-glyphs',
   standalone: true,
+  imports: [HoverHighlightDirective, DisabledOpacityDirective],
   templateUrl: './glyphs.component.html',
 })
 export class GlyphsComponent {

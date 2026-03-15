@@ -6,6 +6,8 @@ import { CollapsiblePanelComponent } from '../../shared/components/collapsible-p
 import { ContextMenuComponent, ContextMenuItem } from '../../shared/components/context-menu/context-menu.component';
 import { RuleBuilderComponent } from '../../shared/components';
 import { AutofocusDirective } from '../../shared/directives/autofocus/autofocus.directive';
+import { HoverHighlightDirective } from '../../shared/directives/hover-highlight/hover-highlight.directive';
+import { StopPropagationDirective } from '../../shared/directives/stop-propagation/stop-propagation.directive';
 import { LibraryComponent } from './library/library.component';
 import { NewsStatsComponent } from './stats/stats.component';
 import type { Collection } from '@main/database/entity/Collection.schema';
@@ -28,6 +30,8 @@ export interface TreeNode {
     ContextMenuComponent,
     RuleBuilderComponent,
     AutofocusDirective,
+    HoverHighlightDirective,
+    StopPropagationDirective,
     LibraryComponent,
     NewsStatsComponent,
   ],

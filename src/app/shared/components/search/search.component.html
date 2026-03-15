@@ -26,9 +26,7 @@
         <button
           class="px-2 py-0.5 rounded cursor-pointer text-[10px] transition-colors"
           [style.color]="'var(--text-secondary)'"
-          [style.background-color]="'transparent'"
-          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
-          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'transparent'"
+          [appHoverHighlight]="false"
           (click)="onReset()"
         >
           Clear
@@ -64,15 +62,7 @@
               <label
                 class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
                 [style.color]="'var(--text-secondary)'"
-                [style.background-color]="isSearchFieldSelected(sf.value) ? 'var(--selected-bg)' : 'transparent'"
-                (mouseenter)="
-                  $any($event.currentTarget).style.backgroundColor = isSearchFieldSelected(sf.value)
-                    ? 'var(--selected-bg)'
-                    : 'var(--hover-bg)'
-                "
-                (mouseleave)="
-                  $any($event.currentTarget).style.backgroundColor = isSearchFieldSelected(sf.value) ? 'var(--selected-bg)' : 'transparent'
-                "
+                [appHoverHighlight]="isSearchFieldSelected(sf.value)"
               >
                 <input
                   type="checkbox"
@@ -96,15 +86,7 @@
                 <label
                   class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
                   [style.color]="'var(--text-secondary)'"
-                  [style.background-color]="isFileTypeSelected(ft.value) ? 'var(--selected-bg)' : 'transparent'"
-                  (mouseenter)="
-                    $any($event.currentTarget).style.backgroundColor = isFileTypeSelected(ft.value)
-                      ? 'var(--selected-bg)'
-                      : 'var(--hover-bg)'
-                  "
-                  (mouseleave)="
-                    $any($event.currentTarget).style.backgroundColor = isFileTypeSelected(ft.value) ? 'var(--selected-bg)' : 'transparent'
-                  "
+                  [appHoverHighlight]="isFileTypeSelected(ft.value)"
                 >
                   <input
                     type="checkbox"
@@ -125,9 +107,7 @@
               <label
                 class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
                 [style.color]="'var(--text-secondary)'"
-                [style.background-color]="favoritesOnly ? 'var(--selected-bg)' : 'transparent'"
-                (mouseenter)="$any($event.currentTarget).style.backgroundColor = favoritesOnly ? 'var(--selected-bg)' : 'var(--hover-bg)'"
-                (mouseleave)="$any($event.currentTarget).style.backgroundColor = favoritesOnly ? 'var(--selected-bg)' : 'transparent'"
+                [appHoverHighlight]="favoritesOnly"
               >
                 <input type="checkbox" class="accent-current" [(ngModel)]="favoritesOnly" />
                 Favorites Only
@@ -135,9 +115,7 @@
               <label
                 class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
                 [style.color]="'var(--text-secondary)'"
-                [style.background-color]="systemOnly ? 'var(--selected-bg)' : 'transparent'"
-                (mouseenter)="$any($event.currentTarget).style.backgroundColor = systemOnly ? 'var(--selected-bg)' : 'var(--hover-bg)'"
-                (mouseleave)="$any($event.currentTarget).style.backgroundColor = systemOnly ? 'var(--selected-bg)' : 'transparent'"
+                [appHoverHighlight]="systemOnly"
               >
                 <input type="checkbox" class="accent-current" [(ngModel)]="systemOnly" />
                 System Fonts Only
@@ -145,9 +123,7 @@
               <label
                 class="flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-[11px] transition-colors"
                 [style.color]="'var(--text-secondary)'"
-                [style.background-color]="installedOnly ? 'var(--selected-bg)' : 'transparent'"
-                (mouseenter)="$any($event.currentTarget).style.backgroundColor = installedOnly ? 'var(--selected-bg)' : 'var(--hover-bg)'"
-                (mouseleave)="$any($event.currentTarget).style.backgroundColor = installedOnly ? 'var(--selected-bg)' : 'transparent'"
+                [appHoverHighlight]="installedOnly"
               >
                 <input type="checkbox" class="accent-current" [(ngModel)]="installedOnly" />
                 Installed Only
@@ -292,11 +268,10 @@
       <div class="flex gap-2 pt-5">
         <button
           class="flex-1 px-3 py-1.5 rounded text-[11px] font-medium cursor-pointer transition-colors"
-          [style.background-color]="'var(--selected-bg)'"
           [style.color]="'var(--text-primary)'"
           [style.border]="'1px solid var(--border-default)'"
-          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
-          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'var(--selected-bg)'"
+          [appHoverHighlight]="false"
+          normalBg="var(--selected-bg)"
           (click)="onSearch()"
         >
           <span class="flex items-center justify-center gap-1">
@@ -316,9 +291,7 @@
           class="px-3 py-1.5 rounded text-[11px] cursor-pointer transition-colors"
           [style.color]="'var(--text-muted)'"
           [style.border]="'1px solid var(--border-subtle)'"
-          [style.background-color]="'transparent'"
-          (mouseenter)="$any($event.currentTarget).style.backgroundColor = 'var(--hover-bg)'"
-          (mouseleave)="$any($event.currentTarget).style.backgroundColor = 'transparent'"
+          [appHoverHighlight]="false"
           (click)="onReset()"
         >
           Reset

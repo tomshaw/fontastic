@@ -1,15 +1,16 @@
-import { Component, inject, effect, ElementRef } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { DatabaseService, MessageService, PresentationService } from '../../../core/services';
+import { ScrollResetDirective } from '../../directives/scroll-reset/scroll-reset.directive';
 
 @Component({
   selector: 'app-preview',
   standalone: true,
+  imports: [ScrollResetDirective],
   templateUrl: './preview.component.html',
 })
 export class PreviewComponent {
   readonly db = inject(DatabaseService);
   readonly presentation = inject(PresentationService);
-  private el = inject(ElementRef);
   private messageService = inject(MessageService);
 
   private registeredFonts = new Set<string>();
@@ -20,12 +21,6 @@ export class PreviewComponent {
       if (stores) {
         stores.forEach((store) => this.registerFont(store));
       }
-    });
-
-    effect(() => {
-      this.db.currentPage();
-      const scrollable = this.el.nativeElement.querySelector('.scrollbox-y');
-      scrollable?.scrollTo(0, 0);
     });
   }
 

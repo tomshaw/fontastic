@@ -297,11 +297,7 @@ exports.StoreRepository = {
             if (item.version && item.version !== '') {
                 data.version = item.version;
             }
-            return yield this.createQueryBuilder()
-                .insert()
-                .into(entity_1.Store)
-                .values(data)
-                .execute();
+            return yield this.createQueryBuilder().insert().into(entity_1.Store).values(data).execute();
         });
     },
     evaluateSmartRules(rules_1, matchType_1) {

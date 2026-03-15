@@ -1,5 +1,5 @@
 <div class="panel grid" [style.grid-template-rows]="db.totalPages() > 1 ? '1fr 32px' : '1fr'">
-  <div class="overflow-hidden scrollbox-y">
+  <div class="overflow-hidden scrollbox-y" [appScrollReset]="db.currentPage()">
     <table class="w-full border-separate border-spacing-0">
       <thead
         class="sticky top-0 z-10"
@@ -44,14 +44,8 @@
             class="cursor-pointer transition-colors"
             [style.border-bottom]="'1px solid var(--border-subtle)'"
             [id]="'grid-store-' + store.id"
-            [style.background-color]="db.storeId() === store.id ? 'var(--selected-bg)' : 'transparent'"
+            [appHoverHighlight]="db.storeId() === store.id"
             (click)="selectStore(store.id)"
-            (mouseenter)="
-              $any($event.currentTarget).style.backgroundColor = db.storeId() === store.id ? 'var(--selected-bg)' : 'var(--hover-bg)'
-            "
-            (mouseleave)="
-              $any($event.currentTarget).style.backgroundColor = db.storeId() === store.id ? 'var(--selected-bg)' : 'transparent'
-            "
           >
             <td class="w-10 px-2 py-1.5 text-center">
               <span
@@ -60,7 +54,8 @@
                 [style.background]="
                   db.storeId() === store.id ? 'radial-gradient(circle, var(--accent) 40%, transparent 41%)' : 'transparent'
                 "
-                (click)="$event.stopPropagation(); selectStore(store.id)"
+                appStopPropagation
+                (click)="selectStore(store.id)"
               ></span>
             </td>
             <td class="px-4 py-1.5" [style.color]="'var(--text-primary)'">{{ store.full_name || store.file_name }}</td>
@@ -121,8 +116,7 @@
         <button
           class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
           [style.color]="'var(--text-secondary)'"
-          [disabled]="db.currentPage() === 1"
-          [class.opacity-30]="db.currentPage() === 1"
+          [appDisabledOpacity]="db.currentPage() === 1"
           (click)="db.firstPage()"
         >
           <span
@@ -138,8 +132,7 @@
         <button
           class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
           [style.color]="'var(--text-secondary)'"
-          [disabled]="db.currentPage() === 1"
-          [class.opacity-30]="db.currentPage() === 1"
+          [appDisabledOpacity]="db.currentPage() === 1"
           (click)="db.prevPage()"
         >
           <span
@@ -156,8 +149,7 @@
         <button
           class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
           [style.color]="'var(--text-secondary)'"
-          [disabled]="db.currentPage() === db.totalPages()"
-          [class.opacity-30]="db.currentPage() === db.totalPages()"
+          [appDisabledOpacity]="db.currentPage() === db.totalPages()"
           (click)="db.nextPage()"
         >
           <span
@@ -173,8 +165,7 @@
         <button
           class="px-1 py-0.5 rounded cursor-pointer disabled:cursor-default transition-colors"
           [style.color]="'var(--text-secondary)'"
-          [disabled]="db.currentPage() === db.totalPages()"
-          [class.opacity-30]="db.currentPage() === db.totalPages()"
+          [appDisabledOpacity]="db.currentPage() === db.totalPages()"
           (click)="db.lastPage()"
         >
           <span

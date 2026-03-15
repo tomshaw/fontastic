@@ -1,5 +1,5 @@
 <div class="panel">
-  <div class="h-full scrollbox-y flex flex-col gap-3 p-4">
+  <div class="h-full scrollbox-y flex flex-col gap-3 p-4" [appScrollReset]="db.currentPage()">
     @for (store of db.stores(); track store.id; let last = $last) {
       <div
         [class.border-b]="!last"

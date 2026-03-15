@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ModalBackdropDirective } from '../../directives/modal-backdrop/modal-backdrop.directive';
 
 @Component({
   selector: 'app-prompt-dialog',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, ModalBackdropDirective],
   templateUrl: './prompt-dialog.component.html',
 })
 export class PromptDialogComponent implements AfterViewInit {

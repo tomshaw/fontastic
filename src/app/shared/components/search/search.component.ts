@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService, PresentationService } from '../../../core/services';
+import { HoverHighlightDirective } from '../../directives/hover-highlight/hover-highlight.directive';
 import type { Collection } from '@main/database/entity/Collection.schema';
 
 const FILE_TYPES = [
@@ -45,7 +46,7 @@ const SORT_OPTIONS = [
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, HoverHighlightDirective],
   templateUrl: './search.component.html',
 })
 export class SearchComponent {

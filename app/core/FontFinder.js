@@ -13,8 +13,8 @@ const FontObject_1 = require("./FontObject");
 const fs = require("fs/promises");
 const path = require("path");
 const mimes_1 = require("../config/mimes");
-const prettyBytes = require("pretty-bytes");
-const mime = require("mime");
+const prettyBytes = require('pretty-bytes');
+const mime = require('mime');
 const SCAN_CONCURRENCY = 10;
 class FontFinder {
     constructor(connectionManager) {

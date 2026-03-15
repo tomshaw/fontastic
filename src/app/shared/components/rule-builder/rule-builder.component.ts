@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ModalBackdropDirective } from '../../directives/modal-backdrop/modal-backdrop.directive';
 import type { SmartCollection } from '@main/database/entity/SmartCollection.schema';
 import type { SmartCollectionRule } from '@main/types';
 
@@ -65,7 +66,7 @@ const OPERATORS_BY_TYPE: Record<string, { value: string; label: string }[]> = {
 @Component({
   selector: 'app-rule-builder',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, ModalBackdropDirective],
   templateUrl: './rule-builder.component.html',
 })
 export class RuleBuilderComponent implements OnInit {

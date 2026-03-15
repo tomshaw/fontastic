@@ -1,6 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService, PresentationService } from '../../../core/services';
+import { HoverHighlightDirective } from '../../directives/hover-highlight/hover-highlight.directive';
 import { fontTypeScale } from '@main/config/system';
 
 interface ScaleItem {
@@ -14,7 +15,7 @@ interface ScaleItem {
 @Component({
   selector: 'app-waterfall',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, HoverHighlightDirective],
   templateUrl: './waterfall.component.html',
 })
 export class WaterfallComponent {
