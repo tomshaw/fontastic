@@ -1,5 +1,5 @@
 <div class="panel">
-  <div class="flex items-center px-2 gap-2">
+  <div class="h-full flex items-center px-2 gap-2">
     <app-spinner [animating]="presentation.loading()" />
     @if (presentation.scanProgress(); as progress) {
       <span class="text-[10px] truncate" [style.color]="'var(--text-muted)'">
