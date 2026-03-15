@@ -110,10 +110,13 @@ export const CollectionRepository = {
   },
 
   async createParent(title: string) {
-    const data = await this.createQueryBuilder()
-      .select('MAX(collection.right_id)', 'right_id')
-      .addSelect('MAX(collection.orderby)', 'orderby')
-      .getRawOne();
+    const data = await this.createQueryBuilder().select('MAX(collection.right_id)', 'right_id').getRawOne();
+
+    await this.createQueryBuilder()
+      .update(Collection)
+      .set({ orderby: () => 'orderby + 1' })
+      .where({ parent_id: 0 })
+      .execute();
 
     return await this.createQueryBuilder()
       .insert()
@@ -123,7 +126,7 @@ export const CollectionRepository = {
         parent_id: 0,
         left_id: data.right_id + 1,
         right_id: data.right_id + 2,
-        orderby: data.orderby + 1,
+        orderby: 0,
       })
       .execute();
   },
@@ -143,6 +146,12 @@ export const CollectionRepository = {
       .where({ left_id: LessThanOrEqual(row.left_id), right_id: MoreThanOrEqual(row.left_id) })
       .execute();
 
+    await this.createQueryBuilder()
+      .update(Collection)
+      .set({ orderby: () => 'orderby + 1' })
+      .where({ parent_id: parentId })
+      .execute();
+
     return await this.createQueryBuilder()
       .insert()
       .into(Collection)
@@ -151,7 +160,7 @@ export const CollectionRepository = {
         parent_id: parentId,
         left_id: row.right_id,
         right_id: row.right_id + 1,
-        orderby: row.orderby + 1,
+        orderby: 0,
       })
       .execute();
   },
