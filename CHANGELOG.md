@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.3.0](https://github.com/tomshaw/fontastic/compare/fontastic-v1.2.0...fontastic-v1.3.0) (2026-03-15)
+
+
+### 🎉 Features
+
+* add smart collection preview functionality and enhance rule builder component ([436b162](https://github.com/tomshaw/fontastic/commit/436b16242ddae4eaaff3279d749b70dc79c9098c))
+* enhance application with secure storage and scan progress features ([7a2576b](https://github.com/tomshaw/fontastic/commit/7a2576b5484ce3d8ce1c06171f60608b43c3e42b))
+
+
+### 🛠️ Fixes
+
+* add height class to footer layout for improved display ([10da788](https://github.com/tomshaw/fontastic/commit/10da78803ba3ccec3cf9f76646a896a013a8935f))
+* adjust collection order handling in createParent and createChild methods ([3c9a0c4](https://github.com/tomshaw/fontastic/commit/3c9a0c4e2062a3c8a36b32f71193b01ddc57073e))
+* refactor footer component layout and enhance version handling ([dc0475e](https://github.com/tomshaw/fontastic/commit/dc0475ed4c67a326a7710894d9145731a7909b5d))
+* update collection order handling in createParent and createChild methods ([ce855d0](https://github.com/tomshaw/fontastic/commit/ce855d0664ab391fd15fed0bbffd16568a019699))
+* update footer layout to use grid for improved structure and responsiveness ([b2a4dac](https://github.com/tomshaw/fontastic/commit/b2a4dac434f9ea732180f32477854905c0fa80fb))
+
+
+### 🏗️ Refactor
+
+* standardize string quotes and improve code readability ([f352ddb](https://github.com/tomshaw/fontastic/commit/f352ddb248e6c7dc1e566917ebf57ebabdde3531))
+
 ## [1.2.0](https://github.com/tomshaw/fontastic/compare/fontastic-v1.1.0...fontastic-v1.2.0) (2026-03-14)
 
 
