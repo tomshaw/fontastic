@@ -103,10 +103,12 @@ exports.CollectionRepository = {
     },
     createParent(title) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.createQueryBuilder()
-                .select('MAX(collection.right_id)', 'right_id')
-                .addSelect('MAX(collection.orderby)', 'orderby')
-                .getRawOne();
+            const data = yield this.createQueryBuilder().select('MAX(collection.right_id)', 'right_id').getRawOne();
+            yield this.createQueryBuilder()
+                .update(entity_1.Collection)
+                .set({ orderby: () => 'orderby + 1' })
+                .where({ parent_id: 0 })
+                .execute();
             return yield this.createQueryBuilder()
                 .insert()
                 .into(entity_1.Collection)
@@ -115,7 +117,7 @@ exports.CollectionRepository = {
                 parent_id: 0,
                 left_id: data.right_id + 1,
                 right_id: data.right_id + 2,
-                orderby: data.orderby + 1,
+                orderby: 0,
             })
                 .execute();
         });
@@ -133,6 +135,11 @@ exports.CollectionRepository = {
                 .set({ right_id: () => 'right_id + 2' })
                 .where({ left_id: (0, typeorm_1.LessThanOrEqual)(row.left_id), right_id: (0, typeorm_1.MoreThanOrEqual)(row.left_id) })
                 .execute();
+            yield this.createQueryBuilder()
+                .update(entity_1.Collection)
+                .set({ orderby: () => 'orderby + 1' })
+                .where({ parent_id: parentId })
+                .execute();
             return yield this.createQueryBuilder()
                 .insert()
                 .into(entity_1.Collection)
@@ -141,7 +148,7 @@ exports.CollectionRepository = {
                 parent_id: parentId,
                 left_id: row.right_id,
                 right_id: row.right_id + 1,
-                orderby: row.orderby + 1,
+                orderby: 0,
             })
                 .execute();
         });
