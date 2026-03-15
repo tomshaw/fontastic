@@ -1,5 +1,5 @@
-<div class="panel">
-  <div class="h-full flex items-center px-2 gap-2">
+<div class="panel grid w-full h-full" [style.grid-template-columns]="'var(--panel-width) 1fr var(--panel-width)'">
+  <div class="h-full w-full flex items-center px-2 gap-2">
     <app-spinner [animating]="presentation.loading()" />
     @if (presentation.scanProgress(); as progress) {
       <span class="text-[10px] truncate" [style.color]="'var(--text-muted)'">
@@ -7,4 +7,6 @@
       </span>
     }
   </div>
+  <div class="h-full w-full flex items-center"></div>
+  <div class="h-full w-full flex items-center justify-end"></div>
 </div>
