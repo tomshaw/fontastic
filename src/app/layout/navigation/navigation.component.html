@@ -234,6 +234,7 @@
       <app-rule-builder
         [smartCollection]="editingSmartCollection"
         (saved)="onRuleBuilderSaved($event)"
+        (savedAndSync)="onRuleBuilderSavedAndSync($event)"
         (cancelled)="onRuleBuilderCancelled()"
       />
     }

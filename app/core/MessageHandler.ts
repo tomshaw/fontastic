@@ -264,6 +264,16 @@ export default class MessageHandler {
       });
     });
 
+    this.handle(ChannelType.IPC_SMART_COLLECTION_PREVIEW, async (_event: IpcMainEvent, args: any) => {
+      let rules;
+      try {
+        rules = typeof args.rules === 'string' ? JSON.parse(args.rules) : args.rules;
+      } catch {
+        return [[], 0];
+      }
+      return await this.connectionManager.getStoreRepository().evaluateSmartRules(rules, args.match_type ?? 'AND', {});
+    });
+
     // Store
 
     this.handle(ChannelType.IPC_STORE_FIND, async (_event: IpcMainEvent, args: any) => {

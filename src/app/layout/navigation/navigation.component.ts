@@ -480,6 +480,37 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.editingSmartCollection = null;
   }
 
+  onRuleBuilderSavedAndSync(data: { title: string; rules: SmartCollectionRule[]; match_type: string }) {
+    const rulesJson = JSON.stringify(data.rules);
+    if (this.editingSmartCollection) {
+      const id = this.editingSmartCollection.id;
+      this.db
+        .smartCollectionUpdate(id, {
+          title: data.title,
+          rules: rulesJson,
+          match_type: data.match_type,
+        })
+        .then(() => {
+          this.db.selectSmartCollection(id);
+        });
+    } else {
+      this.db
+        .smartCollectionCreate({
+          title: data.title,
+          rules: rulesJson,
+          match_type: data.match_type,
+        })
+        .then((collections) => {
+          const created = collections.find((c) => c.title === data.title);
+          if (created) {
+            this.db.selectSmartCollection(created.id);
+          }
+        });
+    }
+    this.showRuleBuilder = false;
+    this.editingSmartCollection = null;
+  }
+
   onRuleBuilderCancelled() {
     this.showRuleBuilder = false;
     this.editingSmartCollection = null;

@@ -205,6 +205,17 @@ class MessageHandler {
                 order: args.order,
             });
         }));
+        this.handle(ChannelType_1.ChannelType.IPC_SMART_COLLECTION_PREVIEW, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            let rules;
+            try {
+                rules = typeof args.rules === 'string' ? JSON.parse(args.rules) : args.rules;
+            }
+            catch (_b) {
+                return [[], 0];
+            }
+            return yield this.connectionManager.getStoreRepository().evaluateSmartRules(rules, (_a = args.match_type) !== null && _a !== void 0 ? _a : 'AND', {});
+        }));
         // Store
         this.handle(ChannelType_1.ChannelType.IPC_STORE_FIND, (_event, args) => __awaiter(this, void 0, void 0, function* () {
             return yield this.connectionManager.getStore().find(args);

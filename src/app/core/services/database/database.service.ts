@@ -371,6 +371,12 @@ export class DatabaseService {
     );
   }
 
+  smartCollectionPreview(rules: any[], matchType: string): Promise<number> {
+    return this.message.smartCollectionPreview(rules, matchType).then((result) => {
+      return result[1] as number;
+    });
+  }
+
   // Store
 
   storeFind(args: any): Promise<Store[]> {

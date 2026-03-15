@@ -78,15 +78,27 @@
         }
       </div>
 
-      <button class="btn btn-sm btn-default" (click)="addRule()">
-        <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle">add</span>
-        Add Rule
-      </button>
+      <div class="flex items-center justify-between">
+        <button class="btn btn-sm btn-default" (click)="addRule()">
+          <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle">add</span>
+          Add Rule
+        </button>
+        <div class="flex items-center gap-2">
+          @if (previewCount !== null) {
+            <span class="text-xs opacity-70">{{ previewCount }} {{ previewCount === 1 ? 'font' : 'fonts' }} matched</span>
+          }
+          <button class="btn btn-sm btn-default" (click)="preview()" [disabled]="previewing">
+            <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle">search</span>
+            {{ previewing ? 'Checking...' : 'Preview' }}
+          </button>
+        </div>
+      </div>
     </div>
     <div class="card-footer">
       <div></div>
       <div class="card-tools">
         <button class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>
+        <button class="btn btn-sm btn-default" (click)="saveAndSync()">Save & Sync</button>
         <button class="btn btn-sm btn-theme" (click)="save()">Save</button>
       </div>
     </div>

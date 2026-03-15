@@ -236,6 +236,10 @@ export class MessageService {
     return this.invoke<StoreManyAndCountType>(ChannelType.IPC_SMART_COLLECTION_EVALUATE, { id, ...options });
   }
 
+  smartCollectionPreview(rules: any[], matchType: string): Promise<StoreManyAndCountType> {
+    return this.invoke<StoreManyAndCountType>(ChannelType.IPC_SMART_COLLECTION_PREVIEW, { rules, match_type: matchType });
+  }
+
   // Store
 
   storeFind(args: any): Promise<Store[]> {

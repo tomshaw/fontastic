@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModalBackdropDirective } from '../../directives/modal-backdrop/modal-backdrop.directive';
+import { DatabaseService } from '../../../core/services/database/database.service';
 import type { SmartCollection } from '@main/database/entity/SmartCollection.schema';
 import type { SmartCollectionRule } from '@main/types';
 
@@ -72,11 +73,16 @@ const OPERATORS_BY_TYPE: Record<string, { value: string; label: string }[]> = {
 export class RuleBuilderComponent implements OnInit {
   @Input() smartCollection: SmartCollection | null = null;
   @Output() saved = new EventEmitter<{ title: string; rules: SmartCollectionRule[]; match_type: string }>();
+  @Output() savedAndSync = new EventEmitter<{ title: string; rules: SmartCollectionRule[]; match_type: string }>();
   @Output() cancelled = new EventEmitter<void>();
+
+  private db = inject(DatabaseService);
 
   title = '';
   matchType: string = 'AND';
   rules: SmartCollectionRule[] = [];
+  previewCount: number | null = null;
+  previewing = false;
 
   readonly fieldOptions = FIELD_OPTIONS;
 
@@ -115,20 +121,45 @@ export class RuleBuilderComponent implements OnInit {
     } else {
       rule.value = '';
     }
+    this.previewCount = null;
   }
 
   addRule(): void {
     this.rules.push({ field: 'font_family', operator: 'contains', value: '' });
+    this.previewCount = null;
   }
 
   removeRule(index: number): void {
     this.rules.splice(index, 1);
+    this.previewCount = null;
+  }
+
+  preview(): void {
+    if (this.rules.length === 0 || this.previewing) return;
+    this.previewing = true;
+    this.previewCount = null;
+    this.db
+      .smartCollectionPreview(this.rules, this.matchType)
+      .then((count) => {
+        this.previewCount = count;
+        this.previewing = false;
+      })
+      .catch(() => {
+        this.previewCount = null;
+        this.previewing = false;
+      });
   }
 
   save(): void {
     const trimmedTitle = this.title.trim();
     if (!trimmedTitle || this.rules.length === 0) return;
     this.saved.emit({ title: trimmedTitle, rules: this.rules, match_type: this.matchType });
+  }
+
+  saveAndSync(): void {
+    const trimmedTitle = this.title.trim();
+    if (!trimmedTitle || this.rules.length === 0) return;
+    this.savedAndSync.emit({ title: trimmedTitle, rules: this.rules, match_type: this.matchType });
   }
 
   cancel(): void {
