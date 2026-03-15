@@ -1,8 +1,22 @@
-import { app, BrowserWindow, ipcMain, nativeImage, net, protocol, screen } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  nativeImage,
+  nativeTheme,
+  net,
+  powerMonitor,
+  protocol,
+  screen,
+  session,
+  systemPreferences,
+} from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { machineId } from 'node-machine-id';
 import Application from './Application';
+import { ChannelType } from './enums/ChannelType';
+import type { NativeThemeState, SystemPreferencesState } from './types';
 
 app.name = 'Fontastic';
 
@@ -22,6 +36,39 @@ const appReadyPromise = new Promise<void>((resolve) => {
 
 const args = process.argv.slice(1),
   serve = args.some((val) => val === '--serve');
+
+// --- Native Theme ---
+
+function getNativeThemeState(): NativeThemeState {
+  return {
+    shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+    themeSource: nativeTheme.themeSource,
+  };
+}
+
+ipcMain.handle(ChannelType.IPC_GET_NATIVE_THEME, () => getNativeThemeState());
+
+nativeTheme.on('updated', () => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send(ChannelType.IPC_NATIVE_THEME_CHANGED, getNativeThemeState());
+  }
+});
+
+// --- System Preferences ---
+
+function getSystemPreferencesState(): SystemPreferencesState {
+  let reduceMotion = false;
+  if (process.platform === 'darwin') {
+    reduceMotion = systemPreferences.getAnimationSettings().prefersReducedMotion;
+  }
+
+  return {
+    accentColor: systemPreferences.getAccentColor?.() ?? '',
+    reduceMotion,
+  };
+}
+
+ipcMain.handle(ChannelType.IPC_GET_SYSTEM_PREFERENCES, () => getSystemPreferencesState());
 
 function createWindow(): BrowserWindow {
   const size = screen.getPrimaryDisplay().workAreaSize;
@@ -103,6 +150,52 @@ try {
         return new Response('Not found', { status: 404 });
       }
     });
+
+    // --- Session: deny unnecessary permissions ---
+    session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
+      const allowed = ['clipboard-read', 'clipboard-sanitized-write'];
+      callback(allowed.includes(permission));
+    });
+
+    // --- Session: set CSP in production ---
+    if (!serve) {
+      session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+          responseHeaders: {
+            ...details.responseHeaders,
+            'Content-Security-Policy': [
+              "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' font:; img-src 'self' data: https:;",
+            ],
+          },
+        });
+      });
+    }
+
+    // --- Power Monitor ---
+    powerMonitor.on('suspend', () => {
+      if (win && !win.isDestroyed()) {
+        win.webContents.send(ChannelType.IPC_POWER_SUSPEND);
+      }
+    });
+
+    powerMonitor.on('resume', () => {
+      if (win && !win.isDestroyed()) {
+        win.webContents.send(ChannelType.IPC_POWER_RESUME);
+      }
+    });
+
+    powerMonitor.on('shutdown', () => {
+      if (win && !win.isDestroyed()) {
+        win.webContents.send(ChannelType.IPC_POWER_SHUTDOWN);
+      }
+    });
+
+    powerMonitor.on('lock-screen', () => {
+      if (win && !win.isDestroyed()) {
+        win.webContents.send(ChannelType.IPC_POWER_LOCK_SCREEN);
+      }
+    });
+
     setTimeout(createWindow, 400);
   });
 

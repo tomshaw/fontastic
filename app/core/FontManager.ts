@@ -5,7 +5,7 @@ import ConfigManager from './ConfigManager';
 import ConnectionManager from './ConnectionManager';
 
 import FontCatalog from './FontCatalog';
-import FontFinder from './FontFinder';
+import FontFinder, { ProgressCallback } from './FontFinder';
 import { execute } from '../helpers/command';
 
 import { StorageType } from '../enums/StorageType';
@@ -27,7 +27,18 @@ export default class FontManager {
   }
 
   async fetchLatestNews(args: any) {
-    const response = await fetch(args.endpoint);
+    // Retrieve API key securely from main process storage
+    let apiKey = args.apiKey;
+    if (!apiKey) {
+      const secureKey = this.configManager.getSecure('secure.news.apiKey');
+      if (secureKey) {
+        apiKey = secureKey;
+      }
+    }
+    if (!apiKey) return { articles: [] };
+
+    const endpoint = `https://newsapi.org/v2/top-headlines?country=${args.country || 'us'}&apiKey=${apiKey}`;
+    const response = await fetch(endpoint);
     const data = await response.json();
     if (data?.articles) {
       this.configManager.set(StorageType.News, {
@@ -69,13 +80,13 @@ export default class FontManager {
     return dest;
   }
 
-  async scanFiles(files: string[], options: any) {
-    const finder = new FontFinder(this.connectionManager);
+  async scanFiles(files: string[], options: any, onProgress?: ProgressCallback) {
+    const finder = new FontFinder(this.connectionManager, onProgress);
     await finder.scanFiles(files, options);
   }
 
-  async scanFolder(dir: string, options: any) {
-    const finder = new FontFinder(this.connectionManager);
+  async scanFolder(dir: string, options: any, onProgress?: ProgressCallback) {
+    const finder = new FontFinder(this.connectionManager, onProgress);
     await finder.scanFolder(dir, options);
   }
 

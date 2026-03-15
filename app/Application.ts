@@ -32,7 +32,7 @@ export default class Application {
 
     const fontManager = new FontManager(systemManager, configManager, connectionManager);
 
-    const messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager);
+    const messageHandler = new MessageHandler(systemManager, configManager, connectionManager, fontManager, this.mainWindow);
     messageHandler.initialize();
   }
 }

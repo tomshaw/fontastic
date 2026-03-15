@@ -24,4 +24,7 @@ __exportStar(require("./SystemStats"), exports);
 __exportStar(require("./SystemConfig"), exports);
 __exportStar(require("./ImportOptions"), exports);
 __exportStar(require("./SmartCollection"), exports);
+__exportStar(require("./NativeThemeState"), exports);
+__exportStar(require("./SystemPreferencesState"), exports);
+__exportStar(require("./ScanProgress"), exports);
 //# sourceMappingURL=index.js.map

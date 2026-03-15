@@ -23,6 +23,12 @@ Fontastic is an Electron-based font management and cataloging application built 
 - Glyph inspector — browse and examine individual characters and Unicode points
 - Waterfall preview — compare text rendering across multiple sizes at a glance
 - Font table viewer — read raw OpenType and TrueType metadata tables
+- System theme sync — automatically matches OS light/dark mode via `nativeTheme`
+- Encrypted storage — API keys secured at rest using OS keychain via `safeStorage`
+- Scan progress — real-time font import progress streamed over `MessageChannelMain`
+- Power aware — pauses activity on system sleep and resumes on wake via `powerMonitor`
+- Session hardening — CSP headers, permission deny-list, and cache management via `session`
+- Accessibility — respects OS reduced motion and accent color via `systemPreferences`
 - Cross-platform — builds for Windows, macOS, and Linux
 
 ## Getting Started

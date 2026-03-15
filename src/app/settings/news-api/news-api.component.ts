@@ -1,8 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService, NewsService } from '../../core/services';
-import { StorageType } from '@main/enums';
-import type { NewsType } from '@main/types';
 
 @Component({
   selector: 'app-settings-news-api',
@@ -20,16 +18,16 @@ export class SettingsNewsApiComponent implements OnInit {
   readonly fetchMessage = signal('');
 
   async ngOnInit() {
-    const config = (await this.message.get(StorageType.News, null)) as NewsType | null;
-    if (config?.apiKey) {
-      this.newsApiKey.set(config.apiKey);
+    const apiKey = await this.message.safeRetrieve('secure.news.apiKey');
+    if (apiKey) {
+      this.newsApiKey.set(apiKey);
     }
   }
 
   async onSaveNewsApiKey() {
     const apiKey = this.newsApiKey();
     if (!apiKey) return;
-    await this.message.set(StorageType.News, { apiKey });
+    await this.message.safeStore('secure.news.apiKey', apiKey);
     this.saveStatus.set('saved');
     await this.news.refresh();
     setTimeout(() => this.saveStatus.set('idle'), 2000);
@@ -39,8 +37,8 @@ export class SettingsNewsApiComponent implements OnInit {
     this.fetchStatus.set('fetching');
     this.fetchMessage.set('');
     try {
-      const endpoint = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${this.newsApiKey()}`;
-      const result = await this.message.fetchLatestNews({ endpoint });
+      // API key is retrieved securely on the main process side
+      const result = await this.message.fetchLatestNews({ country: 'us' });
       const count = result?.articles?.length ?? 0;
       this.fetchMessage.set(`Fetched ${count} article${count !== 1 ? 's' : ''}.`);
       this.fetchStatus.set('done');

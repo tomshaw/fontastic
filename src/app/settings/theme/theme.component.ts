@@ -19,4 +19,8 @@ export class SettingsThemeComponent {
   onThemeChange(value: string) {
     this.presentation.theme.set(value);
   }
+
+  onAutoThemeChange(enabled: boolean) {
+    this.presentation.setAutoTheme(enabled);
+  }
 }

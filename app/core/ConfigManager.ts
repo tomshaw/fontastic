@@ -1,3 +1,4 @@
+import { safeStorage } from 'electron';
 import SystemManager from './SystemManager';
 import { database } from '../config/database';
 import { StorageType } from '../enums/StorageType';
@@ -33,6 +34,33 @@ export default class ConfigManager {
 
   clear(): any {
     return store.clear();
+  }
+
+  // --- Safe Storage (OS keychain encryption) ---
+
+  setSecure(key: string, value: string): void {
+    if (safeStorage.isEncryptionAvailable()) {
+      const encrypted = safeStorage.encryptString(value);
+      store.set(key, encrypted.toString('base64'));
+    } else {
+      store.set(key, value);
+    }
+  }
+
+  getSecure(key: string): string | null {
+    const raw = store.get(key);
+    if (!raw) return null;
+
+    if (safeStorage.isEncryptionAvailable() && typeof raw === 'string') {
+      try {
+        const buffer = Buffer.from(raw, 'base64');
+        return safeStorage.decryptString(buffer);
+      } catch {
+        // Fallback: value may have been stored before encryption was enabled
+        return raw;
+      }
+    }
+    return typeof raw === 'string' ? raw : null;
   }
 
   toArray(): any {

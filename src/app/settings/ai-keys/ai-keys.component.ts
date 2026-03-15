@@ -1,13 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from '../../core/services';
-import { StorageType } from '@main/enums';
-
-interface AiKeys {
-  anthropic: string;
-  google: string;
-  openai: string;
-}
 
 @Component({
   selector: 'app-settings-ai-keys',
@@ -24,20 +17,22 @@ export class SettingsAiKeysComponent implements OnInit {
   readonly saveStatus = signal<'idle' | 'saved'>('idle');
 
   async ngOnInit() {
-    const keys = (await this.message.get(StorageType.AiKeys, null)) as AiKeys | null;
-    if (keys) {
-      this.anthropicKey.set(keys.anthropic ?? '');
-      this.googleKey.set(keys.google ?? '');
-      this.openaiKey.set(keys.openai ?? '');
-    }
+    const [anthropic, google, openai] = await Promise.all([
+      this.message.safeRetrieve('secure.ai.anthropic'),
+      this.message.safeRetrieve('secure.ai.google'),
+      this.message.safeRetrieve('secure.ai.openai'),
+    ]);
+    if (anthropic) this.anthropicKey.set(anthropic);
+    if (google) this.googleKey.set(google);
+    if (openai) this.openaiKey.set(openai);
   }
 
   async onSave() {
-    await this.message.set(StorageType.AiKeys, {
-      anthropic: this.anthropicKey(),
-      google: this.googleKey(),
-      openai: this.openaiKey(),
-    });
+    await Promise.all([
+      this.message.safeStore('secure.ai.anthropic', this.anthropicKey()),
+      this.message.safeStore('secure.ai.google', this.googleKey()),
+      this.message.safeStore('secure.ai.openai', this.openaiKey()),
+    ]);
     this.saveStatus.set('saved');
     setTimeout(() => this.saveStatus.set('idle'), 2000);
   }

@@ -25,7 +25,18 @@ class FontManager {
     }
     fetchLatestNews(args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(args.endpoint);
+            // Retrieve API key securely from main process storage
+            let apiKey = args.apiKey;
+            if (!apiKey) {
+                const secureKey = this.configManager.getSecure('secure.news.apiKey');
+                if (secureKey) {
+                    apiKey = secureKey;
+                }
+            }
+            if (!apiKey)
+                return { articles: [] };
+            const endpoint = `https://newsapi.org/v2/top-headlines?country=${args.country || 'us'}&apiKey=${apiKey}`;
+            const response = yield fetch(endpoint);
             const data = yield response.json();
             if (data === null || data === void 0 ? void 0 : data.articles) {
                 this.configManager.set(StorageType_1.StorageType.News, Object.assign(Object.assign({}, this.configManager.get(StorageType_1.StorageType.News)), { articles: data.articles, ts: Date.now() }));
@@ -67,15 +78,15 @@ class FontManager {
             return dest;
         });
     }
-    scanFiles(files, options) {
+    scanFiles(files, options, onProgress) {
         return __awaiter(this, void 0, void 0, function* () {
-            const finder = new FontFinder_1.default(this.connectionManager);
+            const finder = new FontFinder_1.default(this.connectionManager, onProgress);
             yield finder.scanFiles(files, options);
         });
     }
-    scanFolder(dir, options) {
+    scanFolder(dir, options, onProgress) {
         return __awaiter(this, void 0, void 0, function* () {
-            const finder = new FontFinder_1.default(this.connectionManager);
+            const finder = new FontFinder_1.default(this.connectionManager, onProgress);
             yield finder.scanFolder(dir, options);
         });
     }

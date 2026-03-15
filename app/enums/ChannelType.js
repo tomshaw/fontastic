@@ -64,5 +64,22 @@ var ChannelType;
     ChannelType["IPC_SMART_COLLECTION_DELETE"] = "IPC_SMART_COLLECTION_DELETE";
     ChannelType["IPC_SMART_COLLECTION_EVALUATE"] = "IPC_SMART_COLLECTION_EVALUATE";
     ChannelType["IPC_TOGGLE_PANEL"] = "IPC_TOGGLE_PANEL";
+    // Native Theme
+    ChannelType["IPC_GET_NATIVE_THEME"] = "IPC_GET_NATIVE_THEME";
+    ChannelType["IPC_NATIVE_THEME_CHANGED"] = "IPC_NATIVE_THEME_CHANGED";
+    // Safe Storage
+    ChannelType["IPC_SAFE_STORE"] = "IPC_SAFE_STORE";
+    ChannelType["IPC_SAFE_RETRIEVE"] = "IPC_SAFE_RETRIEVE";
+    // Session
+    ChannelType["IPC_CLEAR_CACHE"] = "IPC_CLEAR_CACHE";
+    // Power Monitor
+    ChannelType["IPC_POWER_SUSPEND"] = "IPC_POWER_SUSPEND";
+    ChannelType["IPC_POWER_RESUME"] = "IPC_POWER_RESUME";
+    ChannelType["IPC_POWER_SHUTDOWN"] = "IPC_POWER_SHUTDOWN";
+    ChannelType["IPC_POWER_LOCK_SCREEN"] = "IPC_POWER_LOCK_SCREEN";
+    // System Preferences
+    ChannelType["IPC_GET_SYSTEM_PREFERENCES"] = "IPC_GET_SYSTEM_PREFERENCES";
+    // Scan Progress (MessageChannelMain)
+    ChannelType["IPC_SCAN_PROGRESS_PORT"] = "IPC_SCAN_PROGRESS_PORT";
 })(ChannelType || (exports.ChannelType = ChannelType = {}));
 //# sourceMappingURL=ChannelType.js.map

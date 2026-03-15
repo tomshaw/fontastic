@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainEvent } from 'electron';
+import { ipcMain, IpcMainEvent, BrowserWindow, MessageChannelMain, session } from 'electron';
 
 import SystemManager from './SystemManager';
 import ConfigManager from './ConfigManager';
@@ -8,8 +8,6 @@ import FontObject from './FontObject';
 import AppLogger from './AppLogger';
 
 import { Collection } from '../database/entity/Collection.schema';
-// import { Logger } from '../database/entity/Logger.schema';
-// import { Store, StoreManyAndCountType } from '../database/entity/Store.schema';
 
 import { ChannelType } from '../enums/ChannelType';
 import { StorageType } from '../enums/StorageType';
@@ -19,12 +17,20 @@ export default class MessageHandler {
   configManager: ConfigManager;
   connectionManager: ConnectionManager;
   fontManager: FontManager;
+  mainWindow: BrowserWindow;
 
-  constructor(systemManager: SystemManager, configManager: ConfigManager, connectionManager: ConnectionManager, fontManager: FontManager) {
+  constructor(
+    systemManager: SystemManager,
+    configManager: ConfigManager,
+    connectionManager: ConnectionManager,
+    fontManager: FontManager,
+    mainWindow: BrowserWindow,
+  ) {
     this.systemManager = systemManager;
     this.configManager = configManager;
     this.connectionManager = connectionManager;
     this.fontManager = fontManager;
+    this.mainWindow = mainWindow;
   }
 
   on(channel: string, done: any) {
@@ -56,6 +62,22 @@ export default class MessageHandler {
     this.handle(ChannelType.IPC_SET_CONFIG, async (_event: IpcMainEvent, args: any) => this.configManager.set(args.key, args.values));
     this.handle(ChannelType.IPC_GET_CONFIG, async (_event: IpcMainEvent, args: any) => this.configManager.get(args.key));
     this.handle(ChannelType.IPC_ZAP_CONFIG, async (_event: IpcMainEvent) => this.configManager.clear());
+
+    // Safe Storage
+
+    this.handle(ChannelType.IPC_SAFE_STORE, async (_event: IpcMainEvent, args: { key: string; value: string }) => {
+      this.configManager.setSecure(args.key, args.value);
+    });
+
+    this.handle(ChannelType.IPC_SAFE_RETRIEVE, async (_event: IpcMainEvent, key: string) => {
+      return this.configManager.getSecure(key);
+    });
+
+    // Session: Clear Cache
+
+    this.handle(ChannelType.IPC_CLEAR_CACHE, async () => {
+      await session.defaultSession.clearCache();
+    });
 
     // Connection Manager
 
@@ -93,16 +115,46 @@ export default class MessageHandler {
     this.handle(ChannelType.IPC_AUTH_USER, async (_event: IpcMainEvent, args: any) => this.fontManager.systemAuthenticate(args));
 
     this.handle(ChannelType.IPC_SCAN_FILES, async (_event: IpcMainEvent, args: any) => {
-      const catalogFiles = await this.fontManager.copyFiles(args.files, args.collectionId);
-      await this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId });
+      const { port1, port2 } = new MessageChannelMain();
+      this.mainWindow.webContents.postMessage(ChannelType.IPC_SCAN_PROGRESS_PORT, null, [port2]);
+
+      const onProgress = (progress: any) => {
+        try {
+          port1.postMessage(progress);
+        } catch {
+          // Port may be closed if renderer navigated away
+        }
+      };
+
+      try {
+        const catalogFiles = await this.fontManager.copyFiles(args.files, args.collectionId);
+        await this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId }, onProgress);
+      } finally {
+        port1.close();
+      }
     });
 
     this.handle(ChannelType.IPC_SCAN_FOLDERS, async (_event: IpcMainEvent, args: any) => {
-      const promises = args.folders.map(async (sourceFolder: string) => {
-        const dest = await this.fontManager.copyFolder(sourceFolder, args.collectionId);
-        await this.fontManager.scanFolder(dest, { collection_id: args.collectionId });
-      });
-      await Promise.allSettled(promises);
+      const { port1, port2 } = new MessageChannelMain();
+      this.mainWindow.webContents.postMessage(ChannelType.IPC_SCAN_PROGRESS_PORT, null, [port2]);
+
+      const onProgress = (progress: any) => {
+        try {
+          port1.postMessage(progress);
+        } catch {
+          // Port may be closed if renderer navigated away
+        }
+      };
+
+      try {
+        const promises = args.folders.map(async (sourceFolder: string) => {
+          const dest = await this.fontManager.copyFolder(sourceFolder, args.collectionId);
+          await this.fontManager.scanFolder(dest, { collection_id: args.collectionId }, onProgress);
+        });
+        await Promise.allSettled(promises);
+      } finally {
+        port1.close();
+      }
     });
 
     this.handle(ChannelType.IPC_FETCH_NEWS, async (_event: IpcMainEvent, args: any) => this.fontManager.fetchLatestNews(args));

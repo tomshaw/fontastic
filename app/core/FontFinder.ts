@@ -3,19 +3,24 @@ import FontObject from './FontObject';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { mimeTypes, installable } from '../config/mimes';
+import type { ScanProgress } from '../types';
 
 const prettyBytes = require('pretty-bytes');
 const mime = require('mime');
 
 const SCAN_CONCURRENCY = 10;
 
+export type ProgressCallback = (progress: ScanProgress) => void;
+
 export default class FontFinder {
   connectionManager: ConnectionManager;
   errors: any[] = [];
   counter: number = 0;
+  private onProgress: ProgressCallback | null = null;
 
-  constructor(connectionManager: ConnectionManager) {
+  constructor(connectionManager: ConnectionManager, onProgress?: ProgressCallback) {
     this.connectionManager = connectionManager;
+    this.onProgress = onProgress ?? null;
   }
 
   private getFontMimeType(filePath: string): string | null {
@@ -75,9 +80,20 @@ export default class FontFinder {
   }
 
   private async processInBatches(fontFiles: { fp: string; fileType: string }[], options: any) {
+    const total = fontFiles.length;
     for (let i = 0; i < fontFiles.length; i += SCAN_CONCURRENCY) {
       const batch = fontFiles.slice(i, i + SCAN_CONCURRENCY);
       await Promise.all(batch.map(({ fp, fileType }) => this.processFont(fp, fileType, options)));
+
+      if (this.onProgress) {
+        const lastFile = batch[batch.length - 1];
+        this.onProgress({
+          processed: Math.min(i + SCAN_CONCURRENCY, total),
+          total,
+          currentFile: path.basename(lastFile.fp),
+          errors: this.errors.length,
+        });
+      }
     }
   }
 

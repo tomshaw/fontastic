@@ -8,3 +8,6 @@ export * from './SystemStats';
 export * from './SystemConfig';
 export * from './ImportOptions';
 export * from './SmartCollection';
+export * from './NativeThemeState';
+export * from './SystemPreferencesState';
+export * from './ScanProgress';

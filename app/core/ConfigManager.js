@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const electron_1 = require("electron");
 const database_1 = require("../config/database");
 const StorageType_1 = require("../enums/StorageType");
 const Store = require('electron-store');
@@ -25,6 +26,32 @@ class ConfigManager {
     }
     clear() {
         return store.clear();
+    }
+    // --- Safe Storage (OS keychain encryption) ---
+    setSecure(key, value) {
+        if (electron_1.safeStorage.isEncryptionAvailable()) {
+            const encrypted = electron_1.safeStorage.encryptString(value);
+            store.set(key, encrypted.toString('base64'));
+        }
+        else {
+            store.set(key, value);
+        }
+    }
+    getSecure(key) {
+        const raw = store.get(key);
+        if (!raw)
+            return null;
+        if (electron_1.safeStorage.isEncryptionAvailable() && typeof raw === 'string') {
+            try {
+                const buffer = Buffer.from(raw, 'base64');
+                return electron_1.safeStorage.decryptString(buffer);
+            }
+            catch (_a) {
+                // Fallback: value may have been stored before encryption was enabled
+                return raw;
+            }
+        }
+        return typeof raw === 'string' ? raw : null;
     }
     toArray() {
         return store.store;

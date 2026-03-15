@@ -34,4 +34,16 @@ export class SettingsDangerZoneComponent {
       this.message.reloadWindow();
     }
   }
+
+  async onClearCache() {
+    const response = await this.message.showMessageBox({
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Confirm',
+      message: 'Are you sure you want to clear the application cache?',
+    });
+    if (response?.response === 0) {
+      await this.message.clearCache();
+    }
+  }
 }

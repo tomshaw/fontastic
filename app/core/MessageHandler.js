@@ -12,15 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const FontObject_1 = require("./FontObject");
 const AppLogger_1 = require("./AppLogger");
-// import { Logger } from '../database/entity/Logger.schema';
-// import { Store, StoreManyAndCountType } from '../database/entity/Store.schema';
 const ChannelType_1 = require("../enums/ChannelType");
 class MessageHandler {
-    constructor(systemManager, configManager, connectionManager, fontManager) {
+    constructor(systemManager, configManager, connectionManager, fontManager, mainWindow) {
         this.systemManager = systemManager;
         this.configManager = configManager;
         this.connectionManager = connectionManager;
         this.fontManager = fontManager;
+        this.mainWindow = mainWindow;
     }
     on(channel, done) {
         return electron_1.ipcMain.on(channel, done);
@@ -44,6 +43,17 @@ class MessageHandler {
         this.handle(ChannelType_1.ChannelType.IPC_SET_CONFIG, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.configManager.set(args.key, args.values); }));
         this.handle(ChannelType_1.ChannelType.IPC_GET_CONFIG, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.configManager.get(args.key); }));
         this.handle(ChannelType_1.ChannelType.IPC_ZAP_CONFIG, (_event) => __awaiter(this, void 0, void 0, function* () { return this.configManager.clear(); }));
+        // Safe Storage
+        this.handle(ChannelType_1.ChannelType.IPC_SAFE_STORE, (_event, args) => __awaiter(this, void 0, void 0, function* () {
+            this.configManager.setSecure(args.key, args.value);
+        }));
+        this.handle(ChannelType_1.ChannelType.IPC_SAFE_RETRIEVE, (_event, key) => __awaiter(this, void 0, void 0, function* () {
+            return this.configManager.getSecure(key);
+        }));
+        // Session: Clear Cache
+        this.handle(ChannelType_1.ChannelType.IPC_CLEAR_CACHE, () => __awaiter(this, void 0, void 0, function* () {
+            yield electron_1.session.defaultSession.clearCache();
+        }));
         // Connection Manager
         this.handle(ChannelType_1.ChannelType.IPC_DBCONNECTION_CREATE, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.configManager.createDbConnection(args); }));
         this.handle(ChannelType_1.ChannelType.IPC_DBCONNECTION_ENABLE, (_event, args) => this.configManager.enableDbConnection(args));
@@ -68,15 +78,45 @@ class MessageHandler {
         this.handle(ChannelType_1.ChannelType.IPC_EXEC_CMD, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.executeCommand(args).catch((err) => this.sendMessage('error', err.message)); }));
         this.handle(ChannelType_1.ChannelType.IPC_AUTH_USER, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.systemAuthenticate(args); }));
         this.handle(ChannelType_1.ChannelType.IPC_SCAN_FILES, (_event, args) => __awaiter(this, void 0, void 0, function* () {
-            const catalogFiles = yield this.fontManager.copyFiles(args.files, args.collectionId);
-            yield this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId });
+            const { port1, port2 } = new electron_1.MessageChannelMain();
+            this.mainWindow.webContents.postMessage(ChannelType_1.ChannelType.IPC_SCAN_PROGRESS_PORT, null, [port2]);
+            const onProgress = (progress) => {
+                try {
+                    port1.postMessage(progress);
+                }
+                catch (_a) {
+                    // Port may be closed if renderer navigated away
+                }
+            };
+            try {
+                const catalogFiles = yield this.fontManager.copyFiles(args.files, args.collectionId);
+                yield this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId }, onProgress);
+            }
+            finally {
+                port1.close();
+            }
         }));
         this.handle(ChannelType_1.ChannelType.IPC_SCAN_FOLDERS, (_event, args) => __awaiter(this, void 0, void 0, function* () {
-            const promises = args.folders.map((sourceFolder) => __awaiter(this, void 0, void 0, function* () {
-                const dest = yield this.fontManager.copyFolder(sourceFolder, args.collectionId);
-                yield this.fontManager.scanFolder(dest, { collection_id: args.collectionId });
-            }));
-            yield Promise.allSettled(promises);
+            const { port1, port2 } = new electron_1.MessageChannelMain();
+            this.mainWindow.webContents.postMessage(ChannelType_1.ChannelType.IPC_SCAN_PROGRESS_PORT, null, [port2]);
+            const onProgress = (progress) => {
+                try {
+                    port1.postMessage(progress);
+                }
+                catch (_a) {
+                    // Port may be closed if renderer navigated away
+                }
+            };
+            try {
+                const promises = args.folders.map((sourceFolder) => __awaiter(this, void 0, void 0, function* () {
+                    const dest = yield this.fontManager.copyFolder(sourceFolder, args.collectionId);
+                    yield this.fontManager.scanFolder(dest, { collection_id: args.collectionId }, onProgress);
+                }));
+                yield Promise.allSettled(promises);
+            }
+            finally {
+                port1.close();
+            }
         }));
         this.handle(ChannelType_1.ChannelType.IPC_FETCH_NEWS, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.fetchLatestNews(args); }));
         this.handle(ChannelType_1.ChannelType.IPC_SHOW_MESSAGE_BOX, (_event, options) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.showMessageBox(options); }));

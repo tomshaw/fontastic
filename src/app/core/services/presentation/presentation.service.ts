@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed, effect, untracked } from '@angula
 import { ElectronService } from '../electron/electron.service';
 import { MessageService } from '../message/message.service';
 import { ChannelType, StorageType } from '@main/enums';
-import type { LayoutPanelType, LayoutPreviewType } from '@main/types';
+import type { LayoutPanelType, LayoutPreviewType, NativeThemeState, ScanProgress } from '@main/types';
 
 @Injectable({ providedIn: 'root' })
 export class PresentationService {
@@ -21,12 +21,27 @@ export class PresentationService {
     this.loadingCount--;
     if (this.loadingCount === 0) {
       this.loading.set(false);
+      this.scanProgress.set(null);
     }
   }
 
   static readonly themes = ['light', 'dark', 'dashboard', 'euphoria', 'midnight', 'mellow', 'passion', 'swiss'] as const;
 
   readonly theme = signal<string>('light');
+
+  // Native Theme: auto-sync with OS dark mode
+  readonly autoTheme = signal(false);
+  readonly nativeThemeState = signal<NativeThemeState | null>(null);
+
+  // System Preferences
+  readonly systemAccentColor = signal('');
+  readonly reduceMotion = signal(false);
+
+  // Power Monitor
+  readonly suspended = signal(false);
+
+  // Scan Progress (MessageChannelMain)
+  readonly scanProgress = signal<ScanProgress | null>(null);
 
   constructor() {
     effect(() => {
@@ -37,12 +52,21 @@ export class PresentationService {
       }
     });
 
+    // Apply reduce-motion class based on OS preference
+    effect(() => {
+      document.documentElement.classList.toggle('reduce-motion', this.reduceMotion());
+    });
+
     if (this.electronService.isElectron) {
       this.loadThemeSettings();
       this.loadLayoutSettings();
       this.loadPreviewSettings();
       this.loadNavigationExpandedSettings();
       this.listenForMenuToggle();
+      this.initNativeTheme();
+      this.initSystemPreferences();
+      this.initPowerMonitor();
+      this.initScanProgress();
 
       let themeInitialized = false;
       effect(() => {
@@ -239,6 +263,74 @@ export class PresentationService {
 
   clearAllNavigationExpanded() {
     this.navigationExpandedIds.set([]);
+  }
+
+  // --- Native Theme ---
+
+  private async initNativeTheme() {
+    const state = await this.messageService.getNativeTheme();
+    this.nativeThemeState.set(state);
+    this.applyAutoTheme(state);
+
+    this.messageService.on(ChannelType.IPC_NATIVE_THEME_CHANGED, (_event: any, state: NativeThemeState) => {
+      this.nativeThemeState.set(state);
+      this.applyAutoTheme(state);
+    });
+  }
+
+  private applyAutoTheme(state: NativeThemeState) {
+    if (this.autoTheme()) {
+      this.theme.set(state.shouldUseDarkColors ? 'midnight' : 'light');
+    }
+  }
+
+  setAutoTheme(enabled: boolean) {
+    this.autoTheme.set(enabled);
+    if (enabled) {
+      const state = this.nativeThemeState();
+      if (state) {
+        this.theme.set(state.shouldUseDarkColors ? 'midnight' : 'light');
+      }
+    }
+  }
+
+  // --- System Preferences ---
+
+  private async initSystemPreferences() {
+    const prefs = await this.messageService.getSystemPreferences();
+    this.systemAccentColor.set(prefs.accentColor);
+    this.reduceMotion.set(prefs.reduceMotion);
+  }
+
+  // --- Power Monitor ---
+
+  private initPowerMonitor() {
+    this.messageService.on(ChannelType.IPC_POWER_SUSPEND, () => {
+      this.suspended.set(true);
+    });
+
+    this.messageService.on(ChannelType.IPC_POWER_RESUME, () => {
+      this.suspended.set(false);
+    });
+  }
+
+  // --- Scan Progress (MessageChannelMain) ---
+
+  private initScanProgress() {
+    this.electronService.ipcRenderer.on(ChannelType.IPC_SCAN_PROGRESS_PORT, (event: any) => {
+      const port = event.ports[0];
+      if (!port) return;
+
+      port.onmessage = (msgEvent: MessageEvent<ScanProgress>) => {
+        this.scanProgress.set(msgEvent.data);
+      };
+
+      port.onclose = () => {
+        this.scanProgress.set(null);
+      };
+
+      port.start();
+    });
   }
 
   private async loadNavigationExpandedSettings() {

@@ -17,10 +17,12 @@ const prettyBytes = require('pretty-bytes');
 const mime = require('mime');
 const SCAN_CONCURRENCY = 10;
 class FontFinder {
-    constructor(connectionManager) {
+    constructor(connectionManager, onProgress) {
         this.errors = [];
         this.counter = 0;
+        this.onProgress = null;
         this.connectionManager = connectionManager;
+        this.onProgress = onProgress !== null && onProgress !== void 0 ? onProgress : null;
     }
     getFontMimeType(filePath) {
         const fileType = mime.getType(filePath);
@@ -76,9 +78,19 @@ class FontFinder {
     }
     processInBatches(fontFiles, options) {
         return __awaiter(this, void 0, void 0, function* () {
+            const total = fontFiles.length;
             for (let i = 0; i < fontFiles.length; i += SCAN_CONCURRENCY) {
                 const batch = fontFiles.slice(i, i + SCAN_CONCURRENCY);
                 yield Promise.all(batch.map(({ fp, fileType }) => this.processFont(fp, fileType, options)));
+                if (this.onProgress) {
+                    const lastFile = batch[batch.length - 1];
+                    this.onProgress({
+                        processed: Math.min(i + SCAN_CONCURRENCY, total),
+                        total,
+                        currentFile: path.basename(lastFile.fp),
+                        errors: this.errors.length,
+                    });
+                }
             }
         });
     }

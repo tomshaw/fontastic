@@ -18,5 +18,13 @@
       </div>
       <button class="btn btn-sm btn-danger" (click)="onClearStore()">Clear</button>
     </div>
+
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold" [style.color]="'var(--text-primary)'">Clear application cache</p>
+        <p class="text-xs" [style.color]="'var(--text-muted)'">Clears the Chromium session cache.</p>
+      </div>
+      <button class="btn btn-sm btn-danger" (click)="onClearCache()">Clear Cache</button>
+    </div>
   </div>
 </div>

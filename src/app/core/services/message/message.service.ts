@@ -4,7 +4,7 @@ import type { Collection } from '@main/database/entity/Collection.schema';
 import type { Logger } from '@main/database/entity/Logger.schema';
 import type { Store, StoreManyAndCountType } from '@main/database/entity/Store.schema';
 import { ChannelType } from '@main/enums';
-import type { FontMetrics, SystemConfig, SystemStats } from '@main/types';
+import type { FontMetrics, NativeThemeState, SystemConfig, SystemPreferencesState, SystemStats } from '@main/types';
 import type { SmartCollection } from '@main/database/entity/SmartCollection.schema';
 
 @Injectable({
@@ -310,5 +310,33 @@ export class MessageService {
 
   loggerTruncate(): Promise<Logger[]> {
     return this.invoke<Logger[]>(ChannelType.IPC_LOGGER_TRUNCATE);
+  }
+
+  // Native Theme
+
+  getNativeTheme(): Promise<NativeThemeState> {
+    return this.invoke<NativeThemeState>(ChannelType.IPC_GET_NATIVE_THEME);
+  }
+
+  // Safe Storage
+
+  safeStore(key: string, value: string): Promise<void> {
+    return this.invoke(ChannelType.IPC_SAFE_STORE, { key, value });
+  }
+
+  safeRetrieve(key: string): Promise<string | null> {
+    return this.invoke<string | null>(ChannelType.IPC_SAFE_RETRIEVE, key);
+  }
+
+  // Session
+
+  clearCache(): Promise<void> {
+    return this.invoke(ChannelType.IPC_CLEAR_CACHE);
+  }
+
+  // System Preferences
+
+  getSystemPreferences(): Promise<SystemPreferencesState> {
+    return this.invoke<SystemPreferencesState>(ChannelType.IPC_GET_SYSTEM_PREFERENCES);
   }
 }

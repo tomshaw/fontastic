@@ -2,10 +2,23 @@
   <div class="card-header">
     <div class="card-title"><h3>Theme</h3></div>
   </div>
-  <div class="card-body">
+  <div class="card-body space-y-4">
+    <div>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" class="accent-current" [ngModel]="presentation.autoTheme()" (ngModelChange)="onAutoThemeChange($event)" />
+        <span class="text-xs" [style.color]="'var(--text-secondary)'">Match system appearance</span>
+      </label>
+    </div>
     <div>
       <label class="form-label" for="theme">Selected theme</label>
-      <select id="theme" class="form-select w-full" [ngModel]="presentation.theme()" (ngModelChange)="onThemeChange($event)" name="theme">
+      <select
+        id="theme"
+        class="form-select w-full"
+        [ngModel]="presentation.theme()"
+        (ngModelChange)="onThemeChange($event)"
+        [disabled]="presentation.autoTheme()"
+        name="theme"
+      >
         @for (t of themes; track t.key) {
           <option [value]="t.key">{{ t.label }}</option>
         }
