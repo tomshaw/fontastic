@@ -68,13 +68,11 @@ exports.CollectionRepository = {
     },
     updateCollectionCounts(items) {
         return __awaiter(this, void 0, void 0, function* () {
-            return items.forEach((item) => __awaiter(this, void 0, void 0, function* () {
-                return yield this.createQueryBuilder()
-                    .update(entity_1.Collection)
-                    .set({ count: item.total })
-                    .where('id = :id', { id: item.collection_id })
-                    .execute();
-            }));
+            yield Promise.all(items.map((item) => this.createQueryBuilder()
+                .update(entity_1.Collection)
+                .set({ count: item.total })
+                .where('id = :id', { id: item.collection_id })
+                .execute()));
         });
     },
     updateCollection(collectionId, data) {
@@ -129,12 +127,12 @@ exports.CollectionRepository = {
     createChild(parentId, title) {
         return __awaiter(this, void 0, void 0, function* () {
             const row = yield this.findOne({ where: { id: parentId } });
-            this.createQueryBuilder()
+            yield this.createQueryBuilder()
                 .update(entity_1.Collection)
                 .set({ left_id: () => 'left_id + 2', right_id: () => 'right_id + 2' })
                 .where({ left_id: (0, typeorm_1.MoreThan)(row.right_id) })
                 .execute();
-            this.createQueryBuilder()
+            yield this.createQueryBuilder()
                 .update(entity_1.Collection)
                 .set({ right_id: () => 'right_id + 2' })
                 .where({ left_id: (0, typeorm_1.LessThanOrEqual)(row.left_id), right_id: (0, typeorm_1.MoreThanOrEqual)(row.left_id) })
@@ -249,9 +247,7 @@ exports.CollectionRepository = {
                 .where('collection.parent_id = :parentId', { parentId: newParentId })
                 .orderBy('collection.left_id', 'ASC')
                 .getMany();
-            for (let i = 0; i < newSiblings.length; i++) {
-                yield this.createQueryBuilder().update(entity_1.Collection).set({ orderby: i }).where('id = :id', { id: newSiblings[i].id }).execute();
-            }
+            yield Promise.all(newSiblings.map((sibling, i) => this.createQueryBuilder().update(entity_1.Collection).set({ orderby: i }).where('id = :id', { id: sibling.id }).execute()));
         });
     },
     createSystemCollection() {

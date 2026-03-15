@@ -94,6 +94,8 @@ __decorate([
     __metadata("design:type", Array)
 ], Collection.prototype, "stores", void 0);
 exports.Collection = Collection = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)(),
+    (0, typeorm_1.Index)(['left_id', 'right_id']),
+    (0, typeorm_1.Index)(['parent_id'])
 ], Collection);
 //# sourceMappingURL=Collection.schema.js.map

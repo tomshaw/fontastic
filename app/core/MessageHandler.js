@@ -68,19 +68,13 @@ class MessageHandler {
         this.handle(ChannelType_1.ChannelType.IPC_EXEC_CMD, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.executeCommand(args).catch((err) => this.sendMessage('error', err.message)); }));
         this.handle(ChannelType_1.ChannelType.IPC_AUTH_USER, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.systemAuthenticate(args); }));
         this.handle(ChannelType_1.ChannelType.IPC_SCAN_FILES, (_event, args) => __awaiter(this, void 0, void 0, function* () {
-            console.log('[IPC_SCAN_FILES] args:', JSON.stringify(args));
             const catalogFiles = yield this.fontManager.copyFiles(args.files, args.collectionId);
-            console.log('[IPC_SCAN_FILES] copied to catalog:', catalogFiles);
             yield this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId });
-            console.log('[IPC_SCAN_FILES] scan complete');
         }));
         this.handle(ChannelType_1.ChannelType.IPC_SCAN_FOLDERS, (_event, args) => __awaiter(this, void 0, void 0, function* () {
-            console.log('[IPC_SCAN_FOLDERS] args:', JSON.stringify(args));
             const promises = args.folders.map((sourceFolder) => __awaiter(this, void 0, void 0, function* () {
                 const dest = yield this.fontManager.copyFolder(sourceFolder, args.collectionId);
-                console.log('[IPC_SCAN_FOLDERS] copied to:', dest);
                 yield this.fontManager.scanFolder(dest, { collection_id: args.collectionId });
-                console.log('[IPC_SCAN_FOLDERS] scan complete for:', dest);
             }));
             yield Promise.allSettled(promises);
         }));
@@ -158,7 +152,13 @@ class MessageHandler {
             const sc = yield this.connectionManager.getSmartCollectionRepository().findOneBy({ id: args.id });
             if (!sc)
                 return [[], 0];
-            const rules = JSON.parse(sc.rules);
+            let rules;
+            try {
+                rules = JSON.parse(sc.rules);
+            }
+            catch (_a) {
+                return [[], 0];
+            }
             return yield this.connectionManager.getStoreRepository().evaluateSmartRules(rules, sc.match_type, {
                 skip: args.skip,
                 take: args.take,
@@ -219,7 +219,7 @@ class MessageHandler {
         }));
         this.handle(ChannelType_1.ChannelType.IPC_FONT_METRICS, (_event, filePath) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d, _e;
-            const fontObject = new FontObject_1.default(filePath);
+            const fontObject = FontObject_1.default.fromCache(filePath);
             if (fontObject.hasError()) {
                 return null;
             }
@@ -233,7 +233,7 @@ class MessageHandler {
             };
         }));
         this.handle(ChannelType_1.ChannelType.IPC_FONT_GLYPHS, (_event, filePath) => __awaiter(this, void 0, void 0, function* () {
-            const fontObject = new FontObject_1.default(filePath);
+            const fontObject = FontObject_1.default.fromCache(filePath);
             if (fontObject.hasError()) {
                 return [];
             }

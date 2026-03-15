@@ -146,7 +146,7 @@ exports.dbColumns = [
         searchable: true,
     },
     {
-        name: 'manufacturer',
+        name: 'manufacturer_url',
         searchable: true,
     },
     {

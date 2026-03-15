@@ -18,6 +18,7 @@ export default class FontManager {
   systemManager: SystemManager;
   configManager: ConfigManager;
   connectionManager: ConnectionManager;
+  private catalog = new FontCatalog();
 
   constructor(systemManager: SystemManager, configManager: ConfigManager, connectionManager: ConnectionManager) {
     this.systemManager = systemManager;
@@ -58,34 +59,24 @@ export default class FontManager {
 
   async copyFiles(files: string[], collectionId: number): Promise<string[]> {
     const dest = this.getDestinationFolder(collectionId);
-    console.log('[FontManager.copyFiles] dest:', dest, 'files:', files);
-    const catalog = new FontCatalog();
-    await catalog.copyFiles(files, dest);
-    const catalogFiles = files.map((file) => path.join(dest, path.basename(file)));
-    console.log('[FontManager.copyFiles] catalogFiles:', catalogFiles);
-    return catalogFiles;
+    await this.catalog.copyFiles(files, dest);
+    return files.map((file) => path.join(dest, path.basename(file)));
   }
 
   async copyFolder(src: string, collectionId: number): Promise<string> {
     const dest = this.getDestinationFolder(collectionId);
-    console.log('[FontManager.copyFolder] src:', src, 'dest:', dest);
-    const catalog = new FontCatalog();
-    await catalog.copyFolder(src, dest);
+    await this.catalog.copyFolder(src, dest);
     return dest;
   }
 
   async scanFiles(files: string[], options: any) {
-    console.log('[FontManager.scanFiles] files:', files, 'options:', options);
     const finder = new FontFinder(this.connectionManager);
     await finder.scanFiles(files, options);
-    console.log('[FontManager.scanFiles] done, processed:', finder.counter, 'errors:', finder.errors);
   }
 
   async scanFolder(dir: string, options: any) {
-    console.log('[FontManager.scanFolder] dir:', dir, 'options:', options);
     const finder = new FontFinder(this.connectionManager);
     await finder.scanFolder(dir, options);
-    console.log('[FontManager.scanFolder] done, processed:', finder.counter, 'errors:', finder.errors);
   }
 
   showMessageBox(options: any) {

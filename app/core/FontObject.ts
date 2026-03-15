@@ -1,9 +1,12 @@
-const fontkit = require("fontkit");
+const fontkit = require('fontkit');
+
+const MAX_CACHE_SIZE = 50;
+const fontCache = new Map<string, FontObject>();
 
 export default class FontObject {
-
   font: any;
   error: any;
+  private namesTable: any;
 
   constructor(fp: string) {
     try {
@@ -11,6 +14,20 @@ export default class FontObject {
     } catch (err) {
       this.setError(fp, err.message);
     }
+  }
+
+  static fromCache(fp: string): FontObject {
+    const cached = fontCache.get(fp);
+    if (cached) return cached;
+    const obj = new FontObject(fp);
+    if (!obj.hasError()) {
+      if (fontCache.size >= MAX_CACHE_SIZE) {
+        const firstKey = fontCache.keys().next().value;
+        fontCache.delete(firstKey);
+      }
+      fontCache.set(fp, obj);
+    }
+    return obj;
   }
 
   setFont(font: any) {
@@ -30,33 +47,36 @@ export default class FontObject {
   }
 
   hasError() {
-    return this.error ? true : false;
+    return !!this.error;
   }
 
   getNamesTable() {
-    const names = (this.font && this.font.name && this.font.name.records) ? this.font.name.records : false;
+    if (this.namesTable) return this.namesTable;
 
-    let item: any = {};
-    item.compatible_full_name = (names && names.compatibleFullName) ? names.compatibleFullName.en : "";
-    item.copyright = (names && names.copyright) ? names.copyright.en : "";
-    item.description = (names && names.description) ? names.description.en : "";
-    item.designer = (names && names.designer) ? names.designer.en : "";
-    item.designer_url = (names && names.designerURL) ? names.designerURL.en : "";
-    item.font_family = (names && names.fontFamily) ? names.fontFamily.en : "";
-    item.font_subfamily = (names && names.fontSubfamily) ? names.fontSubfamily.en : "";
-    item.full_name = (names && names.fullName) ? names.fullName.en : "";
-    item.license = (names && names.license) ? names.license.en : "";
-    item.license_url = (names && names.licenseURL) ? names.licenseURL.en : "";
-    item.manufacturer = (names && names.manufacturer) ? names.manufacturer.en : "";
-    item.manufacturer_url = (names && names.manufacturerURL) ? names.manufacturerURL.en : "";
-    item.post_script_name = (names && names.postScriptName) ? names.postScriptName.en : "";
-    item.preferred_family = (names && names.preferredFamily) ? names.preferredFamily.en : "";
-    item.preferred_sub_family = (names && names.preferredSubfamily) ? names.preferredSubfamily.en : "";
-    item.sample_text = (names && names.sampleText) ? names.sampleText.en : "";
-    item.trademark = (names && names.trademark) ? names.trademark.en : "";
-    item.unique_id = (names && names.uniqueSubfamily) ? names.uniqueSubfamily.en : "";
-    item.version = (names && names.version) ? names.version.en : "";
+    const names = this.font?.name?.records;
 
-    return item;
+    this.namesTable = {
+      compatible_full_name: names?.compatibleFullName?.en ?? '',
+      copyright: names?.copyright?.en ?? '',
+      description: names?.description?.en ?? '',
+      designer: names?.designer?.en ?? '',
+      designer_url: names?.designerURL?.en ?? '',
+      font_family: names?.fontFamily?.en ?? '',
+      font_subfamily: names?.fontSubfamily?.en ?? '',
+      full_name: names?.fullName?.en ?? '',
+      license: names?.license?.en ?? '',
+      license_url: names?.licenseURL?.en ?? '',
+      manufacturer: names?.manufacturer?.en ?? '',
+      manufacturer_url: names?.manufacturerURL?.en ?? '',
+      post_script_name: names?.postScriptName?.en ?? '',
+      preferred_family: names?.preferredFamily?.en ?? '',
+      preferred_sub_family: names?.preferredSubfamily?.en ?? '',
+      sample_text: names?.sampleText?.en ?? '',
+      trademark: names?.trademark?.en ?? '',
+      unique_id: names?.uniqueSubfamily?.en ?? '',
+      version: names?.version?.en ?? '',
+    };
+
+    return this.namesTable;
   }
 }

@@ -18,6 +18,7 @@ const path = require("path");
 const fetch = require('node-fetch');
 class FontManager {
     constructor(systemManager, configManager, connectionManager) {
+        this.catalog = new FontCatalog_1.default();
         this.systemManager = systemManager;
         this.configManager = configManager;
         this.connectionManager = connectionManager;
@@ -55,37 +56,27 @@ class FontManager {
     copyFiles(files, collectionId) {
         return __awaiter(this, void 0, void 0, function* () {
             const dest = this.getDestinationFolder(collectionId);
-            console.log('[FontManager.copyFiles] dest:', dest, 'files:', files);
-            const catalog = new FontCatalog_1.default();
-            yield catalog.copyFiles(files, dest);
-            const catalogFiles = files.map((file) => path.join(dest, path.basename(file)));
-            console.log('[FontManager.copyFiles] catalogFiles:', catalogFiles);
-            return catalogFiles;
+            yield this.catalog.copyFiles(files, dest);
+            return files.map((file) => path.join(dest, path.basename(file)));
         });
     }
     copyFolder(src, collectionId) {
         return __awaiter(this, void 0, void 0, function* () {
             const dest = this.getDestinationFolder(collectionId);
-            console.log('[FontManager.copyFolder] src:', src, 'dest:', dest);
-            const catalog = new FontCatalog_1.default();
-            yield catalog.copyFolder(src, dest);
+            yield this.catalog.copyFolder(src, dest);
             return dest;
         });
     }
     scanFiles(files, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('[FontManager.scanFiles] files:', files, 'options:', options);
             const finder = new FontFinder_1.default(this.connectionManager);
             yield finder.scanFiles(files, options);
-            console.log('[FontManager.scanFiles] done, processed:', finder.counter, 'errors:', finder.errors);
         });
     }
     scanFolder(dir, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('[FontManager.scanFolder] dir:', dir, 'options:', options);
             const finder = new FontFinder_1.default(this.connectionManager);
             yield finder.scanFolder(dir, options);
-            console.log('[FontManager.scanFolder] done, processed:', finder.counter, 'errors:', finder.errors);
         });
     }
     showMessageBox(options) {

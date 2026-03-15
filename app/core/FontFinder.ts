@@ -1,14 +1,15 @@
-import ConnectionManager from "./ConnectionManager";
-import FontObject from "./FontObject";
-import * as fs from "fs/promises";
-import * as path from "path";
-import { mimeTypes, installable } from "../config/mimes";
+import ConnectionManager from './ConnectionManager';
+import FontObject from './FontObject';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { mimeTypes, installable } from '../config/mimes';
 
-const prettyBytes = require("pretty-bytes");
-const mime = require("mime");
+const prettyBytes = require('pretty-bytes');
+const mime = require('mime');
+
+const SCAN_CONCURRENCY = 10;
 
 export default class FontFinder {
-
   connectionManager: ConnectionManager;
   errors: any[] = [];
   counter: number = 0;
@@ -17,34 +18,70 @@ export default class FontFinder {
     this.connectionManager = connectionManager;
   }
 
-  private isFontFile(filePath: string): boolean {
+  private getFontMimeType(filePath: string): string | null {
     const fileType = mime.getType(filePath);
-    return fileType && mimeTypes.includes(fileType);
+    return fileType && mimeTypes.includes(fileType) ? fileType : null;
   }
 
   async scanFiles(files: string[], options: any) {
+    this.errors = [];
+    this.counter = 0;
+
+    const fontFiles: { fp: string; fileType: string }[] = [];
     for (const fp of files) {
-      if (this.isFontFile(fp)) {
-        const stat = await fs.stat(fp);
-        await this.processFont(fp, stat, options);
+      const fileType = this.getFontMimeType(fp);
+      if (fileType) {
+        fontFiles.push({ fp, fileType });
       }
     }
+
+    await this.processInBatches(fontFiles, options);
   }
 
   async scanFolder(dir: string, options: any) {
+    this.errors = [];
+    this.counter = 0;
+
+    const fontFiles = await this.collectFontFiles(dir);
+    await this.processInBatches(fontFiles, options);
+  }
+
+  private async collectFontFiles(dir: string): Promise<{ fp: string; fileType: string }[]> {
+    const results: { fp: string; fileType: string }[] = [];
     const entries = await fs.readdir(dir, { withFileTypes: true });
+
+    const subdirPromises: Promise<{ fp: string; fileType: string }[]>[] = [];
+
     for (const entry of entries) {
       const fp = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        await this.scanFolder(fp, options);
-      } else if (this.isFontFile(fp)) {
-        const stat = await fs.stat(fp);
-        await this.processFont(fp, stat, options);
+        subdirPromises.push(this.collectFontFiles(fp));
+      } else {
+        const fileType = this.getFontMimeType(fp);
+        if (fileType) {
+          results.push({ fp, fileType });
+        }
       }
+    }
+
+    if (subdirPromises.length > 0) {
+      const subdirResults = await Promise.all(subdirPromises);
+      for (const subResults of subdirResults) {
+        results.push(...subResults);
+      }
+    }
+
+    return results;
+  }
+
+  private async processInBatches(fontFiles: { fp: string; fileType: string }[], options: any) {
+    for (let i = 0; i < fontFiles.length; i += SCAN_CONCURRENCY) {
+      const batch = fontFiles.slice(i, i + SCAN_CONCURRENCY);
+      await Promise.all(batch.map(({ fp, fileType }) => this.processFont(fp, fileType, options)));
     }
   }
 
-  private async processFont(fp: string, stat: any, options: any) {
+  private async processFont(fp: string, fileType: string, options: any) {
     const font = new FontObject(fp);
 
     if (font.hasError()) {
@@ -52,7 +89,13 @@ export default class FontFinder {
       return;
     }
 
-    const fileType = mime.getType(fp);
+    let stat;
+    try {
+      stat = await fs.stat(fp);
+    } catch (err: any) {
+      this.errors.push({ file: fp, message: err.message });
+      return;
+    }
 
     const data = {
       file_path: fp,
@@ -68,8 +111,8 @@ export default class FontFinder {
     try {
       await this.connectionManager.getStoreRepository().create(data);
       this.counter++;
-    } catch (err) {
-      this.errors.push(err.message);
+    } catch (err: any) {
+      this.errors.push({ file: fp, message: err.message });
     }
   }
 }

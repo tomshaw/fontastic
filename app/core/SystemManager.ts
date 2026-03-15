@@ -90,10 +90,14 @@ export default class ConfigManager {
     return path.join(os.tmpdir(), file);
   }
 
+  private cachedFontPaths: string[] | null = null;
+
   getPlatformFontPaths() {
+    if (this.cachedFontPaths) return this.cachedFontPaths;
     const paths = systemFontPaths.get(this.getPlatform()) || [];
     const home = os.homedir();
-    return paths.map((p: string) => (p.startsWith('~') ? path.join(home, p.slice(1)) : p));
+    this.cachedFontPaths = paths.map((p: string) => (p.startsWith('~') ? path.join(home, p.slice(1)) : p));
+    return this.cachedFontPaths;
   }
 
   getUpTime() {

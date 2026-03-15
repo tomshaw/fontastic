@@ -7,6 +7,7 @@ const system_1 = require("../config/system");
 const root = process.cwd();
 class ConfigManager {
     constructor(machineId, isProduction) {
+        this.cachedFontPaths = null;
         this.machineId = machineId;
         this.isProduction = isProduction;
     }
@@ -68,9 +69,12 @@ class ConfigManager {
         return path.join(os.tmpdir(), file);
     }
     getPlatformFontPaths() {
+        if (this.cachedFontPaths)
+            return this.cachedFontPaths;
         const paths = system_1.systemFontPaths.get(this.getPlatform()) || [];
         const home = os.homedir();
-        return paths.map((p) => (p.startsWith('~') ? path.join(home, p.slice(1)) : p));
+        this.cachedFontPaths = paths.map((p) => (p.startsWith('~') ? path.join(home, p.slice(1)) : p));
+        return this.cachedFontPaths;
     }
     getUpTime() {
         let sec = os.uptime();

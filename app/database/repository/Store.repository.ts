@@ -135,9 +135,8 @@ export const StoreRepository = {
       });
     }
 
-    if (options.take) {
-      db.limit(options.take);
-    }
+    const MAX_SEARCH_LIMIT = 5000;
+    db.limit(Math.min(options.take || 500, MAX_SEARCH_LIMIT));
 
     if (options.skip) {
       db.offset(options.skip);
@@ -322,13 +321,7 @@ export const StoreRepository = {
       data.version = item.version;
     }
 
-    //@todo Log errors in log table.
-    return await this.createQueryBuilder()
-      .insert()
-      .into(Store)
-      .values(data)
-      .execute()
-      .catch((err: any) => console.log('insert-error', err));
+    return await this.createQueryBuilder().insert().into(Store).values(data).execute();
   },
 
   async evaluateSmartRules(rules: SmartCollectionRule[], matchType: string, options: any = {}) {
@@ -437,19 +430,18 @@ export const StoreRepository = {
   },
 
   async fetchSystemStats() {
-    const rowCount = await this.createQueryBuilder().select('COUNT(*)', 'total').getRawOne();
-
-    const favoriteCount = await this.createQueryBuilder().select('COUNT(*)', 'total').where('store.favorite = 1').getRawOne();
-
-    const systemCount = await this.createQueryBuilder().select('COUNT(*)', 'total').where('store.system = 1').getRawOne();
-
-    const temporaryCount = await this.createQueryBuilder().select('COUNT(*)', 'total').where('store.temporary = 1').getRawOne();
+    const stats = await this.createQueryBuilder()
+      .select('COUNT(*)', 'rowCount')
+      .addSelect('SUM(CASE WHEN store.favorite = 1 THEN 1 ELSE 0 END)', 'favoriteCount')
+      .addSelect('SUM(CASE WHEN store.system = 1 THEN 1 ELSE 0 END)', 'systemCount')
+      .addSelect('SUM(CASE WHEN store.temporary = 1 THEN 1 ELSE 0 END)', 'temporaryCount')
+      .getRawOne();
 
     return {
-      rowCount: rowCount.total,
-      favoriteCount: favoriteCount.total,
-      systemCount: systemCount.total,
-      temporaryCount: temporaryCount.total,
+      rowCount: Number(stats.rowCount) || 0,
+      favoriteCount: Number(stats.favoriteCount) || 0,
+      systemCount: Number(stats.systemCount) || 0,
+      temporaryCount: Number(stats.temporaryCount) || 0,
     };
   },
 };

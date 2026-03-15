@@ -72,13 +72,11 @@ export const CollectionRepository = {
   },
 
   async updateCollectionCounts(items: any[]) {
-    return items.forEach(async (item) => {
-      return await this.createQueryBuilder()
-        .update(Collection)
-        .set({ count: item.total })
-        .where('id = :id', { id: item.collection_id })
-        .execute();
-    });
+    await Promise.all(
+      items.map((item) =>
+        this.createQueryBuilder().update(Collection).set({ count: item.total }).where('id = :id', { id: item.collection_id }).execute(),
+      ),
+    );
   },
 
   updateCollection(collectionId: number, data: any) {
@@ -133,13 +131,13 @@ export const CollectionRepository = {
   async createChild(parentId: number, title: string) {
     const row = await this.findOne({ where: { id: parentId } });
 
-    this.createQueryBuilder()
+    await this.createQueryBuilder()
       .update(Collection)
       .set({ left_id: () => 'left_id + 2', right_id: () => 'right_id + 2' })
       .where({ left_id: MoreThan(row.right_id) })
       .execute();
 
-    this.createQueryBuilder()
+    await this.createQueryBuilder()
       .update(Collection)
       .set({ right_id: () => 'right_id + 2' })
       .where({ left_id: LessThanOrEqual(row.left_id), right_id: MoreThanOrEqual(row.left_id) })
@@ -264,9 +262,11 @@ export const CollectionRepository = {
       .orderBy('collection.left_id', 'ASC')
       .getMany();
 
-    for (let i = 0; i < newSiblings.length; i++) {
-      await this.createQueryBuilder().update(Collection).set({ orderby: i }).where('id = :id', { id: newSiblings[i].id }).execute();
-    }
+    await Promise.all(
+      newSiblings.map((sibling: Collection, i: number) =>
+        this.createQueryBuilder().update(Collection).set({ orderby: i }).where('id = :id', { id: sibling.id }).execute(),
+      ),
+    );
   },
 
   async createSystemCollection() {

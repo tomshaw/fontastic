@@ -93,20 +93,14 @@ export default class MessageHandler {
     this.handle(ChannelType.IPC_AUTH_USER, async (_event: IpcMainEvent, args: any) => this.fontManager.systemAuthenticate(args));
 
     this.handle(ChannelType.IPC_SCAN_FILES, async (_event: IpcMainEvent, args: any) => {
-      console.log('[IPC_SCAN_FILES] args:', JSON.stringify(args));
       const catalogFiles = await this.fontManager.copyFiles(args.files, args.collectionId);
-      console.log('[IPC_SCAN_FILES] copied to catalog:', catalogFiles);
       await this.fontManager.scanFiles(catalogFiles, { collection_id: args.collectionId });
-      console.log('[IPC_SCAN_FILES] scan complete');
     });
 
     this.handle(ChannelType.IPC_SCAN_FOLDERS, async (_event: IpcMainEvent, args: any) => {
-      console.log('[IPC_SCAN_FOLDERS] args:', JSON.stringify(args));
       const promises = args.folders.map(async (sourceFolder: string) => {
         const dest = await this.fontManager.copyFolder(sourceFolder, args.collectionId);
-        console.log('[IPC_SCAN_FOLDERS] copied to:', dest);
         await this.fontManager.scanFolder(dest, { collection_id: args.collectionId });
-        console.log('[IPC_SCAN_FOLDERS] scan complete for:', dest);
       });
       await Promise.allSettled(promises);
     });
@@ -205,7 +199,12 @@ export default class MessageHandler {
     this.handle(ChannelType.IPC_SMART_COLLECTION_EVALUATE, async (_event: IpcMainEvent, args: any) => {
       const sc = await this.connectionManager.getSmartCollectionRepository().findOneBy({ id: args.id });
       if (!sc) return [[], 0];
-      const rules = JSON.parse(sc.rules);
+      let rules;
+      try {
+        rules = JSON.parse(sc.rules);
+      } catch {
+        return [[], 0];
+      }
       return await this.connectionManager.getStoreRepository().evaluateSmartRules(rules, sc.match_type, {
         skip: args.skip,
         take: args.take,
@@ -278,7 +277,7 @@ export default class MessageHandler {
     });
 
     this.handle(ChannelType.IPC_FONT_METRICS, async (_event: IpcMainEvent, filePath: string) => {
-      const fontObject = new FontObject(filePath);
+      const fontObject = FontObject.fromCache(filePath);
       if (fontObject.hasError()) {
         return null;
       }
@@ -293,7 +292,7 @@ export default class MessageHandler {
     });
 
     this.handle(ChannelType.IPC_FONT_GLYPHS, async (_event: IpcMainEvent, filePath: string) => {
-      const fontObject = new FontObject(filePath);
+      const fontObject = FontObject.fromCache(filePath);
       if (fontObject.hasError()) {
         return [];
       }
