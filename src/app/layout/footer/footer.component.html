@@ -1,5 +1,5 @@
-<div class="panel grid w-full h-full" [style.grid-template-columns]="'var(--panel-width) 1fr var(--panel-width)'">
-  <div class="h-full w-full flex items-center px-2 gap-2">
+<div class="panel h-full w-full flex items-center justify-between px-2">
+  <div class="flex items-center gap-2">
     <app-spinner [animating]="presentation.loading()" />
     @if (presentation.scanProgress(); as progress) {
       <span class="text-[10px] truncate" [style.color]="'var(--text-muted)'">
@@ -7,6 +7,10 @@
       </span>
     }
   </div>
-  <div class="h-full w-full flex items-center"></div>
-  <div class="h-full w-full flex items-center justify-end"></div>
+  <div class="flex items-center gap-3">
+    <span class="text-[10px]" [style.color]="'var(--text-muted)'">Fontastic v{{ appVersion() }}</span>
+    <span class="text-[10px]" [style.color]="'var(--text-muted)'">Electron {{ electronVersion() }}</span>
+    <span class="text-[10px]" [style.color]="'var(--text-muted)'">Chrome {{ chromeVersion() }}</span>
+    <span class="text-[10px]" [style.color]="'var(--text-muted)'">Node {{ nodeVersion() }}</span>
+  </div>
 </div>
