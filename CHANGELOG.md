@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/tomshaw/fontastic/compare/fontastic-v1.3.1...fontastic-v1.3.2) (2026-03-17)
+
+
+### 🛠️ Fixes
+
+* update Content Security Policy to allow inline styles ([d95f7b5](https://github.com/tomshaw/fontastic/commit/d95f7b50f6cf0265052ad5964915ee42367d2c70))
+
 ## [1.3.1](https://github.com/tomshaw/fontastic/compare/fontastic-v1.3.0...fontastic-v1.3.1) (2026-03-17)
 
 
