@@ -164,7 +164,7 @@ try {
           responseHeaders: {
             ...details.responseHeaders,
             'Content-Security-Policy': [
-              "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' font:; img-src 'self' data: https:;",
+              "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' font:; img-src 'self' data: https:;",
             ],
           },
         });
