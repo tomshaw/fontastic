@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/tomshaw/fontastic/compare/fontastic-v1.3.0...fontastic-v1.3.1) (2026-03-17)
+
+
+### 🛠️ Fixes
+
+* update base href in index.html for correct path resolution ([2c30779](https://github.com/tomshaw/fontastic/commit/2c307790d64947fbbbf0f3ec057c4994e28ddf13))
+
 ## [1.3.0](https://github.com/tomshaw/fontastic/compare/fontastic-v1.2.0...fontastic-v1.3.0) (2026-03-15)
 
 
