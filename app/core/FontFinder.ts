@@ -81,9 +81,22 @@ export default class FontFinder {
 
   private async processInBatches(fontFiles: { fp: string; fileType: string }[], options: any) {
     const total = fontFiles.length;
+    const repository = this.connectionManager.getStoreRepository();
+
     for (let i = 0; i < fontFiles.length; i += SCAN_CONCURRENCY) {
       const batch = fontFiles.slice(i, i + SCAN_CONCURRENCY);
-      await Promise.all(batch.map(({ fp, fileType }) => this.processFont(fp, fileType, options)));
+      const parsed = await Promise.all(batch.map(({ fp, fileType }) => this.parseFont(fp, fileType, options)));
+      const rows = parsed.filter((row) => row !== null);
+
+      if (rows.length) {
+        try {
+          // One multi-row INSERT per batch instead of one statement per font.
+          await repository.createMany(rows);
+          this.counter += rows.length;
+        } catch (err: any) {
+          this.errors.push(...rows.map((row) => ({ file: row.file_path, message: err.message })));
+        }
+      }
 
       if (this.onProgress) {
         const lastFile = batch[batch.length - 1];
@@ -97,12 +110,12 @@ export default class FontFinder {
     }
   }
 
-  private async processFont(fp: string, fileType: string, options: any) {
+  private async parseFont(fp: string, fileType: string, options: any): Promise<any | null> {
     const font = new FontObject(fp);
 
     if (font.hasError()) {
       this.errors.push(font.getError());
-      return;
+      return null;
     }
 
     let stat;
@@ -110,10 +123,10 @@ export default class FontFinder {
       stat = await fs.stat(fp);
     } catch (err: any) {
       this.errors.push({ file: fp, message: err.message });
-      return;
+      return null;
     }
 
-    const data = {
+    return {
       file_path: fp,
       file_name: path.basename(fp),
       file_size: stat.size,
@@ -123,12 +136,5 @@ export default class FontFinder {
       ...options,
       ...font.getNamesTable(),
     };
-
-    try {
-      await this.connectionManager.getStoreRepository().create(data);
-      this.counter++;
-    } catch (err: any) {
-      this.errors.push({ file: fp, message: err.message });
-    }
   }
 }

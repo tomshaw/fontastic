@@ -9,15 +9,13 @@
   "main": "main.js",
   "private": true,
   "dependencies": {
-    "electron-log": "^4.4.8",
+    "electron-log": "^5.4.4",
     "electron-store": "^8.2.0",
     "mime": "^3.0.0",
-    "node-fetch": "^2.7.0",
     "node-machine-id": "^1.1.12",
     "fontkit": "^2.0.4",
     "pretty-bytes": "^5.6.0",
-    "better-sqlite3": "^12.6.2",
-    "sudo-prompt": "^9.2.1",
-    "typeorm": "^0.3.20"
+    "better-sqlite3": "^12.11.1",
+    "typeorm": "^1.0.0"
   }
 }

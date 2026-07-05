@@ -6,13 +6,10 @@ import ConnectionManager from './ConnectionManager';
 
 import FontCatalog from './FontCatalog';
 import FontFinder, { ProgressCallback } from './FontFinder';
-import { execute } from '../helpers/command';
 
 import { StorageType } from '../enums/StorageType';
 
 import * as path from 'path';
-
-const fetch = require('node-fetch');
 
 export default class FontManager {
   systemManager: SystemManager;
@@ -56,14 +53,6 @@ export default class FontManager {
     return this.configManager.get(StorageType.User);
   }
 
-  async executeCommand(args: any) {
-    try {
-      return await execute(args.cmd, args.options);
-    } catch (err) {
-      return err;
-    }
-  }
-
   getDestinationFolder(collectionId: number) {
     return path.join(this.systemManager.getCatalogPath(), String(collectionId));
   }
@@ -91,7 +80,7 @@ export default class FontManager {
   }
 
   showMessageBox(options: any) {
-    return dialog.showMessageBox(null, options);
+    return dialog.showMessageBox(options);
   }
 
   showOpenDialog(options: any) {
@@ -107,7 +96,17 @@ export default class FontManager {
   }
 
   openExternal(url: string) {
-    shell.openExternal(url);
+    // Only allow web URLs — anything else (file:, smb:, custom schemes) is a
+    // request the renderer should never be able to make.
+    let protocol: string;
+    try {
+      protocol = new URL(url).protocol;
+    } catch {
+      return;
+    }
+    if (protocol === 'https:' || protocol === 'http:') {
+      shell.openExternal(url);
+    }
   }
 
   showItemInFolder(fullPath: string) {

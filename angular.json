@@ -28,7 +28,7 @@
               "base": "dist"
             },
             "index": "src/index.html",
-            "polyfills": ["zone.js"],
+            "polyfills": [],
             "tsConfig": "src/tsconfig.app.json",
             "inlineStyleLanguage": "css",
             "assets": ["src/favicon.ico", "src/assets"],
@@ -66,7 +66,7 @@
               ]
             },
             "testing": {
-              "polyfills": ["zone.js", "zone.js/testing"]
+              "polyfills": []
             }
           }
         },
@@ -100,7 +100,12 @@
             "coverage": true,
             "coverageReporters": ["html", "lcovonly"],
             "reporters": [
-              ["default", { "summary": true }],
+              [
+                "default",
+                {
+                  "summary": true
+                }
+              ],
               [
                 "html",
                 {

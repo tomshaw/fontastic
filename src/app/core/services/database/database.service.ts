@@ -93,6 +93,12 @@ export class DatabaseService {
     this.fetchCurrentPage();
   }
 
+  private static readonly filterWhereMap: Record<string, { key: string; value: number }[]> = {
+    all: [],
+    favorites: [{ key: 'store.favorite', value: 1 }],
+    system: [{ key: 'store.system', value: 1 }],
+  };
+
   selectFilter(filter: string) {
     this.parentId.set(null);
     this.collectionId.set(null);
@@ -101,13 +107,7 @@ export class DatabaseService {
     this.activeSmartCollectionId.set(null);
     this.currentPage.set(1);
 
-    const whereMap: Record<string, { key: string; value: number }[]> = {
-      all: [],
-      favorites: [{ key: 'store.favorite', value: 1 }],
-      system: [{ key: 'store.system', value: 1 }],
-    };
-
-    this.fetchCurrentPage({ where: whereMap[filter] ?? [] });
+    this.fetchCurrentPage({ where: DatabaseService.filterWhereMap[filter] ?? [] });
   }
 
   goToPage(page: number) {
@@ -161,12 +161,7 @@ export class DatabaseService {
     if (collectionId) {
       options.collectionId = collectionId;
     } else if (filter) {
-      const whereMap: Record<string, { key: string; value: number }[]> = {
-        all: [],
-        favorites: [{ key: 'store.favorite', value: 1 }],
-        system: [{ key: 'store.system', value: 1 }],
-      };
-      options.where = whereMap[filter] ?? [];
+      options.where = DatabaseService.filterWhereMap[filter] ?? [];
     }
 
     this.storeFetch(options);
@@ -185,7 +180,6 @@ export class DatabaseService {
 
       this.collections.set(collections);
       this.smartCollections.set(smartCollections);
-      console.log('System Boot:', collections);
 
       if (savedSortColumn) {
         this.sortColumn.set(savedSortColumn);
@@ -258,7 +252,6 @@ export class DatabaseService {
     return this.track(
       this.message.collectionCreate(args).then((result) => {
         this.collections.set(result);
-        console.log('Collection Created:', result);
         return result;
       }),
     );

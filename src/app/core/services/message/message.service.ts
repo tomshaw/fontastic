@@ -13,47 +13,43 @@ import type { SmartCollection } from '@main/database/entity/SmartCollection.sche
 export class MessageService {
   private electron = inject(ElectronService);
 
+  /** Maps registered listeners to their bridge subscription ids. */
+  private subscriptions = new Map<(...args: any[]) => void, number>();
+
   // Low-level IPC
 
-  on(channel: string, listener: (...args: any[]) => void): Electron.IpcRenderer | undefined {
-    if (this.electron.isElectron) {
-      return this.electron.ipcRenderer.on(channel, listener);
+  on(channel: string, listener: (...args: any[]) => void): void {
+    const id = this.electron.bridge?.on(channel, listener);
+    if (id !== undefined) {
+      this.subscriptions.set(listener, id);
     }
-    return undefined;
   }
 
-  once(channel: string, listener: (...args: any[]) => void): Electron.IpcRenderer | undefined {
-    if (this.electron.isElectron) {
-      return this.electron.ipcRenderer.once(channel, listener);
-    }
-    return undefined;
+  once(channel: string, listener: (...args: any[]) => void): void {
+    this.electron.bridge?.once(channel, listener);
   }
 
   send(channel: string, args?: any): void {
-    if (this.electron.isElectron) {
-      this.electron.ipcRenderer.send(channel, args);
-    }
+    this.electron.bridge?.send(channel, args);
   }
 
   invoke<T = any>(channel: string, args?: any): Promise<T> {
-    if (this.electron.isElectron) {
-      return this.electron.ipcRenderer.invoke(channel, args);
+    if (this.electron.bridge) {
+      return this.electron.bridge.invoke<T>(channel, args);
     }
     return Promise.reject('Not running in Electron');
   }
 
-  removeListener(channel: string, listener: (...args: any[]) => void): Electron.IpcRenderer | undefined {
-    if (this.electron.isElectron) {
-      return this.electron.ipcRenderer.removeListener(channel, listener);
+  removeListener(channel: string, listener: (...args: any[]) => void): void {
+    const id = this.subscriptions.get(listener);
+    if (id !== undefined) {
+      this.electron.bridge?.off(id);
+      this.subscriptions.delete(listener);
     }
-    return undefined;
   }
 
-  removeAllListeners(channel: string): Electron.IpcRenderer | undefined {
-    if (this.electron.isElectron) {
-      return this.electron.ipcRenderer.removeAllListeners(channel);
-    }
-    return undefined;
+  removeAllListeners(channel: string): void {
+    this.electron.bridge?.removeAllListeners(channel);
   }
 
   // System
@@ -103,10 +99,6 @@ export class MessageService {
   }
 
   // Font Manager
-
-  exec(args: any): Promise<any> {
-    return this.invoke(ChannelType.IPC_EXEC_CMD, args);
-  }
 
   systemAuthenticate(args: any): Promise<any> {
     return this.invoke(ChannelType.IPC_AUTH_USER, args);

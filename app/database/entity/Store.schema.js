@@ -21,6 +21,7 @@ __decorate([
 ], Store.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('int'),
+    (0, typeorm_1.Index)(),
     __metadata("design:type", Number)
 ], Store.prototype, "collection_id", void 0);
 __decorate([

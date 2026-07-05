@@ -72,7 +72,7 @@ export class WaterfallComponent {
 
   private buildLowScale(ratio: number, baseMultiplier: number, length: number): ScaleItem[] {
     let baseSize = 1;
-    let result = 1;
+    let result: number;
     const items: ScaleItem[] = [];
 
     for (let i = 0; i < length; i++) {

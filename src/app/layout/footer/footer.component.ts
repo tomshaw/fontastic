@@ -18,12 +18,12 @@ export class FooterComponent {
   readonly nodeVersion = signal('');
 
   constructor() {
-    if (this.electron.isElectron) {
-      const versions = (window as any).process.versions;
-      this.electronVersion.set(versions.electron ?? '');
-      this.chromeVersion.set(versions.chrome ?? '');
-      this.nodeVersion.set(versions.node ?? '');
-      this.electron.ipcRenderer.invoke('app:get-version').then((v: string) => this.appVersion.set(v));
+    const bridge = this.electron.bridge;
+    if (bridge) {
+      this.electronVersion.set(bridge.versions.electron);
+      this.chromeVersion.set(bridge.versions.chrome);
+      this.nodeVersion.set(bridge.versions.node);
+      bridge.invoke<string>('app:get-version').then((v) => this.appVersion.set(v));
     }
   }
 }

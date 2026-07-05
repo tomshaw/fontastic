@@ -317,7 +317,12 @@ export class PresentationService {
   // --- Scan Progress (MessageChannelMain) ---
 
   private initScanProgress() {
-    this.electronService.ipcRenderer.on(ChannelType.IPC_SCAN_PROGRESS_PORT, (event: any) => {
+    // The preload script forwards the MessagePort from the main process into
+    // the isolated world via window.postMessage (ports cannot cross the
+    // context bridge directly).
+    window.addEventListener('message', (event: MessageEvent) => {
+      if (event.source !== window || event.data?.type !== ChannelType.IPC_SCAN_PROGRESS_PORT) return;
+
       const port = event.ports[0];
       if (!port) return;
 
@@ -325,7 +330,9 @@ export class PresentationService {
         this.scanProgress.set(msgEvent.data);
       };
 
-      port.onclose = () => {
+      // `close` fires when the main process closes its end of the channel.
+      // (Not yet in the TS DOM lib, but supported since Chromium 126.)
+      (port as MessagePort & { onclose: (() => void) | null }).onclose = () => {
         this.scanProgress.set(null);
       };
 

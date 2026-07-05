@@ -14,7 +14,6 @@ var ChannelType;
     ChannelType["IPC_DBCONNECTION_DELETE"] = "IPC_DBCONNECTION_DELETE";
     ChannelType["IPC_DBCONNECTION_TEST"] = "IPC_DBCONNECTION_TEST";
     ChannelType["IPC_DATABASE_DROP"] = "IPC_DATABASE_DROP";
-    ChannelType["IPC_EXEC_CMD"] = "IPC_EXEC_CMD";
     ChannelType["IPC_AUTH_USER"] = "IPC_AUTH_USER";
     ChannelType["IPC_SCAN_FILES"] = "IPC_SCAN_FILES";
     ChannelType["IPC_SCAN_FOLDERS"] = "IPC_SCAN_FOLDERS";

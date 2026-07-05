@@ -80,9 +80,10 @@ function createWindow(): BrowserWindow {
     width: size.width,
     height: size.height,
     webPreferences: {
-      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
       allowRunningInsecureContent: serve,
-      contextIsolation: false,
+      contextIsolation: true,
       webSecurity: !serve,
     },
   });
@@ -164,7 +165,7 @@ try {
           responseHeaders: {
             ...details.responseHeaders,
             'Content-Security-Policy': [
-              "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' font:; img-src 'self' data: https:;",
+              "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' font:; img-src 'self' data: https:;",
             ],
           },
         });

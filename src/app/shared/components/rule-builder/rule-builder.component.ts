@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModalBackdropDirective } from '../../directives/modal-backdrop/modal-backdrop.directive';
 import { DatabaseService } from '../../../core/services/database/database.service';
@@ -81,8 +81,8 @@ export class RuleBuilderComponent implements OnInit {
   title = '';
   matchType: string = 'AND';
   rules: SmartCollectionRule[] = [];
-  previewCount: number | null = null;
-  previewing = false;
+  readonly previewCount = signal<number | null>(null);
+  readonly previewing = signal(false);
 
   readonly fieldOptions = FIELD_OPTIONS;
 
@@ -121,32 +121,32 @@ export class RuleBuilderComponent implements OnInit {
     } else {
       rule.value = '';
     }
-    this.previewCount = null;
+    this.previewCount.set(null);
   }
 
   addRule(): void {
     this.rules.push({ field: 'font_family', operator: 'contains', value: '' });
-    this.previewCount = null;
+    this.previewCount.set(null);
   }
 
   removeRule(index: number): void {
     this.rules.splice(index, 1);
-    this.previewCount = null;
+    this.previewCount.set(null);
   }
 
   preview(): void {
-    if (this.rules.length === 0 || this.previewing) return;
-    this.previewing = true;
-    this.previewCount = null;
+    if (this.rules.length === 0 || this.previewing()) return;
+    this.previewing.set(true);
+    this.previewCount.set(null);
     this.db
       .smartCollectionPreview(this.rules, this.matchType)
       .then((count) => {
-        this.previewCount = count;
-        this.previewing = false;
+        this.previewCount.set(count);
+        this.previewing.set(false);
       })
       .catch(() => {
-        this.previewCount = null;
-        this.previewing = false;
+        this.previewCount.set(null);
+        this.previewing.set(false);
       });
   }
 

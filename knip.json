@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["src/main.ts", "app/main.ts", "e2e/**/*.spec.ts", "scripts/*.js"],
+  "project": ["src/**/*.ts", "app/**/*.ts"],
+  "ignore": ["app/**/*.js"],
+  "ignoreDependencies": [
+    "@fontsource-variable/inter",
+    "material-icons",
+    "electron-debug",
+    "electron-reloader",
+    "@angular-eslint/schematics",
+    "@angular-eslint/builder",
+    "@angular/language-service",
+    "@vitest/browser-playwright",
+    "@vitest/coverage-v8",
+    "@vitest/ui"
+  ]
+}

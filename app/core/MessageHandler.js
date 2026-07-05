@@ -75,7 +75,6 @@ class MessageHandler {
         }));
         this.handle(ChannelType_1.ChannelType.IPC_DATABASE_DROP, (_event) => __awaiter(this, void 0, void 0, function* () { return this.connectionManager.getDataSource().dropDatabase(); }));
         // Font Manager
-        this.handle(ChannelType_1.ChannelType.IPC_EXEC_CMD, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.executeCommand(args).catch((err) => this.sendMessage('error', err.message)); }));
         this.handle(ChannelType_1.ChannelType.IPC_AUTH_USER, (_event, args) => __awaiter(this, void 0, void 0, function* () { return this.fontManager.systemAuthenticate(args); }));
         this.handle(ChannelType_1.ChannelType.IPC_SCAN_FILES, (_event, args) => __awaiter(this, void 0, void 0, function* () {
             const { port1, port2 } = new electron_1.MessageChannelMain();

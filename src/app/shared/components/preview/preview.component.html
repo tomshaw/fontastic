@@ -6,6 +6,7 @@
         class="pb-3 cursor-pointer transition-colors rounded-sm"
         [style.border-color]="'var(--border-subtle)'"
         [id]="'preview-store-' + store.id"
+        [appLazyFont]="store"
         [style.background-color]="db.storeId() === store.id ? 'var(--selected-bg)' : 'transparent'"
         (click)="selectStore(store.id)"
       >

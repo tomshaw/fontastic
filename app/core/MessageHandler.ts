@@ -108,10 +108,6 @@ export default class MessageHandler {
 
     // Font Manager
 
-    this.handle(ChannelType.IPC_EXEC_CMD, async (_event: IpcMainEvent, args: any) =>
-      this.fontManager.executeCommand(args).catch((err: Error) => this.sendMessage('error', err.message)),
-    );
-
     this.handle(ChannelType.IPC_AUTH_USER, async (_event: IpcMainEvent, args: any) => this.fontManager.systemAuthenticate(args));
 
     this.handle(ChannelType.IPC_SCAN_FILES, async (_event: IpcMainEvent, args: any) => {

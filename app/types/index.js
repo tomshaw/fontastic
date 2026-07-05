@@ -27,4 +27,5 @@ __exportStar(require("./SmartCollection"), exports);
 __exportStar(require("./NativeThemeState"), exports);
 __exportStar(require("./SystemPreferencesState"), exports);
 __exportStar(require("./ScanProgress"), exports);
+__exportStar(require("./Bridge"), exports);
 //# sourceMappingURL=index.js.map

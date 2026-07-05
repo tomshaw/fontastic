@@ -79,9 +79,21 @@ class FontFinder {
     processInBatches(fontFiles, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const total = fontFiles.length;
+            const repository = this.connectionManager.getStoreRepository();
             for (let i = 0; i < fontFiles.length; i += SCAN_CONCURRENCY) {
                 const batch = fontFiles.slice(i, i + SCAN_CONCURRENCY);
-                yield Promise.all(batch.map(({ fp, fileType }) => this.processFont(fp, fileType, options)));
+                const parsed = yield Promise.all(batch.map(({ fp, fileType }) => this.parseFont(fp, fileType, options)));
+                const rows = parsed.filter((row) => row !== null);
+                if (rows.length) {
+                    try {
+                        // One multi-row INSERT per batch instead of one statement per font.
+                        yield repository.createMany(rows);
+                        this.counter += rows.length;
+                    }
+                    catch (err) {
+                        this.errors.push(...rows.map((row) => ({ file: row.file_path, message: err.message })));
+                    }
+                }
                 if (this.onProgress) {
                     const lastFile = batch[batch.length - 1];
                     this.onProgress({
@@ -94,12 +106,12 @@ class FontFinder {
             }
         });
     }
-    processFont(fp, fileType, options) {
+    parseFont(fp, fileType, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const font = new FontObject_1.default(fp);
             if (font.hasError()) {
                 this.errors.push(font.getError());
-                return;
+                return null;
             }
             let stat;
             try {
@@ -107,16 +119,9 @@ class FontFinder {
             }
             catch (err) {
                 this.errors.push({ file: fp, message: err.message });
-                return;
+                return null;
             }
-            const data = Object.assign(Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: stat.size, file_size_pretty: prettyBytes(stat.size), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options), font.getNamesTable());
-            try {
-                yield this.connectionManager.getStoreRepository().create(data);
-                this.counter++;
-            }
-            catch (err) {
-                this.errors.push({ file: fp, message: err.message });
-            }
+            return Object.assign(Object.assign({ file_path: fp, file_name: path.basename(fp), file_size: stat.size, file_size_pretty: prettyBytes(stat.size), file_type: fileType, installable: mimes_1.installable.includes(fileType) }, options), font.getNamesTable());
         });
     }
 }

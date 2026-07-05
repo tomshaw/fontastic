@@ -3,7 +3,6 @@ export * from './context-menu/context-menu.component';
 export * from './page-not-found/page-not-found.component';
 export * from './panel/panel.component';
 export * from './datagrid/datagrid.component';
-export * from './prompt-dialog/prompt-dialog.component';
 export * from './rule-builder/rule-builder.component';
 export * from './toolbar/toolbar.component';
 export * from './glyphs/glyphs.component';

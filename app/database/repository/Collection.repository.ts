@@ -7,28 +7,6 @@ export const CollectionRepository = {
 
     db.where('collection.is_system = 0');
 
-    db.leftJoin('collection.stores', 'store');
-
-    db.loadRelationCountAndMap('store.storeCount', 'collection.stores'); // correct
-
-    db.loadRelationCountAndMap('store.installableCount', 'collection.stores', 'store', (qb: any) =>
-      qb.andWhere('store.installable = :placeholder', {
-        placeholder: true,
-      }),
-    );
-
-    db.loadRelationCountAndMap('store.temporaryCount', 'collection.stores', 'store', (qb: any) =>
-      qb.andWhere('store.temporary = :placeholder', {
-        placeholder: true,
-      }),
-    );
-
-    db.loadRelationCountAndMap('store.favoriteCount', 'collection.stores', 'store', (qb: any) =>
-      qb.andWhere('store.favorite = :placeholder', {
-        placeholder: true,
-      }),
-    );
-
     db.orderBy('collection.orderby', 'ASC');
     db.addOrderBy('LOWER(collection.title)', 'ASC');
 

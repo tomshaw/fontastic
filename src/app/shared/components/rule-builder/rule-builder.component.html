@@ -84,12 +84,12 @@
           Add Rule
         </button>
         <div class="flex items-center gap-2">
-          @if (previewCount !== null) {
-            <span class="text-xs opacity-70">{{ previewCount }} {{ previewCount === 1 ? 'font' : 'fonts' }} matched</span>
+          @if (previewCount() !== null) {
+            <span class="text-xs opacity-70">{{ previewCount() }} {{ previewCount() === 1 ? 'font' : 'fonts' }} matched</span>
           }
-          <button class="btn btn-sm btn-default" (click)="preview()" [disabled]="previewing">
+          <button class="btn btn-sm btn-default" (click)="preview()" [disabled]="previewing()">
             <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle">search</span>
-            {{ previewing ? 'Checking...' : 'Preview' }}
+            {{ previewing() ? 'Checking...' : 'Preview' }}
           </button>
         </div>
       </div>

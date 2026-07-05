@@ -9,6 +9,7 @@ export class Store {
   id: number;
 
   @Column('int')
+  @Index()
   collection_id: number;
 
   @Column({ type: 'varchar', length: 255, default: '', nullable: true })

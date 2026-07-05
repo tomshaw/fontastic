@@ -230,98 +230,59 @@ export const StoreRepository = {
       .getRawMany();
   },
 
+  normalizeStore(item: Store): Store {
+    const data = <Store>{
+      collection_id: item.collection_id,
+      file_name: item.file_name || '',
+      file_path: item.file_path || '',
+      file_size: item.file_size || 0,
+      file_size_pretty: item.file_size_pretty || '',
+      file_type: item.file_type || '',
+      installable: item.installable || 0,
+      temporary: item.temporary || 0,
+      favorite: item.favorite || 0,
+      system: item.system || 0,
+    };
+
+    const optionalTextFields = [
+      'compatible_full_name',
+      'copyright',
+      'description',
+      'designer',
+      'designer_url',
+      'font_family',
+      'font_subfamily',
+      'full_name',
+      'license',
+      'license_url',
+      'manufacturer',
+      'manufacturer_url',
+      'post_script_name',
+      'preferred_family',
+      'preferred_sub_family',
+      'sample_text',
+      'trademark',
+      'unique_id',
+      'version',
+    ] as const;
+
+    for (const field of optionalTextFields) {
+      if (item[field]) {
+        (data as any)[field] = item[field];
+      }
+    }
+
+    return data;
+  },
+
   async create(item: Store) {
-    let data = <Store>{};
+    return await this.createQueryBuilder().insert().into(Store).values(this.normalizeStore(item)).execute();
+  },
 
-    data.collection_id = item.collection_id;
-    data.file_name = item.file_name ? item.file_name : '';
-    data.file_path = item.file_path ? item.file_path : '';
-    data.file_size = item.file_size ? item.file_size : 0;
-    data.file_size_pretty = item.file_size_pretty ? item.file_size_pretty : '';
-    data.file_type = item.file_type ? item.file_type : '';
-
-    data.installable = item.installable ? item.installable : 0;
-    data.temporary = item.temporary ? item.temporary : 0;
-    data.favorite = item.favorite ? item.favorite : 0;
-    data.system = item.system ? item.system : 0;
-
-    if (item.compatible_full_name && item.compatible_full_name !== '') {
-      data.compatible_full_name = item.compatible_full_name;
-    }
-
-    if (item.copyright && item.copyright !== '') {
-      data.copyright = item.copyright;
-    }
-
-    if (item.description && item.description !== '') {
-      data.description = item.description;
-    }
-
-    if (item.designer && item.designer !== '') {
-      data.designer = item.designer;
-    }
-
-    if (item.designer_url && item.designer_url !== '') {
-      data.designer_url = item.designer_url;
-    }
-
-    if (item.font_family && item.font_family !== '') {
-      data.font_family = item.font_family;
-    }
-
-    if (item.font_subfamily && item.font_subfamily !== '') {
-      data.font_subfamily = item.font_subfamily;
-    }
-
-    if (item.full_name && item.full_name !== '') {
-      data.full_name = item.full_name;
-    }
-
-    if (item.license && item.license !== '') {
-      data.license = item.license;
-    }
-
-    if (item.license_url && item.license_url !== '') {
-      data.license_url = item.license_url;
-    }
-
-    if (item.manufacturer && item.manufacturer !== '') {
-      data.manufacturer = item.manufacturer;
-    }
-
-    if (item.manufacturer_url && item.manufacturer_url !== '') {
-      data.manufacturer_url = item.manufacturer_url;
-    }
-
-    if (item.post_script_name && item.post_script_name !== '') {
-      data.post_script_name = item.post_script_name;
-    }
-
-    if (item.preferred_family && item.preferred_family !== '') {
-      data.preferred_family = item.preferred_family;
-    }
-
-    if (item.preferred_sub_family && item.preferred_sub_family !== '') {
-      data.preferred_sub_family = item.preferred_sub_family;
-    }
-
-    if (item.sample_text && item.sample_text !== '') {
-      data.sample_text = item.sample_text;
-    }
-
-    if (item.trademark && item.trademark !== '') {
-      data.trademark = item.trademark;
-    }
-
-    if (item.unique_id && item.unique_id !== '') {
-      data.unique_id = item.unique_id;
-    }
-
-    if (item.version && item.version !== '') {
-      data.version = item.version;
-    }
-
-    return await this.createQueryBuilder().insert().into(Store).values(data).execute();
+  async createMany(items: Store[]) {
+    if (!items.length) return;
+    const rows = items.map((item: Store) => this.normalizeStore(item));
+    return await this.createQueryBuilder().insert().into(Store).values(rows).execute();
   },
 
   async evaluateSmartRules(rules: SmartCollectionRule[], matchType: string, options: any = {}) {

@@ -12,10 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const FontCatalog_1 = require("./FontCatalog");
 const FontFinder_1 = require("./FontFinder");
-const command_1 = require("../helpers/command");
 const StorageType_1 = require("../enums/StorageType");
 const path = require("path");
-const fetch = require('node-fetch');
 class FontManager {
     constructor(systemManager, configManager, connectionManager) {
         this.catalog = new FontCatalog_1.default();
@@ -51,16 +49,6 @@ class FontManager {
             return this.configManager.get(StorageType_1.StorageType.User);
         });
     }
-    executeCommand(args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                return yield (0, command_1.execute)(args.cmd, args.options);
-            }
-            catch (err) {
-                return err;
-            }
-        });
-    }
     getDestinationFolder(collectionId) {
         return path.join(this.systemManager.getCatalogPath(), String(collectionId));
     }
@@ -91,7 +79,7 @@ class FontManager {
         });
     }
     showMessageBox(options) {
-        return electron_1.dialog.showMessageBox(null, options);
+        return electron_1.dialog.showMessageBox(options);
     }
     showOpenDialog(options) {
         return electron_1.dialog.showOpenDialog(options);
@@ -103,7 +91,18 @@ class FontManager {
         electron_1.shell.openPath(path);
     }
     openExternal(url) {
-        electron_1.shell.openExternal(url);
+        // Only allow web URLs — anything else (file:, smb:, custom schemes) is a
+        // request the renderer should never be able to make.
+        let protocol;
+        try {
+            protocol = new URL(url).protocol;
+        }
+        catch (_a) {
+            return;
+        }
+        if (protocol === 'https:' || protocol === 'http:') {
+            electron_1.shell.openExternal(url);
+        }
     }
     showItemInFolder(fullPath) {
         electron_1.shell.showItemInFolder(fullPath);
