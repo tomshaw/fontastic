@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/tomshaw/fontastic/compare/fontastic-v1.3.2...fontastic-v1.4.0) (2026-07-05)
+
+
+### 🎉 Features
+
+* remove unused theme styles and add font loading functionality ([6037e8f](https://github.com/tomshaw/fontastic/commit/6037e8f19f531181c5c6034ea0a0b8f90655a335))
+
+
+### 🛠️ Fixes
+
+* update Angular and Electron versions in README ([b7b25c6](https://github.com/tomshaw/fontastic/commit/b7b25c678f3a9d08531b12a272b108e6b6152b1c))
+* update Playwright installation command to use the latest version ([e424b91](https://github.com/tomshaw/fontastic/commit/e424b91213c3d726cfdae16dc8b0003c68630f0c))
+* update Ubuntu runner version and install command for dependencies ([b0c23ff](https://github.com/tomshaw/fontastic/commit/b0c23ffce0cb4f66bcb4170e5d550e7fca397e7f))
+
 ## [1.3.2](https://github.com/tomshaw/fontastic/compare/fontastic-v1.3.1...fontastic-v1.3.2) (2026-03-17)
 
 
