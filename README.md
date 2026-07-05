@@ -1,7 +1,7 @@
 # Fontastic
 
-[![Angular](https://img.shields.io/badge/Angular-21-dd0031?style=plastic&logo=angular&logoColor=white)](https://angular.dev)
-[![Electron](https://img.shields.io/badge/Electron-40-47848f?style=plastic&logo=electron&logoColor=white)](https://electronjs.org)
+[![Angular](https://img.shields.io/badge/Angular-21.2.17-dd0031?style=plastic&logo=angular&logoColor=white)](https://angular.dev)
+[![Electron](https://img.shields.io/badge/Electron-43-47848f?style=plastic&logo=electron&logoColor=white)](https://electronjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=plastic&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-MIT-f59e0b?style=plastic)](LICENSE.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-22c55e?style=plastic)](http://makeapullrequest.com)
@@ -56,11 +56,11 @@ npm start
 | Category | Technology |
 |---|---|
 | Framework | [Angular](https://angular.dev) 21 |
-| Desktop | [Electron](https://electronjs.org) 40 |
+| Desktop | [Electron](https://electronjs.org) 43 |
 | Language | [TypeScript](https://www.typescriptlang.org) 5.9 |
 | Database | [TypeORM](https://typeorm.io) + SQLite |
 | Font Parsing | [Fontkit](https://github.com/foliojs/fontkit) |
-| Styling | [Tailwind CSS](https://tailwindcss.com) 4 + SCSS |
+| Styling | [Tailwind CSS](https://tailwindcss.com) 4 + CSS variables |
 | i18n | [@ngx-translate](https://github.com/ngx-translate/core) |
 | Testing | [Vitest](https://vitest.dev) + [Playwright](https://playwright.dev) |
 | Linting | [ESLint](https://eslint.org) + [Prettier](https://prettier.io) |
